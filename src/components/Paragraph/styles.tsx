@@ -68,6 +68,12 @@ export default StyleSheet.create({
   textTimberWolfColor: {
     color: BASE_COLORS.timberWolfColor,
   },
+  textForestGreenColor: {
+    color: BASE_COLORS.forestGreenColor,
+  },
+  textDarkGrayColor: {
+    color: BASE_COLORS.darkGrayColor,
+  },
   textCenter: {
     textAlign: 'center',
   },

@@ -21,6 +21,8 @@ interface Props {
   textOxleyColor?: boolean;
   textIndianRedColor?: boolean;
   textSteelBlueColor?: boolean;
+  textForestGreenColor?: boolean;
+  textDarkGrayColor?: boolean;
   textCenter?: boolean;
   textDecoration?: boolean;
   onPress?: any;
@@ -44,6 +46,8 @@ const Link: React.FC<Props> = ({
   textOxleyColor,
   textIndianRedColor,
   textSteelBlueColor,
+  textForestGreenColor,
+  textDarkGrayColor,
   textCenter,
   textDecoration,
   onPress,
@@ -68,6 +72,8 @@ const Link: React.FC<Props> = ({
           textOxleyColor && styles.textOxleyColor,
           textIndianRedColor && styles.textIndianRedColor,
           textSteelBlueColor && styles.textSteelBlueColor,
+          textForestGreenColor && styles.textForestGreenColor,
+          textDarkGrayColor && styles.textDarkGrayColor,
           textCenter && styles.textCenter,
           textDecoration && styles.underline,
           styles.default,

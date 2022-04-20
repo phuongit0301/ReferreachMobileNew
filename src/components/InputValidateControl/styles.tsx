@@ -32,6 +32,6 @@ export default StyleSheet.create({
   },
   textError: {
     ...GlobalStyles.mt10,
-    color: BASE_COLORS.redColor,
+    color: BASE_COLORS.begoniaColor,
   },
 });

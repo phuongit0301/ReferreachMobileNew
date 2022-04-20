@@ -1,11 +1,8 @@
 import React from 'react';
-import {View, TouchableOpacity, Dimensions, ViewStyle, TextStyle} from 'react-native';
+import {View, TouchableOpacity, ViewStyle, TextStyle} from 'react-native';
 
-import {BASE_COLORS} from '~Root/config';
 import {Paragraph} from '..';
 import styles from './styles';
-
-const width = Dimensions.get('window').width;
 
 interface Props {
   h1?: boolean;
@@ -15,6 +12,7 @@ interface Props {
   h5?: boolean;
   p?: boolean;
   bold?: boolean;
+  bold600?: boolean;
   italic?: boolean;
   textWhite?: boolean;
   textBlack?: boolean;
@@ -23,15 +21,11 @@ interface Props {
   textCenter?: boolean;
   title?: string;
   onPress?: any;
-  type?: string;
-  bordered?: boolean;
-  size?: string;
-  containerStyle?: ViewStyle & TextStyle;
-  textStyle?: ViewStyle & TextStyle;
+  containerStyle?: ViewStyle;
+  textStyle?: TextStyle;
   disabled?: boolean;
   isIconLeft?: boolean;
   isIconRight?: boolean;
-  buttonTextColor?: string;
   children?: React.ReactNode;
 }
 
@@ -43,6 +37,7 @@ const Button: React.FC<Props> = ({
   h5,
   p,
   bold,
+  bold600,
   italic,
   textWhite,
   textBlack,
@@ -51,39 +46,16 @@ const Button: React.FC<Props> = ({
   textCenter,
   title = 'Save',
   onPress = () => {},
-  type = 'filled',
-  bordered = false,
-  size = 'auto',
   containerStyle = {},
   textStyle = {},
   disabled = false,
   isIconLeft = false,
   isIconRight = false,
-  buttonTextColor = BASE_COLORS.primary,
   children,
 }) => {
-  const large = width / 1.3;
-  const small = width / 2;
-  const btnSize = size === 'large' ? large : small;
-  const btnBgColor = disabled ? BASE_COLORS.grayColor : type === 'filled' ? BASE_COLORS.whiteColor : 'transparent';
-  const btnTextColor = type === 'filled' ? BASE_COLORS.whiteColor : buttonTextColor;
-  const btnBorderRadius = bordered ? 16 : 5;
-
-  const containerCommonStyle = {
-    backgroundColor: btnBgColor,
-    width: size === 'auto' ? 'auto' : btnSize,
-    borderRadius: btnBorderRadius,
-  };
-
-  const textCommonStyle = {
-    color: btnTextColor,
-  };
-
-  const border = type === 'outlined' && styles.border;
-
   return (
     <TouchableOpacity disabled={disabled} onPress={onPress} activeOpacity={0.7}>
-      <View style={[containerCommonStyle, border, styles.containerCommonStyle, containerStyle]}>
+      <View style={[styles.containerCommonStyle, containerStyle]}>
         {isIconLeft && children}
         <Paragraph
           h1={h1}
@@ -93,13 +65,14 @@ const Button: React.FC<Props> = ({
           h5={h5}
           p={p}
           bold={bold}
+          bold600={bold600}
           italic={italic}
           textWhite={textWhite}
           textBlack={textBlack}
           textTealBlue={textTealBlue}
           textGreyColor={textGreyColor}
           textCenter={textCenter}
-          style={[textCommonStyle, textStyle]}
+          style={[styles.textColor, textStyle]}
           title={title}
         />
         {isIconRight && children}

@@ -15,6 +15,7 @@ export const BASE_COLORS = {
   greyColor: '#C4C4C4',
   darkGray: '#A9A9A9',
   redColor: '#FF5555',
+  persianRedColor: '#D32F2F',
   lightPinkColor: 'rgba(50, 31, 54, 0.5)',
   approxIndigoColor: '#AB80B3',
   tealBlueColor: '#38698B',
@@ -32,8 +33,11 @@ export const BASE_COLORS = {
   antiFlashWhiteColor: '#F0F0F0',
   culturedColor: '#F7F8F9',
   oldSilverColor: '#848383',
-  forestGreenColor: '#034B1A',
   timberWolfColor: '#DFD9D4',
+  gainsboroColor: '#DEDEDE',
+  begoniaColor: '#F67280',
+  forestGreenColor: '#5EA573',
+  darkGrayColor: '#6D6D6D',
 };
 
 export const BASE_FONTS = {

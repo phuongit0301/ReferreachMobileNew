@@ -1,4 +1,4 @@
-import Header from './Header';
+import AuthHeader from './AuthHeader';
 import HeaderFormat from './HeaderFormat';
 import HeaderBg from './HeaderBg';
 import HeaderSmallWhite from './HeaderSmallWhite';
@@ -57,7 +57,7 @@ import InviteContactTemplateScreen from './InviteContactTemplate';
 import ProfileTemplateSceen from './ProfileTemplate';
 
 export {
-  Header,
+  AuthHeader,
   HeaderFormat,
   HeaderBg,
   HeaderXSSmallBlue,

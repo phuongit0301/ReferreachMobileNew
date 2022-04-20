@@ -56,6 +56,12 @@ export default StyleSheet.create({
   textIndianRedColor: {
     color: BASE_COLORS.indianRedColor,
   },
+  textForestGreenColor: {
+    color: BASE_COLORS.forestGreenColor,
+  },
+  textDarkGrayColor: {
+    color: BASE_COLORS.darkGrayColor,
+  },
   textCenter: {
     textAlign: 'center',
   },
