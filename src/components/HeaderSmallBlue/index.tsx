@@ -30,7 +30,7 @@ const HeaderSmallBlue: React.FC<Props> = ({
       <View style={[GlobalStyles.flexRow, GlobalStyles.ph5, GlobalStyles.header]}>
         {isBackButton && (
           <TouchableOpacity onPress={onBack} style={[GlobalStyles.mr10]}>
-            <Image source={IMAGES.iconBack} style={GlobalStyles.iconBack} />
+            <Image source={IMAGES.iconBackGreen} style={GlobalStyles.iconBack} />
           </TouchableOpacity>
         )}
         <Paragraph h5 style={[GlobalStyles.headerTextWhite, headerTextStyle]} title={title} />

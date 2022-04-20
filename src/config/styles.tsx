@@ -168,8 +168,8 @@ export const GlobalStyles = StyleSheet.create({
   scrollViewWhite: {
     backgroundColor: BASE_COLORS.whiteColor,
     zIndex: -1,
-    marginHorizontal: adjust(20),
-    marginVertical: adjust(20),
+    marginHorizontal: adjust(15),
+    marginVertical: adjust(10),
   },
   scrollViewContentContainer: {
     paddingBottom: adjust(10),
@@ -273,8 +273,8 @@ export const GlobalStyles = StyleSheet.create({
     flex: 1,
   },
   buttonContainerStyle: {
-    paddingHorizontal: adjust(31),
-    paddingVertical: adjust(14),
+    paddingHorizontal: adjust(35),
+    paddingVertical: adjust(15),
   },
   m5: {
     margin: adjust(5),
@@ -445,32 +445,34 @@ export const GlobalStyles = StyleSheet.create({
     paddingRight: adjust(40),
   },
   pv2: {
-    paddingTop: adjust(2),
-    paddingBottom: adjust(2),
+    paddingVertical: adjust(2),
   },
   pv5: {
-    paddingTop: adjust(5),
-    paddingBottom: adjust(5),
+    paddingVertical: adjust(5),
   },
   pv8: {
-    paddingTop: adjust(8),
-    paddingBottom: adjust(8),
+    paddingVertical: adjust(8),
   },
   pv10: {
-    paddingTop: adjust(10),
-    paddingBottom: adjust(10),
+    paddingVertical: adjust(10),
   },
   pv15: {
-    paddingTop: adjust(15),
-    paddingBottom: adjust(15),
+    paddingVertical: adjust(15),
   },
   pv20: {
-    paddingTop: adjust(20),
-    paddingBottom: adjust(20),
+    paddingVertical: adjust(20),
+  },
+  pv25: {
+    paddingVertical: adjust(25),
+  },
+  pv30: {
+    paddingVertical: adjust(30),
+  },
+  pv35: {
+    paddingVertical: adjust(35),
   },
   pv45: {
-    paddingTop: adjust(45),
-    paddingBottom: adjust(45),
+    paddingVertical: adjust(45),
   },
   pt5: {
     paddingTop: adjust(5),
@@ -667,6 +669,9 @@ export const GlobalStyles = StyleSheet.create({
   },
   justifyBetween: {
     justifyContent: 'space-between',
+  },
+  justifyCenter: {
+    justifyContent: 'center',
   },
 });
 

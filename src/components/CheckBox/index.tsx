@@ -5,11 +5,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {BASE_COLORS} from '~Root/config';
 import {Paragraph} from '~Root/components';
 import styles from './styles';
-import {IField} from '~Root/services/ask/types';
 
 interface Props {
   isChecked: boolean;
-  onChange?: (isChecked: boolean, item: IField | string) => void;
+  onChange?: (isChecked: boolean, item: any) => void;
   item?: any;
   style?: ViewStyle;
   iconStyle?: ViewStyle;
