@@ -1,5 +1,6 @@
 import {all, put, takeEvery, call} from 'redux-saga/effects';
 import i18n from 'i18next';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {LOGIN_FAILURE, LOGIN_REQUESTED, LOGIN_SUCCESS} from './constants';
 import LoginAPI from './apis';
@@ -10,6 +11,7 @@ function* handleLogin(payload: IActionLoginRequested) {
   try {
     const response: IActionLoginSuccess['payload'] = yield call(LoginAPI.handleLogin, payload?.payload);
     if (response?.success) {
+      yield AsyncStorage.setItem('token', response?.data?.email);
       yield put({type: LOGIN_SUCCESS, payload: response?.data});
       yield put(initAuthSuccess());
       payload?.callback &&

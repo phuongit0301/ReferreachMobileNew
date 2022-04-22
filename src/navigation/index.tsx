@@ -6,6 +6,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {useSelector, useDispatch} from 'react-redux';
 import i18n from 'i18next';
 import {initReactI18next} from 'react-i18next';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import HomeScreen from '~Root/screens/Home';
 import LoginScreen from '~Root/screens/Login';

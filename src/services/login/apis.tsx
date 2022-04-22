@@ -15,15 +15,14 @@ export default class LoginAPI {
           'Content-Type': 'application/json',
         },
       });
-      if (response?.data) {
+      if (response?.data?.success) {
         return {
-          data: response.data,
+          data: response.data?.data,
           message: '',
           success: true,
         };
       }
     } catch (error) {
-      console.log('111111122222=>', JSON.stringify(error?.response));
       return {
         data: {
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
