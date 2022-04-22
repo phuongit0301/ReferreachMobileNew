@@ -1,13 +1,11 @@
-import {LOGIN_REQUESTED, LOGIN_SUCCESS, LOGIN_FAILURE, SET_DATA_LOGIN} from './constants';
+import {LOGIN_REQUESTED, LOGIN_SUCCESS, LOGIN_FAILURE} from './constants';
 import {ILoginState, IActionsLogin} from './types';
 
 export const initialState: ILoginState = {
-  errors: [],
+  message: '',
   loading: false,
   email: '',
   password: '',
-  access_token: '',
-  active: false,
   callback: () => {},
 };
 
@@ -16,10 +14,9 @@ const loginReducer = (state: ILoginState = initialState, action: IActionsLogin):
     case LOGIN_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
     case LOGIN_SUCCESS:
-    case SET_DATA_LOGIN:
-      return {...state, loading: false, errors: [], ...action.payload};
+      return {...state, loading: false, ...action.payload};
     case LOGIN_FAILURE:
-      return {...state, loading: false, errors: action.payload.error};
+      return {...state, loading: false, message: action.payload.message};
     default:
       return state;
   }

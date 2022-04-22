@@ -58,7 +58,7 @@ const AppNavigator = (props: any) => {
         <RootStack.Screen name={AppRoute.SPLASH} component={SplashScreen} />
       ) : authState.isLoggedIn ? (
         <>
-          <RootStack.Screen name={AppRoute.SPLASH} component={HomeScreen} />
+          <RootStack.Screen name={AppRoute.HOME} component={HomeScreen} />
         </>
       ) : (
         <>
