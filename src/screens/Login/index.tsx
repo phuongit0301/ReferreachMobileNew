@@ -86,8 +86,8 @@ const LoginScreen = ({navigation}: Props) => {
     navigation.navigate(AppRoute.FEED_BACK_MODAL);
   };
 
-  const onForgotPassword = () => {
-    navigation.navigate(AppRoute.FORGOT_PASSWORD);
+  const onInvite = () => {
+    navigation.navigate(AppRoute.INVITE_CONTACT);
   };
 
   const onCheckboxChange = () => {
@@ -164,7 +164,7 @@ const LoginScreen = ({navigation}: Props) => {
               </View>
               <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter, GlobalStyles.justifyCenter]}>
                 <Link
-                  onPress={onForgotPassword}
+                  onPress={onInvite}
                   h4
                   textForestGreenColor
                   textDecoration

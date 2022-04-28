@@ -26,6 +26,8 @@ interface Props {
   textTimberWolfColor?: boolean;
   textForestGreenColor?: boolean;
   textDarkGrayColor?: boolean;
+  textGray2Color?: boolean;
+  textDavysGreyColor?: boolean;
   textCenter?: boolean;
   title?: string;
   style?: any;
@@ -56,6 +58,8 @@ const Paragraph: React.FC<Props> = ({
   textTimberWolfColor,
   textForestGreenColor,
   textDarkGrayColor,
+  textGray2Color,
+  textDavysGreyColor,
   textCenter,
   title,
   style,
@@ -91,6 +95,8 @@ const Paragraph: React.FC<Props> = ({
         textTimberWolfColor && styles.textTimberWolfColor,
         textForestGreenColor && styles.textForestGreenColor,
         textDarkGrayColor && styles.textDarkGrayColor,
+        textGray2Color && styles.textGray2Color,
+        textDavysGreyColor && styles.textDavysGreyColor,
         textCenter && styles.textCenter,
         style,
       ]}

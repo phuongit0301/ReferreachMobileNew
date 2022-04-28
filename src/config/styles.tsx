@@ -167,7 +167,6 @@ export const GlobalStyles = StyleSheet.create({
   },
   scrollViewWhite: {
     backgroundColor: BASE_COLORS.whiteColor,
-    zIndex: -1,
     marginHorizontal: adjust(15),
     marginVertical: adjust(10),
   },
@@ -250,9 +249,7 @@ export const GlobalStyles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    zIndex: 20,
     top: headerTop(),
-    width: '100%',
   },
   headerEXS: {
     alignItems: 'center',
@@ -274,7 +271,7 @@ export const GlobalStyles = StyleSheet.create({
   },
   buttonContainerStyle: {
     paddingHorizontal: adjust(35),
-    paddingVertical: adjust(15),
+    paddingVertical: adjust(12),
   },
   m5: {
     margin: adjust(5),
@@ -444,6 +441,18 @@ export const GlobalStyles = StyleSheet.create({
     paddingLeft: adjust(40),
     paddingRight: adjust(40),
   },
+  ph50: {
+    paddingLeft: adjust(50),
+    paddingRight: adjust(50),
+  },
+  ph60: {
+    paddingLeft: adjust(60),
+    paddingRight: adjust(60),
+  },
+  ph70: {
+    paddingLeft: adjust(70),
+    paddingRight: adjust(70),
+  },
   pv2: {
     paddingVertical: adjust(2),
   },
@@ -536,11 +545,10 @@ export const GlobalStyles = StyleSheet.create({
     height: adjust(29),
   },
   inputStyle: {
-    height: adjust(48),
+    height: adjust(35),
   },
   labelStyle: {
     fontFamily: BASE_FONTS.semiBold,
-    fontWeight: 'bold',
     marginBottom: 8,
   },
   titleContainer: {
@@ -672,6 +680,12 @@ export const GlobalStyles = StyleSheet.create({
   },
   justifyCenter: {
     justifyContent: 'center',
+  },
+  fullWidth: {
+    width: '100%',
+  },
+  textCenter: {
+    textAlign: 'center',
   },
 });
 

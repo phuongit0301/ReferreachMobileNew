@@ -74,6 +74,12 @@ export default StyleSheet.create({
   textDarkGrayColor: {
     color: BASE_COLORS.darkGrayColor,
   },
+  textDavysGreyColor: {
+    color: BASE_COLORS.davysGreyColor,
+  },
+  textGray2Color: {
+    color: BASE_COLORS.gray2Color,
+  },
   textCenter: {
     textAlign: 'center',
   },

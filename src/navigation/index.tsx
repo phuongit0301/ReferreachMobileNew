@@ -10,7 +10,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import HomeScreen from '~Root/screens/Home';
 import LoginScreen from '~Root/screens/Login';
+import RegisterScreen from '~Root/screens/Register';
 import SplashScreen from '~Root/screens/Splash';
+import InviteCodeScreen from '~Root/screens/InviteCode';
+import InviteConfirmScreen from '~Root/screens/InviteConfirm';
+import InviteExpireScreen from '~Root/screens/InviteExpire';
+import VerifyEmailScreen from '~Root/screens/VerifyEmail';
+import InviteContactScreen from '~Root/screens/InviteContact';
 
 import {BASE_COLORS, BASE_SETTINGS} from '~Root/config';
 import {AppState} from '~Root/reducers';
@@ -32,6 +38,7 @@ const AppNavigator = (props: any) => {
   useEffect(() => {
     const initLanguage = async () => {
       await i18n.use(initReactI18next).init({
+        compatibilityJSON: 'v3',
         resources: BASE_SETTINGS.resourcesLanguage,
         lng: BASE_SETTINGS.defaultLanguage,
         fallbackLng: BASE_SETTINGS.defaultLanguage,
@@ -64,6 +71,12 @@ const AppNavigator = (props: any) => {
       ) : (
         <>
           <RootStack.Screen name={AppRoute.LOGIN} component={LoginScreen} />
+          <RootStack.Screen name={AppRoute.INVITE_CODE} component={InviteCodeScreen} />
+          <RootStack.Screen name={AppRoute.INVITE_CONFIRM} component={InviteConfirmScreen} />
+          <RootStack.Screen name={AppRoute.INVITE_EXPIRE} component={InviteExpireScreen} />
+          <RootStack.Screen name={AppRoute.VERIFY_EMAIL} component={VerifyEmailScreen} />
+          <RootStack.Screen name={AppRoute.INVITE_CONTACT} component={InviteContactScreen} />
+          <RootStack.Screen name={AppRoute.REGISTER} component={RegisterScreen} />
         </>
       )}
     </RootStack.Navigator>

@@ -19,5 +19,10 @@ export default StyleSheet.create({
     height: adjust(21),
     left: adjust(15),
     top: adjust(15),
+    zIndex: 10,
+  },
+  logo: {
+    width: adjust(138),
+    height: adjust(18),
   },
 });

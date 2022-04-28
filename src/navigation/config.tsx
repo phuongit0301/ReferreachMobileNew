@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import {NavigatorScreenParams} from '@react-navigation/native';
-import {IMatch} from '~Root/services/matches/types';
 import {AppRoute} from './AppRoute';
 
 export type RootNavigatorParamsList = {
@@ -8,11 +7,13 @@ export type RootNavigatorParamsList = {
   [AppRoute.APP_CHECK]: undefined;
   [AppRoute.TABS]: undefined;
   [AppRoute.LOGIN]: undefined;
-  [AppRoute.INVITE_CODE]: undefined;
+  [AppRoute.INVITE_CODE]: {code: undefined | string};
+  [AppRoute.INVITE_CONFIRM]: undefined;
+  [AppRoute.INVITE_EXPIRE]: undefined;
   [AppRoute.REGISTER]: undefined;
   [AppRoute.RESET_PASSWORD]: undefined;
   [AppRoute.CREATE_ASK]: undefined;
-  [AppRoute.ON_BOARDING_SCREEN]: {item: IMatch};
+  [AppRoute.ON_BOARDING_SCREEN]: {item: any};
   [AppRoute.HOME_SHARE_SCREEN]: undefined;
   [AppRoute.HOME]: undefined;
   [AppRoute.HOME_DETAIL]: {reference_id?: undefined | string} | undefined;
@@ -64,7 +65,7 @@ export type MainNavigatorParamsList = {
   [AppRoute.CREATE_ASK]: undefined;
   [AppRoute.ASK_PREVIEW]: undefined;
   [AppRoute.ASK_PUBLISH]: undefined;
-  [AppRoute.ON_BOARDING_SCREEN]: {item: IMatch};
+  [AppRoute.ON_BOARDING_SCREEN]: {item: any};
   [AppRoute.HOME_SHARE_SCREEN]: undefined;
   [AppRoute.CHAT]: undefined;
   [AppRoute.LOGIN]: undefined;

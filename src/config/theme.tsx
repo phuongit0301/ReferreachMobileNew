@@ -38,6 +38,13 @@ export const BASE_COLORS = {
   begoniaColor: '#F67280',
   forestGreenColor: '#5EA573',
   darkGrayColor: '#6D6D6D',
+  brightGrayColor: '#E9EDF2',
+  gray2Color: '#818282',
+  platinumColor: '#E3E3E3',
+  cyanCornflowerBlueColor: '#2790B0',
+  jetColor: '#313437',
+  starCommandBlueColor: '#0077B5',
+  davyGreyColor: '#555555',
 };
 
 export const BASE_FONTS = {

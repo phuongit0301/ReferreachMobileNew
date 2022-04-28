@@ -23,8 +23,12 @@ export default StyleSheet.create({
     fontSize: adjust(BASE_STYLES.p),
   },
   bold: {
-    fontFamily: BASE_FONTS.semiBold,
+    fontFamily: BASE_FONTS.bold,
     fontWeight: 'bold',
+  },
+  bold600: {
+    fontFamily: BASE_FONTS.semiBold,
+    fontWeight: '600',
   },
   italic: {
     fontStyle: 'italic',
@@ -61,6 +65,9 @@ export default StyleSheet.create({
   },
   textDarkGrayColor: {
     color: BASE_COLORS.darkGrayColor,
+  },
+  textSpanishGrayColor: {
+    color: BASE_COLORS.spanishGrayColor,
   },
   textCenter: {
     textAlign: 'center',

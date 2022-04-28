@@ -5,6 +5,8 @@ export enum AppRoute {
   HOME_DETAIL = 'HomeDetail',
   LOGIN = 'Login',
   INVITE_CODE = 'InviteCode',
+  INVITE_CONFIRM = 'InviteConfirm',
+  INVITE_EXPIRE = 'InviteExpire',
   REGISTER = 'Register',
   RESET_PASSWORD = 'ResetPassword',
   FORGOT_PASSWORD = 'ForgotPassword',

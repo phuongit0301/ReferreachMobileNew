@@ -15,6 +15,7 @@ import Paragraph from './Paragraph';
 import Link from './Link';
 import Button from './Button';
 import ButtonSecond from './ButtonSecond';
+import ButtonSocial from './ButtonSocial';
 import Image from './Image';
 import Loading from './Loading';
 import LoadingSecondary from './LoadingSecondary';
@@ -50,6 +51,7 @@ import FeedBackBlockItem from './FeedBackBlockItem';
 import IndividualMessageBlockItem from './IndividualMessageBlockItem';
 import IndividualJointBlockItem from './IndividualJointBlockItem';
 import ProfileBlock from './ProfileBlock';
+import Otp from './Otp';
 /** Define Template */
 
 import HomeTemplateScreen from './HomeTemplate';
@@ -74,6 +76,7 @@ export {
   Link,
   Button,
   ButtonSecond,
+  ButtonSocial,
   Image,
   Loading,
   LoadingSecondary,
@@ -112,4 +115,5 @@ export {
   InviteContactTemplateScreen,
   ProfileTemplateSceen,
   ProfileBlock,
+  Otp,
 };

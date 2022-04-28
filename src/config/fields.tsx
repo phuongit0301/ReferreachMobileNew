@@ -9,37 +9,37 @@ export const LOGIN_FIELDS = {
 };
 
 export enum REGISTER_KEYS {
-  firstName = 'firstName',
-  lastName = 'lastName',
+  first_name = 'first_name',
+  last_name = 'last_name',
   email = 'email',
   password = 'password',
-  rePassword = 'rePassword',
+  confirm_password = 'confirm_password',
 }
 
 export const REGISTER_FIELDS = {
-  firstName: 'firstName',
-  lastName: 'lastName',
+  first_name: 'first_name',
+  last_name: 'last_name',
   email: 'email',
   password: 'password',
-  rePassword: 'rePassword',
+  confirm_password: 'confirm_password',
 };
 
 export enum RESET_PASSWORD_KEYS {
   password = 'password',
-  rePassword = 'rePassword',
+  confirm_password = 'confirm_password',
 }
 
 export const RESET_PASSWORD_FIELDS = {
   password: 'password',
-  rePassword: 'rePassword',
+  confirm_password: 'confirm_password',
 };
 
 export enum INVITE_CODE_KEYS {
-  inviteCode = 'inviteCode',
+  inviteCode = 'invite_code',
 }
 
 export const INVITE_CODE_FIELDS = {
-  inviteCode: 'inviteCode',
+  inviteCode: 'invite_code',
 };
 
 export enum INVITE_CONTACT_KEYS {

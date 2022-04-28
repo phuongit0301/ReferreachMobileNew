@@ -7,21 +7,19 @@ export default StyleSheet.create({
     backgroundColor: BASE_COLORS.whiteColor,
   },
   inputStyle: {
-    ...GlobalStyles.h4,
     ...GlobalStyles.inputStyle,
     borderRadius: adjust(20),
     color: BASE_COLORS.blackColor,
-    backgroundColor: BASE_COLORS.gainsboroColor,
+    backgroundColor: BASE_COLORS.brightGrayColor,
   },
   inputIconStyle: {
-    ...GlobalStyles.h4,
     ...GlobalStyles.inputStyle,
     color: BASE_COLORS.blackColor,
   },
   inputWrapperStyle: {
     ...GlobalStyles.inputStyle,
     borderRadius: adjust(20),
-    backgroundColor: BASE_COLORS.gainsboroColor,
+    backgroundColor: BASE_COLORS.brightGrayColor,
   },
   labelStyle: {
     ...GlobalStyles.labelStyle,

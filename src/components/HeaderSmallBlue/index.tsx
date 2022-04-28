@@ -1,26 +1,22 @@
 import React from 'react';
-import {View, TouchableOpacity, ViewStyle, TextStyle} from 'react-native';
+import {View, TouchableOpacity, ViewStyle} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
-import {GlobalStyles, IMAGES} from '~Root/config';
-import {Image, Paragraph} from '~Root/components';
+import {GlobalStyles, IMAGES, BASE_COLORS} from '~Root/config';
+import {Image} from '~Root/components';
+import FastImage from 'react-native-fast-image';
+import styles from '../AuthHeader/styles';
 
 interface Props {
   isBackButton?: boolean;
-  title?: string;
   onBack?: () => void;
   containerHeaderStyle?: ViewStyle;
-  headerTextStyle?: TextStyle;
 }
 
-const HeaderSmallBlue: React.FC<Props> = ({
-  isBackButton = false,
-  onBack = () => {},
-  title = '',
-  containerHeaderStyle = {},
-  headerTextStyle = {},
-}) => {
+const HeaderSmallBlue: React.FC<Props> = ({isBackButton = false, onBack = () => {}, containerHeaderStyle = {}}) => {
   return (
-    <View
+    <LinearGradient
+      colors={[BASE_COLORS.steelBlueColor, BASE_COLORS.cyanCornflowerBlueColor]}
       style={[
         GlobalStyles.containerHeader,
         GlobalStyles.containerHeaderBlueSM,
@@ -33,9 +29,11 @@ const HeaderSmallBlue: React.FC<Props> = ({
             <Image source={IMAGES.iconBackGreen} style={GlobalStyles.iconBack} />
           </TouchableOpacity>
         )}
-        <Paragraph h5 style={[GlobalStyles.headerTextWhite, headerTextStyle]} title={title} />
+        <View style={[GlobalStyles.alignCenter, GlobalStyles.fullWidth]}>
+          <FastImage source={IMAGES.logo2} resizeMode='contain' style={styles.logo} />
+        </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
