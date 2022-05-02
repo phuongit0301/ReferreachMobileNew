@@ -1,31 +1,25 @@
 import React from 'react';
-import {View, ScrollView, KeyboardAvoidingView, Text} from 'react-native';
+import {View, ScrollView, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {RootNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {
-  InputValidateControl,
-  Link,
-  Button,
-  Loading,
-  HeaderSmallBlue,
-  CheckBox,
-  InputIconValidate,
-  Paragraph,
-  ButtonSocial,
-} from '~Root/components';
-import {LOGIN_FIELDS, GlobalStyles, BASE_COLORS, IMAGES} from '~Root/config';
+import {Link, Loading, HeaderSmallBlue, ButtonSocial} from '~Root/components';
+import {GlobalStyles, IMAGES} from '~Root/config';
 import styles from './styles';
 import {t} from 'i18next';
 import {Trans} from 'react-i18next';
 
-type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.LOGIN>;
+type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.INVITE_CONTACT>;
 
 const InviteContactScreen = ({navigation}: Props) => {
   const onLinkedIn = () => {
     console.log(123213);
+  };
+
+  const onPhoneContact = () => {
+    navigation.navigate(AppRoute.LIST_CONTACT);
   };
 
   return (
@@ -70,7 +64,7 @@ const InviteContactScreen = ({navigation}: Props) => {
               iconUrl={IMAGES.iconPhone}
               iconStyleContainer={styles.iconPhoneStyleContainer}
               iconStyle={styles.icon}
-              onPress={onLinkedIn}
+              onPress={onPhoneContact}
               title={t('invite_contact')}
               buttonContainerStyle={{...GlobalStyles.mb40, ...styles.btnContact}}
             />

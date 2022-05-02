@@ -4,16 +4,24 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import {GlobalStyles, IMAGES, BASE_COLORS} from '~Root/config';
 import {Image} from '~Root/components';
-import FastImage from 'react-native-fast-image';
+import FastImage, {ImageStyle} from 'react-native-fast-image';
 import styles from '../AuthHeader/styles';
 
 interface Props {
   isBackButton?: boolean;
   onBack?: () => void;
   containerHeaderStyle?: ViewStyle;
+  iconBackUrl?: number;
+  iconStyle?: ImageStyle;
 }
 
-const HeaderSmallBlue: React.FC<Props> = ({isBackButton = false, onBack = () => {}, containerHeaderStyle = {}}) => {
+const HeaderSmallBlue: React.FC<Props> = ({
+  isBackButton = false,
+  onBack = () => {},
+  containerHeaderStyle = {},
+  iconBackUrl = IMAGES.iconBackGreen,
+  iconStyle = GlobalStyles.iconBack,
+}) => {
   return (
     <LinearGradient
       colors={[BASE_COLORS.steelBlueColor, BASE_COLORS.cyanCornflowerBlueColor]}
@@ -25,8 +33,8 @@ const HeaderSmallBlue: React.FC<Props> = ({isBackButton = false, onBack = () => 
       ]}>
       <View style={[GlobalStyles.flexRow, GlobalStyles.ph5, GlobalStyles.header]}>
         {isBackButton && (
-          <TouchableOpacity onPress={onBack} style={[GlobalStyles.mr10]}>
-            <Image source={IMAGES.iconBackGreen} style={GlobalStyles.iconBack} />
+          <TouchableOpacity onPress={onBack} style={styles.iconBackContainer}>
+            <Image source={iconBackUrl} style={iconStyle} />
           </TouchableOpacity>
         )}
         <View style={[GlobalStyles.alignCenter, GlobalStyles.fullWidth]}>

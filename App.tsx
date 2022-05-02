@@ -37,18 +37,18 @@ const linking = {
   async getInitialURL() {
     return await Linking.getInitialURL();
   },
-  subscribe: (listener: any) => {
-    console.log('subscribe');
-    const onReceiveURL = ({url}: {url: string}) => listener(url);
+  // subscribe: (listener: any) => {
+  //   console.log('subscribe');
+  //   const onReceiveURL = ({url}: {url: string}) => listener(url);
 
-    // Listen to incoming links from deep linking
-    Linking.addEventListener('url', onReceiveURL);
+  //   // Listen to incoming links from deep linking
+  //   Linking.addEventListener('url', onReceiveURL);
 
-    return () => {
-      // Clean up the event listeners
-      Linking.removeEventListener('url', onReceiveURL);
-    };
-  },
+  //   return () => {
+  //     // Clean up the event listeners
+  //     Linking.removeEventListener('url', onReceiveURL);
+  //   };
+  // },
 };
 
 const App = () => {

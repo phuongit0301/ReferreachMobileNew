@@ -33,6 +33,7 @@ export enum AppRoute {
   INVITE_CONTACT_EDIT = 'InviteContactEdit',
   MAIN_DRAWER = 'MainDrawer',
   LIST_CONTACT = 'ListContact',
+  SEND_INVITES = 'SendInvites',
   FEED_BACK_MODAL = 'FeedBackModal',
   INDIVIDUAL_MESSAGE_MODAL = 'IndividualMessageModal',
   JOINT_MESSAGE_MODAL = 'JointMessageModal',

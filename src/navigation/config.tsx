@@ -28,6 +28,7 @@ export type RootNavigatorParamsList = {
   [AppRoute.INVITE_CONTACT]: undefined;
   [AppRoute.INVITE_CONTACT_EDIT]: undefined;
   [AppRoute.LIST_CONTACT]: undefined;
+  [AppRoute.SEND_INVITES]: undefined;
   [AppRoute.FEED_BACK_MODAL]: undefined;
   [AppRoute.INDIVIDUAL_MESSAGE_MODAL]: undefined;
   [AppRoute.JOINT_MESSAGE_MODAL]: undefined;

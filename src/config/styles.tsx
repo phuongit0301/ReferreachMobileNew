@@ -387,6 +387,15 @@ export const GlobalStyles = StyleSheet.create({
   mh15: {
     marginHorizontal: adjust(15),
   },
+  mh20: {
+    marginHorizontal: adjust(20),
+  },
+  mh25: {
+    marginHorizontal: adjust(25),
+  },
+  mh30: {
+    marginHorizontal: adjust(30),
+  },
   p5: {
     padding: adjust(5),
   },
@@ -453,6 +462,10 @@ export const GlobalStyles = StyleSheet.create({
     paddingLeft: adjust(70),
     paddingRight: adjust(70),
   },
+  ph80: {
+    paddingLeft: adjust(80),
+    paddingRight: adjust(80),
+  },
   pv2: {
     paddingVertical: adjust(2),
   },
@@ -464,6 +477,9 @@ export const GlobalStyles = StyleSheet.create({
   },
   pv10: {
     paddingVertical: adjust(10),
+  },
+  pv12: {
+    paddingVertical: adjust(12),
   },
   pv15: {
     paddingVertical: adjust(15),
@@ -686,6 +702,10 @@ export const GlobalStyles = StyleSheet.create({
   },
   textCenter: {
     textAlign: 'center',
+  },
+  iconBackWhiteStyle: {
+    width: adjust(17),
+    height: adjust(17),
   },
 });
 

@@ -17,6 +17,8 @@ import InviteConfirmScreen from '~Root/screens/InviteConfirm';
 import InviteExpireScreen from '~Root/screens/InviteExpire';
 import VerifyEmailScreen from '~Root/screens/VerifyEmail';
 import InviteContactScreen from '~Root/screens/InviteContact';
+import ListContactScreen from '~Root/screens/ListContact';
+import SendInvitesScreen from '~Root/screens/SendInvites';
 
 import {BASE_COLORS, BASE_SETTINGS} from '~Root/config';
 import {AppState} from '~Root/reducers';
@@ -26,6 +28,7 @@ import TabBar from './TabBar';
 import {AppRoute} from './AppRoute';
 import styles from './styles';
 import {MainNavigatorParamsList, RootNavigatorParamsList} from './config';
+import { Linking } from 'react-native';
 
 enableScreens();
 
@@ -55,6 +58,19 @@ const AppNavigator = (props: any) => {
     }
   }, [dispatch, authState?.isAppReady]);
 
+  useEffect(() => {
+    console.log('44444444444444444555');
+    Linking.addEventListener('url', (event: any) => {
+      console.log('44444444444444444');
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      Linking.canOpenURL(event.url).then(supported => {
+        if (supported) {
+          console.log('1211111111111');
+        }
+      });
+    });
+  }, []);
+
   return (
     <RootStack.Navigator
       screenOptions={{
@@ -76,6 +92,8 @@ const AppNavigator = (props: any) => {
           <RootStack.Screen name={AppRoute.INVITE_EXPIRE} component={InviteExpireScreen} />
           <RootStack.Screen name={AppRoute.VERIFY_EMAIL} component={VerifyEmailScreen} />
           <RootStack.Screen name={AppRoute.INVITE_CONTACT} component={InviteContactScreen} />
+          <RootStack.Screen name={AppRoute.LIST_CONTACT} component={ListContactScreen} />
+          <RootStack.Screen name={AppRoute.SEND_INVITES} component={SendInvitesScreen} />
           <RootStack.Screen name={AppRoute.REGISTER} component={RegisterScreen} />
         </>
       )}

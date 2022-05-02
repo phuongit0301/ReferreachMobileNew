@@ -2,6 +2,7 @@ import {ILoadingState} from '~Root/services/loading/types';
 import {ILoginState} from '~Root/services/login/types';
 import {IAuthState} from '~Root/services/auth/types';
 import {IUserState} from '~Root/services/user/types';
+import {IContactState} from '~Root/services/contact/types';
 
 // Global state
 export interface IGlobalState {
@@ -9,6 +10,7 @@ export interface IGlobalState {
   loginState: ILoginState;
   authState: IAuthState;
   userState: IUserState;
+  contactState: IContactState;
 }
 
 // Interface for async call steps
