@@ -36,5 +36,16 @@
     "skip_for_now": "skip for now",
     "send_invites": "Send Invites",
     "share_invite": "Share invite",
-    "proceed": "Proceed"
+    "proceed": "Proceed",
+    "get_started": "Let's Get Started",
+    "set_up_profile": "Set Up Profile",
+    "update_email": "Update Email",
+    "job_title": "Job Title",
+    "expertise": "Expertise / Pitch",
+    "your_industry": "Your Industry",
+    "visible_to_public": "visible to public",
+    "you_sell_to": "Industries you sell to",
+    "not_visible_to_public": "Not Visible to public",
+    "your_partners": "Industries Of Your Partners",
+    "trusted_network": "visible to trusted network only"
 }

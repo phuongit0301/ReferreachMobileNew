@@ -87,7 +87,7 @@ const LoginScreen = ({navigation}: Props) => {
   };
 
   const onInvite = () => {
-    navigation.navigate(AppRoute.INVITE_CONTACT);
+    navigation.navigate(AppRoute.PROFILE);
   };
 
   const onCheckboxChange = () => {

@@ -56,6 +56,9 @@ export default StyleSheet.create({
   textSteelBlueColor: {
     color: BASE_COLORS.steelBlueColor,
   },
+  textSteelBlue2Color: {
+    color: BASE_COLORS.steelBlue2Color,
+  },
   textIndianRedColor: {
     color: BASE_COLORS.indianRedColor,
   },
@@ -70,6 +73,9 @@ export default StyleSheet.create({
   },
   textForestGreenColor: {
     color: BASE_COLORS.forestGreenColor,
+  },
+  textForestGreen2Color: {
+    color: BASE_COLORS.forestGreen2Color,
   },
   textDarkGrayColor: {
     color: BASE_COLORS.darkGrayColor,

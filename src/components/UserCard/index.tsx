@@ -24,7 +24,6 @@ interface Props {
   iconSubColor?: string;
   buttonTitle?: string;
   iconName?: string;
-  buttonType?: string;
   iconSize?: number;
   iconColor?: string;
   onPress: () => void;
@@ -39,6 +38,7 @@ interface Props {
   checkboxTitle?: string;
   tooltipTitle?: string;
   tooltipDescription?: string;
+  required?: boolean;
   showCheckbox?: boolean;
 }
 
@@ -59,9 +59,8 @@ const UserCard: React.FC<Props> = ({
   iconSubColor = BASE_COLORS.gunmetalColor,
   buttonTitle = 'Add',
   iconName = 'plus',
-  buttonType = 'outlined',
-  iconSize = 14,
-  iconColor = BASE_COLORS.gunmetalColor,
+  iconSize = 12,
+  iconColor = BASE_COLORS.darkGrayColor,
   onPress = () => {},
   showRequired = false,
   containerStyle = {},
@@ -75,13 +74,20 @@ const UserCard: React.FC<Props> = ({
   tooltipTitle = '',
   tooltipDescription = '',
   showCheckbox = false,
+  required = true,
   children,
 }) => {
   return (
     <View style={[GlobalStyles.flexColumn, styles.listContainer, styleContainer]}>
       {showTitle && (
         <View style={GlobalStyles.flexRow}>
-          <Paragraph h5 bold title={title} style={[titleStyle, styles.title]} />
+          <Paragraph
+            p
+            bold600
+            textSteelBlue2Color
+            title={`${title}${required ? '*' : ''}`}
+            style={[styles.title, titleStyle]}
+          />
           <Tooltip
             isVisible={showTooltip}
             backgroundColor='transparent'
@@ -100,7 +106,7 @@ const UserCard: React.FC<Props> = ({
             }
             placement='bottom'>
             <TouchableOpacity onPress={onTooltipPress}>
-              <Ionicons name='help-circle' color={BASE_COLORS.davysGreyColor} size={adjust(22)} />
+              <Ionicons name='help-circle' color={BASE_COLORS.silverChaliceColor} size={adjust(22)} />
             </TouchableOpacity>
           </Tooltip>
         </View>
@@ -116,7 +122,6 @@ const UserCard: React.FC<Props> = ({
           title={buttonTitle}
           isIconRight={true}
           onPress={onPress}
-          type={buttonType}
           containerStyle={containerStyle}
           textStyle={textStyle}>
           {showIcon && <Icon name={iconName} size={iconSize} color={iconColor} enableRTL={true} />}

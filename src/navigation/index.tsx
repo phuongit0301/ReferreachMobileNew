@@ -19,6 +19,9 @@ import VerifyEmailScreen from '~Root/screens/VerifyEmail';
 import InviteContactScreen from '~Root/screens/InviteContact';
 import ListContactScreen from '~Root/screens/ListContact';
 import SendInvitesScreen from '~Root/screens/SendInvites';
+import IntroScreen from '~Root/screens/Intro';
+import ProfileScreen from '~Root/screens/Profile';
+import ProfileSecondScreen from '~Root/screens/ProfileSecond';
 
 import {BASE_COLORS, BASE_SETTINGS} from '~Root/config';
 import {AppState} from '~Root/reducers';
@@ -94,6 +97,9 @@ const AppNavigator = (props: any) => {
           <RootStack.Screen name={AppRoute.INVITE_CONTACT} component={InviteContactScreen} />
           <RootStack.Screen name={AppRoute.LIST_CONTACT} component={ListContactScreen} />
           <RootStack.Screen name={AppRoute.SEND_INVITES} component={SendInvitesScreen} />
+          <RootStack.Screen name={AppRoute.INTRO} component={IntroScreen} />
+          <RootStack.Screen name={AppRoute.PROFILE} component={ProfileScreen} />
+          <RootStack.Screen name={AppRoute.PROFILE_SECOND} component={ProfileSecondScreen} />
           <RootStack.Screen name={AppRoute.REGISTER} component={RegisterScreen} />
         </>
       )}

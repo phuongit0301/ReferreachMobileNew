@@ -37,6 +37,7 @@ export enum AppRoute {
   FEED_BACK_MODAL = 'FeedBackModal',
   INDIVIDUAL_MESSAGE_MODAL = 'IndividualMessageModal',
   JOINT_MESSAGE_MODAL = 'JointMessageModal',
+  INTRO = 'Intro',
 }
 
 export const AppRouteNotTabBar = {

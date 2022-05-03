@@ -20,6 +20,7 @@ export const BASE_COLORS = {
   approxIndigoColor: '#AB80B3',
   tealBlueColor: '#38698B',
   steelBlueColor: '#4683AE',
+  steelBlue2Color: '#347FAD',
   aeroColor: '#73C6E7',
   oxleyColor: '#679C79',
   buffColor: '#F6E186',
@@ -37,6 +38,7 @@ export const BASE_COLORS = {
   gainsboroColor: '#DEDEDE',
   begoniaColor: '#F67280',
   forestGreenColor: '#5EA573',
+  forestGreen2Color: '#58B76C',
   darkGrayColor: '#6D6D6D',
   brightGrayColor: '#E9EDF2',
   gray2Color: '#818282',
@@ -45,6 +47,7 @@ export const BASE_COLORS = {
   jetColor: '#313437',
   starCommandBlueColor: '#0077B5',
   davyGreyColor: '#555555',
+  silverChaliceColor: '#ABABAB',
 };
 
 export const BASE_FONTS = {

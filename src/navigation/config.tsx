@@ -36,7 +36,7 @@ export type RootNavigatorParamsList = {
   [AppRoute.CHAT_CONTEXT_SWITCH]: undefined;
   [AppRoute.CHAT_NOTIFICATION_ASKER]: undefined;
   [AppRoute.VIEW_PARTICIPANT]: undefined;
-  [AppRoute.MAIN_DRAWER]: undefined;
+  [AppRoute.INTRO]: undefined;
 };
 
 // type AIRFeedStackScreenParams = {

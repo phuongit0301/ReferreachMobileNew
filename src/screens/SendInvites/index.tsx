@@ -6,7 +6,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {RootNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {Button, Loading, AuthHeader, Paragraph, Icon, HeaderSmallBlue} from '~Root/components';
+import {Button, Loading, Paragraph, Icon, HeaderSmallBlue} from '~Root/components';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import styles from './styles';
 import {adjust} from '~Root/utils';

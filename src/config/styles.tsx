@@ -170,6 +170,9 @@ export const GlobalStyles = StyleSheet.create({
     marginHorizontal: adjust(15),
     marginVertical: adjust(10),
   },
+  scrollViewWhiteNoMargin: {
+    backgroundColor: BASE_COLORS.whiteColor,
+  },
   scrollViewContentContainer: {
     paddingBottom: adjust(10),
   },
@@ -271,7 +274,7 @@ export const GlobalStyles = StyleSheet.create({
   },
   buttonContainerStyle: {
     paddingHorizontal: adjust(35),
-    paddingVertical: adjust(12),
+    paddingVertical: adjust(8),
   },
   m5: {
     margin: adjust(5),
@@ -402,6 +405,9 @@ export const GlobalStyles = StyleSheet.create({
   p10: {
     padding: adjust(10),
   },
+  p12: {
+    padding: adjust(12),
+  },
   p15: {
     padding: adjust(15),
   },
@@ -475,8 +481,14 @@ export const GlobalStyles = StyleSheet.create({
   pv8: {
     paddingVertical: adjust(8),
   },
+  pv9: {
+    paddingVertical: adjust(9),
+  },
   pv10: {
     paddingVertical: adjust(10),
+  },
+  pv11: {
+    paddingVertical: adjust(11),
   },
   pv12: {
     paddingVertical: adjust(12),
@@ -706,6 +718,9 @@ export const GlobalStyles = StyleSheet.create({
   iconBackWhiteStyle: {
     width: adjust(17),
     height: adjust(17),
+  },
+  bgWhite: {
+    backgroundColor: BASE_COLORS.whiteColor,
   },
 });
 

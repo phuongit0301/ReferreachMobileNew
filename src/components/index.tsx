@@ -2,6 +2,7 @@ import AuthHeader from './AuthHeader';
 import HeaderFormat from './HeaderFormat';
 import HeaderBg from './HeaderBg';
 import HeaderSmallWhite from './HeaderSmallWhite';
+import HeaderSmallTransparent from './HeaderSmallTransparent';
 import HeaderXSSmallBlue from './HeaderXSSmallBlue';
 import HeaderSmallBlue from './HeaderSmallBlue';
 import HeaderNormalBlue from './HeaderNormalBlue';
@@ -52,11 +53,12 @@ import IndividualMessageBlockItem from './IndividualMessageBlockItem';
 import IndividualJointBlockItem from './IndividualJointBlockItem';
 import ProfileBlock from './ProfileBlock';
 import Otp from './Otp';
+import Intro from './Widgets/Slider';
 /** Define Template */
 
 import HomeTemplateScreen from './HomeTemplate';
 import InviteContactTemplateScreen from './InviteContactTemplate';
-import ProfileTemplateSceen from './ProfileTemplate';
+import ProfileTemplateScreen from './ProfileTemplate';
 
 export {
   AuthHeader,
@@ -64,6 +66,7 @@ export {
   HeaderBg,
   HeaderXSSmallBlue,
   HeaderSmallWhite,
+  HeaderSmallTransparent,
   HeaderSmallBlue,
   HeaderNormalBlue,
   HeaderLargeBlue,
@@ -113,7 +116,8 @@ export {
   IndividualJointBlockItem,
   HomeTemplateScreen,
   InviteContactTemplateScreen,
-  ProfileTemplateSceen,
+  ProfileTemplateScreen,
   ProfileBlock,
   Otp,
+  Intro,
 };

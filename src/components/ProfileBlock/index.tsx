@@ -2,14 +2,13 @@ import React from 'react';
 import {View} from 'react-native';
 import {useTranslation} from 'react-i18next';
 
-import {IUserState} from '~Root/services/user/types';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import {Category, Icon, Paragraph, UserCard} from '~Root/components';
 import styles from './styles';
-import {IIndustry} from '~Root/services/industry/types';
-
 interface Props {
-  userInfo: IUserState['userInfo'];
+  industries: any[];
+  clients: any[];
+  partners: any[];
   onDelete: ({index, target}: {index: number; target: string}) => void;
   handleIndustry: ({title, target}: {title: string; target: number}) => void;
   showTooltip?: any;
@@ -19,7 +18,9 @@ interface Props {
 }
 
 const ProfileBlock: React.FC<Props> = ({
-  userInfo,
+  industries = [],
+  clients = [],
+  partners = [],
   onDelete = () => {},
   handleIndustry = () => {},
   showTooltip,
@@ -31,14 +32,14 @@ const ProfileBlock: React.FC<Props> = ({
 
   return (
     <View style={GlobalStyles.flexColumn}>
-      {userInfo?.industries?.myself && userInfo?.industries?.myself.length > 0 ? (
+      {industries.length > 0 ? (
         <View style={styles.tagContainer}>
           <Paragraph h5 title={t('your_industry')} style={styles.titleStyle} />
           <View style={styles.tagSubTitle}>
             <Icon name='globe' size={14} color={BASE_COLORS.gunmetalColor} />
             <Paragraph p title={t('visible_to_public')} style={styles.subTitleStyle} />
           </View>
-          {userInfo?.industries?.myself.map((item: IIndustry | string, index: number) =>
+          {industries.map((item: any, index: number) =>
             typeof item === 'object' ? (
               <Category
                 key={`selected-${index}`}
@@ -78,14 +79,14 @@ const ProfileBlock: React.FC<Props> = ({
           tooltipDescription={t('your_industry_description')}
         />
       )}
-      {userInfo?.industries?.client && userInfo?.industries?.client.length > 0 ? (
+      {clients.length > 0 ? (
         <View style={styles.tagContainer}>
           <Paragraph h5 title={t('you_sell_to')} style={styles.titleStyle} />
           <View style={styles.tagSubTitle}>
             <Icon name='eye-slash' size={14} color={BASE_COLORS.gunmetalColor} />
             <Paragraph p title={t('visible_to_public')} style={styles.subTitleStyle} />
           </View>
-          {userInfo?.industries?.client.map((item: IIndustry | string, index: number) =>
+          {clients.map((item: any, index: number) =>
             typeof item === 'object' ? (
               <Category
                 key={`selected-client-${index}`}
@@ -128,14 +129,14 @@ const ProfileBlock: React.FC<Props> = ({
           onCheckBoxChange={onCheckBoxChange}
         />
       )}
-      {userInfo?.industries?.partner && userInfo?.industries?.partner.length > 0 ? (
+      {partners.length > 0 ? (
         <View style={styles.tagContainer}>
           <Paragraph h5 title={t('your_partners')} style={styles.titleStyle} />
           <View style={styles.tagSubTitle}>
             <Icon name='check-circle' size={14} color={BASE_COLORS.gunmetalColor} />
             <Paragraph p title={t('visible_to_public')} style={styles.subTitleStyle} />
           </View>
-          {userInfo?.industries?.partner.map((item: IIndustry | string, index: number) =>
+          {partners.map((item: any, index: number) =>
             typeof item === 'object' ? (
               <Category
                 key={`selected-partner-${index}`}

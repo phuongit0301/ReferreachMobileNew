@@ -14,6 +14,7 @@ export default StyleSheet.create({
     height: adjust(97),
   },
   iconBackContainer: {
+    left: adjust(15),
     position: 'absolute',
     zIndex: 10,
   },

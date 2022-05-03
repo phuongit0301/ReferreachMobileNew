@@ -26,8 +26,8 @@ export default StyleSheet.create({
   buttonContainerStyle: {
     alignSelf: 'flex-end',
     position: 'absolute',
-    right: adjust(15),
-    bottom: adjust(15),
+    right: adjust(20),
+    bottom: adjust(30),
     zIndex: 10,
   },
   buttonStyle: {

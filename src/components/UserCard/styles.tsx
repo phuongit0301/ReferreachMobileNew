@@ -4,9 +4,8 @@ import {adjust} from '~Root/utils';
 
 export default StyleSheet.create({
   listContainer: {
-    paddingVertical: adjust(30),
-    paddingHorizontal: adjust(10),
-    backgroundColor: 'rgba(196, 196, 196, 0.1)',
+    ...GlobalStyles.p10,
+    backgroundColor: BASE_COLORS.brightGrayColor,
     borderRadius: adjust(10),
   },
   buttonContainerStyle: {
@@ -42,11 +41,11 @@ export default StyleSheet.create({
   },
   subTitleContainer: {
     ...GlobalStyles.flexRow,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   title: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   tooltipStyle: {
     height: '25%',

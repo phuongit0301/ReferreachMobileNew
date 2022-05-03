@@ -21,10 +21,12 @@ interface Props {
   textOxleyColor?: boolean;
   textIndianRedColor?: boolean;
   textSteelBlueColor?: boolean;
+  textSteelBlue2Color?: boolean;
   textEerieBlackColor?: boolean;
   textSpanishGrayColor?: boolean;
   textTimberWolfColor?: boolean;
   textForestGreenColor?: boolean;
+  textForestGreen2Color?: boolean;
   textDarkGrayColor?: boolean;
   textGray2Color?: boolean;
   textDavysGreyColor?: boolean;
@@ -53,10 +55,12 @@ const Paragraph: React.FC<Props> = ({
   textOxleyColor,
   textIndianRedColor,
   textSteelBlueColor,
+  textSteelBlue2Color,
   textEerieBlackColor,
   textSpanishGrayColor,
   textTimberWolfColor,
   textForestGreenColor,
+  textForestGreen2Color,
   textDarkGrayColor,
   textGray2Color,
   textDavysGreyColor,
@@ -90,10 +94,12 @@ const Paragraph: React.FC<Props> = ({
         textOxleyColor && styles.textOxleyColor,
         textIndianRedColor && styles.textIndianRedColor,
         textSteelBlueColor && styles.textSteelBlueColor,
+        textSteelBlue2Color && styles.textSteelBlue2Color,
         textEerieBlackColor && styles.textEerieBlackColor,
         textSpanishGrayColor && styles.textSpanishGrayColor,
         textTimberWolfColor && styles.textTimberWolfColor,
         textForestGreenColor && styles.textForestGreenColor,
+        textForestGreen2Color && styles.textForestGreen2Color,
         textDarkGrayColor && styles.textDarkGrayColor,
         textGray2Color && styles.textGray2Color,
         textDavysGreyColor && styles.textDavysGreyColor,
