@@ -4,6 +4,7 @@
     "remember_me": "Remember password",
     "forgot_password": "Forgot password",
     "login": "Log In",
+    "logout": "Logout",
     "login_successful": "Login Successful",
     "login_error": "Email or password incorrect",
     "register": "Register",

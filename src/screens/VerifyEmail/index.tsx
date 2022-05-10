@@ -27,8 +27,8 @@ const VerifyEmailScreen = ({navigation}: Props) => {
   }, []);
 
   const resendEmail = () => {
-    dispatch(onClearProgress({progress: 0}));
-    navigation.navigate(AppRoute.VERIFIED_EMAIL);
+    // dispatch(onClearProgress({progress: 0}));
+    navigation.navigate(AppRoute.INVITE_CONTACT);
   };
 
   const convertTime = (millisec: number) => {
@@ -84,7 +84,7 @@ const VerifyEmailScreen = ({navigation}: Props) => {
                 textCenter
                 onPress={resendEmail}
                 containerStyle={styles.buttonContainerStyle}
-                disabled={authState.progress > 0}
+                // disabled={authState.progress > 0}
                 textStyle={styles.txtButton}
               />
               <View style={styles.countDownContainer}>

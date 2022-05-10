@@ -6,7 +6,6 @@ export default StyleSheet.create({
   tag: {
     ...GlobalStyles.pv5,
     ...GlobalStyles.ph10,
-    ...GlobalStyles.mt5,
     ...GlobalStyles.mb5,
     borderColor: BASE_COLORS.oxleyColor,
     borderWidth: 1,

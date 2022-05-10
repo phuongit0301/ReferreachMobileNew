@@ -7,8 +7,8 @@ export default StyleSheet.create({
     height: adjust(14),
   },
   iconRight: {
-    width: adjust(19),
-    height: adjust(23),
+    width: adjust(35),
+    height: adjust(30),
   },
   center: {
     width: '70%',

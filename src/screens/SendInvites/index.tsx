@@ -17,7 +17,7 @@ const SendInvitesScreen = ({navigation}: Props) => {
   const {t} = useTranslation();
 
   const onAccept = () => {
-    navigation.navigate(AppRoute.REGISTER);
+    navigation.navigate(AppRoute.INTRO);
   };
 
   const onBack = () => {

@@ -66,31 +66,32 @@ const RegisterScreen = ({navigation}: Props) => {
   const onRegister: SubmitHandler<IActionLoginRequested['payload']> = (
     credentials: IActionLoginRequested['payload'],
   ) => {
-    if (credentials.email && credentials.password) {
-      dispatch(showLoading());
-      dispatch(
-        loginRequest(credentials, (response: IActionLoginSuccess['payload'] | IActionLoginFailure['payload']) => {
-          dispatch(hideLoading());
-          if (response.success) {
-            Toast.show({
-              position: 'bottom',
-              type: response.success ? 'success' : 'error',
-              text1: t('login_successful'),
-              visibilityTime: 4000,
-              autoHide: true,
-            });
-          } else {
-            Toast.show({
-              position: 'bottom',
-              type: 'error',
-              text1: response?.message ?? t('login_error'),
-              visibilityTime: 2000,
-              autoHide: true,
-            });
-          }
-        }),
-      );
-    }
+    // if (credentials.email && credentials.password) {
+    //   dispatch(showLoading());
+    //   dispatch(
+    //     loginRequest(credentials, (response: IActionLoginSuccess['payload'] | IActionLoginFailure['payload']) => {
+    //       dispatch(hideLoading());
+    //       if (response.success) {
+    //         Toast.show({
+    //           position: 'bottom',
+    //           type: response.success ? 'success' : 'error',
+    //           text1: t('login_successful'),
+    //           visibilityTime: 4000,
+    //           autoHide: true,
+    //         });
+    //       } else {
+    //         Toast.show({
+    //           position: 'bottom',
+    //           type: 'error',
+    //           text1: response?.message ?? t('login_error'),
+    //           visibilityTime: 2000,
+    //           autoHide: true,
+    //         });
+    //       }
+    //     }),
+    //   );
+    // }
+    navigation.navigate(AppRoute.VERIFY_EMAIL);
   };
 
   const onSubmitEditing = (key: any) => {

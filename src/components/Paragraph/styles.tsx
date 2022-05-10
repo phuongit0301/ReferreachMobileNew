@@ -86,6 +86,9 @@ export default StyleSheet.create({
   textGray2Color: {
     color: BASE_COLORS.gray2Color,
   },
+  textSilverChaliceColor: {
+    color: BASE_COLORS.silverChaliceColor,
+  },
   textCenter: {
     textAlign: 'center',
   },

@@ -4,10 +4,11 @@ import Tooltip from 'react-native-walkthrough-tooltip';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import {Paragraph, Icon, Button, CheckBox} from '~Root/components';
+import {Paragraph, Icon, Button, CheckBox, Category} from '~Root/components';
 import {adjust} from '~Root/utils';
 import styles from './styles';
 interface Props {
+  data: string[];
   showIcon?: boolean;
   styleContainer?: ViewStyle;
   showTitle?: boolean;
@@ -40,9 +41,13 @@ interface Props {
   tooltipDescription?: string;
   required?: boolean;
   showCheckbox?: boolean;
+  onDelete?: ({index, target}: {index: number; target: string}) => void;
+  dataTarget?: string;
+  styleTag?: ViewStyle;
 }
 
 const UserCard: React.FC<Props> = ({
+  data = [],
   showIcon = true,
   styleContainer = {},
   showTitle = true,
@@ -75,6 +80,9 @@ const UserCard: React.FC<Props> = ({
   tooltipDescription = '',
   showCheckbox = false,
   required = true,
+  onDelete = () => {},
+  dataTarget = '',
+  styleTag = {},
   children,
 }) => {
   return (
@@ -117,16 +125,29 @@ const UserCard: React.FC<Props> = ({
           <Paragraph p title={subTitle} style={subTitleStyle} />
         </View>
       )}
-      {showButton && (
-        <Button
-          title={buttonTitle}
-          isIconRight={true}
-          onPress={onPress}
-          containerStyle={containerStyle}
-          textStyle={textStyle}>
-          {showIcon && <Icon name={iconName} size={iconSize} color={iconColor} enableRTL={true} />}
-        </Button>
-      )}
+      <View style={[GlobalStyles.mt10, GlobalStyles.flexRow, styles.tagContainer]}>
+        {data.length > 0 &&
+          data.map((item: any, index: number) => (
+            <Category
+              styleTag={styleTag}
+              key={`selected-target-${dataTarget}-${index}`}
+              itemKey={`${index}`}
+              name={item}
+              showButton={true}
+              onPress={() => onDelete({index, target: dataTarget})}
+            />
+          ))}
+        {showButton && (
+          <Button
+            title={buttonTitle}
+            isIconRight={true}
+            onPress={onPress}
+            containerStyle={containerStyle}
+            textStyle={textStyle}>
+            {showIcon && <Icon name={iconName} size={iconSize} color={iconColor} enableRTL={true} />}
+          </Button>
+        )}
+      </View>
       {showCheckbox && (
         <CheckBox
           isChecked={isChecked}

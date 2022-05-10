@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {View, TouchableOpacity, Dimensions, Animated} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import {View, TouchableOpacity, Dimensions, Animated, Image} from 'react-native';
+import {Paragraph} from '~Root/components';
 
-import {BASE_COLORS} from '~Root/config';
+import {GlobalStyles, IMAGES} from '~Root/config';
 import {AppRoute} from './AppRoute';
 
 import styles from './styles';
@@ -28,7 +28,8 @@ const TabBar = ({state, descriptors, navigation}: any) => {
           const {options} = descriptors[route.key];
 
           let label;
-          let iconName: string;
+          let iconName: any;
+          let title;
 
           if (options.tabBarLabel !== undefined) {
             label = options.tabBarLabel;
@@ -37,17 +38,30 @@ const TabBar = ({state, descriptors, navigation}: any) => {
           }
 
           switch (label) {
-            case AppRoute.HOME:
-              iconName = 'user-circle';
-              break;
-            case AppRoute.CHAT:
-              iconName = 'comment-alt';
+            case AppRoute.YOUR_ASK:
+              iconName = <Image source={IMAGES.iconYourAsk} resizeMode='cover' style={styles.iconYourAsk} />;
+              title = 'Your Ask';
               break;
             case AppRoute.AIR_FEED:
-              iconName = 'fire';
+              iconName = <Image source={IMAGES.iconAIRFeed} resizeMode='cover' style={styles.iconAirFeed} />;
+              title = 'Air Feed';
+              break;
+            case AppRoute.ASK:
+            case AppRoute.MAIN_NAVIGATOR:
+              iconName = <Image source={IMAGES.iconAsk} resizeMode='cover' style={styles.iconAsk} />;
+              title = 'Ask';
+              break;
+            case AppRoute.TRUST_NETWORK:
+              iconName = <Image source={IMAGES.iconTrustNetwork} resizeMode='cover' style={styles.iconTrustNetWork} />;
+              title = 'Trust';
+              break;
+            case AppRoute.CHAT:
+              iconName = <Image source={IMAGES.iconChat} resizeMode='cover' style={styles.iconChat} />;
+              title = 'Chat';
               break;
             default:
-              iconName = 'home';
+              iconName = <Image source={IMAGES.iconYourAsk} resizeMode='cover' style={styles.iconYourAsk} />;
+              title = 'Your Ask';
               break;
           }
 
@@ -63,12 +77,12 @@ const TabBar = ({state, descriptors, navigation}: any) => {
             }
           };
 
-          // const onLongPress = () => {
-          //   navigation.emit({
-          //     type: 'tabLongPress',
-          //     target: route.key,
-          //   });
-          // };
+          const onLongPress = () => {
+            navigation.emit({
+              type: 'tabLongPress',
+              target: route.key,
+            });
+          };
 
           return (
             <TouchableOpacity
@@ -76,15 +90,17 @@ const TabBar = ({state, descriptors, navigation}: any) => {
               accessibilityLabel={options.tabBarAccessibilityLabel}
               testID={options.tabBarTestID}
               onPress={onPress}
-              // onLongPress={onLongPress}
+              onLongPress={onLongPress}
               style={styles.tabArea}
               key={index}>
-              <Icon
-                name={iconName}
-                size={20}
-                color={`${isFocused ? BASE_COLORS.primary : BASE_COLORS.greyColor}`}
-                style={styles.mt10}
-              />
+              <View style={styles.iconContainer}>
+                {isFocused ? (
+                  <View style={[GlobalStyles.pv5, GlobalStyles.ph10, styles.iconActive]}>{iconName}</View>
+                ) : (
+                  <View style={[GlobalStyles.pv5, GlobalStyles.ph10, styles.icons]}>{iconName}</View>
+                )}
+              </View>
+              <Paragraph textSilverChaliceColor title={title} style={GlobalStyles.mt3} />
             </TouchableOpacity>
           );
         })}

@@ -48,6 +48,10 @@ export const BASE_COLORS = {
   starCommandBlueColor: '#0077B5',
   davyGreyColor: '#555555',
   silverChaliceColor: '#ABABAB',
+  jetStreamColor: '#B4E1C3',
+  spanishGrayColor2: '#9D9D9D',
+  bdazzledBlueColor: '#275E85',
+  metallicBlueColor: '#204F70',
 };
 
 export const BASE_FONTS = {

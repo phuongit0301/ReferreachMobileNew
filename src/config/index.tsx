@@ -21,7 +21,6 @@ import {
   TABS,
 } from './fields';
 import {GlobalStyles} from './styles';
-// import {linking} from './deep-linking';
 
 export {
   BASE_COLORS,

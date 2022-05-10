@@ -39,15 +39,16 @@ const InviteCodeScreen = ({navigation}: Props) => {
 
   const onInvite: SubmitHandler<IInviteCode> = (credentials: IInviteCode) => {
     if (credentials.invite_code) {
-      dispatch(showLoading());
-      dispatch(
-        invitationRequest(credentials.invite_code, (response: any) => {
-          dispatch(hideLoading());
-          if (response.success) {
-            navigation.navigate(AppRoute.REGISTER);
-          }
-        }),
-      );
+      // dispatch(showLoading());
+      // dispatch(
+      //   invitationRequest(credentials.invite_code, (response: any) => {
+      //     dispatch(hideLoading());
+      //     if (response.success) {
+      //       navigation.navigate(AppRoute.REGISTER);
+      //     }
+      //   }),
+      // );
+      navigation.navigate(AppRoute.REGISTER);
     }
   };
 

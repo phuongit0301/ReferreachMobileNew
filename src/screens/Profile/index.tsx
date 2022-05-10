@@ -32,7 +32,7 @@ const schema = yup.object().shape({
 
 type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.PROFILE>;
 
-const ProfileScreen = ({navigation}: Props) => {
+const ProfileScreen = ({navigation}: any) => {
   const {
     register,
     control,
@@ -62,9 +62,13 @@ const ProfileScreen = ({navigation}: Props) => {
     setFocus(key);
   };
 
+  const onToggleDrawer = () => {
+    navigation.toggleDrawer();
+  };
+
   return (
     <View style={[GlobalStyles.container]}>
-      <ProfileTemplateScreen onBack={onBack}>
+      <ProfileTemplateScreen onBack={onBack} isRightButton={true} onToggleDrawer={onToggleDrawer}>
         <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30, GlobalStyles.p15]}>
           <InputValidateControl
             label={`${t('first_name')}*`}

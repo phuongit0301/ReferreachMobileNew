@@ -31,7 +31,6 @@ export default StyleSheet.create({
     ...GlobalStyles.flexRow,
     ...GlobalStyles.pv5,
     ...GlobalStyles.ph10,
-    ...GlobalStyles.mt10,
     alignSelf: 'center',
     alignItems: 'center',
     borderTopLeftRadius: adjust(16),
@@ -66,5 +65,11 @@ export default StyleSheet.create({
   subTitle: {
     ...GlobalStyles.ml10,
     color: BASE_COLORS.gunmetalColor,
+  },
+  styleTag: {
+    borderTopLeftRadius: adjust(16),
+    borderTopRightRadius: adjust(16),
+    borderBottomLeftRadius: adjust(16),
+    borderBottomRightRadius: adjust(16),
   },
 });

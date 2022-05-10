@@ -348,6 +348,9 @@ export const GlobalStyles = StyleSheet.create({
   mr30: {
     marginRight: adjust(30),
   },
+  mt3: {
+    marginTop: adjust(3),
+  },
   mt5: {
     marginTop: adjust(5),
   },
@@ -709,6 +712,9 @@ export const GlobalStyles = StyleSheet.create({
   justifyCenter: {
     justifyContent: 'center',
   },
+  justifyStart: {
+    justifyContent: 'flex-start',
+  },
   fullWidth: {
     width: '100%',
   },
@@ -721,6 +727,10 @@ export const GlobalStyles = StyleSheet.create({
   },
   bgWhite: {
     backgroundColor: BASE_COLORS.whiteColor,
+  },
+  logoDrawer: {
+    width: adjust(77),
+    height: adjust(57),
   },
 });
 

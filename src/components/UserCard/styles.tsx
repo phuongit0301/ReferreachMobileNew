@@ -5,6 +5,7 @@ import {adjust} from '~Root/utils';
 export default StyleSheet.create({
   listContainer: {
     ...GlobalStyles.p10,
+    minHeight: adjust(250),
     backgroundColor: BASE_COLORS.brightGrayColor,
     borderRadius: adjust(10),
   },
@@ -81,5 +82,8 @@ export default StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  tagContainer: {
+    flexWrap: 'wrap',
   },
 });

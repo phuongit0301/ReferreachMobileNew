@@ -14,6 +14,8 @@ export type RootNavigatorParamsList = {
   [AppRoute.RESET_PASSWORD]: undefined;
   [AppRoute.CREATE_ASK]: undefined;
   [AppRoute.ON_BOARDING_SCREEN]: {item: any};
+  [AppRoute.APP_DRAWER]: undefined;
+  [AppRoute.BOTTOM_TAB]: undefined;
   [AppRoute.HOME_SHARE_SCREEN]: undefined;
   [AppRoute.HOME]: undefined;
   [AppRoute.HOME_DETAIL]: {reference_id?: undefined | string} | undefined;
@@ -37,6 +39,14 @@ export type RootNavigatorParamsList = {
   [AppRoute.CHAT_NOTIFICATION_ASKER]: undefined;
   [AppRoute.VIEW_PARTICIPANT]: undefined;
   [AppRoute.INTRO]: undefined;
+};
+
+export type BottomTabParams = {
+  [AppRoute.YOUR_ASK]: undefined;
+  [AppRoute.AIR_FEED]: undefined;
+  [AppRoute.MAIN_NAVIGATOR]: undefined;
+  [AppRoute.TRUST_NETWORK]: undefined;
+  [AppRoute.CHAT]: undefined;
 };
 
 // type AIRFeedStackScreenParams = {
@@ -82,6 +92,7 @@ export type MainNavigatorParamsList = {
   [AppRoute.INDIVIDUAL_MESSAGE_MODAL]: undefined;
   [AppRoute.JOINT_MESSAGE_MODAL]: undefined;
   [AppRoute.CHAT_INTERNAL]: undefined;
+  [AppRoute.ASK]: undefined;
 };
 
 // interface AuthNavigatorParamsList {

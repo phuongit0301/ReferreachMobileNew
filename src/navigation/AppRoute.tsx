@@ -11,6 +11,9 @@ export enum AppRoute {
   RESET_PASSWORD = 'ResetPassword',
   FORGOT_PASSWORD = 'ForgotPassword',
   PROFILE = 'Profile',
+  APP_DRAWER = 'AppDrawer',
+  BOTTOM_TAB = 'BottomTab',
+  MAIN_NAVIGATOR = 'MainNavigator',
   PROFILE_SECOND = 'ProfileSecond',
   CHAT = 'Chat',
   CHAT_INTERNAL = 'ChatInternal',
@@ -18,6 +21,9 @@ export enum AppRoute {
   CHAT_NOTIFICATION_ASKER = 'ChatNotificationAsker',
   VIEW_PARTICIPANT = 'ViewParticipant',
   AIR_FEED = 'AIRFeed',
+  TRUST_NETWORK = 'TrustNetwork',
+  YOUR_ASK = 'YourAsk',
+  ASK = 'Ask',
   TABS = 'Tabs',
   CREATE_ASK = 'CreateAsk',
   ASK_PREVIEW = 'AskPreview',
@@ -38,6 +44,12 @@ export enum AppRoute {
   INDIVIDUAL_MESSAGE_MODAL = 'IndividualMessageModal',
   JOINT_MESSAGE_MODAL = 'JointMessageModal',
   INTRO = 'Intro',
+  MY_ACCOUNT = 'MyAccount',
+  NOTIFICATION = 'Notification',
+  PRIVACY = 'Privacy',
+  HELP = 'Help',
+  FEED_BACK = 'FeedBack',
+  SETTING = 'Setting',
 }
 
 export const AppRouteNotTabBar = {

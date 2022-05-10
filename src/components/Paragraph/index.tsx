@@ -30,6 +30,7 @@ interface Props {
   textDarkGrayColor?: boolean;
   textGray2Color?: boolean;
   textDavysGreyColor?: boolean;
+  textSilverChaliceColor?: boolean;
   textCenter?: boolean;
   title?: string;
   style?: any;
@@ -64,6 +65,7 @@ const Paragraph: React.FC<Props> = ({
   textDarkGrayColor,
   textGray2Color,
   textDavysGreyColor,
+  textSilverChaliceColor,
   textCenter,
   title,
   style,
@@ -103,6 +105,7 @@ const Paragraph: React.FC<Props> = ({
         textDarkGrayColor && styles.textDarkGrayColor,
         textGray2Color && styles.textGray2Color,
         textDavysGreyColor && styles.textDavysGreyColor,
+        textSilverChaliceColor && styles.textSilverChaliceColor,
         textCenter && styles.textCenter,
         style,
       ]}
