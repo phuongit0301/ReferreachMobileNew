@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, ScrollView, Platform, KeyboardAvoidingView, Image} from 'react-native';
+import {View, ScrollView, KeyboardAvoidingView} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import {useForm, SubmitHandler} from 'react-hook-form';
@@ -11,18 +11,10 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {loginRequest} from '~Root/services/login/actions';
 import {showLoading, hideLoading} from '~Root/services/loading/actions';
-import {IFormData} from '~Root/services/login/types';
+import {IActionLoginFailure, IActionLoginRequested, IActionLoginSuccess} from '~Root/services/login/types';
 import {RootNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {
-  InputValidateControl,
-  Link,
-  Button,
-  Loading,
-  AuthHeader,
-  CheckBox,
-  InputIconValidate,
-} from '~Root/components';
+import {InputValidateControl, Link, Button, Loading, AuthHeader, CheckBox, InputIconValidate} from '~Root/components';
 import {LOGIN_FIELDS, LOGIN_KEYS, GlobalStyles, BASE_COLORS, IMAGES} from '~Root/config';
 import styles from './styles';
 
@@ -40,7 +32,7 @@ const LoginScreen = ({navigation}: Props) => {
     handleSubmit,
     setFocus,
     formState: {errors, isValid},
-  } = useForm<IFormData>({
+  } = useForm<IActionLoginRequested['payload']>({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
@@ -50,15 +42,31 @@ const LoginScreen = ({navigation}: Props) => {
   const [isChecked, setCheckBox] = useState(false);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
 
-  const offsetKeyboard = Platform.select({
-    ios: 0,
-    android: 10,
-  });
-
-  const onLogin: SubmitHandler<IFormData> = (credentials: IFormData) => {
+  const onLogin: SubmitHandler<IActionLoginRequested['payload']> = (credentials: IActionLoginRequested['payload']) => {
     if (credentials.email && credentials.password) {
-      // dispatch(showLoading());
-      console.log(12313123);
+      dispatch(showLoading());
+      dispatch(
+        loginRequest(credentials, (response: IActionLoginSuccess['payload'] | IActionLoginFailure['payload']) => {
+          dispatch(hideLoading());
+          if (response.success) {
+            Toast.show({
+              position: 'bottom',
+              type: response.success ? 'success' : 'error',
+              text1: t('login_successful'),
+              visibilityTime: 4000,
+              autoHide: true,
+            });
+          } else {
+            Toast.show({
+              position: 'bottom',
+              type: 'error',
+              text1: response?.message ?? t('login_error'),
+              visibilityTime: 2000,
+              autoHide: true,
+            });
+          }
+        }),
+      );
     }
   };
 
@@ -75,12 +83,11 @@ const LoginScreen = ({navigation}: Props) => {
   };
 
   const onRegister = () => {
-    // navigation.navigate(AppRoute.INVITE_CODE);
     navigation.navigate(AppRoute.FEED_BACK_MODAL);
   };
 
-  const onForgotPassword = () => {
-    navigation.navigate(AppRoute.FORGOT_PASSWORD);
+  const onInvite = () => {
+    navigation.navigate(AppRoute.APP_DRAWER);
   };
 
   const onCheckboxChange = () => {
@@ -157,7 +164,7 @@ const LoginScreen = ({navigation}: Props) => {
               </View>
               <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter, GlobalStyles.justifyCenter]}>
                 <Link
-                  onPress={onForgotPassword}
+                  onPress={onInvite}
                   h4
                   textForestGreenColor
                   textDecoration

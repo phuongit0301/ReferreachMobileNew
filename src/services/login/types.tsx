@@ -1,12 +1,10 @@
-import {LOGIN_REQUESTED, LOGIN_SUCCESS, LOGIN_FAILURE, SET_DATA_LOGIN} from './constants';
+import {LOGIN_REQUESTED, LOGIN_SUCCESS, LOGIN_FAILURE} from './constants';
 
 export interface ILoginState {
-  errors: any;
+  message: string;
   loading: boolean;
   email: string;
   password: string;
-  access_token: string;
-  active: boolean;
   callback?: any;
 }
 export interface IActionLoginRequested {
@@ -14,46 +12,36 @@ export interface IActionLoginRequested {
   payload: {
     email: string;
     password: string;
-    grant_type?: string;
   };
-  callback?: any;
+  callback?: (response: any) => void;
 }
 export interface IActionLoginSuccess {
   type: typeof LOGIN_SUCCESS;
   payload: {
     data: {
-      access_token: string;
-      token_type: string;
-      expires_in: number;
-      refresh_token: string;
-      active: boolean;
+      id: number;
+      email: string;
+      created_at: Date;
+      updated_at: Date;
+      avatar?: string;
+      title?: string;
+      first_name?: string;
+      last_name?: string;
+      introductions?: string;
     };
     message: string;
     success: boolean;
   };
-  callback?: any;
+  callback?: () => void;
 }
 export interface IActionLoginFailure {
   type: typeof LOGIN_FAILURE;
   payload: {
-    error: string;
+    data: null;
+    message: string;
+    success: boolean;
   };
-  callback?: any;
+  callback?: () => void;
 }
 
-export interface IActionSetDataLogin {
-  type: typeof SET_DATA_LOGIN;
-  payload: {
-    access_token: string;
-    token_type: string;
-    expires_in: number;
-    refresh_token: string;
-    active: boolean;
-  };
-  callback: () => void;
-}
-export interface IFormData {
-  email: string;
-  password: string;
-}
-export type IActionsLogin = IActionLoginRequested | IActionLoginSuccess | IActionLoginFailure | IActionSetDataLogin;
+export type IActionsLogin = IActionLoginRequested | IActionLoginSuccess | IActionLoginFailure;

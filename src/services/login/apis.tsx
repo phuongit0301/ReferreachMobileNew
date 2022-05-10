@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
-import axios from '~Root/services/axios';
+import axios from 'axios';
 
 import * as API from '~Root/private/api';
 import {IActionLoginRequested} from './types';
@@ -10,20 +10,18 @@ export default class LoginAPI {
       const response = await axios({
         method: 'post',
         url: API.LOGIN_URL,
-        data: payload,
+        data: {user: payload},
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
         },
       });
-      if (!response?.data) {
-        throw new Error('Error');
+      if (response?.data?.success) {
+        return {
+          data: response.data?.data,
+          message: '',
+          success: true,
+        };
       }
-      return {
-        data: response.data,
-        message: '',
-        success: true,
-      };
     } catch (error) {
       return {
         data: {
@@ -31,7 +29,7 @@ export default class LoginAPI {
           active: (error as any)?.response?.data?.status !== 'inactive',
         },
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        message: (error as any)?.response?.data?.error,
+        message: (error as any)?.response?.data?.message,
         success: false,
       };
     }

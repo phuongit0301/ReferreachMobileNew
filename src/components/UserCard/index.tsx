@@ -4,10 +4,11 @@ import Tooltip from 'react-native-walkthrough-tooltip';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import {Paragraph, Icon, Button, CheckBox} from '~Root/components';
+import {Paragraph, Icon, Button, CheckBox, Category} from '~Root/components';
 import {adjust} from '~Root/utils';
 import styles from './styles';
 interface Props {
+  data: string[];
   showIcon?: boolean;
   styleContainer?: ViewStyle;
   showTitle?: boolean;
@@ -24,7 +25,6 @@ interface Props {
   iconSubColor?: string;
   buttonTitle?: string;
   iconName?: string;
-  buttonType?: string;
   iconSize?: number;
   iconColor?: string;
   onPress: () => void;
@@ -39,10 +39,15 @@ interface Props {
   checkboxTitle?: string;
   tooltipTitle?: string;
   tooltipDescription?: string;
+  required?: boolean;
   showCheckbox?: boolean;
+  onDelete?: ({index, target}: {index: number; target: string}) => void;
+  dataTarget?: string;
+  styleTag?: ViewStyle;
 }
 
 const UserCard: React.FC<Props> = ({
+  data = [],
   showIcon = true,
   styleContainer = {},
   showTitle = true,
@@ -59,9 +64,8 @@ const UserCard: React.FC<Props> = ({
   iconSubColor = BASE_COLORS.gunmetalColor,
   buttonTitle = 'Add',
   iconName = 'plus',
-  buttonType = 'outlined',
-  iconSize = 14,
-  iconColor = BASE_COLORS.gunmetalColor,
+  iconSize = 12,
+  iconColor = BASE_COLORS.darkGrayColor,
   onPress = () => {},
   showRequired = false,
   containerStyle = {},
@@ -75,13 +79,23 @@ const UserCard: React.FC<Props> = ({
   tooltipTitle = '',
   tooltipDescription = '',
   showCheckbox = false,
+  required = true,
+  onDelete = () => {},
+  dataTarget = '',
+  styleTag = {},
   children,
 }) => {
   return (
     <View style={[GlobalStyles.flexColumn, styles.listContainer, styleContainer]}>
       {showTitle && (
         <View style={GlobalStyles.flexRow}>
-          <Paragraph h5 bold title={title} style={[titleStyle, styles.title]} />
+          <Paragraph
+            p
+            bold600
+            textSteelBlue2Color
+            title={`${title}${required ? '*' : ''}`}
+            style={[styles.title, titleStyle]}
+          />
           <Tooltip
             isVisible={showTooltip}
             backgroundColor='transparent'
@@ -100,7 +114,7 @@ const UserCard: React.FC<Props> = ({
             }
             placement='bottom'>
             <TouchableOpacity onPress={onTooltipPress}>
-              <Ionicons name='help-circle' color={BASE_COLORS.davysGreyColor} size={adjust(22)} />
+              <Ionicons name='help-circle' color={BASE_COLORS.silverChaliceColor} size={adjust(22)} />
             </TouchableOpacity>
           </Tooltip>
         </View>
@@ -111,17 +125,29 @@ const UserCard: React.FC<Props> = ({
           <Paragraph p title={subTitle} style={subTitleStyle} />
         </View>
       )}
-      {showButton && (
-        <Button
-          title={buttonTitle}
-          isIconRight={true}
-          onPress={onPress}
-          type={buttonType}
-          containerStyle={containerStyle}
-          textStyle={textStyle}>
-          {showIcon && <Icon name={iconName} size={iconSize} color={iconColor} enableRTL={true} />}
-        </Button>
-      )}
+      <View style={[GlobalStyles.mt10, GlobalStyles.flexRow, styles.tagContainer]}>
+        {data.length > 0 &&
+          data.map((item: any, index: number) => (
+            <Category
+              styleTag={styleTag}
+              key={`selected-target-${dataTarget}-${index}`}
+              itemKey={`${index}`}
+              name={item}
+              showButton={true}
+              onPress={() => onDelete({index, target: dataTarget})}
+            />
+          ))}
+        {showButton && (
+          <Button
+            title={buttonTitle}
+            isIconRight={true}
+            onPress={onPress}
+            containerStyle={containerStyle}
+            textStyle={textStyle}>
+            {showIcon && <Icon name={iconName} size={iconSize} color={iconColor} enableRTL={true} />}
+          </Button>
+        )}
+      </View>
       {showCheckbox && (
         <CheckBox
           isChecked={isChecked}

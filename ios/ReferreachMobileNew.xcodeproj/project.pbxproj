@@ -13,6 +13,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2069442DD39943A5B05E1FFF /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E433C194004D40A388838911 /* Montserrat-Regular.ttf */; };
 		231C4B8774604904B374361B /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4B18141EE08499CAE895A9C /* Montserrat-SemiBold.ttf */; };
+		3F59F4FCE24DEC41A2186EED /* libPods-ReferreachMobileNew.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-ReferreachMobileNew.a */; };
 		7699B88040F8A987B510C191 /* libPods-ReferreachMobileNew-ReferreachMobileNewTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-ReferreachMobileNew-ReferreachMobileNewTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		C4DE338BB93C440CA60A9DAA /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9C7ACC2F6B4549C19900346C /* Montserrat-Bold.ttf */; };
@@ -47,6 +48,7 @@
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-ReferreachMobileNew-ReferreachMobileNewTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReferreachMobileNew-ReferreachMobileNewTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BF8676ECABD413F9FCB28E9 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-ReferreachMobileNew.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReferreachMobileNew.debug.xcconfig"; path = "Target Support Files/Pods-ReferreachMobileNew/Pods-ReferreachMobileNew.debug.xcconfig"; sourceTree = "<group>"; };
+		3E17283B281C322400D9ABE9 /* ReferreachMobileNew.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ReferreachMobileNew.entitlements; path = ReferreachMobileNew/ReferreachMobileNew.entitlements; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-ReferreachMobileNew.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReferreachMobileNew.release.xcconfig"; path = "Target Support Files/Pods-ReferreachMobileNew/Pods-ReferreachMobileNew.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-ReferreachMobileNew-ReferreachMobileNewTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReferreachMobileNew-ReferreachMobileNewTests.debug.xcconfig"; path = "Target Support Files/Pods-ReferreachMobileNew-ReferreachMobileNewTests/Pods-ReferreachMobileNew-ReferreachMobileNewTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-ReferreachMobileNew.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReferreachMobileNew.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -80,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F59F4FCE24DEC41A2186EED /* libPods-ReferreachMobileNew.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +109,7 @@
 		13B07FAE1A68108700A75B9A /* ReferreachMobileNew */ = {
 			isa = PBXGroup;
 			children = (
+				3E17283B281C322400D9ABE9 /* ReferreachMobileNew.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -533,6 +537,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ReferreachMobileNew/ReferreachMobileNew.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
@@ -562,6 +567,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ReferreachMobileNew/ReferreachMobileNew.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";

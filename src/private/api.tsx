@@ -6,7 +6,7 @@ export const MOCK_CREATE_ASK_URL = `${ROOT_MOCK_URL}/asks/currentuser`;
 // export const ROOT_URL = 'https://investor-api.referreach.com/api';
 export const ROOT_URL = 'http://13.212.2.223';
 export const ROOT_API_URL = 'http://13.212.2.223/api';
-export const LOGIN_URL = `${ROOT_URL}/auth/login`;
+export const LOGIN_URL = `${ROOT_URL}/auth/sign_in`;
 export const INVITATION_URL = (invitationId: string) => `${ROOT_API_URL}/invitations/${invitationId}`;
 export const GET_INVITATION_URL = `${ROOT_API_URL}/invitations`;
 export const REGISTER_URL = `${ROOT_URL}/auth/register`;

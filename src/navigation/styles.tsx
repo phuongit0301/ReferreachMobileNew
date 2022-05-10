@@ -1,9 +1,11 @@
 import {StyleSheet} from 'react-native';
+
 import {BASE_COLORS} from '~Root/config';
+import {adjust} from '~Root/utils';
 
 const styles = StyleSheet.create({
   tabContainer: {
-    height: 60,
+    height: adjust(84),
     shadowOffset: {
       width: 0,
       height: -1,
@@ -11,20 +13,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4.0,
     backgroundColor: 'white',
-    // borderTopRightRadius: 20,
-    // borderTopLeftRadius: 20,
     elevation: 10,
-    position: 'absolute',
-    bottom: 0,
     display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: adjust(10),
+    borderTopWidth: 1,
+    borderTopColor: BASE_COLORS.spanishGrayColor2,
   },
   slider: {
-    height: 2,
     position: 'absolute',
     top: 0,
     left: 10,
-    backgroundColor: BASE_COLORS.primary,
-    borderRadius: 10,
     width: 50,
   },
   tabArea: {
@@ -42,6 +42,65 @@ const styles = StyleSheet.create({
   },
   tabBarRow: {
     flexDirection: 'row',
+  },
+  iconYourAsk: {
+    width: adjust(29),
+    height: adjust(28),
+  },
+  iconAirFeed: {
+    width: adjust(40),
+    height: adjust(33),
+  },
+  iconAsk: {
+    width: adjust(37),
+    height: adjust(28),
+  },
+  iconTrustNetWork: {
+    width: adjust(28),
+    height: adjust(32),
+  },
+  iconChat: {
+    width: adjust(27),
+    height: adjust(28),
+  },
+  iconActive: {
+    borderWidth: 1,
+    borderColor: BASE_COLORS.jetStreamColor,
+    borderRadius: adjust(15),
+    borderBottomRightRadius: adjust(20),
+  },
+  icons: {
+    borderWidth: 1,
+    borderColor: 'transparent',
+    borderRadius: adjust(15),
+    borderBottomRightRadius: adjust(20),
+  },
+  iconContainer: {
+    height: adjust(42),
+    alignItems: 'center',
+  },
+  // drawer
+
+  content: {
+    flex: 1,
+  },
+  footer: {
+    flex: 0.2,
+  },
+  iconClose: {
+    width: adjust(19),
+    height: adjust(18),
+  },
+  avatarBorder: {
+    borderWidth: 1,
+    borderColor: BASE_COLORS.whiteColor,
+  },
+  iconListContainer: {
+    width: adjust(24),
+  },
+  iconLogout: {
+    width: adjust(20),
+    height: adjust(24),
   },
 });
 

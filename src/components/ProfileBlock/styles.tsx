@@ -29,23 +29,28 @@ export default StyleSheet.create({
   },
   buttonContainer: {
     ...GlobalStyles.flexRow,
-    ...GlobalStyles.mt30,
-    ...GlobalStyles.ph20,
+    ...GlobalStyles.pv5,
+    ...GlobalStyles.ph10,
     alignSelf: 'center',
     alignItems: 'center',
-    borderRadius: adjust(20),
+    borderTopLeftRadius: adjust(16),
+    borderTopRightRadius: adjust(16),
+    borderBottomLeftRadius: adjust(16),
+    borderBottomRightRadius: adjust(16),
+    borderWidth: 1,
+    borderColor: BASE_COLORS.darkGrayColor,
   },
   buttonTextStyle: {
     ...GlobalStyles.mr10,
-    color: BASE_COLORS.blackColor,
+    color: BASE_COLORS.darkGrayColor,
   },
   cardItemContainer: {
     ...GlobalStyles.mt20,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flex: 1,
   },
   cardSubTitleContainerStyle: {
-    ...GlobalStyles.mt15,
+    ...GlobalStyles.mt5,
   },
   cardTextRequiredStyle: {
     ...GlobalStyles.mt30,
@@ -60,5 +65,11 @@ export default StyleSheet.create({
   subTitle: {
     ...GlobalStyles.ml10,
     color: BASE_COLORS.gunmetalColor,
+  },
+  styleTag: {
+    borderTopLeftRadius: adjust(16),
+    borderTopRightRadius: adjust(16),
+    borderBottomLeftRadius: adjust(16),
+    borderBottomRightRadius: adjust(16),
   },
 });

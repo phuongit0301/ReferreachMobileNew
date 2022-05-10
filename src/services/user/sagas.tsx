@@ -1,29 +1,10 @@
-import {all, put, takeEvery, call, select} from 'redux-saga/effects';
+import {all, put, takeEvery, call} from 'redux-saga/effects';
 
 import {clearToken} from '~Root/services/storage';
 import UserAPI from './apis';
-import {
-  GET_ASK_INTRODUCER_SUCCESS,
-  GET_ASK_RESPONDER_SUCCESS,
-  GET_TAG_REQUESTED,
-  GET_TAG_SUCCESS,
-  UPDATE_USER_PROFILE_FAILURE,
-  UPDATE_USER_PROFILE_REQUESTED,
-  UPDATE_USER_PROFILE_SUCCESS,
-  USER_INFO_FAILURE,
-  USER_INFO_REQUESTED,
-  USER_INFO_SUCCESS,
-} from './constants';
-import {
-  IActionGetTagRequested,
-  IActionUpdateUserProfileSuccess,
-  IActionUserInfoRequested,
-  IActionUserInfoSuccess,
-} from './types';
+import {USER_INFO_FAILURE, USER_INFO_REQUESTED, USER_INFO_SUCCESS} from './constants';
+import {IActionUserInfoRequested, IActionUserInfoSuccess} from './types';
 import {initAuthFailure} from '~Root/services/auth/actions';
-import {IGlobalState} from '~Root/types';
-
-const getItems = (state: IGlobalState) => state.askState;
 
 function* getUserInfo(payload: IActionUserInfoRequested) {
   try {
@@ -59,44 +40,10 @@ function* getUserInfo(payload: IActionUserInfoRequested) {
   }
 }
 
-function* updateUserProfile(payload: any) {
-  try {
-    let dataPayload: IActionUpdateUserProfileSuccess['payload'] = {
-      data: undefined,
-      success: false,
-      message: '',
-    };
-    if (payload?.payload?.avatar) {
-      dataPayload = yield call(UserAPI.updateUserAvatar, payload?.payload?.avatar);
-    }
-
-    if (payload?.payload?.data) {
-      dataPayload = yield call(UserAPI.updateUserProfile, payload?.payload?.data);
-    }
-
-    // const response: IActionUpdateUserProfileSuccess['payload'] = yield call(
-    //   UserAPI.updateUserProfile,
-    //   payload?.payload,
-    // );
-    yield put({type: UPDATE_USER_PROFILE_SUCCESS, payload: dataPayload?.data});
-    payload?.callback();
-  } catch (error) {
-    yield put({type: UPDATE_USER_PROFILE_FAILURE, payload: {error: error}});
-    payload?.callback && payload?.callback();
-  }
-
-  return payload;
-}
-
-
 function* watchGetUser() {
   yield takeEvery(USER_INFO_REQUESTED, getUserInfo);
 }
 
-function* watchUpdateUserProfile() {
-  yield takeEvery(UPDATE_USER_PROFILE_REQUESTED, updateUserProfile);
-}
-
 export default function* userWatchers() {
-  yield all([watchGetUser(), watchUpdateUserProfile()]);
+  yield all([watchGetUser()]);
 }

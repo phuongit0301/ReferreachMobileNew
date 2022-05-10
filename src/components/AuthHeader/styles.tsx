@@ -14,10 +14,12 @@ export default StyleSheet.create({
     height: adjust(97),
   },
   iconBackContainer: {
-    position: 'absolute',
-    width: adjust(23),
-    height: adjust(21),
     left: adjust(15),
-    top: adjust(15),
+    position: 'absolute',
+    zIndex: 10,
+  },
+  logo: {
+    width: adjust(138),
+    height: adjust(18),
   },
 });

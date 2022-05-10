@@ -181,8 +181,8 @@ export const getValidationSchema = (fields: any) => {
 
 export const headerTop = () => {
   if (PixelRatio.get() < 2) {
-    return Platform.OS === 'ios' ? '60%' : '30%';
+    return Platform.OS === 'ios' ? '50%' : '30%';
   } else {
-    return Platform.OS === 'ios' ? adjust(55) : adjust(30);
+    return Platform.OS === 'ios' ? adjust(45) : adjust(30);
   }
 };

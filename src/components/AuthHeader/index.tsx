@@ -22,7 +22,7 @@ const AuthHeader: React.FC<Props> = ({
 }) => {
   return (
     <SafeAreaView style={styles.widthFull} edges={['top', 'left', 'right']}>
-      <View style={[GlobalStyles.flexRow, GlobalStyles.pt15, style]}>
+      <View style={[GlobalStyles.flexRow, style]}>
         {showLeft && (
           <TouchableOpacity style={[styles.iconBackContainer, styleLeft]} onPress={onPressLeft}>
             <Image source={IMAGES.iconBackGreen} resizeMode={'contain'} />
