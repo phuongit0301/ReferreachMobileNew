@@ -31,7 +31,7 @@ function* handleRegister(payload: IActionRegisterRequested) {
   try {
     const response: IActionRegisterSuccess['payload'] = yield call(RegisterAPI.handleRegister, payload?.payload);
     if (response?.success) {
-      yield put({type: REGISTER_SUCCESS, payload: {...response?.data, email: payload?.payload?.email}});
+      yield put({type: REGISTER_SUCCESS, payload: {...response?.data, email: payload?.payload?.user?.email}});
       payload?.callback &&
         payload?.callback({
           success: true,
@@ -79,10 +79,7 @@ function* handleVerifyCode(payload: IActionVerifyAccountRequested) {
 
 function* handleRenewVerificationCode(payload: IActionRenewVerificationCodeRequested) {
   try {
-    const response: IActionRenewVerificationCodeSuccess['payload'] = yield call(
-      RegisterAPI.renewVerificationCode,
-      payload?.payload,
-    );
+    const response: IActionRenewVerificationCodeSuccess['payload'] = yield call(RegisterAPI.renewVerificationCode);
     if (response?.success) {
       yield put({type: RENEW_VERIFICATION_CODE_SUCCESS, payload: response});
       payload?.callback && payload?.callback(response);

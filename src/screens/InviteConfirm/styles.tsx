@@ -28,10 +28,10 @@ export default StyleSheet.create({
     color: BASE_COLORS.steelBlueColor,
   },
   buttonContainerStyle: {
-    backgroundColor: BASE_COLORS.oxleyColor,
+    backgroundColor: BASE_COLORS.forestGreenColor,
   },
   buttonSecondContainerStyle: {
-    borderColor: BASE_COLORS.oxleyColor,
+    borderColor: BASE_COLORS.forestGreenColor,
     borderWidth: 1,
     borderBottomRightRadius: adjust(12),
   },

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
+import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 import {
   USER_INFO_REQUESTED,
   USER_INFO_SUCCESS,
@@ -12,40 +13,19 @@ export const initialState: IUserState = {
   error: '',
   loading: false,
   userInfo: {
+    email: '',
+    title: '',
     first_name: '',
     last_name: '',
-    title: '',
-    introduction: '',
-    industries: {
-      myself: [],
-      client: [],
-      partner: [],
-    },
-    industriesUpdate: {
-      myself: [],
-      client: [],
-      partner: [],
-    },
-    network_reach: 0,
-    trust_network: [],
-    invites_left: 2,
-    invoke_invite: null,
-    responder: [],
-    responder_selected: '',
-    responder_tags: [],
-    introducer: [],
-    introducer_selected: '',
-    introducer_tags: [],
-    my_ask: [],
-    my_ask_selected: null,
-    tags: [],
-    tag_original: [],
-    tag_responder_selected: [],
-    tag_introducer_selected: [],
-    avatar: {
-      url: '',
-    },
-    profile_completed: false,
+    introductions: '',
+    onboard_completed: false,
+    confirmed_at: '',
+    in_app_status: IN_APP_STATUS_ENUM.SIGNIN_COMPLETED,
+    self_industries: [],
+    partner_industries: [],
+    sell_industries: [],
+    created_at: null,
+    updated_at: null,
   },
   callback: () => {},
 };
@@ -68,8 +48,8 @@ const userReducer = (state: IUserState = initialState, action: IActionsUser): IU
       };
     }
     case DELETE_DATA_INDUSTRY: {
-      const dataFilter = filterIndustry(state?.userInfo?.industries, action?.payload);
-      return {...state, userInfo: {...state?.userInfo, industries: dataFilter}};
+      const dataFilter = filterIndustry(state?.userInfo, action?.payload);
+      return {...state, userInfo: {...state?.userInfo}};
     }
     case USER_INFO_FAILURE:
       return {...state, loading: false, error: action.payload.error};

@@ -27,6 +27,7 @@ import AIRFeedScreen from '~Root/screens/AIRFeed';
 import AskScreen from '~Root/screens/Ask';
 import TrustNetworkScreen from '~Root/screens/TrustNetwork';
 import ChatScreen from '~Root/screens/Chat';
+import AppCheckScreen from '~Root/screens/AppCheck';
 
 import {BASE_COLORS, BASE_SETTINGS, GlobalStyles} from '~Root/config';
 import {AppState} from '~Root/reducers';
@@ -102,6 +103,7 @@ const AppNavigator = (props: any) => {
   const authState = useSelector((state: AppState) => state.authState);
 
   useEffect(() => {
+    // AsyncStorage.removeItem('token');
     const initLanguage = async () => {
       await i18n.use(initReactI18next).init({
         compatibilityJSON: 'v3',
@@ -143,24 +145,24 @@ const AppNavigator = (props: any) => {
         <RootStack.Screen name={AppRoute.SPLASH} component={SplashScreen} />
       ) : authState.isLoggedIn ? (
         <>
-          <RootStack.Screen name={AppRoute.HOME} component={YourAskScreen} />
-        </>
-      ) : (
-        <>
-          <RootStack.Screen name={AppRoute.LOGIN} component={LoginScreen} />
-          <RootStack.Screen name={AppRoute.INVITE_CODE} component={InviteCodeScreen} />
-          <RootStack.Screen name={AppRoute.INVITE_CONFIRM} component={InviteConfirmScreen} />
-          <RootStack.Screen name={AppRoute.INVITE_EXPIRE} component={InviteExpireScreen} />
+          <RootStack.Screen name={AppRoute.APP_CHECK} component={AppCheckScreen} />
           <RootStack.Screen name={AppRoute.VERIFY_EMAIL} component={VerifyEmailScreen} />
           <RootStack.Screen name={AppRoute.INVITE_CONTACT} component={InviteContactScreen} />
           <RootStack.Screen name={AppRoute.LIST_CONTACT} component={ListContactScreen} />
           <RootStack.Screen name={AppRoute.SEND_INVITES} component={SendInvitesScreen} />
           <RootStack.Screen name={AppRoute.INTRO} component={IntroScreen} />
           <RootStack.Screen name={AppRoute.APP_DRAWER} component={AppDrawer} />
-          {/* <RootStack.Screen name={AppRoute.PROFILE_SECOND} component={ProfileSecondScreen} /> */}
+          <RootStack.Screen name={AppRoute.HOME} component={YourAskScreen} />
+        </>
+      ) : (
+        <>
+          <RootStack.Screen name={AppRoute.LOGIN} component={LoginScreen} />
           <RootStack.Screen name={AppRoute.REGISTER} component={RegisterScreen} />
         </>
       )}
+      <RootStack.Screen name={AppRoute.INVITE_CODE} component={InviteCodeScreen} />
+      <RootStack.Screen name={AppRoute.INVITE_CONFIRM} component={InviteConfirmScreen} />
+      <RootStack.Screen name={AppRoute.INVITE_EXPIRE} component={InviteExpireScreen} />
     </RootStack.Navigator>
   );
 };

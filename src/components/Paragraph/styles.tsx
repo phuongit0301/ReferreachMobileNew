@@ -83,6 +83,9 @@ export default StyleSheet.create({
   textDavysGreyColor: {
     color: BASE_COLORS.davysGreyColor,
   },
+  textDesireColor: {
+    color: BASE_COLORS.desireColor,
+  },
   textGray2Color: {
     color: BASE_COLORS.gray2Color,
   },

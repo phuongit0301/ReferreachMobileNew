@@ -12,14 +12,21 @@ import {
   RENEW_VERIFICATION_CODE_SUCCESS,
   RENEW_VERIFICATION_CODE_FAILURE,
   SET_DATA_INVITATION,
+  SET_TEMP_TOKEN,
 } from './constants';
 
+export type IInvitationType = 'invitations';
+export type IAttributesStatus = 'utilized' | 'unused';
+export interface IInviter {
+  id: string;
+  type: string;
+}
 export interface IFormData {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
-  rePassword: string;
+  confirm_password: string;
   grant_type?: string;
 }
 export interface IStatus {
@@ -33,16 +40,29 @@ export interface IInviteCode {
 
 export interface IInvitation {
   id?: string;
-  by_user_id?: number;
-  invite_user_id?: string | null;
-  email: string;
-  phone_number?: string;
-  name?: string;
-  description?: string;
-  by_user: any;
-  created_at?: Date | null;
-  updated_at?: Date | null;
-  deleted_at?: Date | null;
+  type?: IInvitationType;
+  attributes?: {
+    status: IAttributesStatus;
+  };
+  relationships?: {
+    inviter: IInviter;
+  };
+}
+
+export interface IIncluded {
+  id: string;
+  type: string;
+  attributes: {
+    title: string;
+    first_name: string;
+    last_name: string;
+    introductions: string;
+    avatar: string;
+  };
+}
+export interface IInvitationCodeDetails {
+  data: IInvitation;
+  included: IIncluded[];
 }
 
 export interface IUser {
@@ -55,26 +75,29 @@ export interface IUser {
 export interface IRegisterState {
   errors: any;
   loading: boolean;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
-  rePassword: string;
+  confirm_password: string;
   renew: boolean;
   verified: boolean;
   invitation_id?: string;
-  dataInvite: IInvitation | null;
+  dataInvite: IInvitationCodeDetails | null;
   userInfo: IUser | null;
+  token?: string | null;
   callback?: (response: any) => void;
 }
 export interface IActionRegisterRequested {
   type: typeof REGISTER_REQUESTED;
   payload: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    rePassword: string;
+    user: {
+      first_name: string;
+      last_name: string;
+      email: string;
+      password: string;
+    };
+    code?: string;
   };
   callback?: (item?: IStatus) => void;
 }
@@ -101,8 +124,7 @@ export interface IActionRegisterFailure {
 export interface IActionVerifyAccountRequested {
   type: typeof VERIFY_ACCOUNT_REQUESTED;
   payload: {
-    email: string;
-    verification_code: string;
+    confirmation_token: string;
   };
   callback: (response: IActionVerifyAccountSuccess['payload']) => void;
 }
@@ -130,7 +152,7 @@ export interface IActionInvitationRequested {
 export interface IActionInvitationSuccess {
   type: typeof INVITATION_SUCCESS;
   payload: {
-    data: IInvitation;
+    data: IInvitationCodeDetails;
     success: boolean;
     message: string;
   };
@@ -143,9 +165,6 @@ export interface IActionInvitationFailure {
 }
 export interface IActionRenewVerificationCodeRequested {
   type: typeof RENEW_VERIFICATION_CODE_REQUESTED;
-  payload: {
-    email: string;
-  };
   callback?: (payload: IActionRenewVerificationCodeSuccess['payload']) => void;
 }
 export interface IActionRenewVerificationCodeSuccess {
@@ -165,9 +184,12 @@ export interface IActionRenewVerificationCodeFailure {
 
 export interface IActionSetDataInvitation {
   type: typeof SET_DATA_INVITATION;
-  payload: {
-    email: string;
-  };
+  payload: IInvitation;
+}
+
+export interface IActionSetTempToken {
+  type: typeof SET_TEMP_TOKEN;
+  payload: string;
 }
 
 export type IActionsRegister =
@@ -183,4 +205,5 @@ export type IActionsRegister =
   | IActionRenewVerificationCodeRequested
   | IActionRenewVerificationCodeSuccess
   | IActionRenewVerificationCodeFailure
-  | IActionSetDataInvitation;
+  | IActionSetDataInvitation
+  | IActionSetTempToken;

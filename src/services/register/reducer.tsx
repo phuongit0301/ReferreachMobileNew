@@ -11,21 +11,24 @@ import {
   INVITATION_SUCCESS,
   INVITATION_FAILURE,
   SET_DATA_INVITATION,
+  SET_DATA,
+  SET_TEMP_TOKEN,
 } from './constants';
 import {IRegisterState, IActionsRegister} from './types';
 
 export const initialState: IRegisterState = {
   errors: [],
   loading: false,
-  firstName: '',
-  lastName: '',
+  first_name: '',
+  last_name: '',
   email: '',
   password: '',
-  rePassword: '',
+  confirm_password: '',
   renew: false,
   verified: false,
   dataInvite: null,
   userInfo: null,
+  token: null,
   callback: (response?: any) => {},
 };
 
@@ -47,6 +50,8 @@ const registerReducer = (state: IRegisterState = initialState, action: IActionsR
       return {...state, loading: false, dataInvite: action.payload?.data};
     case SET_DATA_INVITATION:
       return {...state, loading: false, dataInvite: action.payload};
+    case SET_TEMP_TOKEN:
+      return {...state, token: action?.payload};
     case REGISTER_FAILURE:
     case RENEW_VERIFICATION_CODE_FAILURE:
     case INVITATION_FAILURE:

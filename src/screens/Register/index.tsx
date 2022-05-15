@@ -3,21 +3,23 @@ import {View, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import {useForm, SubmitHandler} from 'react-hook-form';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import Toast from 'react-native-toast-message';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-import {loginRequest} from '~Root/services/login/actions';
+import {IActionRegisterRequested, IActionRegisterSuccess} from '~Root/services/register/types';
+import {registerRequest} from '~Root/services/register/actions';
 import {showLoading, hideLoading} from '~Root/services/loading/actions';
-import {IActionLoginFailure, IActionLoginRequested, IActionLoginSuccess} from '~Root/services/login/types';
 import {RootNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {InputValidateControl, Button, Loading, AuthHeader, InputIconValidate, Paragraph, Link} from '~Root/components';
 import {REGISTER_FIELDS, REGISTER_KEYS, GlobalStyles, BASE_COLORS, IMAGES} from '~Root/config';
 import {adjust} from '~Root/utils';
 import styles from './styles';
+import {IGlobalState} from '~Root/types';
+import { loginRequest } from '~Root/services/login/actions';
 
 const schema = yup.object().shape({
   first_name: yup.string().required('First Name is required'),
@@ -46,10 +48,12 @@ const RegisterScreen = ({navigation}: Props) => {
     handleSubmit,
     setFocus,
     formState: {errors, isValid},
-  } = useForm<IActionLoginRequested['payload']>({
+  } = useForm<IActionRegisterRequested['payload']['user']>({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
+
+  const registerState = useSelector((state: IGlobalState) => state.registerState);
 
   const offsetKeyboard = Platform.select({
     ios: 0,
@@ -63,35 +67,51 @@ const RegisterScreen = ({navigation}: Props) => {
     second: true,
   });
 
-  const onRegister: SubmitHandler<IActionLoginRequested['payload']> = (
-    credentials: IActionLoginRequested['payload'],
+  const onRegister: SubmitHandler<IActionRegisterRequested['payload']['user']> = (
+    credentials: IActionRegisterRequested['payload']['user'],
   ) => {
-    // if (credentials.email && credentials.password) {
-    //   dispatch(showLoading());
-    //   dispatch(
-    //     loginRequest(credentials, (response: IActionLoginSuccess['payload'] | IActionLoginFailure['payload']) => {
-    //       dispatch(hideLoading());
-    //       if (response.success) {
-    //         Toast.show({
-    //           position: 'bottom',
-    //           type: response.success ? 'success' : 'error',
-    //           text1: t('login_successful'),
-    //           visibilityTime: 4000,
-    //           autoHide: true,
-    //         });
-    //       } else {
-    //         Toast.show({
-    //           position: 'bottom',
-    //           type: 'error',
-    //           text1: response?.message ?? t('login_error'),
-    //           visibilityTime: 2000,
-    //           autoHide: true,
-    //         });
-    //       }
-    //     }),
-    //   );
-    // }
-    navigation.navigate(AppRoute.VERIFY_EMAIL);
+    if (credentials.email && credentials.password && credentials.first_name && credentials.last_name) {
+      dispatch(showLoading());
+      dispatch(
+        registerRequest(
+          {
+            user: {
+              email: credentials.email,
+              password: credentials.password,
+              first_name: credentials.first_name,
+              last_name: credentials.last_name,
+            },
+            code: registerState?.invitation_id,
+          },
+          (response: IActionRegisterSuccess['payload']) => {
+            if (response.success) {
+              Toast.show({
+                position: 'bottom',
+                type: response.success ? 'success' : 'error',
+                text1: t('register_successful'),
+                visibilityTime: 4000,
+                autoHide: true,
+              });
+              dispatch(
+                loginRequest({email: credentials.email, password: credentials.password}, () => {
+                  dispatch(hideLoading());
+                  navigation.navigate(AppRoute.VERIFY_EMAIL);
+                }),
+              );
+            } else {
+              dispatch(hideLoading());
+              Toast.show({
+                position: 'bottom',
+                type: 'error',
+                text1: response?.message ?? t('register_error'),
+                visibilityTime: 2000,
+                autoHide: true,
+              });
+            }
+          },
+        ),
+      );
+    }
   };
 
   const onSubmitEditing = (key: any) => {
@@ -215,7 +235,7 @@ const RegisterScreen = ({navigation}: Props) => {
                 imageStyle={styles.iconEye}
                 onIconClick={onIconConfirmClick}
               />
-              <View>
+              <View style={GlobalStyles.mt15}>
                 <Button
                   title={t('signup')}
                   h4
@@ -230,6 +250,7 @@ const RegisterScreen = ({navigation}: Props) => {
                   disabled={!isValid}
                 />
                 <Link
+                  h5
                   onPress={onLogin}
                   textCenter
                   textForestGreenColor

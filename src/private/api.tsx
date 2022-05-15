@@ -4,15 +4,18 @@ export const MOCK_LIST_ASK_URL = `${ROOT_MOCK_URL}/mock/users/current`;
 export const MOCK_CREATE_ASK_URL = `${ROOT_MOCK_URL}/asks/currentuser`;
 
 // export const ROOT_URL = 'https://investor-api.referreach.com/api';
-export const ROOT_URL = 'http://13.212.2.223';
-export const ROOT_API_URL = 'http://13.212.2.223/api';
+export const ROOT_URL = 'http://13.212.2.223/v1';
+export const ROOT_API_URL = 'http://13.212.2.223/api/v1';
 export const LOGIN_URL = `${ROOT_URL}/auth/sign_in`;
-export const INVITATION_URL = (invitationId: string) => `${ROOT_API_URL}/invitations/${invitationId}`;
+export const INVITATION_URL = (invitationId: string) => `${ROOT_API_URL}/invitations/code/${invitationId}/details`;
 export const GET_INVITATION_URL = `${ROOT_API_URL}/invitations`;
-export const REGISTER_URL = `${ROOT_URL}/auth/register`;
-export const VERIFY_ACCOUNT_URL = `${ROOT_URL}/auth/verify`;
-export const RENEW_VERIFICATION_CODE_URL = `${ROOT_URL}/auth/renew_verification_code`;
-export const USER_INFO_URL = `${ROOT_API_URL}/me/`;
+export const REGISTER_URL = `${ROOT_URL}/auth/`;
+export const VERIFY_ACCOUNT_URL = `${ROOT_API_URL}/users/verify_email`;
+export const RENEW_VERIFICATION_CODE_URL = `${ROOT_API_URL}/users/send_confirmation_token`;
+export const USER_INFO_URL = `${ROOT_API_URL}/users/me/`;
+export const INVITE_USER_CONTACT_URL = `${ROOT_API_URL}/invitations/invite_bulk_users/`;
+export const USER_IN_APP_STATUS_URL = `${ROOT_API_URL}/users/update_in_app_status`;
+
 export const ASK_TEMPLATE_URL = `${ROOT_API_URL}/ask-template`;
 export const CREATE_ASK_TEMPLATE_URL = (id: string) => `${ROOT_API_URL}/ask-template/${id}/submissions`;
 export const UPDATE_ASK_TEMPLATE_URL = (id: string) => `${ROOT_API_URL}/asks/${id}`;

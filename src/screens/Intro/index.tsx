@@ -4,9 +4,14 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {RootNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {Intro} from '~Root/components';
+import {Intro, Loading} from '~Root/components';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import styles from './styles';
+import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
+import {updateUserInAppStatus} from '~Root/services/user/actions';
+import {useDispatch} from 'react-redux';
+import {hideLoading, showLoading} from '~Root/services/loading/actions';
+import {IActionUpdateUserInAppStatusSuccess} from '~Root/services/user/types';
 
 type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.LOGIN>;
 
@@ -34,11 +39,29 @@ const data = [
 ];
 
 const IntroScreen = ({navigation}: Props) => {
+  const dispatch = useDispatch();
+
+  const onUpdateOnboarding = () => {
+    dispatch(showLoading());
+    dispatch(
+      updateUserInAppStatus(
+        {in_app_status: IN_APP_STATUS_ENUM.ONBOARD_COMPLETED},
+        (response: IActionUpdateUserInAppStatusSuccess['payload']) => {
+          dispatch(hideLoading());
+          if (response.success) {
+            navigation.navigate(AppRoute.APP_DRAWER);
+          }
+        },
+      ),
+    );
+  };
+
   return (
     <View style={[GlobalStyles.container]}>
       <ImageBackground source={IMAGES.introBg} style={[GlobalStyles.container]}>
-        <Intro data={data} onPress={() => navigation.navigate(AppRoute.PROFILE)} />
+        <Intro data={data} onPress={() => onUpdateOnboarding()} />
       </ImageBackground>
+      <Loading />
     </View>
   );
 };

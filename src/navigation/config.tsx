@@ -7,8 +7,8 @@ export type RootNavigatorParamsList = {
   [AppRoute.APP_CHECK]: undefined;
   [AppRoute.TABS]: undefined;
   [AppRoute.LOGIN]: undefined;
-  [AppRoute.INVITE_CODE]: {code: undefined | string};
-  [AppRoute.INVITE_CONFIRM]: undefined;
+  [AppRoute.INVITE_CODE]: {code?: string} | undefined;
+  [AppRoute.INVITE_CONFIRM]: {code?: string} | undefined;
   [AppRoute.INVITE_EXPIRE]: undefined;
   [AppRoute.REGISTER]: undefined;
   [AppRoute.RESET_PASSWORD]: undefined;

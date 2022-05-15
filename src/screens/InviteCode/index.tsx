@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, ScrollView, KeyboardAvoidingView} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
@@ -13,12 +13,13 @@ import {showLoading, hideLoading} from '~Root/services/loading/actions';
 import {IInviteCode} from '~Root/services/register/types';
 import {RootNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {InputValidateControl, Button, Loading, AuthHeader} from '~Root/components';
-import {INVITE_CODE_FIELDS, GlobalStyles, BASE_COLORS} from '~Root/config';
+import {InputValidateControl, Button, Loading, AuthHeader, Paragraph} from '~Root/components';
+import {INVITE_CODE_FIELDS, GlobalStyles, BASE_COLORS, INVITE_CODE_KEYS, IMAGES} from '~Root/config';
 import styles from './styles';
+import FastImage from 'react-native-fast-image';
 
 const schema = yup.object().shape({
-  invite_code: yup.string().required(),
+  invite_code: yup.string().required('Invite Code is a required'),
 });
 
 type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.LOGIN>;
@@ -36,19 +37,26 @@ const InviteCodeScreen = ({navigation}: Props) => {
 
   const {t} = useTranslation();
   const dispatch = useDispatch();
+  const [error, setError] = useState(false);
 
   const onInvite: SubmitHandler<IInviteCode> = (credentials: IInviteCode) => {
     if (credentials.invite_code) {
-      // dispatch(showLoading());
-      // dispatch(
-      //   invitationRequest(credentials.invite_code, (response: any) => {
-      //     dispatch(hideLoading());
-      //     if (response.success) {
-      //       navigation.navigate(AppRoute.REGISTER);
-      //     }
-      //   }),
-      // );
-      navigation.navigate(AppRoute.REGISTER);
+      dispatch(showLoading());
+      dispatch(
+        invitationRequest(credentials.invite_code, (response: any) => {
+          dispatch(hideLoading());
+          if (response.success) {
+            if (response?.data?.data?.attributes?.status === 'unused') {
+              navigation.navigate(AppRoute.INVITE_CONFIRM, {code: credentials.invite_code});
+            } else {
+              navigation.navigate(AppRoute.INVITE_EXPIRE);
+            }
+          } else {
+            console.log(response);
+            setError(true);
+          }
+        }),
+      );
     }
   };
 
@@ -82,6 +90,16 @@ const InviteCodeScreen = ({navigation}: Props) => {
                 register={register}
                 autoFocus={true}
               />
+              {isValid && error && (
+                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
+                  <FastImage
+                    source={IMAGES.iconError}
+                    resizeMode='cover'
+                    style={[GlobalStyles.mr5, styles.iconError]}
+                  />
+                  <Paragraph textDesireColor title={t('invitiation_code')} />
+                </View>
+              )}
               <View style={GlobalStyles.mt30}>
                 <Button
                   title={t('next')}

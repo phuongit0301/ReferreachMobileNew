@@ -8,11 +8,12 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {RootNavigatorParamsList} from '~Root/navigation/config';
 
+import {IActionInviteUserContactSuccess, IActionSetContact, RowItem} from '~Root/services/contact/types';
+import {inviteUserContact, setContact} from '~Root/services/contact/actions';
+import {hideLoading, showLoading} from '~Root/services/loading/actions';
+import {Paragraph, HeaderSmallBlue, Icon, Button, Loading} from '~Root/components';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {Paragraph, HeaderSmallBlue, Icon, Button} from '~Root/components';
 import {IGlobalState} from '~Root/types';
-import {setContact} from '~Root/services/contact/actions';
-import {IActionSetContact, RowItem} from '~Root/services/contact/types';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import {adjust} from '~Root/utils';
 import styles from './styles';
@@ -99,7 +100,13 @@ const ListContactScreen = ({navigation}: Props) => {
   };
 
   const onSendInvites = () => {
-    navigation.navigate(AppRoute.SEND_INVITES);
+    dispatch(showLoading());
+    dispatch(
+      inviteUserContact(dataContacts.data, (response: IActionInviteUserContactSuccess['payload']) => {
+        dispatch(hideLoading());
+        navigation.navigate(AppRoute.SEND_INVITES);
+      }),
+    );
   };
 
   if (loading) {
@@ -144,6 +151,7 @@ const ListContactScreen = ({navigation}: Props) => {
           />
         </View>
       </SafeAreaView>
+      <Loading />
     </View>
   );
 };

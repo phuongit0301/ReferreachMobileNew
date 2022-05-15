@@ -1,11 +1,11 @@
 import {StyleSheet} from 'react-native';
+import {adjust} from '~Root/utils';
 
 export default StyleSheet.create({
   imageContainer: {
-    width: 76,
-    height: 76,
-    overflow: 'hidden',
-    borderRadius: 38,
+    borderRadius: adjust(160),
+    width: adjust(80),
+    height: adjust(80),
   },
   circleGradient: {
     justifyContent: 'center',

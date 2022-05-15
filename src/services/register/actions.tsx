@@ -4,14 +4,15 @@ import {
   RENEW_VERIFICATION_CODE_REQUESTED,
   INVITATION_REQUESTED,
   SET_DATA_INVITATION,
+  SET_TEMP_TOKEN,
 } from './constants';
 import {
   IActionInvitationRequested,
   IActionInvitationSuccess,
   IActionRegisterRequested,
-  IActionRenewVerificationCodeRequested,
   IActionRenewVerificationCodeSuccess,
   IActionVerifyAccountRequested,
+  IInvitation,
 } from './types';
 
 export const registerRequest = (payload: IActionRegisterRequested['payload'], callback: (response: any) => void) => {
@@ -35,7 +36,7 @@ export const verifyAccountRequest = (
 
 export const invitationRequest = (
   payload: IActionInvitationRequested['payload'],
-  callback: (response: IActionInvitationSuccess['payload']) => void,
+  callback: (response: IActionInvitationSuccess['payload']['data']) => void,
 ) => {
   return {
     type: INVITATION_REQUESTED,
@@ -45,17 +46,22 @@ export const invitationRequest = (
 };
 
 export const renewVerificationCodeRequest = (
-  payload: IActionRenewVerificationCodeRequested['payload'],
   callback: (response: IActionRenewVerificationCodeSuccess['payload']) => void,
 ) => ({
   type: RENEW_VERIFICATION_CODE_REQUESTED,
-  payload,
   callback,
 });
 
-export const setDataInvitation = (payload: {email: string}) => {
+export const setDataInvitation = (payload: IInvitation) => {
   return {
     type: SET_DATA_INVITATION,
+    payload,
+  };
+};
+
+export const setTempToken = (payload: string) => {
+  return {
+    type: SET_TEMP_TOKEN,
     payload,
   };
 };

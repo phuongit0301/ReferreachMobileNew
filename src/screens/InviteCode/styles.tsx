@@ -65,4 +65,8 @@ export default StyleSheet.create({
     width: adjust(19),
     height: adjust(7),
   },
+  iconError: {
+    width: adjust(14),
+    height: adjust(14),
+  },
 });

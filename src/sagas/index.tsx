@@ -2,12 +2,16 @@ import {all, fork} from 'redux-saga/effects';
 
 import appWatchers from '~Root/services/auth/sagas';
 import loginWatchers from '~Root/services/login/sagas';
+import registerWatchers from '~Root/services/register/sagas';
 import userWatchers from '~Root/services/user/sagas';
 import industryWatchers from '~Root/services/industry/sagas';
+import contactWatchers from '~Root/services/contact/sagas';
 
 export default function* rootSaga() {
   yield all([fork(appWatchers)]);
   yield all([fork(loginWatchers)]);
+  yield all([fork(registerWatchers)]);
   yield all([fork(userWatchers)]);
   yield all([fork(industryWatchers)]);
+  yield all([fork(contactWatchers)]);
 }

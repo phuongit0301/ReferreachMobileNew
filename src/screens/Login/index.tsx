@@ -51,8 +51,8 @@ const LoginScreen = ({navigation}: Props) => {
           if (response.success) {
             Toast.show({
               position: 'bottom',
-              type: response.success ? 'success' : 'error',
-              text1: t('login_successful'),
+              type: response.success ? 'success' : 'warning',
+              text1: response.message,
               visibilityTime: 4000,
               autoHide: true,
             });
@@ -87,7 +87,7 @@ const LoginScreen = ({navigation}: Props) => {
   };
 
   const onInvite = () => {
-    navigation.navigate(AppRoute.APP_DRAWER);
+    navigation.navigate(AppRoute.INVITE_CODE);
   };
 
   const onCheckboxChange = () => {
