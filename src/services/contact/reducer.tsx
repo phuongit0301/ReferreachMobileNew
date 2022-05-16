@@ -6,8 +6,11 @@ import {
   SET_CONTACT_SELECTED,
   SHOW_MODAL_CONTACT,
   HIDE_MODAL_CONTACT,
+  INVITE_USER_CONTACT_FAILURE,
+  INVITE_USER_CONTACT_REQUESTED,
+  INVITE_USER_CONTACT_SUCCESS,
 } from './constants';
-import {IContactState, IActionsContact, IActionSetContact, IContactRequest, RowItem} from './types';
+import {IContactState, IActionsContact, IActionSetContact, IContactRequest} from './types';
 
 export const initialState: IContactState = {
   errors: [],
@@ -32,10 +35,13 @@ const contactReducer = (state: IContactState = initialState, action: IActionsCon
     case HIDE_MODAL_CONTACT:
       return {...state, showModal: false};
     case CONTACT_REQUESTED:
+    case INVITE_USER_CONTACT_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
     case CONTACT_SUCCESS:
+    case INVITE_USER_CONTACT_SUCCESS:
       return {...state, loading: false, ...action.payload};
     case CONTACT_FAILURE:
+    case INVITE_USER_CONTACT_FAILURE:
       return {...state, loading: false, errors: action.payload.error};
     default:
       return state;
@@ -43,34 +49,20 @@ const contactReducer = (state: IContactState = initialState, action: IActionsCon
 };
 
 const sortAndGroupData = (payload: IActionSetContact['payload']) => {
-  return Object.values<RowItem>(
-    payload
-      .sort((a: IContactRequest, b: IContactRequest) =>
-        a.givenName.localeCompare(b.givenName, 'es', {sensitivity: 'base'}),
-      )
-      .reduce((r: any, e: IContactRequest) => {
-        // get first letter of name of current element
-        const alphabet = e.givenName[0];
-        if (e.emailAddresses.length) {
-          if (!r[alphabet]) {
-            r[alphabet] = {
-              id: e.recordID,
-              name: `${e.givenName} ${e.familyName}`,
-              phoneNumber: e.phoneNumbers.length ?? e.phoneNumbers[0]?.number,
-              email: e.emailAddresses.length ?? e.emailAddresses[0].email,
-            };
-          } else {
-            r[alphabet].push({
-              id: e.recordID,
-              name: `${e.givenName} ${e.familyName}`,
-              phoneNumber: e.phoneNumbers.length ?? e.phoneNumbers[0]?.number,
-              email: e.emailAddresses.length ?? e.emailAddresses[0].email,
-            });
-          }
-        }
-        return r;
-      }, {}),
+  const datas = payload.sort((a: IContactRequest, b: IContactRequest) =>
+    a.givenName.localeCompare(b.givenName, 'es', {sensitivity: 'base'}),
   );
+  const contacts: any = [];
+
+  datas.forEach(item => {
+    contacts.push({
+      id: item.recordID,
+      name: `${item.givenName} ${item.familyName}`,
+      phone: item.phoneNumbers.length ?? item.phoneNumbers[0]?.number,
+      email: item.emailAddresses.length ?? item.emailAddresses[0].email,
+    });
+  });
+  return contacts;
 };
 
 export default contactReducer;

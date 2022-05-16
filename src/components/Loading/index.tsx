@@ -16,7 +16,7 @@ const Loading = () => {
     <View style={styles.container}>
       <View style={styles.bgBlur} />
       <View style={styles.waitingContainer}>
-        <ActivityIndicator animating={true} color={`${BASE_COLORS.whiteColor}`} />
+        <ActivityIndicator animating={true} size='large' color={`${BASE_COLORS.whiteColor}`} />
       </View>
     </View>
   );

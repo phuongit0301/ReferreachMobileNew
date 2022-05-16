@@ -31,7 +31,7 @@ export default StyleSheet.create({
     zIndex: 10,
   },
   buttonStyle: {
-    backgroundColor: BASE_COLORS.oxleyColor,
+    backgroundColor: BASE_COLORS.forestGreenColor,
     shadowColor: BASE_COLORS.blackColor,
     shadowOffset: {
       width: 0,

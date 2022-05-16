@@ -1,9 +1,13 @@
+import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 import {
   USER_INFO_REQUESTED,
   USER_INFO_SUCCESS,
   USER_INFO_FAILURE,
   SET_USER_INDUSTRY,
   DELETE_DATA_INDUSTRY,
+  UPDATE_USER_IN_APP_STATUS_REQUESTED,
+  UPDATE_USER_IN_APP_STATUS_SUCCESS,
+  UPDATE_USER_IN_APP_STATUS_FAILURE,
 } from './constants';
 
 export interface IMySelf {
@@ -29,23 +33,26 @@ export interface IProfile {
 
 export interface IUserInfoState {
   id?: number;
-  industries: {
-    myself: string[];
-    client: string[];
-    partner: string[];
-  };
-  industriesUpdate?: {
-    myself: string[];
-    client: string[];
-    partner: string[];
-  };
-  profile_completed: boolean;
+  email: string;
+  title: string | null;
+  first_name: string;
+  last_name: string;
+  introductions: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+  onboard_completed: boolean;
+  confirmed_at: string | null;
+  in_app_status: IN_APP_STATUS_ENUM;
+
+  self_industries: string[];
+  partner_industries: string[];
+  sell_industries: string[];
 }
 
 export interface IUserState {
   error: string;
   loading: boolean;
-  userInfo: any;
+  userInfo: IUserInfoState;
   callback: () => void;
 }
 export interface IActionUserInfoRequested {
@@ -72,9 +79,35 @@ export interface IActionUserInfoFailure {
   callback?: any;
 }
 
+export interface IActionUpdateUserInAppStatusRequested {
+  type: typeof UPDATE_USER_IN_APP_STATUS_REQUESTED;
+  payload: {
+    in_app_status: IN_APP_STATUS_ENUM;
+  };
+  callback?: (response: IActionUpdateUserInAppStatusSuccess['payload']) => void;
+}
+export interface IActionUpdateUserInAppStatusSuccess {
+  type: typeof UPDATE_USER_IN_APP_STATUS_SUCCESS;
+  payload: {
+    data: IUserInfoState | null;
+    success: boolean;
+    message: string;
+  };
+  callback?: (response: IActionUpdateUserInAppStatusSuccess['payload']) => void;
+}
+export interface IActionUpdateUserInAppStatusFailure {
+  type: typeof UPDATE_USER_IN_APP_STATUS_FAILURE;
+  payload: {
+    data: IUserInfoState | null;
+    success: boolean;
+    message: string;
+  };
+  callback?: (response: IActionUpdateUserInAppStatusFailure['payload']) => void;
+}
+
 export interface IActionSetUserIndustry {
   type: typeof SET_USER_INDUSTRY;
-  payload: IUserInfoState['industries'];
+  payload: any;
 }
 
 export interface IActionDeleteUserIndustry {
@@ -90,4 +123,7 @@ export type IActionsUser =
   | IActionUserInfoSuccess
   | IActionUserInfoFailure
   | IActionSetUserIndustry
-  | IActionDeleteUserIndustry;
+  | IActionDeleteUserIndustry
+  | IActionUpdateUserInAppStatusRequested
+  | IActionUpdateUserInAppStatusSuccess
+  | IActionUpdateUserInAppStatusFailure;

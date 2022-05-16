@@ -1,29 +1,29 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import axios from '~Root/services/axios';
-import i18n from 'i18next';
 
 import * as API from '~Root/private/api';
 
-export default class ResetPasswordAPI {
-  static async handleResetPassword(payload: any) {
+export default class ContactAPI {
+  static async inviteUserContact(payload: any) {
     try {
       const response = await axios({
         method: 'post',
-        url: API.LOGIN_URL,
-        data: payload,
+        url: API.INVITE_USER_CONTACT_URL,
+        data: {
+          contacts_list: payload,
+        },
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
       });
-      if (!response?.data) {
-        throw new Error(i18n.t('not_match'));
+      if (response?.status === 200 || response?.status === 201) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
       }
-      return {
-        data: response.data,
-        message: '',
-        success: true,
-      };
     } catch (error) {
       return {
         data: '',

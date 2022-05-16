@@ -1,16 +1,25 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {Platform, View, ViewStyle} from 'react-native';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
-import {useTranslation} from 'react-i18next';
+import {useDispatch} from 'react-redux';
 
-import {InputValidate, Paragraph} from '~Root/components';
+import {verifyAccountRequest} from '~Root/services/register/actions';
+import {hideLoading, showLoading} from '~Root/services/loading/actions';
+import {onClearProgress} from '~Root/services/auth/actions';
+import {InputValidate} from '~Root/components';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import styles from './styles';
+import {IActionVerifyAccountSuccess} from '~Root/services/register/types';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootNavigatorParamsList} from '~Root/navigation/config';
+import {AppRoute} from '~Root/navigation/AppRoute';
+import Toast from 'react-native-toast-message';
 
 interface Props {
   styleContainer?: ViewStyle;
+  navigation: NativeStackScreenProps<RootNavigatorParamsList, AppRoute.VERIFY_EMAIL>['navigation'];
 }
 
 const schema = yup.object().shape({
@@ -22,18 +31,13 @@ const schema = yup.object().shape({
   sixthInput: yup.number().required(),
 });
 
-const Otp: React.FC<Props> = ({styleContainer = {}}) => {
-  const {
-    register,
-    handleSubmit,
-    setFocus,
-    formState: {errors, isValid},
-  } = useForm<any>({
+const Otp: React.FC<Props> = ({styleContainer = {}, navigation}) => {
+  const {register} = useForm<any>({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
-  const {t} = useTranslation();
 
+  const dispatch = useDispatch();
   const [otpArray, setOtpArray] = useState(['', '', '', '', '', '']);
 
   const firstTextInputRef = useRef(null);
@@ -47,13 +51,35 @@ const Otp: React.FC<Props> = ({styleContainer = {}}) => {
     textInputRef.current = node;
   };
 
+  useEffect(() => {
+    if (otpArray.join('').length === 6) {
+      dispatch(showLoading());
+      dispatch(
+        verifyAccountRequest(
+          {confirmation_token: otpArray.join('')},
+          (response: IActionVerifyAccountSuccess['payload']) => {
+            dispatch(hideLoading());
+            if (!response.success) {
+              Toast.show({
+                position: 'bottom',
+                type: 'error',
+                text1: 'Verification Code is invalid',
+                visibilityTime: 4000,
+                autoHide: true,
+              });
+            }
+            if (response.verified) {
+              dispatch(onClearProgress({progress: 0}));
+              navigation.navigate(AppRoute.INVITE_CONTACT);
+            }
+          },
+        ),
+      );
+    }
+  }, [otpArray]);
+
   const onChange = (index: number) => {
     return (value: any) => {
-      if (isNaN(Number(value))) {
-        // do nothing when a non digit is pressed
-        return;
-      }
-
       const otpArrayCopy = otpArray.concat();
       otpArrayCopy[index] = value;
       setOtpArray(otpArrayCopy);
@@ -92,7 +118,7 @@ const Otp: React.FC<Props> = ({styleContainer = {}}) => {
 
         if (Platform.OS === 'android' && index > 0) {
           const otpArrayCopy = otpArray.concat();
-          otpArrayCopy[index - 1] = ''; // clear the previous box which will be in focus
+          otpArrayCopy[index] = ''; // clear the previous box which will be in focus
           setOtpArray(otpArrayCopy);
         }
       }
@@ -144,7 +170,7 @@ const Otp: React.FC<Props> = ({styleContainer = {}}) => {
           />
         ))}
       </View>
-      <Paragraph h5 textIndianRedColor title={t('invalid_code')} />
+      {/* <Paragraph h5 textIndianRedColor title={t('invalid_code')} /> */}
     </View>
   );
 };

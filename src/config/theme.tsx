@@ -52,6 +52,7 @@ export const BASE_COLORS = {
   spanishGrayColor2: '#9D9D9D',
   bdazzledBlueColor: '#275E85',
   metallicBlueColor: '#204F70',
+  desireColor: '#EF4056',
 };
 
 export const BASE_FONTS = {

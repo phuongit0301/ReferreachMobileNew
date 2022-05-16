@@ -34,4 +34,5 @@ export const IMAGES = {
   iconFeedback: require('~Root/assets/images/icon_feedback.png'),
   iconSetting: require('~Root/assets/images/icon_setting.png'),
   iconLogout: require('~Root/assets/images/icon_logout.png'),
+  iconError: require('~Root/assets/images/icon_error.png'),
 };

@@ -1,14 +1,12 @@
-import {IAsyncCall, IModalAsyncCall, ISetAsyncCall} from '~Root/types';
+import {IModalAsyncCall, ISetAsyncCall} from '~Root/types';
 
 export const CONTACT_REQUESTED = 'CONTACT/REQUESTED';
 export const CONTACT_SUCCESS = 'CONTACT/SUCCESS';
 export const CONTACT_FAILURE = 'CONTACT/FAILURE';
 
-export const ASYNC_CONTACT: IAsyncCall = {
-  REQUESTED: CONTACT_REQUESTED,
-  SUCCESS: CONTACT_SUCCESS,
-  FAILURE: CONTACT_FAILURE,
-};
+export const INVITE_USER_CONTACT_REQUESTED = 'INVITE_USER_CONTACT/REQUESTED';
+export const INVITE_USER_CONTACT_SUCCESS = 'INVITE_USER_CONTACT/SUCCESS';
+export const INVITE_USER_CONTACT_FAILURE = 'INVITE_USER_CONTACT/FAILURE';
 
 export const SET_CONTACT = 'SET_CONTACT/SET';
 export const ASYNC_SET_CONTACT: ISetAsyncCall = {

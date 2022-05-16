@@ -28,7 +28,7 @@ export default StyleSheet.create({
     color: BASE_COLORS.steelBlueColor,
   },
   buttonContainerStyle: {
-    backgroundColor: BASE_COLORS.oxleyColor,
+    backgroundColor: BASE_COLORS.forestGreenColor,
     shadowColor: BASE_COLORS.blackColor,
     shadowOffset: {
       width: 0,

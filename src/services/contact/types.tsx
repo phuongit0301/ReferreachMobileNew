@@ -6,12 +6,15 @@ import {
   SET_CONTACT_SELECTED,
   SHOW_MODAL_CONTACT,
   HIDE_MODAL_CONTACT,
+  INVITE_USER_CONTACT_FAILURE,
+  INVITE_USER_CONTACT_REQUESTED,
+  INVITE_USER_CONTACT_SUCCESS,
 } from './constants';
 
 export interface RowItem {
   id: string;
   name: string;
-  phoneNumber?: string;
+  phone?: string;
   email?: string;
 }
 
@@ -94,6 +97,30 @@ export interface IActionContactFailure {
   callback?: any;
 }
 
+export interface IActionInviteUserContactRequested {
+  type: typeof INVITE_USER_CONTACT_REQUESTED;
+  payload: RowItem[];
+  callback?: any;
+}
+
+export interface IActionInviteUserContactSuccess {
+  type: typeof INVITE_USER_CONTACT_SUCCESS;
+  payload: {
+    data: any;
+    message: string;
+    success: boolean;
+  };
+  callback?: any;
+}
+
+export interface IActionInviteUserContactFailure {
+  type: typeof INVITE_USER_CONTACT_FAILURE;
+  payload: {
+    error: string;
+  };
+  callback?: any;
+}
+
 export interface IFormData {
   rePassword: string;
   password: string;
@@ -106,4 +133,7 @@ export type IActionsContact =
   | IActionSetContact
   | IActionSetContactSelected
   | IActionShowModalContact
-  | IActionHideModalContact;
+  | IActionHideModalContact
+  | IActionInviteUserContactRequested
+  | IActionInviteUserContactSuccess
+  | IActionInviteUserContactFailure;

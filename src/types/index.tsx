@@ -7,6 +7,7 @@ import {IAuthState} from '~Root/services/auth/types';
 import {IUserState} from '~Root/services/user/types';
 import {IContactState} from '~Root/services/contact/types';
 import {IIndustryState} from '~Root/services/industry/types';
+import {IRegisterState} from '~Root/services/register/types';
 
 // Global state
 export interface IGlobalState {
@@ -16,6 +17,7 @@ export interface IGlobalState {
   userState: IUserState;
   contactState: IContactState;
   industryState: IIndustryState;
+  registerState: IRegisterState;
 }
 
 // Interface for async call steps

@@ -16,19 +16,15 @@ export default class LoginAPI {
         },
       });
       if (response?.data?.success) {
+        const token = response?.headers?.authorization.split(' ')[1];
         return {
-          data: response.data?.data,
+          data: {...response.data?.data, token: token},
           message: '',
           success: true,
         };
       }
     } catch (error) {
       return {
-        data: {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          active: (error as any)?.response?.data?.status !== 'inactive',
-        },
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         message: (error as any)?.response?.data?.message,
         success: false,
       };

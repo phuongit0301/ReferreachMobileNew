@@ -28,9 +28,12 @@ export interface IActionLoginSuccess {
       first_name?: string;
       last_name?: string;
       introductions?: string;
+      confirmed_at?: string | null;
+      token: string;
     };
     message: string;
     success: boolean;
+    status?: boolean;
   };
   callback?: () => void;
 }
@@ -40,6 +43,7 @@ export interface IActionLoginFailure {
     data: null;
     message: string;
     success: boolean;
+    status?: boolean;
   };
   callback?: () => void;
 }

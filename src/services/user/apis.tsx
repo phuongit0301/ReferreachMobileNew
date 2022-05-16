@@ -3,6 +3,7 @@ import axios from '~Root/services/axios';
 import i18n from 'i18next';
 
 import * as API from '~Root/private/api';
+import {IActionUpdateUserInAppStatusRequested} from './types';
 
 export default class UserAPI {
   static async handleUserInfo() {
@@ -84,69 +85,17 @@ export default class UserAPI {
     }
   }
 
-  static async getTags() {
+  static async updateUserInAppStatus(payload: IActionUpdateUserInAppStatusRequested['payload']) {
     try {
       const response = await axios({
-        method: 'GET',
-        url: API.GET_TAGS_URL,
+        method: 'PUT',
+        url: API.USER_IN_APP_STATUS_URL,
+        data: payload,
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
         },
       });
-      if (response.status === 200) {
-        return {
-          data: response.data,
-          message: '',
-          success: true,
-        };
-      }
-    } catch (error) {
-      return {
-        data: null,
-        message: error,
-        success: false,
-      };
-    }
-  }
-
-  static async getIntroducer(payload: number) {
-    try {
-      const response = await axios({
-        method: 'GET',
-        url: API.GET_ASK_INTRODUCER_URL(payload),
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-      if (response.status === 200) {
-        return {
-          data: response.data,
-          message: '',
-          success: true,
-        };
-      }
-    } catch (error) {
-      return {
-        data: null,
-        message: error,
-        success: false,
-      };
-    }
-  }
-
-  static async getResponder(payload: number) {
-    try {
-      const response = await axios({
-        method: 'GET',
-        url: API.GET_ASK_RESPONDER_URL(payload),
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-      if (response.status === 200) {
+      if (response?.status === 200) {
         return {
           data: response.data,
           message: '',

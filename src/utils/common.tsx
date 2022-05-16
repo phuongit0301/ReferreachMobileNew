@@ -25,6 +25,13 @@ export enum PURPOSE_OF_ASK_TYPE_ENUM {
   INTERGER = 'interger',
 }
 
+export enum IN_APP_STATUS_ENUM {
+  INVITATION_SENT = 'invitation_sent',
+  SIGNIN_COMPLETED = 'signin_completed',
+  ONBOARDING = 'onboarding',
+  ONBOARD_COMPLETED = 'onboard_completed',
+}
+
 export const sideBarRoutes = [
   {
     name: AppRoute.MY_ACCOUNT,
