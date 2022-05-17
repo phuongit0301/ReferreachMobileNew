@@ -20,9 +20,9 @@ export interface IIndustry {
 export interface IIndustryState {
   errors: string[];
   loading: boolean;
-  industryOriginal: string[];
+  industry_original: string[];
   industry: string[];
-  industrySelected: string[];
+  industry_selected: string[];
   callback?: () => void;
   showModal: boolean;
   title?: string;

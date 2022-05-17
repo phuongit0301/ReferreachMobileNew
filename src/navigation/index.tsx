@@ -22,6 +22,7 @@ import SendInvitesScreen from '~Root/screens/SendInvites';
 import IntroScreen from '~Root/screens/Intro';
 import ProfileScreen from '~Root/screens/Profile';
 import ProfileSecondScreen from '~Root/screens/ProfileSecond';
+import ProfileCompleteScreen from '~Root/screens/ProfileComplete';
 import YourAskScreen from '~Root/screens/YourAsk';
 import AIRFeedScreen from '~Root/screens/AIRFeed';
 import AskScreen from '~Root/screens/Ask';
@@ -58,6 +59,7 @@ const MainNavigator = (props: any) => {
       {...props}>
       <MainStack.Screen name={AppRoute.PROFILE} component={ProfileScreen} />
       <MainStack.Screen name={AppRoute.PROFILE_SECOND} component={ProfileSecondScreen} />
+      <MainStack.Screen name={AppRoute.PROFILE_COMPLETE} component={ProfileCompleteScreen} />
       <MainStack.Screen name={AppRoute.ASK} component={AskScreen} />
     </MainStack.Navigator>
   );

@@ -62,7 +62,7 @@ export default class UserAPI {
   static async updateUserProfile(payload: any) {
     try {
       const response = await axios({
-        method: 'POST',
+        method: 'PUT',
         url: API.USER_INFO_URL,
         data: payload,
         headers: {

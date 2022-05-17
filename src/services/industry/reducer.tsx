@@ -11,14 +11,14 @@ import {
   GET_ALL_INDUSTRIES_FAILURE,
   DELETE_DATA_INDUSTRY,
 } from './constants';
-import {IIndustryState, IActionsUser, IIndustry} from './types';
+import {IIndustryState, IActionsUser} from './types';
 
 export const initialState: IIndustryState = {
   errors: [],
   loading: false,
-  industryOriginal: [],
+  industry_original: [],
   industry: [],
-  industrySelected: [],
+  industry_selected: [],
   showModal: false,
   callback: () => {},
   title: '',
@@ -37,14 +37,14 @@ const userReducer = (state: IIndustryState = initialState, action: IActionsUser)
         ...state,
         loading: false,
         industry: action?.payload?.data || [],
-        industryOriginal: action?.payload?.data || [],
+        industry_original: action?.payload?.data || [],
         errors: [action?.payload?.message],
       };
     case GET_INDUSTRY_FAILURE:
     case GET_ALL_INDUSTRIES_FAILURE:
       return {...state, loading: false, errors: [action.payload.error]};
     case SET_DATA_INDUSTRY_SELECTED:
-      return {...state, industrySelected: action?.payload};
+      return {...state, industry_selected: action?.payload};
     case SHOW_MODAL_INDUSTRY:
       return {...state, ...action.payload, showModal: true};
     case HIDE_MODAL_INDUSTRY:
@@ -54,8 +54,8 @@ const userReducer = (state: IIndustryState = initialState, action: IActionsUser)
       return {...state, textSearch: action?.payload, industry: dataIndustry};
     }
     case DELETE_DATA_INDUSTRY: {
-      const dataFilter = deleteIndustry(state?.industrySelected, action?.payload);
-      return {...state, industrySelected: dataFilter};
+      const dataFilter = deleteIndustry(state?.industry_selected, action?.payload);
+      return {...state, industry_selected: dataFilter};
     }
     default:
       return state;
@@ -64,8 +64,8 @@ const userReducer = (state: IIndustryState = initialState, action: IActionsUser)
 
 const filterIndustry = (state: IIndustryState, textSearch: string) => {
   const arr: string[] = [];
-  if (state.industryOriginal.length > 0 && textSearch !== '') {
-    state.industryOriginal.forEach(x => {
+  if (state.industry_original.length > 0 && textSearch !== '') {
+    state.industry_original.forEach(x => {
       if (x?.toLowerCase().includes(textSearch?.toLowerCase())) {
         arr.push(x);
       }

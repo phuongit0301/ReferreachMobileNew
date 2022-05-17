@@ -25,6 +25,7 @@ export type RootNavigatorParamsList = {
   [AppRoute.RECOVER_PASSWORD]: undefined;
   [AppRoute.PROFILE]: undefined;
   [AppRoute.PROFILE_SECOND]: undefined;
+  [AppRoute.PROFILE_COMPLETE]: undefined;
   [AppRoute.PROFILE_PERSONAL]: undefined;
   [AppRoute.PROFILE_INDUSTRY]: undefined;
   [AppRoute.INVITE_CONTACT]: undefined;
@@ -87,6 +88,7 @@ export type MainNavigatorParamsList = {
   [AppRoute.RECOVER_PASSWORD]: undefined;
   [AppRoute.PROFILE]: undefined;
   [AppRoute.PROFILE_SECOND]: undefined;
+  [AppRoute.PROFILE_COMPLETE]: undefined;
   [AppRoute.CREATE_ASK]: undefined;
   [AppRoute.FEED_BACK_MODAL]: undefined;
   [AppRoute.INDIVIDUAL_MESSAGE_MODAL]: undefined;

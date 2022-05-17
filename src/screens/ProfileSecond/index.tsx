@@ -1,11 +1,8 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SubmitHandler} from 'react-hook-form';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {RootNavigatorParamsList} from '~Root/navigation/config';
 import {Button, ModalDialog, ProfileBlock, ProfileTemplateScreen} from '~Root/components';
 import {GlobalStyles} from '~Root/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
@@ -22,11 +19,11 @@ import {
   showModal,
 } from '~Root/services/industry/actions';
 import {IUserState} from '~Root/services/user/types';
-import {deleteUserIndustry, setUserIndustry} from '~Root/services/user/actions';
+import {deleteUserIndustry, setUserIndustry, updateUserProfileRequest} from '~Root/services/user/actions';
 
 // type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.PROFILE>;
 
-const ProfileSecondScreen = ({navigation}: any) => {
+const ProfileSecondScreen = ({navigation, route}: any) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
 
@@ -46,10 +43,25 @@ const ProfileSecondScreen = ({navigation}: any) => {
     }
   }, [textSearch]);
 
-  const onSubmit: SubmitHandler<any> = (credentials: any) => {
-    if (credentials.first_name && credentials.last_name) {
-      console.log(1312323);
-    }
+  const onSubmit = () => {
+    navigation.navigate(AppRoute.PROFILE_COMPLETE);
+    // dispatch(showLoading());
+    // dispatch(
+    //   updateUserProfileRequest(
+    //     {
+    //       self_industry_list: userState?.userInfo?.self_industries,
+    //       partner_industry_list: userState?.userInfo?.partner_industries,
+    //       sell_industry_list: userState?.userInfo?.sell_industries,
+    //       ...route?.params,
+    //     },
+    //     response => {
+    //       dispatch(hideLoading());
+    //       if (response.success) {
+    //         navigation.navigate(AppRoute.INVITE_CONTACT);
+    //       }
+    //     },
+    //   ),
+    // );
   };
 
   const onInputChange = useCallback((text: string) => {
@@ -58,8 +70,8 @@ const ProfileSecondScreen = ({navigation}: any) => {
 
   const onSelect = (item: any) => {
     let data: any = [item];
-    if (industryState?.industrySelected?.length > 0) {
-      data = [...data, ...industryState?.industrySelected];
+    if (industryState?.industry_selected?.length > 0) {
+      data = [...data, ...industryState?.industry_selected];
     }
     dispatch(setIndustrySelected(data));
   };
@@ -74,8 +86,8 @@ const ProfileSecondScreen = ({navigation}: any) => {
 
   const onSave = () => {
     const items: string[] = [];
-    if (industryState?.industrySelected.length) {
-      industryState?.industrySelected.forEach((x: string) => {
+    if (industryState?.industry_selected.length) {
+      industryState?.industry_selected.forEach((x: string) => {
         items.push(x?.toLowerCase());
       });
     }
@@ -85,16 +97,9 @@ const ProfileSecondScreen = ({navigation}: any) => {
         dispatch(
           setUserIndustry({
             ...userState?.userInfo,
-            industries: {
-              myself: industryState?.industrySelected,
-              client: userState?.userInfo?.industries?.client,
-              partner: userState?.userInfo?.industries?.partner,
-            },
-            industriesUpdate: {
-              myself: items,
-              client: userState?.userInfo?.industries?.client as string[],
-              partner: userState?.userInfo?.industries?.partner as string[],
-            },
+            self_industries: industryState?.industry_selected,
+            partner_industries: userState?.userInfo?.partner_industries,
+            sell_industries: userState?.userInfo?.sell_industries,
           }),
         );
         break;
@@ -102,16 +107,9 @@ const ProfileSecondScreen = ({navigation}: any) => {
         dispatch(
           setUserIndustry({
             ...userState?.userInfo,
-            industries: {
-              client: industryState?.industrySelected,
-              myself: userState?.userInfo?.industries?.myself,
-              partner: userState?.userInfo?.industries?.partner,
-            },
-            industriesUpdate: {
-              client: items,
-              myself: userState?.userInfo?.industries?.myself as string[],
-              partner: userState?.userInfo?.industries?.partner as string[],
-            },
+            self_industries: userState?.userInfo?.self_industries,
+            partner_industries: userState?.userInfo?.partner_industries,
+            sell_industries: industryState?.industry_selected,
           }),
         );
         break;
@@ -119,16 +117,9 @@ const ProfileSecondScreen = ({navigation}: any) => {
         dispatch(
           setUserIndustry({
             ...userState?.userInfo,
-            industries: {
-              partner: industryState?.industrySelected,
-              client: userState?.userInfo?.industries?.client,
-              myself: userState?.userInfo?.industries?.myself,
-            },
-            industriesUpdate: {
-              partner: items,
-              client: userState?.userInfo?.industries?.client as string[],
-              myself: userState?.userInfo?.industries?.myself as string[],
-            },
+            self_industries: userState?.userInfo?.self_industries,
+            partner_industries: industryState?.industry_selected,
+            sell_industries: userState?.userInfo?.sell_industries,
           }),
         );
         break;
@@ -164,8 +155,8 @@ const ProfileSecondScreen = ({navigation}: any) => {
 
   const onAdd = (item: any) => {
     let data: any = [item];
-    if (industryState?.industrySelected?.length > 0) {
-      data = [...data, ...industryState?.industrySelected];
+    if (industryState?.industry_selected?.length > 0) {
+      data = [...data, ...industryState?.industry_selected];
     }
     dispatch(setIndustrySelected(data));
   };
@@ -180,7 +171,9 @@ const ProfileSecondScreen = ({navigation}: any) => {
         <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30, GlobalStyles.p15]}>
           <View style={[GlobalStyles.container, GlobalStyles.mb15]}>
             <ProfileBlock
-              {...userState?.userInfo?.industries}
+              selfIndustries={userState?.userInfo?.self_industries}
+              partnerIndustries={userState?.userInfo?.partner_industries}
+              sellIndustries={userState?.userInfo?.sell_industries}
               onDelete={onDelete}
               handleModal={handleModal}
               showTooltip={showTooltip}
@@ -195,13 +188,18 @@ const ProfileSecondScreen = ({navigation}: any) => {
               onPress={onSubmit}
               containerStyle={{...GlobalStyles.buttonContainerStyle, ...styles.buttonContainerStyle}}
               textStyle={styles.h3BoldDefault}
+              disabled={
+                userState?.userInfo?.self_industries.length === 0 ||
+                userState?.userInfo?.partner_industries.length === 0 ||
+                userState?.userInfo?.sell_industries.length === 0
+              }
             />
           </View>
         </View>
         {industryState.showModal && (
           <ModalDialog
             isVisible={industryState.showModal}
-            dataSelected={industryState?.industrySelected}
+            dataSelected={industryState?.industry_selected}
             title={industryState?.title}
             data={industryState?.industry}
             onSelect={onSelect}

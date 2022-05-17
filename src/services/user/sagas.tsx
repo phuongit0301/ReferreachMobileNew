@@ -6,6 +6,9 @@ import {
   UPDATE_USER_IN_APP_STATUS_FAILURE,
   UPDATE_USER_IN_APP_STATUS_REQUESTED,
   UPDATE_USER_IN_APP_STATUS_SUCCESS,
+  UPDATE_USER_PROFILE_FAILURE,
+  UPDATE_USER_PROFILE_REQUESTED,
+  UPDATE_USER_PROFILE_SUCCESS,
   USER_INFO_FAILURE,
   USER_INFO_REQUESTED,
   USER_INFO_SUCCESS,
@@ -13,6 +16,8 @@ import {
 import {
   IActionUpdateUserInAppStatusRequested,
   IActionUpdateUserInAppStatusSuccess,
+  IActionUpdateUserProfileRequested,
+  IActionUpdateUserProfileSuccess,
   IActionUserInfoRequested,
   IActionUserInfoSuccess,
 } from './types';
@@ -86,10 +91,45 @@ function* updateUserInAppStatus(payload: IActionUpdateUserInAppStatusRequested) 
     payload?.callback &&
       payload?.callback({
         success: false,
-        message: error,
+        message: error as string,
         data: null,
       });
     yield put(initAuthFailure({error: JSON.stringify(error)}));
+  }
+}
+
+function* updateUserProfile(payload: IActionUpdateUserProfileRequested) {
+  try {
+    const response: IActionUpdateUserProfileSuccess['payload'] = yield call(
+      UserAPI.updateUserProfile,
+      payload?.payload,
+    );
+    console.log('========response==========>', response);
+    if (response?.success) {
+      yield put({type: UPDATE_USER_PROFILE_SUCCESS, payload: response?.data});
+      payload?.callback &&
+        payload?.callback({
+          success: response.success,
+          message: '',
+          data: response.data,
+        });
+    } else {
+      yield put({type: UPDATE_USER_PROFILE_FAILURE, payload: {error: response?.message}});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: response?.message,
+          data: null,
+        });
+    }
+  } catch (error) {
+    yield put({type: UPDATE_USER_PROFILE_FAILURE, payload: {error: error}});
+    payload?.callback &&
+      payload?.callback({
+        success: false,
+        message: error as string,
+        data: null,
+      });
   }
 }
 
@@ -101,6 +141,10 @@ function* watchUpdateUserInAppStatus() {
   yield takeEvery(UPDATE_USER_IN_APP_STATUS_REQUESTED, updateUserInAppStatus);
 }
 
+function* watchUpdateUserProfile() {
+  yield takeEvery(UPDATE_USER_PROFILE_REQUESTED, updateUserProfile);
+}
+
 export default function* userWatchers() {
-  yield all([watchGetUser(), watchUpdateUserInAppStatus()]);
+  yield all([watchGetUser(), watchUpdateUserInAppStatus(), watchUpdateUserProfile()]);
 }

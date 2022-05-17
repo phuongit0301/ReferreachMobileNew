@@ -6,6 +6,9 @@ import {
   USER_INFO_FAILURE,
   SET_USER_INDUSTRY,
   DELETE_DATA_INDUSTRY,
+  UPDATE_USER_PROFILE_FAILURE,
+  UPDATE_USER_PROFILE_REQUESTED,
+  UPDATE_USER_PROFILE_SUCCESS,
 } from './constants';
 import {IUserState, IActionsUser, IUserInfoState} from './types';
 
@@ -33,6 +36,7 @@ export const initialState: IUserState = {
 const userReducer = (state: IUserState = initialState, action: IActionsUser): IUserState => {
   switch (action.type) {
     case USER_INFO_REQUESTED:
+    case UPDATE_USER_PROFILE_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
     case USER_INFO_SUCCESS:
       return {
@@ -47,11 +51,14 @@ const userReducer = (state: IUserState = initialState, action: IActionsUser): IU
         userInfo: {...state?.userInfo, ...action?.payload},
       };
     }
+    case UPDATE_USER_PROFILE_SUCCESS:
+      return {...state, userInfo: {...state?.userInfo, ...action?.payload}};
     case DELETE_DATA_INDUSTRY: {
       const dataFilter = filterIndustry(state?.userInfo, action?.payload);
       return {...state, userInfo: {...state?.userInfo}};
     }
     case USER_INFO_FAILURE:
+    case UPDATE_USER_PROFILE_FAILURE:
       return {...state, loading: false, error: action.payload.error};
     default:
       return state;

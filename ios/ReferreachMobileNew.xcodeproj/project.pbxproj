@@ -13,7 +13,6 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2069442DD39943A5B05E1FFF /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E433C194004D40A388838911 /* Montserrat-Regular.ttf */; };
 		231C4B8774604904B374361B /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4B18141EE08499CAE895A9C /* Montserrat-SemiBold.ttf */; };
-		3F59F4FCE24DEC41A2186EED /* libPods-ReferreachMobileNew.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-ReferreachMobileNew.a */; };
 		7699B88040F8A987B510C191 /* libPods-ReferreachMobileNew-ReferreachMobileNewTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-ReferreachMobileNew-ReferreachMobileNewTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		C4DE338BB93C440CA60A9DAA /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9C7ACC2F6B4549C19900346C /* Montserrat-Bold.ttf */; };
@@ -82,7 +81,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F59F4FCE24DEC41A2186EED /* libPods-ReferreachMobileNew.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

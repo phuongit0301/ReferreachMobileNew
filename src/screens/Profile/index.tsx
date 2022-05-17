@@ -1,33 +1,24 @@
-import React from 'react';
-import {ScrollView, View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, {useEffect} from 'react';
+import {View} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import LinearGradient from 'react-native-linear-gradient';
-import FastImage from 'react-native-fast-image';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm, SubmitHandler} from 'react-hook-form';
+import {useSelector} from 'react-redux';
 
 import {RootNavigatorParamsList} from '~Root/navigation/config';
-import {
-  Button,
-  HeaderSmallTransparent,
-  Icon,
-  InputValidateControl,
-  Paragraph,
-  ProfileTemplateScreen,
-} from '~Root/components';
+import {Button, InputValidateControl, Paragraph, ProfileTemplateScreen} from '~Root/components';
 import {BASE_COLORS, GlobalStyles, PROFILE_FIELDS} from '~Root/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import styles from './styles';
-import {adjust} from '~Root/utils';
+import {IGlobalState} from '~Root/types';
 
 const schema = yup.object().shape({
   first_name: yup.string().max(31, 'First Name must be at most 31 characters').required('First Name is required'),
   last_name: yup.string().max(31, 'Last Name must be at most 31 characters').required('Last Name is required'),
-  job_title: yup.string().required('Job Title is required'),
-  expertise: yup.string().max(248).required('Expertise / Pitch is required'),
+  title: yup.string().required('Job Title is required'),
+  introductions: yup.string().max(248).required('Expertise / Pitch is required'),
 });
 
 type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.PROFILE>;
@@ -38,6 +29,7 @@ const ProfileScreen = ({navigation}: any) => {
     control,
     handleSubmit,
     setFocus,
+    setValue,
     watch,
     formState: {errors, isValid},
   } = useForm<any>({
@@ -46,13 +38,27 @@ const ProfileScreen = ({navigation}: any) => {
   });
 
   const {t} = useTranslation();
+  const {userInfo} = useSelector((state: IGlobalState) => state.userState);
 
   const onSubmit: SubmitHandler<any> = (credentials: any) => {
-    navigation.navigate(AppRoute.PROFILE_SECOND);
-    // if (credentials.first_name && credentials.last_name) {
-    //   console.log(1312323);
-    // }
+    console.log(credentials);
+    navigation.navigate(AppRoute.PROFILE_SECOND, {...credentials});
   };
+
+  useEffect(() => {
+    if (userInfo?.first_name) {
+      setValue(PROFILE_FIELDS.first_name, userInfo?.first_name);
+    }
+    if (userInfo?.last_name) {
+      setValue(PROFILE_FIELDS.last_name, userInfo?.last_name);
+    }
+    if (userInfo?.title) {
+      setValue(PROFILE_FIELDS.title, userInfo?.title);
+    }
+    if (userInfo?.introductions) {
+      setValue(PROFILE_FIELDS.introductions, userInfo?.introductions);
+    }
+  }, []);
 
   const onBack = () => {
     navigation.goBack();
@@ -96,7 +102,7 @@ const ProfileScreen = ({navigation}: any) => {
             name={PROFILE_FIELDS.last_name}
             register={register}
             autoFocus={true}
-            onSubmitEditing={() => onSubmitEditing(PROFILE_FIELDS.job_title)}
+            onSubmitEditing={() => onSubmitEditing(PROFILE_FIELDS.title)}
           />
           <InputValidateControl
             label={`${t('job_title')}*`}
@@ -107,10 +113,10 @@ const ProfileScreen = ({navigation}: any) => {
             placeholderTextColor={BASE_COLORS.blackColor}
             errors={errors}
             control={control}
-            name={PROFILE_FIELDS.job_title}
+            name={PROFILE_FIELDS.title}
             register={register}
             autoFocus={true}
-            onSubmitEditing={() => onSubmitEditing(PROFILE_FIELDS.expertise)}
+            onSubmitEditing={() => onSubmitEditing(PROFILE_FIELDS.introductions)}
           />
           <InputValidateControl
             label={`${t('expertise')}*`}
@@ -121,12 +127,12 @@ const ProfileScreen = ({navigation}: any) => {
             placeholderTextColor={BASE_COLORS.blackColor}
             errors={errors}
             control={control}
-            name={PROFILE_FIELDS.expertise}
+            name={PROFILE_FIELDS.introductions}
             register={register}
             autoFocus={true}
             multiline={true}>
             <View style={styles.countCharacters}>
-              <Paragraph title={`${(watch('expertise') as string)?.length ?? 0}/248`} />
+              <Paragraph title={`${(watch('introductions') as string)?.length ?? 0}/248`} />
             </View>
           </InputValidateControl>
           <View>
@@ -134,11 +140,10 @@ const ProfileScreen = ({navigation}: any) => {
               title={t('next')}
               h5
               textCenter
-              // onPress={handleSubmit(onSubmit)}
-              onPress={onSubmit}
+              onPress={handleSubmit(onSubmit)}
               containerStyle={{...GlobalStyles.buttonContainerStyle, ...styles.buttonContainerStyle}}
               textStyle={styles.h3BoldDefault}
-              // disabled={!isValid}
+              disabled={!isValid}
             />
           </View>
         </View>

@@ -23,14 +23,6 @@ export default StyleSheet.create({
     marginLeft: adjust(-20),
     marginBottom: adjust(15),
   },
-  iconEdit: {
-    ...GlobalStyles.p5,
-    alignSelf: 'flex-end',
-    backgroundColor: BASE_COLORS.steelBlue2Color,
-    borderWidth: 2,
-    borderColor: BASE_COLORS.whiteColor,
-    borderRadius: adjust(100),
-  },
   buttonUpdateContainerStyle: {
     ...GlobalStyles.mb20,
     ...GlobalStyles.ph15,

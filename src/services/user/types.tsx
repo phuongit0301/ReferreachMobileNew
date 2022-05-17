@@ -8,28 +8,10 @@ import {
   UPDATE_USER_IN_APP_STATUS_REQUESTED,
   UPDATE_USER_IN_APP_STATUS_SUCCESS,
   UPDATE_USER_IN_APP_STATUS_FAILURE,
+  UPDATE_USER_PROFILE_FAILURE,
+  UPDATE_USER_PROFILE_REQUESTED,
+  UPDATE_USER_PROFILE_SUCCESS,
 } from './constants';
-
-export interface IMySelf {
-  id: string;
-  name: string;
-}
-export interface ISellTo {
-  id: string;
-  name: string;
-}
-export interface IPartners {
-  id: string;
-  name: string;
-}
-export interface IProfile {
-  name?: string;
-  title?: string;
-  description?: string;
-  myself: IMySelf[];
-  sell_to?: ISellTo[];
-  partners?: IPartners[];
-}
 
 export interface IUserInfoState {
   id?: number;
@@ -43,10 +25,20 @@ export interface IUserInfoState {
   onboard_completed: boolean;
   confirmed_at: string | null;
   in_app_status: IN_APP_STATUS_ENUM;
-
+  avatar?: string;
   self_industries: string[];
   partner_industries: string[];
   sell_industries: string[];
+}
+
+export interface IUserUpdateState {
+  first_name: string;
+  last_name: string;
+  title: string;
+  introductions: string;
+  self_industry_list: string[];
+  partner_industry_list: string[];
+  sell_industry_list: string[];
 }
 
 export interface IUserState {
@@ -118,6 +110,30 @@ export interface IActionDeleteUserIndustry {
   };
 }
 
+export interface IActionUpdateUserProfileRequested {
+  type: typeof UPDATE_USER_PROFILE_REQUESTED;
+  payload: IUserUpdateState;
+  callback?: (response: IActionUpdateUserProfileSuccess['payload']) => void;
+}
+
+export interface IActionUpdateUserProfileSuccess {
+  type: typeof UPDATE_USER_PROFILE_SUCCESS;
+  payload: {
+    data: any;
+    success: boolean;
+    message: string;
+  };
+  callback?: () => void;
+}
+
+export interface IActionUpdateUserProfileFailure {
+  type: typeof UPDATE_USER_PROFILE_FAILURE;
+  payload: {
+    error: string;
+  };
+  callback?: () => void;
+}
+
 export type IActionsUser =
   | IActionUserInfoRequested
   | IActionUserInfoSuccess
@@ -126,4 +142,7 @@ export type IActionsUser =
   | IActionDeleteUserIndustry
   | IActionUpdateUserInAppStatusRequested
   | IActionUpdateUserInAppStatusSuccess
-  | IActionUpdateUserInAppStatusFailure;
+  | IActionUpdateUserInAppStatusFailure
+  | IActionUpdateUserProfileRequested
+  | IActionUpdateUserProfileSuccess
+  | IActionUpdateUserProfileFailure;
