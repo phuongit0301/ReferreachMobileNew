@@ -2,6 +2,7 @@ import {
   DELETE_DATA_INDUSTRY,
   SET_USER_INDUSTRY,
   UPDATE_USER_IN_APP_STATUS_REQUESTED,
+  UPDATE_USER_PROFILE_REQUESTED,
   USER_INFO_REQUESTED,
 } from './constants';
 import {IActionUpdateUserInAppStatusRequested, IActionUpdateUserInAppStatusSuccess, IUserInfoState} from './types';
@@ -9,6 +10,17 @@ import {IActionUpdateUserInAppStatusRequested, IActionUpdateUserInAppStatusSucce
 export const userInfoRequest = (callback?: (item: any) => void) => {
   return {
     type: USER_INFO_REQUESTED,
+    callback,
+  };
+};
+
+export const updateUserProfileRequest = (
+  payload: IActionUpdateUserInAppStatusRequested['payload'],
+  callback: (item: any) => void,
+) => {
+  return {
+    type: UPDATE_USER_PROFILE_REQUESTED,
+    payload,
     callback,
   };
 };

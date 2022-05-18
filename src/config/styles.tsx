@@ -575,6 +575,14 @@ export const GlobalStyles = StyleSheet.create({
     width: adjust(16),
     height: adjust(29),
   },
+  iconEdit: {
+    padding: adjust(5),
+    alignSelf: 'flex-end',
+    backgroundColor: BASE_COLORS.steelBlue2Color,
+    borderWidth: 2,
+    borderColor: BASE_COLORS.whiteColor,
+    borderRadius: adjust(100),
+  },
   inputStyle: {
     height: adjust(35),
   },

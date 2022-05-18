@@ -15,6 +15,7 @@ export enum AppRoute {
   BOTTOM_TAB = 'BottomTab',
   MAIN_NAVIGATOR = 'MainNavigator',
   PROFILE_SECOND = 'ProfileSecond',
+  PROFILE_COMPLETE = 'ProfileComplete',
   CHAT = 'Chat',
   CHAT_INTERNAL = 'ChatInternal',
   CHAT_CONTEXT_SWITCH = 'ChatContextSwitch',

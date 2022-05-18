@@ -127,16 +127,27 @@ const UserCard: React.FC<Props> = ({
       )}
       <View style={[GlobalStyles.mt10, GlobalStyles.flexRow, styles.tagContainer]}>
         {data.length > 0 &&
-          data.map((item: any, index: number) => (
-            <Category
-              styleTag={styleTag}
-              key={`selected-target-${dataTarget}-${index}`}
-              itemKey={`${index}`}
-              name={item}
-              showButton={true}
-              onPress={() => onDelete({index, target: dataTarget})}
-            />
-          ))}
+          data.map((item: any, index: number) =>
+            typeof item === 'object' ? (
+              <Category
+                styleTag={styleTag}
+                key={`selected-target-${dataTarget}-${index}`}
+                itemKey={`${index}`}
+                name={item?.name}
+                showButton={true}
+                onPress={() => onDelete({index, target: dataTarget})}
+              />
+            ) : (
+              <Category
+                styleTag={styleTag}
+                key={`selected-target-${dataTarget}-${index}`}
+                itemKey={`${index}`}
+                name={item}
+                showButton={true}
+                onPress={() => onDelete({index, target: dataTarget})}
+              />
+            ),
+          )}
         {showButton && (
           <Button
             title={buttonTitle}

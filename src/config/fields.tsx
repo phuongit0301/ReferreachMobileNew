@@ -79,15 +79,15 @@ export const CREATE_ASK_FIELDS = {
 export enum PROFILE_KEYS {
   first_name = 'first_name',
   last_name = 'last_name',
-  job_title = 'job_title',
-  expertise = 'expertise',
+  title = 'title',
+  introductions = 'introductions',
 }
 
 export const PROFILE_FIELDS = {
   first_name: 'first_name',
   last_name: 'last_name',
-  job_title: 'job_title',
-  expertise: 'expertise',
+  title: 'title',
+  introductions: 'introductions',
 };
 
 export const TABS = {

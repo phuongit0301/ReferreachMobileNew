@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/promise-function-async */
 import React, {useCallback, useState} from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Alert, ScrollView, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import ImagePicker, {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+// import ImagePicker, {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker, {Options} from 'react-native-image-crop-picker';
 
 import {setUserProfileAvatar} from '~Root/services/user/actions';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import {Button, HeaderSmallTransparent, Icon, ModalDialogCommon, Paragraph} from '~Root/components';
+import {AvatarGradient, Button, HeaderSmallTransparent, Icon, ModalDialogCommon, Paragraph} from '~Root/components';
 import styles from './styles';
 import {IUserState} from '~Root/services/user/types';
 import {useDispatch, useSelector} from 'react-redux';
@@ -19,33 +20,25 @@ import {adjust} from '~Root/utils';
 
 interface Action {
   title: string;
-  type: 'capture' | 'library';
-  options: ImagePicker.CameraOptions | ImagePicker.ImageLibraryOptions;
+  type: 'camera' | 'library';
+  options: Options;
 }
-
-const includeExtra = true;
 
 const actions: Action[] = [
   {
     title: 'Take photo...',
-    type: 'capture',
+    type: 'camera',
     options: {
-      saveToPhotos: true,
       mediaType: 'photo',
       includeBase64: false,
-      includeExtra,
     },
   },
   {
     title: 'Choose from Library',
     type: 'library',
     options: {
-      maxHeight: 200,
-      maxWidth: 200,
-      selectionLimit: 0,
       mediaType: 'photo',
       includeBase64: false,
-      includeExtra,
     },
   },
 ];
@@ -56,6 +49,20 @@ interface Props {
   isRightButton?: boolean;
   onToggleDrawer?: () => void;
   children?: React.ReactNode;
+}
+
+interface AvtarRect {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+}
+interface AvatarProps {
+  uri: string;
+  width: number;
+  height: number;
+  cropRect?: AvtarRect | null;
+  mime: string;
 }
 
 const ProfileTemplateScreen: React.FC<Props> = ({
@@ -69,41 +76,71 @@ const ProfileTemplateScreen: React.FC<Props> = ({
   const dispatch = useDispatch();
 
   const [visibleModal, setVisibleModal] = useState(false);
+  const [imageAvatar, setImageAvatar] = useState<AvatarProps>({
+    uri: '',
+    width: 0,
+    height: 0,
+    cropRect: {
+      height: 0,
+      width: 0,
+      x: 0,
+      y: 0,
+    },
+    mime: '',
+  });
+  const userState: IUserState = useSelector((state: IGlobalState) => state.userState);
 
   const onUpdate = () => {
     setVisibleModal(!visibleModal);
   };
 
   const onButtonPress = useCallback(async (type, options) => {
-    setVisibleModal(false);
-    if (type === 'capture') {
-      await launchCamera(options, imageResponse);
-    } else {
-      await launchImageLibrary(options, imageResponse);
+    try {
+      if (type === 'camera') {
+        ImagePicker.openCamera(options)
+          .then((response: any) => {
+            console.log('respine111111s=========>', response);
+          })
+          .catch(error => {
+            console.log(`Error in open camera: ${error as string}`);
+          });
+      } else {
+        ImagePicker.openPicker(options)
+          .then((response: any) => {
+            ImagePicker.openCropper({
+              path: response.path,
+              mediaType: type,
+              width: 80,
+              height: 80,
+              writeTempFile: false,
+              includeExif: true,
+              cropperCircleOverlay: true,
+              freeStyleCropEnabled: true,
+              avoidEmptySpaceAroundImage: true,
+              includeBase64: true,
+            })
+              .then(croppedImage => {
+                setVisibleModal(false);
+                setImageAvatar({
+                  uri: croppedImage.path,
+                  width: croppedImage.width,
+                  height: croppedImage.height,
+                  mime: croppedImage.mime,
+                  cropRect: croppedImage?.cropRect,
+                });
+              })
+              .catch(error => {
+                console.log(`Error in open cropper: ${error as string}`);
+              });
+          })
+          .catch(error => {
+            console.log(`Error in open picker: ${error as string}`);
+          });
+      }
+    } catch (error) {
+      Alert.alert(JSON.stringify(error));
     }
   }, []);
-
-  const imageResponse = (response: any) => {
-    if (response.didCancel) {
-      console.log('User cancelled image picker');
-    } else if (response.error) {
-      console.log('ImagePicker Error: ', response.error);
-    } else if (response.customButton) {
-      console.log('User tapped custom button: ', response.customButton);
-      // eslint-disable-next-line no-alert
-      alert(response.customButton);
-    } else {
-      if (response?.assets?.length > 0) {
-        dispatch(
-          setUserProfileAvatar({
-            name: response?.assets[0]?.fileName,
-            type: response?.assets[0]?.type,
-            uri: response?.assets[0]?.uri,
-          }),
-        );
-      }
-    }
-  };
 
   return (
     <View style={[GlobalStyles.container, styles.container]}>
@@ -120,14 +157,42 @@ const ProfileTemplateScreen: React.FC<Props> = ({
             colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
             style={[GlobalStyles.center, styles.profileGradient]}>
             <View style={GlobalStyles.flexRow}>
-              <FastImage
-                source={{
-                  uri: 'https://s3-alpha-sig.figma.com/img/5ec2/169b/c65b3c8a62c20bab414be37031f55fb1?Expires=1652659200&Signature=O7iXEZgTzjmEJDI-0di2orJyz48YJA4NHiQXZCFMIgXsxqC1wqeAQO-ZYK3sL4QF0~RFqYw-xk3UetfEt1Jpw36v19pywORmr8f04lTL2aMisr5CR8-6mbYUAa5HVkxmh79hdFJGiXJF8sNDaSxXnt4g53gFob0jcdBmj6T2ZeWuymMnPNrqlCVpO4hBVe6C1M8g8er1O7v9MinUhC48XSnyHMnzdjSbyp4ATnetL4p55yLZtCqrJtW1or-Sm5pO4xf~PG32BVhkqmXVhlREuFLJpUhWl~-1iVds7r1f8poCTJGil2dUaDKk22vcKXQHju5ZhtLHUoP0LH1lX1n~Ag__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA',
-                }}
-                style={[GlobalStyles.avatar, GlobalStyles.mb10]}
-              />
+              {imageAvatar?.uri ? (
+                <FastImage
+                  source={{
+                    uri: imageAvatar?.uri,
+                  }}
+                  resizeMode='cover'
+                  onProgress={() => <ActivityIndicator />}
+                  style={[GlobalStyles.avatar, GlobalStyles.mb10]}>
+                  <View
+                    style={{
+                      width: imageAvatar?.cropRect?.width,
+                      height: imageAvatar.cropRect?.height,
+                      transform: [
+                        {translateX: imageAvatar?.cropRect?.x ?? 0},
+                        {translateY: imageAvatar?.cropRect?.y ?? 0},
+                      ],
+                    }}
+                  />
+                </FastImage>
+              ) : userState.userInfo?.avatar ? (
+                <FastImage
+                  source={{
+                    uri: 'https://s3-alpha-sig.figma.com/img/5ec2/169b/c65b3c8a62c20bab414be37031f55fb1?Expires=1652659200&Signature=O7iXEZgTzjmEJDI-0di2orJyz48YJA4NHiQXZCFMIgXsxqC1wqeAQO-ZYK3sL4QF0~RFqYw-xk3UetfEt1Jpw36v19pywORmr8f04lTL2aMisr5CR8-6mbYUAa5HVkxmh79hdFJGiXJF8sNDaSxXnt4g53gFob0jcdBmj6T2ZeWuymMnPNrqlCVpO4hBVe6C1M8g8er1O7v9MinUhC48XSnyHMnzdjSbyp4ATnetL4p55yLZtCqrJtW1or-Sm5pO4xf~PG32BVhkqmXVhlREuFLJpUhWl~-1iVds7r1f8poCTJGil2dUaDKk22vcKXQHju5ZhtLHUoP0LH1lX1n~Ag__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA',
+                  }}
+                  style={[GlobalStyles.avatar, GlobalStyles.mb10]}
+                />
+              ) : (
+                <AvatarGradient
+                  title='AD'
+                  color1={BASE_COLORS.oxleyColor}
+                  color2={BASE_COLORS.oxleyColor}
+                  stylesContainer={GlobalStyles.mb15}
+                />
+              )}
               <View style={styles.iconEditContainer}>
-                <TouchableOpacity style={styles.iconEdit} onPress={onUpdate}>
+                <TouchableOpacity style={GlobalStyles.iconEdit} onPress={onUpdate}>
                   <Icon name='pencil-alt' size={adjust(8)} color={BASE_COLORS.whiteColor} />
                 </TouchableOpacity>
               </View>

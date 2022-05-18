@@ -2,13 +2,13 @@ import React from 'react';
 import {View} from 'react-native';
 import {useTranslation} from 'react-i18next';
 
-import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import {Category, Icon, Paragraph, UserCard} from '~Root/components';
+import {GlobalStyles} from '~Root/config';
+import {UserCard} from '~Root/components';
 import styles from './styles';
 interface Props {
-  myself: any[];
-  client: any[];
-  partner: any[];
+  selfIndustries: any[];
+  sellIndustries: any[];
+  partnerIndustries: any[];
   onDelete: ({index, target}: {index: number; target: string}) => void;
   handleModal: ({title, target}: {title: string; target: number}) => void;
   showTooltip?: any;
@@ -18,9 +18,9 @@ interface Props {
 }
 
 const ProfileBlock: React.FC<Props> = ({
-  myself = [],
-  client = [],
-  partner = [],
+  selfIndustries = [],
+  sellIndustries = [],
+  partnerIndustries = [],
   onDelete = () => {},
   handleModal = () => {},
   showTooltip,
@@ -33,7 +33,7 @@ const ProfileBlock: React.FC<Props> = ({
   return (
     <View style={GlobalStyles.flexColumn}>
       <UserCard
-        data={myself}
+        data={selfIndustries}
         title={t('your_industry')}
         subTitle={t('visible_to_public')}
         showRequired={true}
@@ -51,11 +51,11 @@ const ProfileBlock: React.FC<Props> = ({
         tooltipTitle={t('your_industry')}
         tooltipDescription={t('your_industry_description')}
         onDelete={onDelete}
-        dataTarget='myself'
+        dataTarget='self_industries'
         styleTag={styles.styleTag}
       />
       <UserCard
-        data={client}
+        data={sellIndustries}
         title={t('you_sell_to')}
         subTitle={t('not_visible_to_public')}
         showRequired={false}
@@ -72,11 +72,11 @@ const ProfileBlock: React.FC<Props> = ({
         tooltipTitle={t('you_sell_to')}
         tooltipDescription={t('you_sell_to_description')}
         onDelete={onDelete}
-        dataTarget='client'
+        dataTarget='sell_industries'
         styleTag={styles.styleTag}
       />
       <UserCard
-        data={partner}
+        data={partnerIndustries}
         title={t('your_partners')}
         subTitle={t('trusted_network')}
         onPress={() => handleModal({title: t('your_partners'), target: 3})}
@@ -90,7 +90,7 @@ const ProfileBlock: React.FC<Props> = ({
         tooltipTitle={t('your_partners')}
         tooltipDescription={t('your_partners_description')}
         onDelete={onDelete}
-        dataTarget='partner'
+        dataTarget='partner_industries'
         styleTag={styles.styleTag}
       />
     </View>
