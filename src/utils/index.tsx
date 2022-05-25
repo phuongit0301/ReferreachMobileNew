@@ -1,5 +1,5 @@
 import adjust from './adjust';
-import {PURPOSE_OF_ASK, PURPOSE_OF_ASK_ENUM} from './common';
+import {PURPOSE_OF_ASK, PURPOSE_OF_ASK_ENUM, sideBarRoutes} from './common';
 import {
   dateWithMonthsDelay,
   dateFormat,
@@ -33,6 +33,7 @@ export {
   paddingByRatio,
   heightByRatio,
   headerTop,
+  sideBarRoutes,
   PURPOSE_OF_ASK,
   PURPOSE_OF_ASK_ENUM,
 };

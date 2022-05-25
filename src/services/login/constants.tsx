@@ -9,5 +9,3 @@ export const ASYNC_LOGIN: IAsyncCall = {
   SUCCESS: LOGIN_SUCCESS,
   FAILURE: LOGIN_FAILURE,
 };
-
-export const SET_DATA_LOGIN = 'DATA_LOGIN/SET';

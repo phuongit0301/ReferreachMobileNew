@@ -13,6 +13,7 @@ interface Props {
   title: string;
   style?: any;
   bold?: boolean;
+  bold600?: boolean;
   italic?: boolean;
   textWhite?: boolean;
   textBlack?: boolean;
@@ -21,6 +22,9 @@ interface Props {
   textOxleyColor?: boolean;
   textIndianRedColor?: boolean;
   textSteelBlueColor?: boolean;
+  textForestGreenColor?: boolean;
+  textDarkGrayColor?: boolean;
+  textSpanishGrayColor?: boolean;
   textCenter?: boolean;
   textDecoration?: boolean;
   onPress?: any;
@@ -36,6 +40,7 @@ const Link: React.FC<Props> = ({
   title,
   style,
   bold,
+  bold600,
   italic,
   textWhite,
   textBlack,
@@ -44,6 +49,9 @@ const Link: React.FC<Props> = ({
   textOxleyColor,
   textIndianRedColor,
   textSteelBlueColor,
+  textForestGreenColor,
+  textDarkGrayColor,
+  textSpanishGrayColor,
   textCenter,
   textDecoration,
   onPress,
@@ -60,6 +68,7 @@ const Link: React.FC<Props> = ({
           h5 && styles.h5,
           p && styles.p,
           bold && styles.bold,
+          bold600 && styles.bold600,
           italic && styles.italic,
           textWhite && styles.textWhite,
           textBlack && styles.textBlack,
@@ -68,6 +77,9 @@ const Link: React.FC<Props> = ({
           textOxleyColor && styles.textOxleyColor,
           textIndianRedColor && styles.textIndianRedColor,
           textSteelBlueColor && styles.textSteelBlueColor,
+          textForestGreenColor && styles.textForestGreenColor,
+          textDarkGrayColor && styles.textDarkGrayColor,
+          textSpanishGrayColor && styles.textSpanishGrayColor,
           textCenter && styles.textCenter,
           textDecoration && styles.underline,
           styles.default,

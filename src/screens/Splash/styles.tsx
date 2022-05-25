@@ -14,6 +14,8 @@ export default StyleSheet.create({
   },
   waitingContainer: {
     backgroundColor: BASE_COLORS.whiteColor,
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'absolute',
     top: 0,
     right: 0,

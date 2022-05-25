@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-import {BASE_COLORS, BASE_FONTS, BASE_STYLES} from '~Root/config';
+import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
 
 export default StyleSheet.create({
@@ -45,10 +45,17 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   containerCommonStyle: {
-    paddingVertical: 8,
+    ...GlobalStyles.pv8,
+    borderTopLeftRadius: adjust(12),
+    borderTopRightRadius: adjust(12),
+    borderBottomLeftRadius: adjust(12),
+    borderBottomRightRadius: adjust(24),
   },
   border: {
     borderColor: BASE_COLORS.gunmetalColor,
     borderWidth: 2,
+  },
+  textColor: {
+    color: BASE_COLORS.whiteColor,
   },
 });

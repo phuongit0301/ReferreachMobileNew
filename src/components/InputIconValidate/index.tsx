@@ -1,8 +1,8 @@
 import React from 'react';
-import {View, Text, TextInput, ViewStyle, TextStyle, Pressable, Image, ImageStyle} from 'react-native';
+import {View, Text, TextInput, ViewStyle, TextStyle, Pressable, Image, ImageStyle, TouchableOpacity} from 'react-native';
 import {Controller} from 'react-hook-form';
 
-import {BASE_COLORS} from '~Root/config';
+import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import styles from './styles';
 import {Icon, Paragraph} from '~Root/components';
 
@@ -53,11 +53,12 @@ interface Props {
   iconContainerStyle?: ViewStyle & TextStyle;
   iconStyle?: ViewStyle & TextStyle;
   isIconImage?: boolean;
+  imageStyleContainer?: ViewStyle;
   imageStyle?: ImageStyle & TextStyle;
   uri?: any;
   onPressIn?: () => void;
   onSubmitEditing?: () => void;
-  onIconClick: () => void;
+  onIconClick?: () => void;
 }
 
 const InputIconValidate: React.FC<Props> = ({
@@ -93,6 +94,7 @@ const InputIconValidate: React.FC<Props> = ({
   iconContainerStyle = {},
   iconStyle = {},
   isIconImage = false,
+  imageStyleContainer = {},
   imageStyle = {},
   uri,
   onPressIn = () => {},
@@ -113,7 +115,9 @@ const InputIconValidate: React.FC<Props> = ({
             <Pressable onPress={onPressIn}>
               <View style={[styles.textInputWrapper, inputStyleWrapper]}>
                 {showIcon && isIconImage ? (
-                  <Image source={uri} style={imageStyle} />
+                  <TouchableOpacity onPress={onIconClick} style={imageStyleContainer}>
+                    <Image source={uri} resizeMode='contain' style={imageStyle} />
+                  </TouchableOpacity>
                 ) : (
                   <Pressable onPress={onIconClick} style={iconContainerStyle}>
                     <Icon name={iconName} size={iconSize} color={iconColor} style={iconStyle} />

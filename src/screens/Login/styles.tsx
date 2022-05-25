@@ -7,18 +7,25 @@ export default StyleSheet.create({
     backgroundColor: BASE_COLORS.whiteColor,
   },
   inputStyle: {
-    ...GlobalStyles.h4,
     ...GlobalStyles.inputStyle,
-    borderColor: BASE_COLORS.blackColor,
     borderRadius: adjust(20),
     color: BASE_COLORS.blackColor,
+    backgroundColor: BASE_COLORS.brightGrayColor,
+  },
+  inputIconStyle: {
+    ...GlobalStyles.inputStyle,
+    color: BASE_COLORS.blackColor,
+  },
+  inputWrapperStyle: {
+    ...GlobalStyles.inputStyle,
+    borderRadius: adjust(20),
+    backgroundColor: BASE_COLORS.brightGrayColor,
   },
   labelStyle: {
     ...GlobalStyles.labelStyle,
-    color: BASE_COLORS.blackColor,
+    color: BASE_COLORS.steelBlueColor,
   },
   buttonContainerStyle: {
-    alignSelf: 'center',
     backgroundColor: BASE_COLORS.oxleyColor,
   },
   h3: {
@@ -39,10 +46,18 @@ export default StyleSheet.create({
   signUpArea: {
     ...GlobalStyles.mt46,
   },
-  signUpLink: {
-    fontFamily: BASE_FONTS.semiBold,
-    fontWeight: 'bold',
-    marginLeft: 5,
-    color: BASE_COLORS.steelBlueColor,
+  inputErrorStyle: {
+    borderColor: BASE_COLORS.persianRedColor,
+  },
+  iconEyeContainer: {
+    position: 'absolute',
+    right: adjust(10),
+    zIndex: 10,
+    ...GlobalStyles.ph10,
+    ...GlobalStyles.pv10,
+  },
+  iconEye: {
+    width: adjust(19),
+    height: adjust(7),
   },
 });

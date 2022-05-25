@@ -5,7 +5,10 @@ import {persistReducer} from 'redux-persist';
 import authReducer from '~Root/services/auth/reducer';
 import userReducer from '~Root/services/user/reducer';
 import loginReducer from '~Root/services/login/reducer';
+import contactReducer from '~Root/services/contact/reducer';
 import loadingReducer from '~Root/services/loading/reducer';
+import industryReducer from '~Root/services/industry/reducer';
+import registerReducer from '~Root/services/register/reducer';
 import {IGlobalState} from '~Root/types';
 import {ASYNC_INITIALIZE_AUTH, LOGOUT} from '~Root/services/auth/constants';
 
@@ -25,6 +28,9 @@ const appReducer = combineReducers<IGlobalState>({
   loginState: loginReducer,
   authState: authReducer,
   userState: userReducer,
+  contactState: contactReducer,
+  industryState: industryReducer,
+  registerState: registerReducer,
 });
 
 export const rootReducer = (state: IGlobalState | undefined, action: any) => {

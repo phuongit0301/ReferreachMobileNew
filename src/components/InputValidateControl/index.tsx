@@ -85,7 +85,7 @@ const InputValidateControl: React.FC<Props> = ({
 
   return (
     <View style={[styles.container, styleContainer]}>
-      {isText && <Paragraph h4 style={[styles.labelStyle, labelStyle]} title={label} />}
+      {isText && <Paragraph h5 style={[styles.labelStyle, labelStyle]} title={label} />}
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value, ref}}) => {

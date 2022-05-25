@@ -20,11 +20,12 @@ export default StyleSheet.create({
     color: BASE_COLORS.whiteColor,
   },
   inputStyle: {
+    ...GlobalStyles.h5,
     borderColor: BASE_COLORS.whiteColor,
     borderWidth: 1,
     borderRadius: adjust(16),
-    paddingVertical: adjust(12),
-    paddingHorizontal: adjust(12),
+    paddingVertical: adjust(8),
+    paddingHorizontal: adjust(15),
     color: BASE_COLORS.whiteColor,
   },
   inputErrorStyle: {
@@ -32,6 +33,6 @@ export default StyleSheet.create({
   },
   textError: {
     ...GlobalStyles.mt10,
-    color: BASE_COLORS.redColor,
+    color: BASE_COLORS.begoniaColor,
   },
 });

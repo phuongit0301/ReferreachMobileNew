@@ -167,9 +167,11 @@ export const GlobalStyles = StyleSheet.create({
   },
   scrollViewWhite: {
     backgroundColor: BASE_COLORS.whiteColor,
-    zIndex: -1,
-    marginHorizontal: adjust(20),
-    marginVertical: adjust(20),
+    marginHorizontal: adjust(15),
+    marginVertical: adjust(10),
+  },
+  scrollViewWhiteNoMargin: {
+    backgroundColor: BASE_COLORS.whiteColor,
   },
   scrollViewContentContainer: {
     paddingBottom: adjust(10),
@@ -250,9 +252,7 @@ export const GlobalStyles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    zIndex: 20,
     top: headerTop(),
-    width: '100%',
   },
   headerEXS: {
     alignItems: 'center',
@@ -273,8 +273,8 @@ export const GlobalStyles = StyleSheet.create({
     flex: 1,
   },
   buttonContainerStyle: {
-    paddingHorizontal: adjust(31),
-    paddingVertical: adjust(14),
+    paddingHorizontal: adjust(35),
+    paddingVertical: adjust(8),
   },
   m5: {
     margin: adjust(5),
@@ -348,6 +348,9 @@ export const GlobalStyles = StyleSheet.create({
   mr30: {
     marginRight: adjust(30),
   },
+  mt3: {
+    marginTop: adjust(3),
+  },
   mt5: {
     marginTop: adjust(5),
   },
@@ -390,11 +393,23 @@ export const GlobalStyles = StyleSheet.create({
   mh15: {
     marginHorizontal: adjust(15),
   },
+  mh20: {
+    marginHorizontal: adjust(20),
+  },
+  mh25: {
+    marginHorizontal: adjust(25),
+  },
+  mh30: {
+    marginHorizontal: adjust(30),
+  },
   p5: {
     padding: adjust(5),
   },
   p10: {
     padding: adjust(10),
+  },
+  p12: {
+    padding: adjust(12),
   },
   p15: {
     padding: adjust(15),
@@ -444,33 +459,60 @@ export const GlobalStyles = StyleSheet.create({
     paddingLeft: adjust(40),
     paddingRight: adjust(40),
   },
+  ph50: {
+    paddingLeft: adjust(50),
+    paddingRight: adjust(50),
+  },
+  ph60: {
+    paddingLeft: adjust(60),
+    paddingRight: adjust(60),
+  },
+  ph70: {
+    paddingLeft: adjust(70),
+    paddingRight: adjust(70),
+  },
+  ph80: {
+    paddingLeft: adjust(80),
+    paddingRight: adjust(80),
+  },
   pv2: {
-    paddingTop: adjust(2),
-    paddingBottom: adjust(2),
+    paddingVertical: adjust(2),
   },
   pv5: {
-    paddingTop: adjust(5),
-    paddingBottom: adjust(5),
+    paddingVertical: adjust(5),
   },
   pv8: {
-    paddingTop: adjust(8),
-    paddingBottom: adjust(8),
+    paddingVertical: adjust(8),
+  },
+  pv9: {
+    paddingVertical: adjust(9),
   },
   pv10: {
-    paddingTop: adjust(10),
-    paddingBottom: adjust(10),
+    paddingVertical: adjust(10),
+  },
+  pv11: {
+    paddingVertical: adjust(11),
+  },
+  pv12: {
+    paddingVertical: adjust(12),
   },
   pv15: {
-    paddingTop: adjust(15),
-    paddingBottom: adjust(15),
+    paddingVertical: adjust(15),
   },
   pv20: {
-    paddingTop: adjust(20),
-    paddingBottom: adjust(20),
+    paddingVertical: adjust(20),
+  },
+  pv25: {
+    paddingVertical: adjust(25),
+  },
+  pv30: {
+    paddingVertical: adjust(30),
+  },
+  pv35: {
+    paddingVertical: adjust(35),
   },
   pv45: {
-    paddingTop: adjust(45),
-    paddingBottom: adjust(45),
+    paddingVertical: adjust(45),
   },
   pt5: {
     paddingTop: adjust(5),
@@ -533,12 +575,19 @@ export const GlobalStyles = StyleSheet.create({
     width: adjust(16),
     height: adjust(29),
   },
+  iconEdit: {
+    padding: adjust(5),
+    alignSelf: 'flex-end',
+    backgroundColor: BASE_COLORS.steelBlue2Color,
+    borderWidth: 2,
+    borderColor: BASE_COLORS.whiteColor,
+    borderRadius: adjust(100),
+  },
   inputStyle: {
-    height: adjust(48),
+    height: adjust(35),
   },
   labelStyle: {
     fontFamily: BASE_FONTS.semiBold,
-    fontWeight: 'bold',
     marginBottom: 8,
   },
   titleContainer: {
@@ -667,6 +716,29 @@ export const GlobalStyles = StyleSheet.create({
   },
   justifyBetween: {
     justifyContent: 'space-between',
+  },
+  justifyCenter: {
+    justifyContent: 'center',
+  },
+  justifyStart: {
+    justifyContent: 'flex-start',
+  },
+  fullWidth: {
+    width: '100%',
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  iconBackWhiteStyle: {
+    width: adjust(17),
+    height: adjust(17),
+  },
+  bgWhite: {
+    backgroundColor: BASE_COLORS.whiteColor,
+  },
+  logoDrawer: {
+    width: adjust(77),
+    height: adjust(57),
   },
 });
 

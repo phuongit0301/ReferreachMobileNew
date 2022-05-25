@@ -1,7 +1,8 @@
-import Header from './Header';
+import AuthHeader from './AuthHeader';
 import HeaderFormat from './HeaderFormat';
 import HeaderBg from './HeaderBg';
 import HeaderSmallWhite from './HeaderSmallWhite';
+import HeaderSmallTransparent from './HeaderSmallTransparent';
 import HeaderXSSmallBlue from './HeaderXSSmallBlue';
 import HeaderSmallBlue from './HeaderSmallBlue';
 import HeaderNormalBlue from './HeaderNormalBlue';
@@ -15,6 +16,7 @@ import Paragraph from './Paragraph';
 import Link from './Link';
 import Button from './Button';
 import ButtonSecond from './ButtonSecond';
+import ButtonSocial from './ButtonSocial';
 import Image from './Image';
 import Loading from './Loading';
 import LoadingSecondary from './LoadingSecondary';
@@ -50,18 +52,21 @@ import FeedBackBlockItem from './FeedBackBlockItem';
 import IndividualMessageBlockItem from './IndividualMessageBlockItem';
 import IndividualJointBlockItem from './IndividualJointBlockItem';
 import ProfileBlock from './ProfileBlock';
+import Otp from './Otp';
+import Intro from './Widgets/Slider';
 /** Define Template */
 
 import HomeTemplateScreen from './HomeTemplate';
 import InviteContactTemplateScreen from './InviteContactTemplate';
-import ProfileTemplateSceen from './ProfileTemplate';
+import ProfileTemplateScreen from './ProfileTemplate';
 
 export {
-  Header,
+  AuthHeader,
   HeaderFormat,
   HeaderBg,
   HeaderXSSmallBlue,
   HeaderSmallWhite,
+  HeaderSmallTransparent,
   HeaderSmallBlue,
   HeaderNormalBlue,
   HeaderLargeBlue,
@@ -74,6 +79,7 @@ export {
   Link,
   Button,
   ButtonSecond,
+  ButtonSocial,
   Image,
   Loading,
   LoadingSecondary,
@@ -110,6 +116,8 @@ export {
   IndividualJointBlockItem,
   HomeTemplateScreen,
   InviteContactTemplateScreen,
-  ProfileTemplateSceen,
+  ProfileTemplateScreen,
   ProfileBlock,
+  Otp,
+  Intro,
 };

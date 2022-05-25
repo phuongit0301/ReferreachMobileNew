@@ -56,6 +56,9 @@ export default StyleSheet.create({
   textSteelBlueColor: {
     color: BASE_COLORS.steelBlueColor,
   },
+  textSteelBlue2Color: {
+    color: BASE_COLORS.steelBlue2Color,
+  },
   textIndianRedColor: {
     color: BASE_COLORS.indianRedColor,
   },
@@ -67,6 +70,27 @@ export default StyleSheet.create({
   },
   textTimberWolfColor: {
     color: BASE_COLORS.timberWolfColor,
+  },
+  textForestGreenColor: {
+    color: BASE_COLORS.forestGreenColor,
+  },
+  textForestGreen2Color: {
+    color: BASE_COLORS.forestGreen2Color,
+  },
+  textDarkGrayColor: {
+    color: BASE_COLORS.darkGrayColor,
+  },
+  textDavysGreyColor: {
+    color: BASE_COLORS.davysGreyColor,
+  },
+  textDesireColor: {
+    color: BASE_COLORS.desireColor,
+  },
+  textGray2Color: {
+    color: BASE_COLORS.gray2Color,
+  },
+  textSilverChaliceColor: {
+    color: BASE_COLORS.silverChaliceColor,
   },
   textCenter: {
     textAlign: 'center',

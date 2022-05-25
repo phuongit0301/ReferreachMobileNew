@@ -1,26 +1,30 @@
 import React from 'react';
-import {View, TouchableOpacity, ViewStyle, TextStyle} from 'react-native';
+import {View, TouchableOpacity, ViewStyle} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
-import {GlobalStyles, IMAGES} from '~Root/config';
-import {Image, Paragraph} from '~Root/components';
+import {GlobalStyles, IMAGES, BASE_COLORS} from '~Root/config';
+import {Image} from '~Root/components';
+import FastImage, {ImageStyle} from 'react-native-fast-image';
+import styles from '../AuthHeader/styles';
 
 interface Props {
   isBackButton?: boolean;
-  title?: string;
   onBack?: () => void;
   containerHeaderStyle?: ViewStyle;
-  headerTextStyle?: TextStyle;
+  iconBackUrl?: number;
+  iconStyle?: ImageStyle;
 }
 
 const HeaderSmallBlue: React.FC<Props> = ({
   isBackButton = false,
   onBack = () => {},
-  title = '',
   containerHeaderStyle = {},
-  headerTextStyle = {},
+  iconBackUrl = IMAGES.iconBackGreen,
+  iconStyle = GlobalStyles.iconBack,
 }) => {
   return (
-    <View
+    <LinearGradient
+      colors={[BASE_COLORS.steelBlueColor, BASE_COLORS.cyanCornflowerBlueColor]}
       style={[
         GlobalStyles.containerHeader,
         GlobalStyles.containerHeaderBlueSM,
@@ -29,13 +33,15 @@ const HeaderSmallBlue: React.FC<Props> = ({
       ]}>
       <View style={[GlobalStyles.flexRow, GlobalStyles.ph5, GlobalStyles.header]}>
         {isBackButton && (
-          <TouchableOpacity onPress={onBack} style={[GlobalStyles.mr10]}>
-            <Image source={IMAGES.iconBack} style={GlobalStyles.iconBack} />
+          <TouchableOpacity onPress={onBack} style={styles.iconBackContainer}>
+            <Image source={iconBackUrl} style={iconStyle} />
           </TouchableOpacity>
         )}
-        <Paragraph h5 style={[GlobalStyles.headerTextWhite, headerTextStyle]} title={title} />
+        <View style={[GlobalStyles.alignCenter, GlobalStyles.fullWidth]}>
+          <FastImage source={IMAGES.logo2} resizeMode='contain' style={styles.logo} />
+        </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 

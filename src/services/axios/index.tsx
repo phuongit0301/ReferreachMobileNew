@@ -5,7 +5,6 @@ import {getToken} from '~Root/services/storage';
 axios.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
     const token = await getToken();
-    config.headers.Authorization = `Bearer sQHqYUzVNIYlc7IwEQDzRvx7z2vqXDvmPkRCOw3f94Y`;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

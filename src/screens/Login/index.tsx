@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
+import React, {useState} from 'react';
+import {View, ScrollView, KeyboardAvoidingView} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import {useForm, SubmitHandler} from 'react-hook-form';
@@ -11,11 +11,11 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {loginRequest} from '~Root/services/login/actions';
 import {showLoading, hideLoading} from '~Root/services/loading/actions';
-import {IFormData} from '~Root/services/login/types';
+import {IActionLoginFailure, IActionLoginRequested, IActionLoginSuccess} from '~Root/services/login/types';
 import {RootNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {InputValidateControl, Paragraph, Link, Button, Loading, HeaderSmallBlue} from '~Root/components';
-import {LOGIN_FIELDS, LOGIN_KEYS, GlobalStyles, BASE_COLORS} from '~Root/config';
+import {InputValidateControl, Link, Button, Loading, AuthHeader, CheckBox, InputIconValidate} from '~Root/components';
+import {LOGIN_FIELDS, LOGIN_KEYS, GlobalStyles, BASE_COLORS, IMAGES} from '~Root/config';
 import styles from './styles';
 
 const schema = yup.object().shape({
@@ -32,22 +32,41 @@ const LoginScreen = ({navigation}: Props) => {
     handleSubmit,
     setFocus,
     formState: {errors, isValid},
-  } = useForm<IFormData>({
+  } = useForm<IActionLoginRequested['payload']>({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
 
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const offsetKeyboard = Platform.select({
-    ios: 0,
-    android: 20,
-  });
+  const [isChecked, setCheckBox] = useState(false);
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
-  const onLogin: SubmitHandler<IFormData> = (credentials: IFormData) => {
+  const onLogin: SubmitHandler<IActionLoginRequested['payload']> = (credentials: IActionLoginRequested['payload']) => {
     if (credentials.email && credentials.password) {
-      // dispatch(showLoading());
-      console.log(12313123);
+      dispatch(showLoading());
+      dispatch(
+        loginRequest(credentials, (response: IActionLoginSuccess['payload'] | IActionLoginFailure['payload']) => {
+          dispatch(hideLoading());
+          if (response.success) {
+            Toast.show({
+              position: 'bottom',
+              type: response.success ? 'success' : 'warning',
+              text1: response.message,
+              visibilityTime: 4000,
+              autoHide: true,
+            });
+          } else {
+            Toast.show({
+              position: 'bottom',
+              type: 'error',
+              text1: response?.message ?? t('login_error'),
+              visibilityTime: 2000,
+              autoHide: true,
+            });
+          }
+        }),
+      );
     }
   };
 
@@ -64,36 +83,38 @@ const LoginScreen = ({navigation}: Props) => {
   };
 
   const onRegister = () => {
-    // navigation.navigate(AppRoute.INVITE_CODE);
     navigation.navigate(AppRoute.FEED_BACK_MODAL);
   };
 
-  const onForgotPassword = () => {
-    navigation.navigate(AppRoute.FORGOT_PASSWORD);
+  const onInvite = () => {
+    navigation.navigate(AppRoute.INVITE_CODE);
+  };
+
+  const onCheckboxChange = () => {
+    setCheckBox(!isChecked);
+  };
+
+  const onIconClick = () => {
+    setSecureTextEntry(!secureTextEntry);
   };
 
   return (
     <View style={[GlobalStyles.container, styles.container]}>
-      <HeaderSmallBlue title={t('referreach')} />
+      <AuthHeader showLeft={false} />
 
       <SafeAreaView style={GlobalStyles.container} edges={['right', 'left']}>
-        <KeyboardAvoidingView
-          style={GlobalStyles.keyboard}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={offsetKeyboard}>
+        <KeyboardAvoidingView>
           <ScrollView
             style={GlobalStyles.scrollViewWhite}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}>
             <View style={GlobalStyles.flexColumn}>
-              <View style={GlobalStyles.flexColumn}>
-                <View style={GlobalStyles.titleContainer}>
-                  <Paragraph h3 textBlack style={styles.h3} title={t('welcome')} />
-                </View>
+              <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30]}>
                 <InputValidateControl
                   label={t('email')}
                   inputStyle={styles.inputStyle}
                   labelStyle={styles.labelStyle}
+                  inputErrorStyle={styles.inputErrorStyle}
                   selectionColor={BASE_COLORS.blackColor}
                   placeholderTextColor={BASE_COLORS.blackColor}
                   errors={errors}
@@ -105,10 +126,11 @@ const LoginScreen = ({navigation}: Props) => {
                   onSubmitEditing={onSubmitEditing}
                   keyboardType='email-address'
                 />
-                <InputValidateControl
+                <InputIconValidate
                   label={t('password')}
-                  secureTextEntry={true}
-                  inputStyle={styles.inputStyle}
+                  secureTextEntry={secureTextEntry}
+                  inputStyleWrapper={styles.inputWrapperStyle}
+                  inputStyle={styles.inputIconStyle}
                   labelStyle={styles.labelStyle}
                   selectionColor={BASE_COLORS.blackColor}
                   placeholderTextColor={BASE_COLORS.blackColor}
@@ -117,13 +139,22 @@ const LoginScreen = ({navigation}: Props) => {
                   name={LOGIN_FIELDS.password}
                   rules={rulePassword}
                   register={register}
+                  showIcon={true}
+                  isIconImage={true}
+                  uri={IMAGES.iconEye}
+                  imageStyleContainer={styles.iconEyeContainer}
+                  imageStyle={styles.iconEye}
+                  onIconClick={onIconClick}
                 />
+                <View style={[GlobalStyles.flexRow, GlobalStyles.justifyBetween, GlobalStyles.alignCenter]}>
+                  <CheckBox text={t('remember_me')} isChecked={isChecked} onChange={onCheckboxChange} size={30} />
+                  <Link onPress={onRegister} textDarkGrayColor textDecoration bold title={t('forgot_password')} />
+                </View>
                 <View style={GlobalStyles.mt30}>
                   <Button
-                    title='Log in'
+                    title={t('login')}
                     h3
                     textCenter
-                    bordered
                     onPress={handleSubmit(onLogin)}
                     containerStyle={{...GlobalStyles.buttonContainerStyle, ...styles.buttonContainerStyle}}
                     textStyle={styles.h3BoldDefault}
@@ -131,29 +162,15 @@ const LoginScreen = ({navigation}: Props) => {
                   />
                 </View>
               </View>
-              <View style={[GlobalStyles.flexColumn, styles.signUpArea]}>
-                <View style={[GlobalStyles.flexRow, GlobalStyles.itemCenter, GlobalStyles.mb30]}>
-                  <Paragraph h4 bold textBlack style={styles.h3Default} title={t('have_an_invite_code')} />
-                  <Link
-                    onPress={onRegister}
-                    h4
-                    textBlack
-                    textDecoration
-                    bold
-                    style={[styles.h3Default, styles.signUpLink]}
-                    title={t('sign_up')}
-                  />
-                </View>
-                <View style={[GlobalStyles.flexRow, GlobalStyles.itemCenter]}>
-                  <Link
-                    onPress={onForgotPassword}
-                    h4
-                    textBlack
-                    textDecoration
-                    style={styles.h3Default}
-                    title={t('forgot_password')}
-                  />
-                </View>
+              <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter, GlobalStyles.justifyCenter]}>
+                <Link
+                  onPress={onInvite}
+                  h4
+                  textForestGreenColor
+                  textDecoration
+                  style={styles.h3Default}
+                  title={t('have_invite_code')}
+                />
               </View>
             </View>
           </ScrollView>
