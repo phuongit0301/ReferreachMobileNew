@@ -18,7 +18,6 @@ import {adjust} from '~Root/utils';
 
 type Props = NativeStackScreenProps<BottomTabParams, AppRoute.AIR_FEED>;
 
-const positions = ["I'm looking for"];
 const PAGINATION = [1, 2, 3];
 const DEFAULT_FORM_STATE = {
   greeting: false,
@@ -26,9 +25,11 @@ const DEFAULT_FORM_STATE = {
   position: true,
   description: false,
   details: false,
+  positionSuggestion: false,
 };
 
-const DEFAULT_TITLE = 'Hi there! This is where you can start to create an Ask and send it to your network. \n\n You can long press on me to access the tutorial and speech-to-text Ask creation.';
+const DEFAULT_TITLE =
+  'Hi there! This is where you can start to create an Ask and send it to your network. \n\n You can long press on me to access the tutorial and speech-to-text Ask creation.';
 
 const AskScreen = ({navigation}: any) => {
   const {t} = useTranslation();
@@ -37,6 +38,7 @@ const AskScreen = ({navigation}: any) => {
   const [showTooltip, setShowTooltip] = useState(true);
   const [textPosition, setTextPosition] = useState('');
   const [textGreeting, setTextGreeting] = useState('');
+  const [textDescription, setTextDescription] = useState('');
   const [textGreetingDefault, setTextGreetingDefault] = useState('Hi, ');
   const [titleTooltip, setTitleTooltip] = useState(DEFAULT_TITLE);
   const askState = useSelector((state: IGlobalState) => state.askState);
@@ -70,6 +72,14 @@ const AskScreen = ({navigation}: any) => {
     });
   };
 
+  const onShowDescription = () => {
+    setShowForm({
+      ...DEFAULT_FORM_STATE,
+      ...showForm,
+      description: true,
+    });
+  };
+
   const onHideAll = () => {
     setShowForm({
       ...DEFAULT_FORM_STATE,
@@ -80,12 +90,16 @@ const AskScreen = ({navigation}: any) => {
     setShowTooltip(!showTooltip);
   };
 
+  const onInputGreetingChange = (text: string) => {
+    setTextGreeting(text);
+  };
+
   const onInputPositionChange = (text: string) => {
     setTextPosition(text);
   };
 
-  const onInputGreetingChange = (text: string) => {
-    setTextGreeting(text);
+  const onInputDescriptionChange = (text: string) => {
+    setTextDescription(text);
   };
 
   const renderItem = ({item}: {item: any}) => {
@@ -98,10 +112,34 @@ const AskScreen = ({navigation}: any) => {
     );
   };
 
+  const renderPositionItem = ({item}: {item: any}) => {
+    return (
+      <TouchableOpacity
+        onPress={() => setTextPosition(item)}
+        style={[GlobalStyles.mh10, GlobalStyles.ph10, GlobalStyles.pv5, GlobalStyles.mb10, styles.btnGreetings]}>
+        <Paragraph p textSteelBlue2Color bold600 title={item} />
+      </TouchableOpacity>
+    );
+  };
+
   const onEndPosition = () => {
     setShowForm({
       ...DEFAULT_FORM_STATE,
       position: false,
+    });
+  };
+
+  const onEndDescription = () => {
+    setShowForm({
+      ...DEFAULT_FORM_STATE,
+      description: false,
+    });
+  };
+
+  const onShowPositionSuggestion = () => {
+    setShowForm({
+      ...showForm,
+      positionSuggestion: true,
     });
   };
 
@@ -175,7 +213,8 @@ const AskScreen = ({navigation}: any) => {
                 />
                 <View style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}>
                   <SelectDropdown
-                    data={positions}
+                    data={askState?.dataPositionDropDown}
+                    defaultValueByIndex={0}
                     onSelect={(selectedItem, index) => {
                       console.log(selectedItem, index);
                     }}
@@ -196,7 +235,7 @@ const AskScreen = ({navigation}: any) => {
                       <FastImage source={IMAGES.iconDropDown} resizeMode='cover' style={styles.iconDropDown} />
                     )}
                   />
-                  {showForm?.position ? (
+                  {(!textPosition || showForm?.position) ? (
                     <View style={styles.inputContainer}>
                       <TextInput
                         placeholder='what'
@@ -204,6 +243,8 @@ const AskScreen = ({navigation}: any) => {
                         style={styles.input}
                         onChangeText={onInputPositionChange}
                         onEndEditing={onEndPosition}
+                        onFocus={onShowPositionSuggestion}
+                        editable={!!textGreeting}
                       />
                     </View>
                   ) : (
@@ -218,6 +259,29 @@ const AskScreen = ({navigation}: any) => {
                     />
                   )}
                 </View>
+                {!!textPosition &&
+                  ((!textDescription || showForm?.description) ? (
+                    <View style={styles.inputAreaContainer}>
+                      <TextInput
+                        placeholder='to...(elaborate on your Ask)'
+                        value={textDescription}
+                        style={styles.inputArea}
+                        onChangeText={onInputDescriptionChange}
+                        onEndEditing={onEndDescription}
+                        multiline
+                      />
+                    </View>
+                  ) : (
+                    <Category
+                      styleTag={styles.styleTag}
+                      tagText={styles.tagText}
+                      key={`description`}
+                      name={`${textDescription}`}
+                      showButton={true}
+                      onPress={onShowDescription}
+                      uri={IMAGES.iconCloseBlue}
+                    />
+                  ))}
               </View>
             </View>
           </ScrollView>
@@ -227,9 +291,22 @@ const AskScreen = ({navigation}: any) => {
             <FlatList
               contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
               style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
-              data={askState?.dataGreetings}
+              data={askState?.dataGreetingSuggest}
               renderItem={renderItem}
-              keyExtractor={(item, index) => `greeting-sugguest-${index}`}
+              keyExtractor={(item, index) => `greeting-suggest-${index}`}
+              keyboardShouldPersistTaps='handled'
+            />
+          </View>
+        )}
+        {showForm?.positionSuggestion && (
+          <View style={[GlobalStyles.mh20, GlobalStyles.container, GlobalStyles.pv15, styles.borderTop]}>
+            <FlatList
+              contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
+              style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
+              data={askState?.dataPositionSuggest}
+              renderItem={renderPositionItem}
+              keyExtractor={(item, index) => `position-suggest-${index}`}
+              keyboardShouldPersistTaps='handled'
             />
           </View>
         )}
@@ -251,10 +328,7 @@ const AskScreen = ({navigation}: any) => {
                     <Path d='M19 13H0L7.308 0 19 13z' fill='#fff' />
                   </Svg>
                 </View>
-                <Paragraph
-                  style={styles.textSmall}
-                  title={titleTooltip}
-                />
+                <Paragraph style={styles.textSmall} title={titleTooltip} />
               </View>
             </View>
           )}

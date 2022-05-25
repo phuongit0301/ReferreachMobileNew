@@ -31,7 +31,9 @@ export const initialState: IAskState = {
       files: [{fileType: 'pdf'}, {fileType: 'xlx'}],
     },
   ],
-  dataGreetings: ['Good day,', 'Hello,', '你好！', 'Hey guys!', 'Hola!', 'Xin chào', 'Salaam', 'Namaste'],
+  dataGreetingSuggest: ['Good day,', 'Hello,', '你好！', 'Hey guys!', 'Hola!', 'Xin chào', 'Salaam', 'Namaste'],
+  dataPositionDropDown: ["I'm looking for", 'I urgently need', "I'm hiring for", 'I want'],
+  dataPositionSuggest: ['customers', 'consultants'],
   textSearch: '',
   callback: () => {},
 };

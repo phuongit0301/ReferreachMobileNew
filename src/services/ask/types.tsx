@@ -3,7 +3,9 @@ import {GET_ASK_REQUESTED, GET_ASK_SUCCESS, GET_ASK_FAILURE} from './constants';
 export interface IAskState {
   errors: string;
   data: any;
-  dataGreetings?: string[];
+  dataGreetingSuggest?: string[];
+  dataPositionDropDown: any[];
+  dataPositionSuggest?: string[];
   loading: boolean;
   success: boolean;
   textSearch?: string;

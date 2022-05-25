@@ -5,14 +5,13 @@ import {ActivityIndicator, Alert, Platform, ScrollView, TouchableOpacity, View} 
 import {SafeAreaView} from 'react-native-safe-area-context';
 // import ImagePicker, {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImagePicker, {Options} from 'react-native-image-crop-picker';
-import RNFS from 'react-native-fs';
 
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {updateUserAvatar} from '~Root/services/user/actions';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import {AvatarGradient, Button, HeaderSmallTransparent, Icon, ModalDialogCommon, Paragraph} from '~Root/components';
 import styles from './styles';
-import {IAvatar, IUserState} from '~Root/services/user/types';
+import {IUserState} from '~Root/services/user/types';
 import {useDispatch, useSelector} from 'react-redux';
 import {IGlobalState} from '~Root/types';
 import {useTranslation} from 'react-i18next';
@@ -195,7 +194,7 @@ const ProfileTemplateScreen: React.FC<Props> = ({
               ) : userState.userInfo?.avatar ? (
                 <FastImage
                   source={{
-                    uri: 'https://s3-alpha-sig.figma.com/img/5ec2/169b/c65b3c8a62c20bab414be37031f55fb1?Expires=1652659200&Signature=O7iXEZgTzjmEJDI-0di2orJyz48YJA4NHiQXZCFMIgXsxqC1wqeAQO-ZYK3sL4QF0~RFqYw-xk3UetfEt1Jpw36v19pywORmr8f04lTL2aMisr5CR8-6mbYUAa5HVkxmh79hdFJGiXJF8sNDaSxXnt4g53gFob0jcdBmj6T2ZeWuymMnPNrqlCVpO4hBVe6C1M8g8er1O7v9MinUhC48XSnyHMnzdjSbyp4ATnetL4p55yLZtCqrJtW1or-Sm5pO4xf~PG32BVhkqmXVhlREuFLJpUhWl~-1iVds7r1f8poCTJGil2dUaDKk22vcKXQHju5ZhtLHUoP0LH1lX1n~Ag__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA',
+                    uri: userState.userInfo?.avatar,
                   }}
                   style={[GlobalStyles.avatar, GlobalStyles.mb10]}
                 />

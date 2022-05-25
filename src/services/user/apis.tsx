@@ -3,6 +3,7 @@ import axios from '~Root/services/axios';
 
 import * as API from '~Root/private/api';
 import {IActionUpdateUserAvatarRequested, IActionUpdateUserInAppStatusRequested} from './types';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class UserAPI {
   static async handleUserInfo() {

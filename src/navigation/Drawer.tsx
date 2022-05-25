@@ -4,17 +4,21 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import {useTranslation} from 'react-i18next';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-import {Paragraph} from '~Root/components';
+import {AvatarGradient, Paragraph} from '~Root/components';
 import {sideBarRoutes} from '~Root/utils';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import styles from './styles';
 import {logout} from '~Root/services/auth/actions';
+import {IUserState} from '~Root/services/user/types';
+import {IGlobalState} from '~Root/types';
+import {AppRoute} from './AppRoute';
 
 const Drawer = ({props, navigation}) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
+  const userState: IUserState = useSelector((state: IGlobalState) => state.userState);
 
   const onLogout = () => {
     console.log(1231231312);
@@ -36,18 +40,33 @@ const Drawer = ({props, navigation}) => {
             </TouchableOpacity>
           </View>
           <View style={[styles.content]}>
-            <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
-              <FastImage
-                source={{
-                  uri: 'https://s3-alpha-sig.figma.com/img/5ec2/169b/c65b3c8a62c20bab414be37031f55fb1?Expires=1652659200&Signature=O7iXEZgTzjmEJDI-0di2orJyz48YJA4NHiQXZCFMIgXsxqC1wqeAQO-ZYK3sL4QF0~RFqYw-xk3UetfEt1Jpw36v19pywORmr8f04lTL2aMisr5CR8-6mbYUAa5HVkxmh79hdFJGiXJF8sNDaSxXnt4g53gFob0jcdBmj6T2ZeWuymMnPNrqlCVpO4hBVe6C1M8g8er1O7v9MinUhC48XSnyHMnzdjSbyp4ATnetL4p55yLZtCqrJtW1or-Sm5pO4xf~PG32BVhkqmXVhlREuFLJpUhWl~-1iVds7r1f8poCTJGil2dUaDKk22vcKXQHju5ZhtLHUoP0LH1lX1n~Ag__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA',
-                }}
-                style={[GlobalStyles.avatar, GlobalStyles.mr10, styles.avatarBorder]}
-              />
+            <TouchableOpacity
+              style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}
+              onPress={() => navigation.navigate(AppRoute.MAIN_NAVIGATOR)}>
+              {userState.userInfo?.avatar ? (
+                <FastImage
+                  source={{uri: userState.userInfo?.avatar}}
+                  style={[GlobalStyles.avatar, GlobalStyles.mr10, styles.avatarBorder]}
+                />
+              ) : (
+                <AvatarGradient
+                  title={`${userState?.userInfo?.first_name?.charAt(0)}${userState?.userInfo?.last_name?.charAt(0)}`}
+                  color1={BASE_COLORS.oxleyColor}
+                  color2={BASE_COLORS.oxleyColor}
+                  stylesContainer={GlobalStyles.mb15}
+                />
+              )}
               <View style={GlobalStyles.flexColumn}>
-                <Paragraph h5 textWhite bold600 title='Kelly Choo' style={GlobalStyles.mb5} />
-                <Paragraph textWhite title='kelly.choo@referreach.com' />
+                <Paragraph
+                  h5
+                  textWhite
+                  bold600
+                  title={`${userState?.userInfo?.first_name ?? ''} ${userState?.userInfo?.last_name ?? ''}`}
+                  style={GlobalStyles.mb5}
+                />
+                {userState?.userInfo?.email && <Paragraph textWhite title={userState?.userInfo?.email} />}
               </View>
-            </View>
+            </TouchableOpacity>
             <FlatList
               style={[GlobalStyles.container, GlobalStyles.mt30]}
               scrollEventThrottle={1}
