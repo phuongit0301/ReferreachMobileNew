@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import axios from '~Root/services/axios';
-import i18n from 'i18next';
 
 import * as API from '~Root/private/api';
-import {IActionUpdateUserInAppStatusRequested} from './types';
+import {IActionUpdateUserAvatarRequested, IActionUpdateUserInAppStatusRequested} from './types';
 
 export default class UserAPI {
   static async handleUserInfo() {
@@ -32,24 +31,30 @@ export default class UserAPI {
     }
   }
 
-  static async updateUserAvatar(payload: any) {
+  static async updateUserAvatar(payload: IActionUpdateUserAvatarRequested['payload']) {
     try {
-      const response = await axios({
-        method: 'POST',
-        url: API.USER_INFO_URL,
-        data: payload,
+      console.log('==========>', payload);
+      console.log('JSONSTRINGITY==========>', JSON.stringify(payload));
+      // const response = await axios({
+      //   method: 'PUT',
+      //   url: API.USER_AVATAR_URL,
+      //   data: payload,
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
+      //   },
+      // });
+      const response = await axios.put(API.USER_AVATAR_URL, payload, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
       });
-      if (!response?.data) {
-        throw new Error(i18n.t('not_match'));
+      if (response?.data) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
       }
-      return {
-        data: response.data,
-        message: '',
-        success: true,
-      };
     } catch (error) {
       return {
         data: null,

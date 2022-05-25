@@ -30,6 +30,7 @@ const TabBar = ({state, descriptors, navigation}: any) => {
           let label;
           let iconName: any;
           let title;
+          let isCreateAsk = false;
 
           if (options.tabBarLabel !== undefined) {
             label = options.tabBarLabel;
@@ -37,35 +38,57 @@ const TabBar = ({state, descriptors, navigation}: any) => {
             label = options.title !== undefined ? options.title : route.name;
           }
 
+          const isFocused = state.index === index;
+
           switch (label) {
             case AppRoute.YOUR_ASK:
-              iconName = <Image source={IMAGES.iconYourAsk} resizeMode='cover' style={styles.iconYourAsk} />;
+              iconName = isFocused ? (
+                <Image source={IMAGES.iconYourAskActive} resizeMode='cover' style={styles.iconYourAsk} />
+              ) : (
+                <Image source={IMAGES.iconYourAsk} resizeMode='cover' style={styles.iconYourAsk} />
+              );
               title = 'Your Ask';
               break;
             case AppRoute.AIR_FEED:
-              iconName = <Image source={IMAGES.iconAIRFeed} resizeMode='cover' style={styles.iconAirFeed} />;
+              iconName = isFocused ? (
+                <Image source={IMAGES.iconAIRFeedActive} resizeMode='cover' style={styles.iconAirFeed} />
+              ) : (
+                <Image source={IMAGES.iconAIRFeed} resizeMode='cover' style={styles.iconAirFeed} />
+              );
               title = 'Air Feed';
               break;
             case AppRoute.ASK:
             case AppRoute.MAIN_NAVIGATOR:
               iconName = <Image source={IMAGES.iconAsk} resizeMode='cover' style={styles.iconAsk} />;
               title = 'Ask';
+              isCreateAsk = true;
               break;
             case AppRoute.TRUST_NETWORK:
-              iconName = <Image source={IMAGES.iconTrustNetwork} resizeMode='cover' style={styles.iconTrustNetWork} />;
+              iconName = isFocused ? (
+                <Image source={IMAGES.iconTrustNetworkActive} resizeMode='cover' style={styles.iconTrustNetWork} />
+              ) : (
+                <Image source={IMAGES.iconTrustNetwork} resizeMode='cover' style={styles.iconTrustNetWork} />
+              );
               title = 'Trust';
               break;
             case AppRoute.CHAT:
-              iconName = <Image source={IMAGES.iconChat} resizeMode='cover' style={styles.iconChat} />;
+              iconName = isFocused ? (
+                <Image source={IMAGES.iconChatActive} resizeMode='cover' style={styles.iconChat} />
+              ) : (
+                <Image source={IMAGES.iconChat} resizeMode='cover' style={styles.iconChat} />
+              );
               title = 'Chat';
               break;
             default:
-              iconName = <Image source={IMAGES.iconYourAsk} resizeMode='cover' style={styles.iconYourAsk} />;
+              iconName = isFocused ? (
+                <Image source={IMAGES.iconYourAskActive} resizeMode='cover' style={styles.iconYourAsk} />
+              ) : (
+                <Image source={IMAGES.iconYourAsk} resizeMode='cover' style={styles.iconYourAsk} />
+              );
               title = 'Your Ask';
               break;
           }
 
-          const isFocused = state.index === index;
           const onPress = () => {
             Animated.spring(translateValue, {
               toValue: index * tabWidth,
@@ -73,7 +96,9 @@ const TabBar = ({state, descriptors, navigation}: any) => {
               useNativeDriver: true,
             }).start();
             if (!isFocused) {
-              navigation.navigate(route.name);
+              route?.name === AppRoute.MAIN_NAVIGATOR
+                ? navigation.navigate(AppRoute.ASK)
+                : navigation.navigate(route.name);
             }
           };
 
@@ -94,13 +119,19 @@ const TabBar = ({state, descriptors, navigation}: any) => {
               style={styles.tabArea}
               key={index}>
               <View style={styles.iconContainer}>
-                {isFocused ? (
+                {isCreateAsk ? (
                   <View style={[GlobalStyles.pv5, GlobalStyles.ph10, styles.iconActive]}>{iconName}</View>
+                ) : isFocused ? (
+                  <View style={[GlobalStyles.pv5, GlobalStyles.ph10, styles.iconActiveBackground]}>{iconName}</View>
                 ) : (
                   <View style={[GlobalStyles.pv5, GlobalStyles.ph10, styles.icons]}>{iconName}</View>
                 )}
               </View>
-              <Paragraph textSilverChaliceColor title={title} style={GlobalStyles.mt3} />
+              {isFocused ? (
+                <Paragraph textSteelBlue2Color bold600 title={title} style={GlobalStyles.mt3} />
+              ) : (
+                <Paragraph textSilverChaliceColor bold600 title={title} style={GlobalStyles.mt3} />
+              )}
             </TouchableOpacity>
           );
         })}

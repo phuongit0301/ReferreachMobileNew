@@ -22,12 +22,7 @@ persistor.purge();
 
 export const config = {
   screens: {
-    [AppRoute.INVITE_CODE]: {
-      path: 'i/:code',
-      parse: {
-        code: String,
-      },
-    },
+    [AppRoute.INVITE_CODE]: 'invite/:code',
   },
 };
 
@@ -35,20 +30,11 @@ const linking = {
   prefixes: ['https://app-dev.referreach.com', 'http://app-dev.referreach.com', 'referreach://'],
   config,
   async getInitialURL() {
-    return await Linking.getInitialURL();
+    const url = await Linking.getInitialURL();
+    if (url != null) {
+      return url;
+    }
   },
-  // subscribe: (listener: any) => {
-  //   console.log('subscribe');
-  //   const onReceiveURL = ({url}: {url: string}) => listener(url);
-
-  //   // Listen to incoming links from deep linking
-  //   Linking.addEventListener('url', onReceiveURL);
-
-  //   return () => {
-  //     // Clean up the event listeners
-  //     Linking.removeEventListener('url', onReceiveURL);
-  //   };
-  // },
 };
 
 const App = () => {

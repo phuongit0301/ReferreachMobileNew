@@ -28,4 +28,8 @@ export default StyleSheet.create({
     width: adjust(8),
     height: adjust(8),
   },
+  iconCloseBlue: {
+    width: adjust(22),
+    height: adjust(22),
+  },
 });

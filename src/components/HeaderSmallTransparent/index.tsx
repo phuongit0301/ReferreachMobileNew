@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, TouchableOpacity, TextStyle, ViewStyle} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {ImageStyle} from 'react-native-fast-image';
+import FastImage, {ImageStyle} from 'react-native-fast-image';
 
 import {GlobalStyles, IMAGES} from '~Root/config';
 import {Image, Paragraph} from '~Root/components';
@@ -11,6 +11,7 @@ interface Props {
   title: string;
   isBackButton?: boolean;
   onBack?: () => void;
+  isLogo?: boolean;
   containerHeaderStyle?: ViewStyle;
   headerTextStyle?: TextStyle;
   iconBackUrl?: number;
@@ -25,6 +26,7 @@ const HeaderSmallTransparent: React.FC<Props> = ({
   title,
   isBackButton = false,
   onBack = () => {},
+  isLogo = false,
   containerHeaderStyle = {},
   headerTextStyle = {},
   iconBackUrl = IMAGES.iconBackGrey,
@@ -37,8 +39,9 @@ const HeaderSmallTransparent: React.FC<Props> = ({
   const {t} = useTranslation();
 
   return (
-    <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pb15, containerHeaderStyle]}>
+    <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv15, containerHeaderStyle]}>
       <View style={styles.left}>
+        {isLogo && <FastImage source={IMAGES.logoSmall} style={[GlobalStyles.ml15, styles.logoSmall]} />}
         {isBackButton && (
           <TouchableOpacity onPress={onBack} style={[GlobalStyles.ml15]}>
             <Image source={iconBackUrl} style={[styles.iconBack, iconStyle]} />

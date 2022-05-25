@@ -8,6 +8,7 @@ import {IUserState} from '~Root/services/user/types';
 import {IContactState} from '~Root/services/contact/types';
 import {IIndustryState} from '~Root/services/industry/types';
 import {IRegisterState} from '~Root/services/register/types';
+import {IAskState} from '~Root/services/ask/types';
 
 // Global state
 export interface IGlobalState {
@@ -18,6 +19,7 @@ export interface IGlobalState {
   contactState: IContactState;
   industryState: IIndustryState;
   registerState: IRegisterState;
+  askState: IAskState;
 }
 
 // Interface for async call steps

@@ -68,11 +68,17 @@ const InviteConfirmScreen = ({navigation, route}: Props) => {
                     stylesContainer={GlobalStyles.mb15}
                   />
                 )}
-                {/* {
-                  dataInvite?.included?.length > 0 && 
-                    <Paragraph h4 bold textSteelBlueColor title={dataInvite?.included[0]?.attributes?.first-name} style={GlobalStyles.mb20} />
-                } */}
-                <Paragraph h4 bold textSteelBlueColor title={`Kelly Choo`} style={GlobalStyles.mb20} />
+                {dataInvite?.included?.length > 0 && (
+                  <Paragraph
+                    h4
+                    bold
+                    textSteelBlueColor
+                    title={`${dataInvite?.included[0]?.attributes?.first_name ?? ''} ${
+                      dataInvite?.included[0]?.attributes?.last_name ?? ''
+                    }`}
+                    style={GlobalStyles.mb20}
+                  />
+                )}
                 {dataInvite?.included && dataInvite?.included?.length > 0 && (
                   <Paragraph
                     textCenter

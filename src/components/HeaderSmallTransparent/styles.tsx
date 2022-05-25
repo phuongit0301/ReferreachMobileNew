@@ -21,4 +21,8 @@ export default StyleSheet.create({
     width: '15%',
     height: adjust(23),
   },
+  logoSmall: {
+    width: adjust(30),
+    height: adjust(22),
+  },
 });

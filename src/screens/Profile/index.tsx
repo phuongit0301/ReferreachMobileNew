@@ -15,10 +15,16 @@ import styles from './styles';
 import {IGlobalState} from '~Root/types';
 
 const schema = yup.object().shape({
-  first_name: yup.string().max(31, 'First Name must be at most 31 characters').required('First Name is required'),
-  last_name: yup.string().max(31, 'Last Name must be at most 31 characters').required('Last Name is required'),
-  title: yup.string().required('Job Title is required'),
-  introductions: yup.string().max(248).required('Expertise / Pitch is required'),
+  [PROFILE_FIELDS.first_name]: yup
+    .string()
+    .max(31, 'First Name must be at most 31 characters')
+    .required('First Name is required'),
+  [PROFILE_FIELDS.last_name]: yup
+    .string()
+    .max(31, 'Last Name must be at most 31 characters')
+    .required('Last Name is required'),
+  [PROFILE_FIELDS.title]: yup.string().required('Job Title is required'),
+  [PROFILE_FIELDS.introductions]: yup.string().max(248).required('Expertise / Pitch is required'),
 });
 
 type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.PROFILE>;
@@ -38,27 +44,26 @@ const ProfileScreen = ({navigation}: any) => {
   });
 
   const {t} = useTranslation();
-  const {userInfo} = useSelector((state: IGlobalState) => state.userState);
+  const userState = useSelector((state: IGlobalState) => state.userState);
 
   const onSubmit: SubmitHandler<any> = (credentials: any) => {
-    console.log(credentials);
     navigation.navigate(AppRoute.PROFILE_SECOND, {...credentials});
   };
 
   useEffect(() => {
-    if (userInfo?.first_name) {
-      setValue(PROFILE_FIELDS.first_name, userInfo?.first_name);
+    if (userState.userInfo?.first_name) {
+      setValue(PROFILE_FIELDS.first_name, userState.userInfo?.first_name);
     }
-    if (userInfo?.last_name) {
-      setValue(PROFILE_FIELDS.last_name, userInfo?.last_name);
+    if (userState.userInfo?.last_name) {
+      setValue(PROFILE_FIELDS.last_name, userState.userInfo?.last_name);
     }
-    if (userInfo?.title) {
-      setValue(PROFILE_FIELDS.title, userInfo?.title);
+    if (userState.userInfo?.title) {
+      setValue(PROFILE_FIELDS.title, userState.userInfo?.title);
     }
-    if (userInfo?.introductions) {
-      setValue(PROFILE_FIELDS.introductions, userInfo?.introductions);
+    if (userState.userInfo?.introductions) {
+      setValue(PROFILE_FIELDS.introductions, userState.userInfo?.introductions);
     }
-  }, []);
+  }, [userState.userInfo]);
 
   const onBack = () => {
     navigation.goBack();
@@ -71,6 +76,10 @@ const ProfileScreen = ({navigation}: any) => {
   const onToggleDrawer = () => {
     navigation.toggleDrawer();
   };
+
+  if (userState.loading) {
+    return null;
+  }
 
   return (
     <View style={[GlobalStyles.container]}>
@@ -101,7 +110,6 @@ const ProfileScreen = ({navigation}: any) => {
             control={control}
             name={PROFILE_FIELDS.last_name}
             register={register}
-            autoFocus={true}
             onSubmitEditing={() => onSubmitEditing(PROFILE_FIELDS.title)}
           />
           <InputValidateControl
@@ -115,7 +123,6 @@ const ProfileScreen = ({navigation}: any) => {
             control={control}
             name={PROFILE_FIELDS.title}
             register={register}
-            autoFocus={true}
             onSubmitEditing={() => onSubmitEditing(PROFILE_FIELDS.introductions)}
           />
           <InputValidateControl
@@ -129,7 +136,6 @@ const ProfileScreen = ({navigation}: any) => {
             control={control}
             name={PROFILE_FIELDS.introductions}
             register={register}
-            autoFocus={true}
             multiline={true}>
             <View style={styles.countCharacters}>
               <Paragraph title={`${(watch('introductions') as string)?.length ?? 0}/248`} />
@@ -143,7 +149,7 @@ const ProfileScreen = ({navigation}: any) => {
               onPress={handleSubmit(onSubmit)}
               containerStyle={{...GlobalStyles.buttonContainerStyle, ...styles.buttonContainerStyle}}
               textStyle={styles.h3BoldDefault}
-              disabled={!isValid}
+              disabled={!isValid && !errors}
             />
           </View>
         </View>

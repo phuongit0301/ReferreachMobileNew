@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/promise-function-async */
 import React, {useCallback, useState} from 'react';
-import {ActivityIndicator, Alert, ScrollView, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Alert, Platform, ScrollView, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 // import ImagePicker, {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImagePicker, {Options} from 'react-native-image-crop-picker';
+import RNFS from 'react-native-fs';
 
-import {setUserProfileAvatar} from '~Root/services/user/actions';
+import {hideLoading, showLoading} from '~Root/services/loading/actions';
+import {updateUserAvatar} from '~Root/services/user/actions';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import {AvatarGradient, Button, HeaderSmallTransparent, Icon, ModalDialogCommon, Paragraph} from '~Root/components';
 import styles from './styles';
-import {IUserState} from '~Root/services/user/types';
+import {IAvatar, IUserState} from '~Root/services/user/types';
 import {useDispatch, useSelector} from 'react-redux';
 import {IGlobalState} from '~Root/types';
 import {useTranslation} from 'react-i18next';
@@ -94,45 +96,59 @@ const ProfileTemplateScreen: React.FC<Props> = ({
     setVisibleModal(!visibleModal);
   };
 
+  const openImageCrop = (response: any, type: any) => {
+    ImagePicker.openCropper({
+      path: response.path,
+      mediaType: type,
+      width: 80,
+      height: 80,
+      writeTempFile: false,
+      includeExif: true,
+      cropperCircleOverlay: true,
+      freeStyleCropEnabled: true,
+      avoidEmptySpaceAroundImage: true,
+      includeBase64: true,
+    })
+      .then(async croppedImage => {
+        setVisibleModal(false);
+        const data = new FormData();
+        data.append('avatar', {
+          name: 'image',
+          type: 'image/jpg',
+          uri: Platform.OS === 'android' ? croppedImage.path : croppedImage.path.replace('file://', ''),
+        });
+        data.append('avatar_lat', croppedImage?.cropRect?.x);
+        data.append('avatar_lng', croppedImage?.cropRect?.y);
+        dispatch(showLoading());
+        dispatch(
+          updateUserAvatar(data, (response: any) => {
+            dispatch(hideLoading());
+          }),
+        );
+        // dispatch(
+        //   setUserProfileAvatar({
+        //     name: response?.assets[0]?.fileName,
+        //     type: response?.assets[0]?.type,
+        //     uri: response?.assets[0]?.uri,
+        //   }),
+        // );
+      })
+      .catch(error => {
+        console.log(`Error in open cropper: ${error as string}`);
+      });
+  };
+
   const onButtonPress = useCallback(async (type, options) => {
     try {
       if (type === 'camera') {
         ImagePicker.openCamera(options)
-          .then((response: any) => {
-            console.log('respine111111s=========>', response);
-          })
+          .then((response: any) => openImageCrop(response, type))
           .catch(error => {
             console.log(`Error in open camera: ${error as string}`);
           });
       } else {
         ImagePicker.openPicker(options)
-          .then((response: any) => {
-            ImagePicker.openCropper({
-              path: response.path,
-              mediaType: type,
-              width: 80,
-              height: 80,
-              writeTempFile: false,
-              includeExif: true,
-              cropperCircleOverlay: true,
-              freeStyleCropEnabled: true,
-              avoidEmptySpaceAroundImage: true,
-              includeBase64: true,
-            })
-              .then(croppedImage => {
-                setVisibleModal(false);
-                setImageAvatar({
-                  uri: croppedImage.path,
-                  width: croppedImage.width,
-                  height: croppedImage.height,
-                  mime: croppedImage.mime,
-                  cropRect: croppedImage?.cropRect,
-                });
-              })
-              .catch(error => {
-                console.log(`Error in open cropper: ${error as string}`);
-              });
-          })
+          .then((response: any) => openImageCrop(response, type))
           .catch(error => {
             console.log(`Error in open picker: ${error as string}`);
           });

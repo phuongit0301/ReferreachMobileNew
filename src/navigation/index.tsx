@@ -7,7 +7,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import i18n from 'i18next';
 import {initReactI18next} from 'react-i18next';
 import AsyncStorage from '@react-native-community/async-storage';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 import LoginScreen from '~Root/screens/Login';
 import RegisterScreen from '~Root/screens/Register';
@@ -30,7 +29,7 @@ import TrustNetworkScreen from '~Root/screens/TrustNetwork';
 import ChatScreen from '~Root/screens/Chat';
 import AppCheckScreen from '~Root/screens/AppCheck';
 
-import {BASE_COLORS, BASE_SETTINGS, GlobalStyles} from '~Root/config';
+import {BASE_SETTINGS} from '~Root/config';
 import {AppState} from '~Root/reducers';
 import * as AuthActions from '~Root/services/auth/actions';
 
@@ -39,8 +38,8 @@ import Drawer from './Drawer';
 import {AppRoute} from './AppRoute';
 import styles from './styles';
 import {BottomTabParams, MainNavigatorParamsList, RootNavigatorParamsList} from './config';
-import {Linking, View} from 'react-native';
-import {Paragraph} from '~Root/components';
+import {IGlobalState} from '~Root/types';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 enableScreens();
 
@@ -50,6 +49,8 @@ const DrawerStack = createDrawerNavigator();
 const BottomTab = createBottomTabNavigator<BottomTabParams>();
 
 const MainNavigator = (props: any) => {
+  const userState = useSelector((state: IGlobalState) => state.userState);
+
   return (
     <MainStack.Navigator
       screenOptions={{
@@ -60,7 +61,6 @@ const MainNavigator = (props: any) => {
       <MainStack.Screen name={AppRoute.PROFILE} component={ProfileScreen} />
       <MainStack.Screen name={AppRoute.PROFILE_SECOND} component={ProfileSecondScreen} />
       <MainStack.Screen name={AppRoute.PROFILE_COMPLETE} component={ProfileCompleteScreen} />
-      <MainStack.Screen name={AppRoute.ASK} component={AskScreen} />
     </MainStack.Navigator>
   );
 };
@@ -68,7 +68,7 @@ const MainNavigator = (props: any) => {
 const AppBottomTab = () => {
   return (
     <BottomTab.Navigator
-      initialRouteName={AppRoute.MAIN_NAVIGATOR}
+      initialRouteName={AppRoute.YOUR_ASK}
       screenOptions={() => ({
         headerShown: false,
       })}
@@ -112,6 +112,9 @@ const AppNavigator = (props: any) => {
         resources: BASE_SETTINGS.resourcesLanguage,
         lng: BASE_SETTINGS.defaultLanguage,
         fallbackLng: BASE_SETTINGS.defaultLanguage,
+        interpolation: {
+          escapeValue: false,
+        },
       });
     };
 
@@ -125,17 +128,6 @@ const AppNavigator = (props: any) => {
     }
   }, [dispatch, authState?.isAppReady]);
 
-  useEffect(() => {
-    Linking.addEventListener('url', (event: any) => {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      Linking.canOpenURL(event.url).then(supported => {
-        if (supported) {
-          console.log('1211111111111');
-        }
-      });
-    });
-  }, []);
-
   return (
     <RootStack.Navigator
       screenOptions={{
@@ -148,13 +140,13 @@ const AppNavigator = (props: any) => {
       ) : authState.isLoggedIn ? (
         <>
           <RootStack.Screen name={AppRoute.APP_CHECK} component={AppCheckScreen} />
-          <RootStack.Screen name={AppRoute.VERIFY_EMAIL} component={VerifyEmailScreen} />
           <RootStack.Screen name={AppRoute.INVITE_CONTACT} component={InviteContactScreen} />
           <RootStack.Screen name={AppRoute.LIST_CONTACT} component={ListContactScreen} />
           <RootStack.Screen name={AppRoute.SEND_INVITES} component={SendInvitesScreen} />
           <RootStack.Screen name={AppRoute.INTRO} component={IntroScreen} />
           <RootStack.Screen name={AppRoute.APP_DRAWER} component={AppDrawer} />
           <RootStack.Screen name={AppRoute.HOME} component={YourAskScreen} />
+          <RootStack.Screen name={AppRoute.ASK} component={AskScreen} />
         </>
       ) : (
         <>
@@ -164,6 +156,7 @@ const AppNavigator = (props: any) => {
       )}
       <RootStack.Screen name={AppRoute.INVITE_CODE} component={InviteCodeScreen} />
       <RootStack.Screen name={AppRoute.INVITE_CONFIRM} component={InviteConfirmScreen} />
+      <RootStack.Screen name={AppRoute.VERIFY_EMAIL} component={VerifyEmailScreen} />
       <RootStack.Screen name={AppRoute.INVITE_EXPIRE} component={InviteExpireScreen} />
     </RootStack.Navigator>
   );

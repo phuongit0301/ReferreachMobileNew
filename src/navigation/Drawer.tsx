@@ -4,14 +4,22 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import {useTranslation} from 'react-i18next';
+import {useDispatch} from 'react-redux';
 
 import {Paragraph} from '~Root/components';
 import {sideBarRoutes} from '~Root/utils';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import styles from './styles';
+import {logout} from '~Root/services/auth/actions';
 
 const Drawer = ({props, navigation}) => {
   const {t} = useTranslation();
+  const dispatch = useDispatch();
+
+  const onLogout = () => {
+    console.log(1231231312);
+    dispatch(logout());
+  };
 
   return (
     <LinearGradient
@@ -59,7 +67,7 @@ const Drawer = ({props, navigation}) => {
             />
           </View>
           <View style={GlobalStyles.flexColumn}>
-            <TouchableOpacity onPress={() => console.log('logout')} style={GlobalStyles.flexRow}>
+            <TouchableOpacity onPress={onLogout} style={GlobalStyles.flexRow}>
               <FastImage
                 source={IMAGES.iconLogout}
                 resizeMode='contain'

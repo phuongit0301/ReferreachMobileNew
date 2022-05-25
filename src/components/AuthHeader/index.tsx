@@ -21,7 +21,7 @@ const AuthHeader: React.FC<Props> = ({
   onPressLeft = () => {},
 }) => {
   return (
-    <SafeAreaView style={styles.widthFull} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={[styles.widthFull, GlobalStyles.mt10]} edges={['top', 'left', 'right', 'bottom']}>
       <View style={[GlobalStyles.flexRow, style]}>
         {showLeft && (
           <TouchableOpacity style={[styles.iconBackContainer, styleLeft]} onPress={onPressLeft}>

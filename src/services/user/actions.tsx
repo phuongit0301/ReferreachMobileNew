@@ -1,11 +1,17 @@
 import {
   DELETE_DATA_INDUSTRY,
   SET_USER_INDUSTRY,
+  UPDATE_USER_AVATAR_REQUESTED,
   UPDATE_USER_IN_APP_STATUS_REQUESTED,
   UPDATE_USER_PROFILE_REQUESTED,
   USER_INFO_REQUESTED,
 } from './constants';
-import {IActionUpdateUserInAppStatusRequested, IActionUpdateUserInAppStatusSuccess, IUserInfoState} from './types';
+import {
+  IActionUpdateUserAvatarRequested,
+  IActionUpdateUserInAppStatusRequested,
+  IActionUpdateUserInAppStatusSuccess,
+  IUserInfoState,
+} from './types';
 
 export const userInfoRequest = (callback?: (item: any) => void) => {
   return {
@@ -45,6 +51,17 @@ export const updateUserInAppStatus = (
 ) => {
   return {
     type: UPDATE_USER_IN_APP_STATUS_REQUESTED,
+    payload,
+    callback,
+  };
+};
+
+export const updateUserAvatar = (
+  payload: any,
+  callback: (response: IActionUpdateUserInAppStatusSuccess['payload']) => void,
+) => {
+  return {
+    type: UPDATE_USER_AVATAR_REQUESTED,
     payload,
     callback,
   };

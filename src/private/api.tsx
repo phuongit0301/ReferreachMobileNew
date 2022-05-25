@@ -13,6 +13,7 @@ export const REGISTER_URL = `${ROOT_URL}/auth/`;
 export const VERIFY_ACCOUNT_URL = `${ROOT_API_URL}/users/verify_email`;
 export const RENEW_VERIFICATION_CODE_URL = `${ROOT_API_URL}/users/send_confirmation_token`;
 export const USER_INFO_URL = `${ROOT_API_URL}/users/me/`;
+export const USER_AVATAR_URL = `${ROOT_API_URL}/users/avatar`;
 export const INVITE_USER_CONTACT_URL = `${ROOT_API_URL}/invitations/invite_bulk_users/`;
 export const USER_IN_APP_STATUS_URL = `${ROOT_API_URL}/users/update_in_app_status`;
 
