@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, ScrollView, KeyboardAvoidingView} from 'react-native';
+import {View, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import {useForm, SubmitHandler} from 'react-hook-form';
@@ -69,7 +69,7 @@ const InviteCodeScreen = ({navigation}: Props) => {
       <AuthHeader showLeft={true} onPressLeft={() => navigation.goBack()} />
 
       <SafeAreaView style={GlobalStyles.container} edges={['right', 'left']}>
-        <KeyboardAvoidingView style={GlobalStyles.container}>
+        <KeyboardAvoidingView style={GlobalStyles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <ScrollView
             style={GlobalStyles.scrollViewWhite}
             contentContainerStyle={styles.contentContainer}

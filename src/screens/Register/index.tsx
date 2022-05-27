@@ -13,13 +13,13 @@ import {IActionRegisterRequested, IActionRegisterSuccess} from '~Root/services/r
 import {registerRequest} from '~Root/services/register/actions';
 import {showLoading, hideLoading} from '~Root/services/loading/actions';
 import {RootNavigatorParamsList} from '~Root/navigation/config';
+import {loginRequest} from '~Root/services/login/actions';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {InputValidateControl, Button, Loading, AuthHeader, InputIconValidate, Paragraph, Link} from '~Root/components';
 import {REGISTER_FIELDS, REGISTER_KEYS, GlobalStyles, BASE_COLORS, IMAGES} from '~Root/config';
 import {adjust} from '~Root/utils';
 import styles from './styles';
 import {IGlobalState} from '~Root/types';
-import { loginRequest } from '~Root/services/login/actions';
 
 const schema = yup.object().shape({
   first_name: yup.string().required('First Name is required'),

@@ -1,18 +1,127 @@
-import React from 'react';
-import {View} from 'react-native';
+import React, {useState} from 'react';
+import {Animated, RefreshControl, TextInput, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useTranslation} from 'react-i18next';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSelector} from 'react-redux';
+import FastImage from 'react-native-fast-image';
 
-import {BottomTabParams} from '~Root/navigation/config';
+import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {Paragraph} from '~Root/components';
-import {GlobalStyles} from '~Root/config';
+import {AskItem, Button, HeaderSmallTransparent, Paragraph} from '~Root/components';
+import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
+import {CompositeScreenProps} from '@react-navigation/native';
+import {DrawerScreenProps} from '@react-navigation/drawer';
+import {IGlobalState} from '~Root/types';
+import styles from './styles';
 
-type Props = NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>;
+type Props = CompositeScreenProps<
+  NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
+  DrawerScreenProps<TabNavigatorParamsList>
+>;
 
 const YourAskScreen = ({navigation}: Props) => {
+  const {t} = useTranslation();
+  const scrollAnim = new Animated.Value(0);
+
+  const askState = useSelector((state: IGlobalState) => state.askState);
+  const [refreshing, setRefreshing] = useState(false);
+  const [textSearch, setTextSearch] = useState('');
+
+  const onToggleDrawer = () => {
+    navigation.toggleDrawer();
+  };
+
+  const onInputChange = (text: string) => {
+    setTextSearch(text);
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
+
   return (
-    <View style={[GlobalStyles.container, GlobalStyles.alignCenter, GlobalStyles.justifyCenter]}>
-      <Paragraph h2 bold title={'You Ask'} />
+    <View style={[GlobalStyles.container]}>
+      <SafeAreaView style={GlobalStyles.container} edges={['top', 'right', 'left']}>
+        <HeaderSmallTransparent
+          title={t('your_ask')}
+          isLogo={true}
+          isRightButton={true}
+          onRightPress={onToggleDrawer}
+        />
+        <View style={[GlobalStyles.container, GlobalStyles.ph15, styles.container]}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder='Search for asks'
+              value={textSearch}
+              style={styles.input}
+              onChangeText={onInputChange}
+            />
+            <FastImage source={IMAGES.iconSearch} style={styles.iconSearch} />
+          </View>
+          <Animated.FlatList
+            contentContainerStyle={[GlobalStyles.pb150]}
+            style={GlobalStyles.mt15}
+            nestedScrollEnabled={true}
+            refreshControl={
+              <RefreshControl
+                colors={[BASE_COLORS.primary]}
+                tintColor={BASE_COLORS.primary}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />
+            }
+            scrollEventThrottle={1}
+            onScroll={Animated.event(
+              [
+                {
+                  nativeEvent: {
+                    contentOffset: {
+                      y: scrollAnim,
+                    },
+                  },
+                },
+              ],
+              {useNativeDriver: true},
+            )}
+            showsVerticalScrollIndicator={false}
+            data={askState?.data}
+            key={'block'}
+            keyExtractor={(item, index) => `your-ask-${index}`}
+            renderItem={({item, index}: {item: any; index: number}) => (
+              <AskItem item={item} key={`ask-item-${index}`} />
+            )}
+            ListEmptyComponent={() => (
+              <View
+                style={[
+                  GlobalStyles.center,
+                  GlobalStyles.mt15,
+                  GlobalStyles.pv15,
+                  GlobalStyles.ph20,
+                  styles.cardContainer,
+                ]}>
+                <FastImage source={IMAGES.onboard1} resizeMode='cover' style={styles.cardImage} />
+                <Paragraph h5 bold600 textWhite title={t('do_you_need')} style={GlobalStyles.mt10} />
+                <Paragraph textCenter textWhite title={t('sharing_your_network')} style={GlobalStyles.mt10} />
+                <Button
+                  title={t('create_ask')}
+                  h5
+                  bold600
+                  textCenter
+                  containerStyle={{
+                    ...GlobalStyles.buttonContainerStyle,
+                    ...GlobalStyles.mt15,
+                    ...styles.buttonContainerStyle,
+                  }}
+                />
+              </View>
+            )}
+          />
+        </View>
+      </SafeAreaView>
     </View>
   );
 };

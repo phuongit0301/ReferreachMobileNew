@@ -69,6 +69,13 @@ const styles = StyleSheet.create({
     borderRadius: adjust(15),
     borderBottomRightRadius: adjust(20),
   },
+  iconActiveBackground: {
+    borderWidth: 1,
+    borderColor: BASE_COLORS.jetStreamColor,
+    borderRadius: adjust(15),
+    borderBottomRightRadius: adjust(20),
+    backgroundColor: BASE_COLORS.steelBlue2Color,
+  },
   icons: {
     borderWidth: 1,
     borderColor: 'transparent',

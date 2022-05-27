@@ -64,7 +64,6 @@ const ModalReportAsk: React.FC<Props> = ({
         <Button
           isIconLeft={true}
           title={t('cancel')}
-          bordered
           h3
           textCenter
           onPress={onHideModal}
@@ -72,7 +71,6 @@ const ModalReportAsk: React.FC<Props> = ({
           textStyle={styles.textStyle}
         />
         <Button
-          bordered
           title={t('send_report')}
           onPress={handleSubmit(onSend)}
           containerStyle={styles.mainButtonArea}

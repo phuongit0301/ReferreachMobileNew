@@ -8,6 +8,7 @@ import HeaderSmallBlue from './HeaderSmallBlue';
 import HeaderNormalBlue from './HeaderNormalBlue';
 import HeaderLargeBlue from './HeaderLargeBlue';
 import HeaderProfileBlue from './HeaderProfileBlue';
+import HeaderSmallBlueWithBG from './HeaderSmallBlueWithBG';
 import Input from './Input';
 import InputValidate from './InputValidate';
 import InputValidateControl from './InputValidateControl';
@@ -54,6 +55,7 @@ import IndividualJointBlockItem from './IndividualJointBlockItem';
 import ProfileBlock from './ProfileBlock';
 import Otp from './Otp';
 import Intro from './Widgets/Slider';
+import AskItem from './AskItem';
 /** Define Template */
 
 import HomeTemplateScreen from './HomeTemplate';
@@ -71,6 +73,7 @@ export {
   HeaderNormalBlue,
   HeaderLargeBlue,
   HeaderProfileBlue,
+  HeaderSmallBlueWithBG,
   Input,
   InputValidate,
   InputValidateControl,
@@ -120,4 +123,5 @@ export {
   ProfileBlock,
   Otp,
   Intro,
+  AskItem,
 };

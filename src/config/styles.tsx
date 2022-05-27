@@ -242,6 +242,16 @@ export const GlobalStyles = StyleSheet.create({
     fontSize: adjust(BASE_STYLES.h5),
     color: BASE_COLORS.steelBlueColor,
   },
+  textSteelBlue2: {
+    fontFamily: BASE_FONTS.regular,
+    fontSize: adjust(BASE_STYLES.h5),
+    color: BASE_COLORS.steelBlue2Color,
+  },
+  textDarkGray: {
+    fontFamily: BASE_FONTS.regular,
+    fontSize: adjust(BASE_STYLES.h5),
+    color: BASE_COLORS.darkGrayColor,
+  },
   textBold: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
@@ -423,6 +433,10 @@ export const GlobalStyles = StyleSheet.create({
   p30: {
     padding: adjust(30),
   },
+  ph2: {
+    paddingLeft: adjust(2),
+    paddingRight: adjust(2),
+  },
   ph5: {
     paddingLeft: adjust(5),
     paddingRight: adjust(5),
@@ -558,6 +572,12 @@ export const GlobalStyles = StyleSheet.create({
   },
   pb30: {
     paddingBottom: adjust(30),
+  },
+  pb40: {
+    paddingBottom: adjust(40),
+  },
+  pb45: {
+    paddingBottom: adjust(45),
   },
   pb80: {
     paddingBottom: adjust(80),
@@ -739,6 +759,9 @@ export const GlobalStyles = StyleSheet.create({
   logoDrawer: {
     width: adjust(77),
     height: adjust(57),
+  },
+  flexWrap: {
+    flexWrap: 'wrap',
   },
 });
 

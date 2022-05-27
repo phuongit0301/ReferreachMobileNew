@@ -9,6 +9,7 @@ import contactReducer from '~Root/services/contact/reducer';
 import loadingReducer from '~Root/services/loading/reducer';
 import industryReducer from '~Root/services/industry/reducer';
 import registerReducer from '~Root/services/register/reducer';
+import askReducer from '~Root/services/ask/reducer';
 import {IGlobalState} from '~Root/types';
 import {ASYNC_INITIALIZE_AUTH, LOGOUT} from '~Root/services/auth/constants';
 
@@ -31,6 +32,7 @@ const appReducer = combineReducers<IGlobalState>({
   contactState: contactReducer,
   industryState: industryReducer,
   registerState: registerReducer,
+  askState: askReducer,
 });
 
 export const rootReducer = (state: IGlobalState | undefined, action: any) => {

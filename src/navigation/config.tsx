@@ -40,6 +40,8 @@ export type RootNavigatorParamsList = {
   [AppRoute.CHAT_NOTIFICATION_ASKER]: undefined;
   [AppRoute.VIEW_PARTICIPANT]: undefined;
   [AppRoute.INTRO]: undefined;
+  [AppRoute.ASK]: undefined;
+  [AppRoute.ASK_TWO]: undefined;
 };
 
 export type BottomTabParams = {

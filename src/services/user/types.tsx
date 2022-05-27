@@ -11,7 +11,22 @@ import {
   UPDATE_USER_PROFILE_FAILURE,
   UPDATE_USER_PROFILE_REQUESTED,
   UPDATE_USER_PROFILE_SUCCESS,
+  UPDATE_USER_AVATAR_FAILURE,
+  UPDATE_USER_AVATAR_REQUESTED,
+  UPDATE_USER_AVATAR_SUCCESS,
 } from './constants';
+
+export interface IAvatarMetaData {
+  avatar_url?: string;
+  avatar_lat?: number | null;
+  avatar_lng?: number | null;
+}
+
+export interface IAvatar {
+  avatar?: string;
+  avatar_lat?: number;
+  avatar_lng?: number;
+}
 
 export interface IUserInfoState {
   id?: number;
@@ -29,6 +44,7 @@ export interface IUserInfoState {
   self_industries: string[];
   partner_industries: string[];
   sell_industries: string[];
+  avatar_metadata: IAvatarMetaData;
 }
 
 export interface IUserUpdateState {
@@ -134,6 +150,30 @@ export interface IActionUpdateUserProfileFailure {
   callback?: () => void;
 }
 
+export interface IActionUpdateUserAvatarRequested {
+  type: typeof UPDATE_USER_AVATAR_REQUESTED;
+  payload: IAvatar;
+  callback?: (response: IActionUpdateUserAvatarSuccess['payload']) => void;
+}
+
+export interface IActionUpdateUserAvatarSuccess {
+  type: typeof UPDATE_USER_AVATAR_SUCCESS;
+  payload: {
+    data: any;
+    success: boolean;
+    message: string;
+  };
+  callback?: () => void;
+}
+
+export interface IActionUpdateUserAvatarFailure {
+  type: typeof UPDATE_USER_AVATAR_FAILURE;
+  payload: {
+    error: string;
+  };
+  callback?: () => void;
+}
+
 export type IActionsUser =
   | IActionUserInfoRequested
   | IActionUserInfoSuccess
@@ -145,4 +185,7 @@ export type IActionsUser =
   | IActionUpdateUserInAppStatusFailure
   | IActionUpdateUserProfileRequested
   | IActionUpdateUserProfileSuccess
-  | IActionUpdateUserProfileFailure;
+  | IActionUpdateUserProfileFailure
+  | IActionUpdateUserAvatarRequested
+  | IActionUpdateUserAvatarSuccess
+  | IActionUpdateUserAvatarFailure;

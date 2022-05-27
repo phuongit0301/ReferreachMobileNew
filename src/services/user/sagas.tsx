@@ -3,6 +3,9 @@ import {all, put, takeEvery, call} from 'redux-saga/effects';
 import {clearToken} from '~Root/services/storage';
 import UserAPI from './apis';
 import {
+  UPDATE_USER_AVATAR_FAILURE,
+  UPDATE_USER_AVATAR_REQUESTED,
+  UPDATE_USER_AVATAR_SUCCESS,
   UPDATE_USER_IN_APP_STATUS_FAILURE,
   UPDATE_USER_IN_APP_STATUS_REQUESTED,
   UPDATE_USER_IN_APP_STATUS_SUCCESS,
@@ -14,6 +17,8 @@ import {
   USER_INFO_SUCCESS,
 } from './constants';
 import {
+  IActionUpdateUserAvatarRequested,
+  IActionUpdateUserAvatarSuccess,
   IActionUpdateUserInAppStatusRequested,
   IActionUpdateUserInAppStatusSuccess,
   IActionUpdateUserProfileRequested,
@@ -104,7 +109,6 @@ function* updateUserProfile(payload: IActionUpdateUserProfileRequested) {
       UserAPI.updateUserProfile,
       payload?.payload,
     );
-    console.log('========response==========>', response);
     if (response?.success) {
       yield put({type: UPDATE_USER_PROFILE_SUCCESS, payload: response?.data});
       payload?.callback &&
@@ -133,6 +137,38 @@ function* updateUserProfile(payload: IActionUpdateUserProfileRequested) {
   }
 }
 
+function* updateUserAvatar(payload: IActionUpdateUserAvatarRequested) {
+  try {
+    const response: IActionUpdateUserAvatarSuccess['payload'] = yield call(UserAPI.updateUserAvatar, payload?.payload);
+    console.log('========response==========>', response);
+    if (response?.success) {
+      yield put({type: UPDATE_USER_AVATAR_SUCCESS, payload: response?.data});
+      payload?.callback &&
+        payload?.callback({
+          success: response.success,
+          message: '',
+          data: response.data,
+        });
+    } else {
+      yield put({type: UPDATE_USER_AVATAR_FAILURE, payload: {error: response?.message}});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: response?.message,
+          data: null,
+        });
+    }
+  } catch (error) {
+    yield put({type: UPDATE_USER_AVATAR_FAILURE, payload: {error: error}});
+    payload?.callback &&
+      payload?.callback({
+        success: false,
+        message: error as string,
+        data: null,
+      });
+  }
+}
+
 function* watchGetUser() {
   yield takeEvery(USER_INFO_REQUESTED, getUserInfo);
 }
@@ -145,6 +181,10 @@ function* watchUpdateUserProfile() {
   yield takeEvery(UPDATE_USER_PROFILE_REQUESTED, updateUserProfile);
 }
 
+function* watchUpdateUserAvatar() {
+  yield takeEvery(UPDATE_USER_AVATAR_REQUESTED, updateUserAvatar);
+}
+
 export default function* userWatchers() {
-  yield all([watchGetUser(), watchUpdateUserInAppStatus(), watchUpdateUserProfile()]);
+  yield all([watchGetUser(), watchUpdateUserInAppStatus(), watchUpdateUserProfile(), watchUpdateUserAvatar()]);
 }

@@ -53,27 +53,14 @@ export const INVITE_CONTACT_FIELDS = {
 };
 
 export enum CREATE_ASK_KEYS {
-  lookingFor = 'lookingFor',
-  fromCompany = 'fromCompany',
-  basedIn = 'basedIn',
-  withinNext = 'withinNext',
-  otherInfo = 'otherInfo',
-  aProviderOf = 'aProviderOf',
-  purposeOfAsk = 'purposeOfAsk',
-  lookingToMeet = 'lookingToMeet',
-  toTalkAbout = 'toTalkAbout',
+  location = 'location',
+  deadline = 'deadline',
 }
 
 export const CREATE_ASK_FIELDS = {
-  lookingFor: 'lookingFor',
-  fromCompany: 'fromCompany',
-  basedIn: 'basedIn',
-  withinNext: 'withinNext',
-  otherInfo: 'otherInfo',
-  aProviderOf: 'aProviderOf',
-  purposeOfAsk: 'purposeOfAsk',
-  lookingToMeet: 'lookingToMeet',
-  toTalkAbout: 'toTalkAbout',
+  location: 'location',
+  deadline: 'deadline',
+  criteria: 'criteria',
 };
 
 export enum PROFILE_KEYS {

@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/promise-function-async */
 import React, {useCallback, useState} from 'react';
-import {ActivityIndicator, Alert, ScrollView, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Alert, Platform, ScrollView, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 // import ImagePicker, {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImagePicker, {Options} from 'react-native-image-crop-picker';
 
-import {setUserProfileAvatar} from '~Root/services/user/actions';
+import {hideLoading, showLoading} from '~Root/services/loading/actions';
+import {updateUserAvatar} from '~Root/services/user/actions';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import {AvatarGradient, Button, HeaderSmallTransparent, Icon, ModalDialogCommon, Paragraph} from '~Root/components';
 import styles from './styles';
@@ -94,45 +95,59 @@ const ProfileTemplateScreen: React.FC<Props> = ({
     setVisibleModal(!visibleModal);
   };
 
+  const openImageCrop = (response: any, type: any) => {
+    ImagePicker.openCropper({
+      path: response.path,
+      mediaType: type,
+      width: 80,
+      height: 80,
+      writeTempFile: false,
+      includeExif: true,
+      cropperCircleOverlay: true,
+      freeStyleCropEnabled: true,
+      avoidEmptySpaceAroundImage: true,
+      includeBase64: true,
+    })
+      .then(async croppedImage => {
+        setVisibleModal(false);
+        const data = new FormData();
+        data.append('avatar', {
+          name: 'image',
+          type: 'image/jpg',
+          uri: Platform.OS === 'android' ? croppedImage.path : croppedImage.path.replace('file://', ''),
+        });
+        data.append('avatar_lat', croppedImage?.cropRect?.x);
+        data.append('avatar_lng', croppedImage?.cropRect?.y);
+        dispatch(showLoading());
+        dispatch(
+          updateUserAvatar(data, (response: any) => {
+            dispatch(hideLoading());
+          }),
+        );
+        // dispatch(
+        //   setUserProfileAvatar({
+        //     name: response?.assets[0]?.fileName,
+        //     type: response?.assets[0]?.type,
+        //     uri: response?.assets[0]?.uri,
+        //   }),
+        // );
+      })
+      .catch(error => {
+        console.log(`Error in open cropper: ${error as string}`);
+      });
+  };
+
   const onButtonPress = useCallback(async (type, options) => {
     try {
       if (type === 'camera') {
         ImagePicker.openCamera(options)
-          .then((response: any) => {
-            console.log('respine111111s=========>', response);
-          })
+          .then((response: any) => openImageCrop(response, type))
           .catch(error => {
             console.log(`Error in open camera: ${error as string}`);
           });
       } else {
         ImagePicker.openPicker(options)
-          .then((response: any) => {
-            ImagePicker.openCropper({
-              path: response.path,
-              mediaType: type,
-              width: 80,
-              height: 80,
-              writeTempFile: false,
-              includeExif: true,
-              cropperCircleOverlay: true,
-              freeStyleCropEnabled: true,
-              avoidEmptySpaceAroundImage: true,
-              includeBase64: true,
-            })
-              .then(croppedImage => {
-                setVisibleModal(false);
-                setImageAvatar({
-                  uri: croppedImage.path,
-                  width: croppedImage.width,
-                  height: croppedImage.height,
-                  mime: croppedImage.mime,
-                  cropRect: croppedImage?.cropRect,
-                });
-              })
-              .catch(error => {
-                console.log(`Error in open cropper: ${error as string}`);
-              });
-          })
+          .then((response: any) => openImageCrop(response, type))
           .catch(error => {
             console.log(`Error in open picker: ${error as string}`);
           });
@@ -179,7 +194,7 @@ const ProfileTemplateScreen: React.FC<Props> = ({
               ) : userState.userInfo?.avatar ? (
                 <FastImage
                   source={{
-                    uri: 'https://s3-alpha-sig.figma.com/img/5ec2/169b/c65b3c8a62c20bab414be37031f55fb1?Expires=1652659200&Signature=O7iXEZgTzjmEJDI-0di2orJyz48YJA4NHiQXZCFMIgXsxqC1wqeAQO-ZYK3sL4QF0~RFqYw-xk3UetfEt1Jpw36v19pywORmr8f04lTL2aMisr5CR8-6mbYUAa5HVkxmh79hdFJGiXJF8sNDaSxXnt4g53gFob0jcdBmj6T2ZeWuymMnPNrqlCVpO4hBVe6C1M8g8er1O7v9MinUhC48XSnyHMnzdjSbyp4ATnetL4p55yLZtCqrJtW1or-Sm5pO4xf~PG32BVhkqmXVhlREuFLJpUhWl~-1iVds7r1f8poCTJGil2dUaDKk22vcKXQHju5ZhtLHUoP0LH1lX1n~Ag__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA',
+                    uri: userState.userInfo?.avatar,
                   }}
                   style={[GlobalStyles.avatar, GlobalStyles.mb10]}
                 />
