@@ -52,5 +52,9 @@ export const IMAGES = {
   dotPagination: require('~Root/assets/images/dot_pagination.png'),
   iconDropDown: require('~Root/assets/images/icon_dropdown.png'),
   iconCat: require('~Root/assets/images/cat.png'),
+  iconCatNext: require('~Root/assets/images/cat_next.png'),
   iconCloseCircleWhite: require('~Root/assets/images/icon_close_circle_white.png'),
+  iconGlobeEarth: require('~Root/assets/images/icon_globe_earth.png'),
+  iconCalendarBlue: require('~Root/assets/images/icon_calendar_blue.png'),
+  iconSubtract: require('~Root/assets/images/icon_subtract.png'),
 };

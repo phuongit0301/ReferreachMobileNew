@@ -23,7 +23,7 @@
     "@react-navigation/native-stack": "^6.6.1",
     "@types/react-native-vector-icons": "^6.4.10",
     "@types/react-phone-number-input": "^3.0.13",
-    "axios": "^0.26.1",
+    "axios": "0.22.0",
     "i18n": "^0.14.2",
     "i18next": "^21.6.16",
     "libphonenumber-js": "^1.9.51",

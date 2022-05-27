@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, ScrollView, TouchableOpacity, TextInput, FlatList} from 'react-native';
+import {View, ScrollView, TouchableOpacity, TextInput, FlatList, Platform, KeyboardAvoidingView} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useTranslation} from 'react-i18next';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -26,6 +26,7 @@ const DEFAULT_FORM_STATE = {
   description: false,
   details: false,
   positionSuggestion: false,
+  descriptionSuggestion: false,
 };
 
 const DEFAULT_TITLE =
@@ -80,10 +81,13 @@ const AskScreen = ({navigation}: any) => {
     });
   };
 
-  const onHideAll = () => {
+  const onHideGreeting = () => {
     setShowForm({
       ...DEFAULT_FORM_STATE,
     });
+    if (textGreeting) {
+      setTitleTooltip('Looking for leads? New partnership?');
+    }
   };
 
   const onTooltipPress = () => {
@@ -95,7 +99,7 @@ const AskScreen = ({navigation}: any) => {
   };
 
   const onInputPositionChange = (text: string) => {
-    setTextPosition(text);
+    setTextPosition(text?.trim());
   };
 
   const onInputDescriptionChange = (text: string) => {
@@ -131,9 +135,10 @@ const AskScreen = ({navigation}: any) => {
 
   const onEndDescription = () => {
     setShowForm({
-      ...DEFAULT_FORM_STATE,
+      ...showForm,
       description: false,
     });
+    setTitleTooltip('Looking good! Ready to go to Next step?');
   };
 
   const onShowPositionSuggestion = () => {
@@ -141,6 +146,18 @@ const AskScreen = ({navigation}: any) => {
       ...showForm,
       positionSuggestion: true,
     });
+    setTitleTooltip('Pick a suggestion or type what you are looking for.');
+    setTimeout(() => {
+      setTitleTooltip("Still can't find that you want? Type it in!s");
+    }, 5000);
+  };
+
+  const onShowDescriptionSuggestion = () => {
+    setShowForm({
+      ...showForm,
+      descriptionSuggestion: true,
+    });
+    setTitleTooltip('Tell others why you are looking for this.');
   };
 
   return (
@@ -153,189 +170,200 @@ const AskScreen = ({navigation}: any) => {
         onRightPress={onToggleDrawer}
       />
       <View style={[GlobalStyles.container, styles.container, styles.contentContainer]}>
-        <View style={[GlobalStyles.mb20, GlobalStyles.container]}>
-          <ScrollView>
-            <View style={[GlobalStyles.flexColumn, GlobalStyles.mt10]}>
-              <View style={[GlobalStyles.flexRow, GlobalStyles.justifyCenter]}>
-                {PAGINATION.map(item => {
-                  return (
-                    <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
-                      {currentPage === item ? (
-                        <LinearGradient
-                          colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
-                          style={[styles.btnActive, GlobalStyles.center, GlobalStyles.m5]}>
-                          <Paragraph bold600 textWhite title={`${item}`} />
-                        </LinearGradient>
-                      ) : (
-                        <TouchableOpacity
-                          onPress={() => onPage(item)}
-                          style={[styles.btn, GlobalStyles.center, GlobalStyles.m5]}>
-                          <Paragraph bold600 textWhite title={`${item}`} />
-                        </TouchableOpacity>
-                      )}
-                      {item < PAGINATION.length && (
-                        <FastImage source={IMAGES.dotPagination} resizeMode='cover' style={styles.dotPagination} />
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
-              <View style={[GlobalStyles.ph15, GlobalStyles.mt15, GlobalStyles.flexRow, GlobalStyles.flexWrap]}>
-                {showForm?.greeting ? (
-                  <View style={styles.inputDynamicContainer}>
-                    <TextInput
-                      value={textGreeting}
-                      style={styles.input}
-                      onChangeText={onInputGreetingChange}
-                      onEndEditing={onHideAll}
-                      maxLength={28}
-                    />
-                  </View>
-                ) : (
-                  <Category
-                    styleTag={styles.styleTag}
-                    tagText={styles.tagText}
-                    key={`greeting`}
-                    name={`${textGreetingDefault} ${textGreeting}`}
-                    showButton={true}
-                    onPress={onShowGreeting}
-                    uri={IMAGES.iconCloseBlue}
-                  />
-                )}
-                <Category
-                  styleTag={styles.styleTag}
-                  tagText={styles.tagText}
-                  key={`role`}
-                  name={'as a business developer '}
-                  showButton={true}
-                  onPress={onShowGreeting}
-                  uri={IMAGES.iconCloseBlue}
-                />
-                <View style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}>
-                  <SelectDropdown
-                    data={askState?.dataPositionDropDown}
-                    defaultValueByIndex={0}
-                    onSelect={(selectedItem, index) => {
-                      console.log(selectedItem, index);
-                    }}
-                    dropdownStyle={[styles.styleDropDown]}
-                    buttonStyle={[styles.styleButton, GlobalStyles.ml5, GlobalStyles.mb5]}
-                    buttonTextStyle={styles.buttonTextStyle}
-                    buttonTextAfterSelection={(selectedItem, index) => {
-                      // text represented after item is selected
-                      // if data array is an array of objects then return selectedItem.property to render after item is selected
-                      return selectedItem;
-                    }}
-                    rowTextForSelection={(item, index) => {
-                      // text represented for each item in dropdown
-                      // if data array is an array of objects then return item.property to represent item in dropdown
-                      return item;
-                    }}
-                    renderDropdownIcon={() => (
-                      <FastImage source={IMAGES.iconDropDown} resizeMode='cover' style={styles.iconDropDown} />
-                    )}
-                  />
-                  {(!textPosition || showForm?.position) ? (
-                    <View style={styles.inputContainer}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={GlobalStyles.container}
+          keyboardVerticalOffset={80}>
+          <View style={[GlobalStyles.mb20, GlobalStyles.container]}>
+            <ScrollView>
+              <View style={[GlobalStyles.flexColumn, GlobalStyles.mt10]}>
+                <View style={[GlobalStyles.flexRow, GlobalStyles.justifyCenter]}>
+                  {PAGINATION.map(item => {
+                    return (
+                      <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
+                        {currentPage === item ? (
+                          <LinearGradient
+                            colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
+                            style={[styles.btnActive, GlobalStyles.center, GlobalStyles.m5]}>
+                            <Paragraph bold600 textWhite title={`${item}`} />
+                          </LinearGradient>
+                        ) : (
+                          <TouchableOpacity
+                            onPress={() => onPage(item)}
+                            style={[styles.btn, GlobalStyles.center, GlobalStyles.m5]}>
+                            <Paragraph bold600 textWhite title={`${item}`} />
+                          </TouchableOpacity>
+                        )}
+                        {item < PAGINATION.length && (
+                          <FastImage source={IMAGES.dotPagination} resizeMode='cover' style={styles.dotPagination} />
+                        )}
+                      </View>
+                    );
+                  })}
+                </View>
+                <View style={[GlobalStyles.ph15, GlobalStyles.mt15, GlobalStyles.flexRow, GlobalStyles.flexWrap]}>
+                  {showForm?.greeting ? (
+                    <View style={styles.inputDynamicContainer}>
                       <TextInput
-                        placeholder='what'
-                        value={textPosition}
+                        value={textGreeting}
                         style={styles.input}
-                        onChangeText={onInputPositionChange}
-                        onEndEditing={onEndPosition}
-                        onFocus={onShowPositionSuggestion}
-                        editable={!!textGreeting}
+                        onChangeText={onInputGreetingChange}
+                        onEndEditing={onHideGreeting}
+                        maxLength={28}
                       />
                     </View>
                   ) : (
                     <Category
                       styleTag={styles.styleTag}
                       tagText={styles.tagText}
-                      key={`position`}
-                      name={`${textPosition}`}
+                      key={`greeting`}
+                      name={`${textGreetingDefault} ${textGreeting}`}
                       showButton={true}
-                      onPress={onShowPosition}
+                      onPress={onShowGreeting}
                       uri={IMAGES.iconCloseBlue}
                     />
                   )}
-                </View>
-                {!!textPosition &&
-                  ((!textDescription || showForm?.description) ? (
-                    <View style={styles.inputAreaContainer}>
-                      <TextInput
-                        placeholder='to...(elaborate on your Ask)'
-                        value={textDescription}
-                        style={styles.inputArea}
-                        onChangeText={onInputDescriptionChange}
-                        onEndEditing={onEndDescription}
-                        multiline
+                  <Category
+                    styleTag={styles.styleTag}
+                    tagText={styles.tagText}
+                    key={`role`}
+                    name={'as a business developer '}
+                    showButton={true}
+                    uri={IMAGES.iconCloseBlue}
+                  />
+                  <View style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}>
+                    <SelectDropdown
+                      data={askState?.dataPositionDropDown}
+                      defaultValueByIndex={0}
+                      onSelect={(selectedItem, index) => {
+                        console.log(selectedItem, index);
+                      }}
+                      dropdownStyle={[styles.styleDropDown]}
+                      buttonStyle={[styles.styleButton, GlobalStyles.ml5, GlobalStyles.mb5, GlobalStyles.pv5]}
+                      buttonTextStyle={styles.buttonTextStyle}
+                      buttonTextAfterSelection={(selectedItem, index) => {
+                        // text represented after item is selected
+                        // if data array is an array of objects then return selectedItem.property to render after item is selected
+                        return selectedItem;
+                      }}
+                      rowTextForSelection={(item, index) => {
+                        // text represented for each item in dropdown
+                        // if data array is an array of objects then return item.property to represent item in dropdown
+                        return item;
+                      }}
+                      renderDropdownIcon={() => (
+                        <FastImage source={IMAGES.iconDropDown} resizeMode='cover' style={styles.iconDropDown} />
+                      )}
+                    />
+                    {!textPosition || showForm?.position ? (
+                      <View style={[GlobalStyles.mb10, styles.inputContainer]}>
+                        <TextInput
+                          placeholder='what'
+                          value={textPosition}
+                          style={styles.input}
+                          onChangeText={onInputPositionChange}
+                          onEndEditing={onEndPosition}
+                          onFocus={onShowPositionSuggestion}
+                          editable={!!textGreeting}
+                        />
+                      </View>
+                    ) : (
+                      <Category
+                        styleTag={styles.styleTag}
+                        tagText={styles.tagText}
+                        key={`position`}
+                        name={`${textPosition}`}
+                        showButton={true}
+                        onPress={onShowPosition}
+                        uri={IMAGES.iconCloseBlue}
                       />
-                    </View>
-                  ) : (
-                    <Category
-                      styleTag={styles.styleTag}
-                      tagText={styles.tagText}
-                      key={`description`}
-                      name={`${textDescription}`}
-                      showButton={true}
-                      onPress={onShowDescription}
-                      uri={IMAGES.iconCloseBlue}
-                    />
-                  ))}
-              </View>
-            </View>
-          </ScrollView>
-        </View>
-        {showForm?.greeting && (
-          <View style={[GlobalStyles.mh20, GlobalStyles.container, GlobalStyles.pv15, styles.borderTop]}>
-            <FlatList
-              contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
-              style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
-              data={askState?.dataGreetingSuggest}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => `greeting-suggest-${index}`}
-              keyboardShouldPersistTaps='handled'
-            />
-          </View>
-        )}
-        {showForm?.positionSuggestion && (
-          <View style={[GlobalStyles.mh20, GlobalStyles.container, GlobalStyles.pv15, styles.borderTop]}>
-            <FlatList
-              contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
-              style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
-              data={askState?.dataPositionSuggest}
-              renderItem={renderPositionItem}
-              keyExtractor={(item, index) => `position-suggest-${index}`}
-              keyboardShouldPersistTaps='handled'
-            />
-          </View>
-        )}
-        <View style={GlobalStyles.container}>
-          {showTooltip && (
-            <View style={styles.tooltipContentStyle}>
-              <View style={GlobalStyles.flexColumn}>
-                <View style={[GlobalStyles.mb10, GlobalStyles.flexRow, styles.tooltipCloseBtnContainer]}>
-                  <TouchableOpacity onPress={onTooltipPress}>
-                    <FastImage
-                      source={IMAGES.iconCloseCircleWhite}
-                      resizeMode='cover'
-                      style={styles.iconCloseCircleWhite}
-                    />
-                  </TouchableOpacity>
+                    )}
+                  </View>
+                  {!!textPosition &&
+                    (!textDescription || showForm?.description ? (
+                      <View style={styles.inputAreaContainer}>
+                        <TextInput
+                          placeholder='to...(elaborate on your Ask)'
+                          value={textDescription}
+                          style={styles.inputArea}
+                          onChangeText={onInputDescriptionChange}
+                          onEndEditing={onEndDescription}
+                          onFocus={onShowDescriptionSuggestion}
+                          multiline
+                        />
+                      </View>
+                    ) : (
+                      <Category
+                        styleTag={styles.styleTag}
+                        tagText={styles.tagText}
+                        key={`description`}
+                        name={`${textDescription}`}
+                        showButton={true}
+                        onPress={onShowDescription}
+                        uri={IMAGES.iconCloseBlue}
+                      />
+                    ))}
                 </View>
-                <View style={styles.iconTriangle}>
-                  <Svg width='19' height='13' viewBox='0 0 19 13' fill='none'>
-                    <Path d='M19 13H0L7.308 0 19 13z' fill='#fff' />
-                  </Svg>
-                </View>
-                <Paragraph style={styles.textSmall} title={titleTooltip} />
               </View>
+            </ScrollView>
+          </View>
+          {showForm?.greeting && (
+            <View style={[GlobalStyles.mh20, GlobalStyles.container, GlobalStyles.pv15, styles.borderTop]}>
+              <FlatList
+                contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
+                style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
+                data={askState?.dataGreetingSuggest}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => `greeting-suggest-${index}`}
+                keyboardShouldPersistTaps='handled'
+              />
             </View>
           )}
-          <TouchableOpacity style={styles.iconCatContainer} onPress={onTooltipPress}>
-            <FastImage source={IMAGES.iconCat} resizeMode='cover' style={styles.iconCat} />
-          </TouchableOpacity>
-        </View>
+          {showForm?.positionSuggestion && (
+            <View style={[GlobalStyles.mh20, GlobalStyles.container, GlobalStyles.pv15, styles.borderTop]}>
+              <FlatList
+                contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
+                style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
+                data={askState?.dataPositionSuggest}
+                renderItem={renderPositionItem}
+                keyExtractor={(item, index) => `position-suggest-${index}`}
+                keyboardShouldPersistTaps='handled'
+              />
+            </View>
+          )}
+          <View style={GlobalStyles.container}>
+            {showTooltip && (
+              <View style={styles.tooltipContentStyle}>
+                <View style={GlobalStyles.flexColumn}>
+                  <View style={[GlobalStyles.mb10, GlobalStyles.flexRow, styles.tooltipCloseBtnContainer]}>
+                    <TouchableOpacity onPress={onTooltipPress}>
+                      <FastImage
+                        source={IMAGES.iconCloseCircleWhite}
+                        resizeMode='cover'
+                        style={styles.iconCloseCircleWhite}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.iconTriangle}>
+                    <Svg width='19' height='13' viewBox='0 0 19 13' fill='none'>
+                      <Path d='M19 13H0L7.308 0 19 13z' fill='#fff' />
+                    </Svg>
+                  </View>
+                  <Paragraph style={styles.textSmall} title={titleTooltip} />
+                </View>
+              </View>
+            )}
+            {textGreeting && textPosition && textDescription ? (
+              <TouchableOpacity style={styles.iconCatContainer} onPress={() => navigation.navigate(AppRoute.ASK_TWO)}>
+                <FastImage source={IMAGES.iconCatNext} resizeMode='cover' style={styles.iconCatNext} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.iconCatContainer} onPress={() => navigation.navigate(AppRoute.ASK_TWO)}>
+                <FastImage source={IMAGES.iconCat} resizeMode='cover' style={styles.iconCat} />
+              </TouchableOpacity>
+            )}
+          </View>
+        </KeyboardAvoidingView>
       </View>
     </View>
   );

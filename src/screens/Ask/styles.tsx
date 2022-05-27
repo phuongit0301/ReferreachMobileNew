@@ -38,7 +38,6 @@ export default StyleSheet.create({
     width: adjust(36),
   },
   styleTag: {
-    ...GlobalStyles.pv10,
     borderTopLeftRadius: adjust(22),
     borderTopRightRadius: adjust(22),
     borderBottomLeftRadius: adjust(22),
@@ -59,6 +58,7 @@ export default StyleSheet.create({
     borderBottomLeftRadius: adjust(22),
     borderBottomRightRadius: adjust(22),
     backgroundColor: BASE_COLORS.steelBlue2Color,
+    height: 'auto',
   },
   tagContainer: {
     flexWrap: 'wrap',
@@ -84,7 +84,11 @@ export default StyleSheet.create({
   },
   iconCat: {
     width: adjust(80),
-    height: adjust(65),
+    height: adjust(66),
+  },
+  iconCatNext: {
+    width: adjust(107),
+    height: adjust(51),
   },
   tooltipStyle: {
     height: Platform.OS === 'ios' ? '25%' : '32%',
@@ -95,8 +99,9 @@ export default StyleSheet.create({
   tooltipContentStyle: {
     ...GlobalStyles.p20,
     position: 'absolute',
-    bottom: adjust(50),
-    left: adjust(10),
+    bottom: adjust(85),
+    left: adjust(30),
+    borderRadius: adjust(10),
     backgroundColor: BASE_COLORS.whiteColor,
     width: '60%',
     shadowColor: BASE_COLORS.blackColor,
@@ -154,21 +159,22 @@ export default StyleSheet.create({
     height: adjust(150),
     paddingVertical: Platform.OS === 'ios' ? adjust(10) : 0,
     alignItems: 'flex-start',
+    borderColor: BASE_COLORS.steelBlue2Color,
+    borderWidth: 1,
   },
   input: {
-    ...GlobalStyles.h5,
-    fontWeight: '600',
+    ...GlobalStyles.p,
     flex: 1,
-    lineHeight: adjust(17),
+    lineHeight: adjust(15),
     color: BASE_COLORS.gunmetalColor,
   },
   inputArea: {
-    ...GlobalStyles.h5,
-    fontWeight: '600',
+    ...GlobalStyles.p,
     flex: 1,
     width: '100%',
-    lineHeight: adjust(17),
+    lineHeight: adjust(15),
     color: BASE_COLORS.gunmetalColor,
+    height: '100%',
   },
   inputDynamicContainer: {
     ...GlobalStyles.mb5,
@@ -193,7 +199,7 @@ export default StyleSheet.create({
   },
   iconTriangle: {
     position: 'absolute',
-    bottom: 0,
+    bottom: adjust(-10),
     right: adjust(-28),
     shadowColor: BASE_COLORS.whiteColor,
     shadowOffset: {

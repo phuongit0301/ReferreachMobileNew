@@ -41,6 +41,7 @@ export type RootNavigatorParamsList = {
   [AppRoute.VIEW_PARTICIPANT]: undefined;
   [AppRoute.INTRO]: undefined;
   [AppRoute.ASK]: undefined;
+  [AppRoute.ASK_TWO]: undefined;
 };
 
 export type BottomTabParams = {

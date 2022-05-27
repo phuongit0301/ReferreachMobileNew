@@ -1,5 +1,15 @@
 import React from 'react';
-import {View, Text, TextInput, ViewStyle, TextStyle, Pressable, Image, ImageStyle, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  ViewStyle,
+  TextStyle,
+  Pressable,
+  Image,
+  ImageStyle,
+  TouchableOpacity,
+} from 'react-native';
 import {Controller} from 'react-hook-form';
 
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
@@ -114,15 +124,16 @@ const InputIconValidate: React.FC<Props> = ({
           return (
             <Pressable onPress={onPressIn}>
               <View style={[styles.textInputWrapper, inputStyleWrapper]}>
-                {showIcon && isIconImage ? (
-                  <TouchableOpacity onPress={onIconClick} style={imageStyleContainer}>
-                    <Image source={uri} resizeMode='contain' style={imageStyle} />
-                  </TouchableOpacity>
-                ) : (
-                  <Pressable onPress={onIconClick} style={iconContainerStyle}>
-                    <Icon name={iconName} size={iconSize} color={iconColor} style={iconStyle} />
-                  </Pressable>
-                )}
+                {showIcon &&
+                  (isIconImage ? (
+                    <TouchableOpacity onPress={onIconClick} style={imageStyleContainer}>
+                      <Image source={uri} resizeMode='contain' style={imageStyle} />
+                    </TouchableOpacity>
+                  ) : (
+                    <Pressable onPress={onIconClick} style={iconContainerStyle}>
+                      <Icon name={iconName} size={iconSize} color={iconColor} style={iconStyle} />
+                    </Pressable>
+                  ))}
                 <TextInput
                   {...register(name, {required})}
                   inputRef={ref}

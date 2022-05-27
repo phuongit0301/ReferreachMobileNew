@@ -25,6 +25,7 @@ export enum AppRoute {
   TRUST_NETWORK = 'TrustNetwork',
   YOUR_ASK = 'YourAsk',
   ASK = 'Ask',
+  ASK_TWO = 'AskTwo',
   TABS = 'Tabs',
   CREATE_ASK = 'CreateAsk',
   ASK_PREVIEW = 'AskPreview',

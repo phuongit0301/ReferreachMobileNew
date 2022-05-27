@@ -58,5 +58,9 @@
     "do_you_need": "What do you need today?",
     "sharing_your_network": "Create an Ask now and start sharing with your network",
     "create_ask": "Create Ask",
-    "ask_content": "<normal>{{greeting}}</normal><highlight> {{role}} </highlight><normal>{{description}}</normal>"
+    "ask_content": "<normal>{{greeting}}</normal><highlight> {{role}} </highlight><normal>{{description}}</normal>",
+    "location": "Location",
+    "by_when": "By When",
+    "criteria": "Criteria",
+    "additional_details": "Additional details"
 }

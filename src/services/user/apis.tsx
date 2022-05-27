@@ -38,20 +38,28 @@ export default class UserAPI {
       console.log('JSONSTRINGITY==========>', JSON.stringify(payload));
       // const response = await axios({
       //   method: 'PUT',
-      //   url: API.USER_AVATAR_URL,
+      //   url: 'http://127.0.0.1:8080/api/upload',
       //   data: payload,
       //   headers: {
       //     'Content-Type': 'multipart/form-data',
       //   },
       // });
-      const response = await axios.put(API.USER_AVATAR_URL, payload, {
+      const response = await axios({
+        method: 'PUT',
+        url: API.USER_AVATAR_URL,
+        data: payload,
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'multipart/form-data',
         },
       });
+      // const response = await axios.put(API.USER_AVATAR_URL, payload, {
+      //   headers: {
+      //     'Content-Type': 'application/x-www-form-urlencoded',
+      //   },
+      // });
       if (response?.data) {
         return {
-          data: response.data,
+          data: response?.data?.data,
           message: '',
           success: true,
         };
