@@ -57,4 +57,11 @@ export const IMAGES = {
   iconGlobeEarth: require('~Root/assets/images/icon_globe_earth.png'),
   iconCalendarBlue: require('~Root/assets/images/icon_calendar_blue.png'),
   iconSubtract: require('~Root/assets/images/icon_subtract.png'),
+  iconUpload: require('~Root/assets/images/icon_upload.png'),
+  iconUploadDone: require('~Root/assets/images/icon_upload_done.png'),
+  iconTrash: require('~Root/assets/images/icon_trash.png'),
+  iconCongrat: require('~Root/assets/images/icon_congrat.png'),
+  iconCatPublish: require('~Root/assets/images/icon_cat_publish.png'),
+  iconArrowUpCircle: require('~Root/assets/images/icon_arrow_up_circle.png'),
+  iconCatPreview: require('~Root/assets/images/icon_cat_preview.png'),
 };

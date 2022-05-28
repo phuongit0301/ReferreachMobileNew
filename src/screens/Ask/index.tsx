@@ -40,6 +40,7 @@ const AskScreen = ({navigation}: any) => {
   const [textPosition, setTextPosition] = useState('');
   const [textGreeting, setTextGreeting] = useState('');
   const [textDescription, setTextDescription] = useState('');
+  const [textDescriptionDefault, setTextDescriptionDefault] = useState('to');
   const [textGreetingDefault, setTextGreetingDefault] = useState('Hi, ');
   const [titleTooltip, setTitleTooltip] = useState(DEFAULT_TITLE);
   const askState = useSelector((state: IGlobalState) => state.askState);
@@ -103,7 +104,7 @@ const AskScreen = ({navigation}: any) => {
   };
 
   const onInputDescriptionChange = (text: string) => {
-    setTextDescription(text);
+    setTextDescription(textDescription == '' ?  textDescriptionDefault + text : text);
   };
 
   const renderItem = ({item}: {item: any}) => {
@@ -353,7 +354,7 @@ const AskScreen = ({navigation}: any) => {
                 </View>
               </View>
             )}
-            {textGreeting && textPosition && textDescription ? (
+            {textGreeting !== '' && textPosition !== '' && textDescription !== '' ? (
               <TouchableOpacity style={styles.iconCatContainer} onPress={() => navigation.navigate(AppRoute.ASK_TWO)}>
                 <FastImage source={IMAGES.iconCatNext} resizeMode='cover' style={styles.iconCatNext} />
               </TouchableOpacity>

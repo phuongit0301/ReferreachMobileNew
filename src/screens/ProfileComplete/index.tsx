@@ -10,6 +10,7 @@ import {IGlobalState} from '~Root/types';
 
 import {IUserState} from '~Root/services/user/types';
 import {adjust} from '~Root/utils';
+import { AppRoute } from '~Root/navigation/AppRoute';
 
 // type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.PROFILE>;
 
@@ -24,15 +25,15 @@ const ProfileCompleteScreen = ({navigation, route}: any) => {
   };
 
   const onToggleDrawer = () => {
-    navigation.toggleDrawer();
+    navigation?.toggleDrawer();
   };
 
-  const onEdit = () => {
-    console.log(12312312);
+  const onNext = () => {
+    navigation.navigate(AppRoute.BOTTOM_TAB, {screen: AppRoute.YOUR_ASK});
   };
 
   return (
-    <View style={[GlobalStyles.container]}>
+    <View style={[GlobalStyles.container]} key={'profile-complete'}>
       <ProfileTemplateScreen isBackButton={true} onBack={onBack} isRightButton={true} onToggleDrawer={onToggleDrawer}>
         <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30, GlobalStyles.p15]}>
           <View style={[GlobalStyles.container, GlobalStyles.mb15]}>
@@ -44,7 +45,7 @@ const ProfileCompleteScreen = ({navigation, route}: any) => {
                 title={`${userState?.userInfo?.first_name} ${userState?.userInfo?.last_name}`}
                 style={[GlobalStyles.container]}
               />
-              <TouchableOpacity style={GlobalStyles.iconEdit} onPress={onEdit}>
+              <TouchableOpacity style={GlobalStyles.iconEdit} onPress={onNext}>
                 <Icon name='pencil-alt' size={adjust(8)} color={BASE_COLORS.whiteColor} />
               </TouchableOpacity>
             </View>
@@ -142,7 +143,7 @@ const ProfileCompleteScreen = ({navigation, route}: any) => {
               title={t('next')}
               h5
               textCenter
-              onPress={onEdit}
+              onPress={onNext}
               containerStyle={{...GlobalStyles.buttonContainerStyle, ...styles.buttonContainerStyle}}
               textStyle={styles.h3BoldDefault}
               disabled={

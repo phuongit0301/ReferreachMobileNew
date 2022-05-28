@@ -24,6 +24,7 @@ interface Props {
   textSteelBlue2Color?: boolean;
   textEerieBlackColor?: boolean;
   textSpanishGrayColor?: boolean;
+  textSpanishGray2Color?: boolean;
   textTimberWolfColor?: boolean;
   textForestGreenColor?: boolean;
   textForestGreen2Color?: boolean;
@@ -32,7 +33,9 @@ interface Props {
   textDavysGreyColor?: boolean;
   textDesireColor?: boolean;
   textSilverChaliceColor?: boolean;
+  textGraniteGrayColor?: boolean;
   textCenter?: boolean;
+  textRight?: boolean;
   title?: string;
   style?: any;
   numberOfLines?: number;
@@ -60,6 +63,7 @@ const Paragraph: React.FC<Props> = ({
   textSteelBlue2Color,
   textEerieBlackColor,
   textSpanishGrayColor,
+  textSpanishGray2Color,
   textTimberWolfColor,
   textForestGreenColor,
   textForestGreen2Color,
@@ -68,7 +72,9 @@ const Paragraph: React.FC<Props> = ({
   textDavysGreyColor,
   textDesireColor,
   textSilverChaliceColor,
+  textGraniteGrayColor,
   textCenter,
+  textRight,
   title,
   style,
   numberOfLines = undefined,
@@ -101,6 +107,7 @@ const Paragraph: React.FC<Props> = ({
         textSteelBlue2Color && styles.textSteelBlue2Color,
         textEerieBlackColor && styles.textEerieBlackColor,
         textSpanishGrayColor && styles.textSpanishGrayColor,
+        textSpanishGray2Color && styles.textSpanishGray2Color,
         textTimberWolfColor && styles.textTimberWolfColor,
         textForestGreenColor && styles.textForestGreenColor,
         textForestGreen2Color && styles.textForestGreen2Color,
@@ -109,7 +116,9 @@ const Paragraph: React.FC<Props> = ({
         textDavysGreyColor && styles.textDavysGreyColor,
         textDesireColor && styles.textDesireColor,
         textSilverChaliceColor && styles.textSilverChaliceColor,
+        textGraniteGrayColor && styles.textGraniteGrayColor,
         textCenter && styles.textCenter,
+        textRight && styles.textRight,
         style,
       ]}
       {...rest}>

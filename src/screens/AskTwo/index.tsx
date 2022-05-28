@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm, SubmitHandler} from 'react-hook-form';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import {BottomTabParams} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
@@ -13,15 +14,16 @@ import {BASE_COLORS, CREATE_ASK_FIELDS, CREATE_ASK_KEYS, GlobalStyles, IMAGES} f
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import styles from './styles';
-import Svg, { Path } from 'react-native-svg';
+import Svg, {Path} from 'react-native-svg';
+import { dateFormat3, dateWithMonthsDelay } from '~Root/utils';
 
 type Props = NativeStackScreenProps<BottomTabParams, AppRoute.AIR_FEED>;
 
 const PAGINATION = [1, 2, 3];
 
 const schema = yup.object().shape({
-  location: yup.string().required('Location is required'),
-  deadline: yup.string().required('Deadline is required'),
+  [CREATE_ASK_FIELDS.location]: yup.string().required('Location is required'),
+  [CREATE_ASK_FIELDS.deadline]: yup.string().required('Deadline is required'),
 });
 
 const AskTwocreen = ({navigation}: any) => {
@@ -29,12 +31,15 @@ const AskTwocreen = ({navigation}: any) => {
   const [currentPage, setPage] = useState(2);
   const [showTooltip, setShowTooltip] = useState(true);
   const [titleTooltip, setTitleTooltip] = useState('Where and when do you need it? Any criteria?');
+  const [inputDynamic, setInputDynamic] = useState(['1']);
+  const [visibleDatePicker, setVisibleDatePicker] = useState(false);
 
   const {
     register,
     control,
     handleSubmit,
     setFocus,
+    setValue,
     formState: {errors, isValid},
   } = useForm<any>({
     resolver: yupResolver(schema),
@@ -61,6 +66,28 @@ const AskTwocreen = ({navigation}: any) => {
 
   const onSubmitEditing = (key: any) => {
     setFocus(key);
+  };
+
+  const onRemoveInput = (index: number) => {
+    const temp = inputDynamic.filter((item: any, i: number) => i !== index);
+    setInputDynamic(temp);
+  };
+
+  const onAddInput = () => {
+    if (inputDynamic.length < 4) {
+      setInputDynamic([...inputDynamic, '1']);
+    }
+  };
+
+  const onShowDatePicker = () => {
+    setVisibleDatePicker(!visibleDatePicker);
+  };
+
+  const onChangeDatePicker = (date: Date) => {
+    let currentDate = date || new Date();
+    currentDate = dateWithMonthsDelay(currentDate, 0);
+    setValue(CREATE_ASK_FIELDS.deadline, dateFormat3(currentDate));
+    setVisibleDatePicker(!visibleDatePicker);
   };
 
   return (
@@ -143,6 +170,15 @@ const AskTwocreen = ({navigation}: any) => {
                     imageStyleContainer={styles.iconContainer}
                     styleContainer={GlobalStyles.mb5}
                     imageStyle={styles.icon}
+                    editable={false}
+                    onPressIn={onShowDatePicker}
+                  />
+                  <DateTimePickerModal
+                    key={`template-date`}
+                    isVisible={visibleDatePicker}
+                    mode='datetime'
+                    onConfirm={(date: Date) => onChangeDatePicker(date)}
+                    onCancel={onShowDatePicker}
                   />
                   <InputIconValidate
                     label={`${t('criteria')} 1`}
@@ -159,26 +195,30 @@ const AskTwocreen = ({navigation}: any) => {
                     showIcon={false}
                     styleContainer={GlobalStyles.mb5}
                   />
-                  <InputIconValidate
-                    label={`${t('criteria')} 2`}
-                    inputStyleWrapper={styles.inputWrapperStyle}
-                    inputStyle={styles.inputIconStyle}
-                    labelStyle={styles.labelStyle}
-                    selectionColor={BASE_COLORS.blackColor}
-                    placeholderTextColor={BASE_COLORS.grayColor}
-                    placeholder='Deadline'
-                    errors={errors}
-                    control={control}
-                    name={CREATE_ASK_FIELDS.criteria}
-                    register={register}
-                    showIcon={true}
-                    isIconImage={true}
-                    uri={IMAGES.iconSubtract}
-                    imageStyleContainer={styles.iconContainer}
-                    styleContainer={GlobalStyles.mb5}
-                    imageStyle={styles.iconSubtract}
-                  />
-                  <TouchableOpacity>
+                  {inputDynamic.length > 0 &&
+                    inputDynamic.map((item, index) => (
+                      <InputIconValidate
+                        label={`${t('criteria')} ${index + 2}`}
+                        inputStyleWrapper={styles.inputWrapperStyle}
+                        inputStyle={styles.inputIconStyle}
+                        labelStyle={styles.labelStyle}
+                        selectionColor={BASE_COLORS.blackColor}
+                        placeholderTextColor={BASE_COLORS.grayColor}
+                        placeholder='Deadline'
+                        errors={errors}
+                        control={control}
+                        name={CREATE_ASK_FIELDS.criteria}
+                        register={register}
+                        showIcon={true}
+                        isIconImage={true}
+                        uri={IMAGES.iconSubtract}
+                        imageStyleContainer={styles.iconContainer}
+                        styleContainer={GlobalStyles.mb5}
+                        imageStyle={styles.iconSubtract}
+                        onIconClick={() => onRemoveInput(index)}
+                      />
+                    ))}
+                  <TouchableOpacity onPress={onAddInput}>
                     <Paragraph textForestGreen2Color bold600 title='+ Add New Criteria' style={styles.btnAdd} />
                   </TouchableOpacity>
                 </View>
@@ -206,7 +246,7 @@ const AskTwocreen = ({navigation}: any) => {
                   </View>
                 </View>
               )}
-              <TouchableOpacity style={styles.iconCatContainer} onPress={() => navigation.navigate(AppRoute.ASK_TWO)}>
+              <TouchableOpacity style={styles.iconCatContainer} onPress={() => navigation.navigate(AppRoute.ASK_THREE)}>
                 <FastImage source={IMAGES.iconCatNext} resizeMode='cover' style={styles.iconCatNext} />
               </TouchableOpacity>
             </View>

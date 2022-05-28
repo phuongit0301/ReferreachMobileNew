@@ -20,6 +20,7 @@ import {
 } from '~Root/services/industry/actions';
 import {IUserState} from '~Root/services/user/types';
 import {deleteUserIndustry, setUserIndustry, updateUserProfileRequest} from '~Root/services/user/actions';
+import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 
 // type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.PROFILE>;
 
@@ -44,24 +45,33 @@ const ProfileSecondScreen = ({navigation, route}: any) => {
   }, [textSearch]);
 
   const onSubmit = () => {
-    navigation.navigate(AppRoute.PROFILE_COMPLETE);
-    // dispatch(showLoading());
-    // dispatch(
-    //   updateUserProfileRequest(
-    //     {
-    //       self_industry_list: userState?.userInfo?.self_industries,
-    //       partner_industry_list: userState?.userInfo?.partner_industries,
-    //       sell_industry_list: userState?.userInfo?.sell_industries,
-    //       ...route?.params,
-    //     },
-    //     response => {
-    //       dispatch(hideLoading());
-    //       if (response.success) {
-    //         navigation.navigate(AppRoute.INVITE_CONTACT);
-    //       }
-    //     },
-    //   ),
-    // );
+    const temp = userState?.userInfo?.self_industries
+      ? userState?.userInfo?.self_industries.map(item => (typeof item === 'object' ? item?.name : item))
+      : [];
+    const temp1 = userState?.userInfo?.self_industries
+      ? userState?.userInfo?.partner_industries.map(item => (typeof item === 'object' ? item?.name : item))
+      : [];
+    const temp2 = userState?.userInfo?.self_industries
+      ? userState?.userInfo?.sell_industries.map(item => (typeof item === 'object' ? item?.name : item))
+      : [];
+
+    dispatch(showLoading());
+    dispatch(
+      updateUserProfileRequest(
+        {
+          self_industry_list: temp,
+          partner_industry_list: temp1,
+          sell_industry_list: temp2,
+          ...route?.params,
+        },
+        response => {
+          dispatch(hideLoading());
+          if (response.success) {
+            navigation.navigate(AppRoute.PROFILE_COMPLETE);
+          }
+        },
+      ),
+    );
   };
 
   const onInputChange = useCallback((text: string) => {
@@ -166,8 +176,12 @@ const ProfileSecondScreen = ({navigation, route}: any) => {
   };
 
   return (
-    <View style={[GlobalStyles.container]}>
-      <ProfileTemplateScreen isBackButton={true} onBack={onBack} isRightButton={true} onToggleDrawer={onToggleDrawer}>
+    <View style={[GlobalStyles.container]} key='profile-second'>
+      <ProfileTemplateScreen
+        isBackButton={true}
+        onBack={onBack}
+        isRightButton={userState?.userInfo?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED}
+        onToggleDrawer={onToggleDrawer}>
         <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30, GlobalStyles.p15]}>
           <View style={[GlobalStyles.container, GlobalStyles.mb15]}>
             <ProfileBlock

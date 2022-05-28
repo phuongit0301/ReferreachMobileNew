@@ -63,13 +63,17 @@ const userReducer = (state: IUserState = initialState, action: IActionsUser): IU
     case UPDATE_USER_PROFILE_SUCCESS:
       return {...state, userInfo: {...state?.userInfo, ...action?.payload}};
     case UPDATE_USER_AVATAR_SUCCESS:
+      console.log('action?.payload=====>', action?.payload);
       return {
         ...state,
-        userInfo: {...state?.userInfo, avatar_metadata: {...state.userInfo?.avatar_metadata, ...action?.payload}},
+        userInfo: {
+          ...state?.userInfo,
+          avatar_metadata: {...state.userInfo?.avatar_metadata, ...action?.payload?.attributes?.avatar_metadata},
+        },
       };
     case DELETE_DATA_INDUSTRY: {
       const dataFilter = filterIndustry(state?.userInfo, action?.payload);
-      return {...state, userInfo: {...state?.userInfo}};
+      return {...state, userInfo: {...state?.userInfo, ...dataFilter}};
     }
     case USER_INFO_FAILURE:
     case UPDATE_USER_PROFILE_FAILURE:

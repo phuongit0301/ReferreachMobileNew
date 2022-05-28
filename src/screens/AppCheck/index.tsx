@@ -29,10 +29,12 @@ const AppCheckScreen: React.FC<Props> = ({navigation}) => {
               return;
             }
 
-            if (
-              response?.data?.in_app_status === IN_APP_STATUS_ENUM.ONBOARDING ||
-              response?.data?.in_app_status === IN_APP_STATUS_ENUM.INVITATION_SENT
-            ) {
+            if (response?.data?.in_app_status === IN_APP_STATUS_ENUM.ONBOARDING) {
+              navigation.navigate(AppRoute.MAIN_NAVIGATOR);
+              return;
+            }
+
+            if (response?.data?.in_app_status === IN_APP_STATUS_ENUM.INVITATION_SENT) {
               navigation.navigate(AppRoute.INTRO);
               return;
             }

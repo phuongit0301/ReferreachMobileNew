@@ -57,7 +57,7 @@ const SendInvitesScreen = ({navigation}: Props) => {
                   title={t('share_invite')}
                   h4
                   textCenter
-                  onPress={onAccept}
+                  onPress={onBack}
                   containerStyle={{
                     ...GlobalStyles.buttonContainerStyle,
                     ...GlobalStyles.mb30,
@@ -70,7 +70,7 @@ const SendInvitesScreen = ({navigation}: Props) => {
                   title={t('proceed')}
                   h4
                   textCenter
-                  onPress={onBack}
+                  onPress={onAccept}
                   containerStyle={{
                     ...GlobalStyles.buttonContainerStyle,
                     ...styles.buttonSecondContainerStyle,

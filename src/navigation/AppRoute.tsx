@@ -26,6 +26,7 @@ export enum AppRoute {
   YOUR_ASK = 'YourAsk',
   ASK = 'Ask',
   ASK_TWO = 'AskTwo',
+  ASK_THREE = 'AskThree',
   TABS = 'Tabs',
   CREATE_ASK = 'CreateAsk',
   ASK_PREVIEW = 'AskPreview',

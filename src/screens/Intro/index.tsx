@@ -45,7 +45,7 @@ const IntroScreen = ({navigation}: Props) => {
     dispatch(showLoading());
     dispatch(
       updateUserInAppStatus(
-        {in_app_status: IN_APP_STATUS_ENUM.ONBOARD_COMPLETED},
+        {in_app_status: IN_APP_STATUS_ENUM.ONBOARDING},
         (response: IActionUpdateUserInAppStatusSuccess['payload']) => {
           dispatch(hideLoading());
           if (response.success) {

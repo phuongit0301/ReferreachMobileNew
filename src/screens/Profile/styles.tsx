@@ -3,9 +3,15 @@ import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
 import {adjust, lineHeightByRatio} from '~Root/utils';
 
 export default StyleSheet.create({
+  container: {
+    backgroundColor: BASE_COLORS.whiteColor,
+  },
   profileGradient: {
     borderBottomRightRadius: adjust(65),
     minHeight: adjust(200),
+  },
+  imageButton: {
+    ...GlobalStyles.pv15,
   },
   buttonUpdateContainerStyle: {
     ...GlobalStyles.mb20,

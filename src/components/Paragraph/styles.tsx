@@ -68,6 +68,9 @@ export default StyleSheet.create({
   textSpanishGrayColor: {
     color: BASE_COLORS.spanishGrayColor,
   },
+  textSpanishGray2Color: {
+    color: BASE_COLORS.spanishGray2Color,
+  },
   textTimberWolfColor: {
     color: BASE_COLORS.timberWolfColor,
   },
@@ -92,7 +95,13 @@ export default StyleSheet.create({
   textSilverChaliceColor: {
     color: BASE_COLORS.silverChaliceColor,
   },
+  textGraniteGrayColor: {
+    color: BASE_COLORS.graniteGrayColor,
+  },
   textCenter: {
     textAlign: 'center',
+  },
+  textRight: {
+    textAlign: 'right',
   },
 });

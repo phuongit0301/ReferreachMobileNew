@@ -130,6 +130,9 @@ const ListContactScreen = ({navigation}: Props) => {
             renderItem={renderItem}
             ItemSeparatorComponent={() => <View style={styles.border} />}
             keyExtractor={(item, index) => `listContact-${index}`}
+            initialNumToRender={10}
+            maxToRenderPerBatch={20}
+            updateCellsBatchingPeriod={40}
           />
           <View style={styles.alphabetContainer}>
             {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((item: string, index: number) => (

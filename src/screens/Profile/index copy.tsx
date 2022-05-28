@@ -83,7 +83,7 @@ const ProfileScreen = ({navigation}: any) => {
   }
 
   return (
-    <View style={[GlobalStyles.container]} key='profile'>
+    <View style={[GlobalStyles.container]}>
       <ProfileTemplateScreen
         onBack={onBack}
         isRightButton={userState?.userInfo?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED}

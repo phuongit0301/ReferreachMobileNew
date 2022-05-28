@@ -26,6 +26,8 @@ import YourAskScreen from '~Root/screens/YourAsk';
 import AIRFeedScreen from '~Root/screens/AIRFeed';
 import AskScreen from '~Root/screens/Ask';
 import AskTwoScreen from '~Root/screens/AskTwo';
+import AskThreeScreen from '~Root/screens/AskThree';
+import AskPublishScreen from '~Root/screens/AskPublish';
 import TrustNetworkScreen from '~Root/screens/TrustNetwork';
 import ChatScreen from '~Root/screens/Chat';
 import AppCheckScreen from '~Root/screens/AppCheck';
@@ -41,6 +43,7 @@ import styles from './styles';
 import {BottomTabParams, MainNavigatorParamsList, RootNavigatorParamsList} from './config';
 import {IGlobalState} from '~Root/types';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { IN_APP_STATUS_ENUM } from '~Root/utils/common';
 
 enableScreens();
 
@@ -67,6 +70,8 @@ const MainNavigator = (props: any) => {
 };
 
 const AppBottomTab = () => {
+  const userState = useSelector((state: IGlobalState) => state.userState);
+
   return (
     <BottomTab.Navigator
       initialRouteName={AppRoute.YOUR_ASK}
@@ -150,9 +155,12 @@ const AppNavigator = (props: any) => {
           <RootStack.Screen name={AppRoute.SEND_INVITES} component={SendInvitesScreen} />
           <RootStack.Screen name={AppRoute.INTRO} component={IntroScreen} />
           <RootStack.Screen name={AppRoute.APP_DRAWER} component={AppDrawer} />
+          <RootStack.Screen name={AppRoute.MAIN_NAVIGATOR} component={MainNavigator} />
           <RootStack.Screen name={AppRoute.HOME} component={YourAskScreen} />
           <RootStack.Screen name={AppRoute.ASK} component={AskScreen} />
           <RootStack.Screen name={AppRoute.ASK_TWO} component={AskTwoScreen} />
+          <RootStack.Screen name={AppRoute.ASK_THREE} component={AskThreeScreen} />
+          <RootStack.Screen name={AppRoute.ASK_PUBLISH} component={AskPublishScreen} />
         </>
       ) : (
         <>
