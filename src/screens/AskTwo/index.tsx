@@ -110,7 +110,7 @@ const AskTwocreen = ({navigation}: any) => {
                 <View style={[GlobalStyles.flexRow, GlobalStyles.justifyCenter]}>
                   {PAGINATION.map(item => {
                     return (
-                      <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
+                      <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]} key={`pagination-2-${item}`}>
                         {currentPage === item ? (
                           <LinearGradient
                             colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}

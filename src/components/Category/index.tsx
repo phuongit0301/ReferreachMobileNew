@@ -25,7 +25,6 @@ const Category: React.FC<Props> = ({
   tagText = {},
   uri,
 }) => {
-  console.log('name=====>', name);
   return (
     <TouchableOpacity onPress={() => onPress(itemKey)} style={[styles.tag, styles.mr10, styleTag]}>
       <Paragraph p style={[styles.tagText, tagText]} title={name} />

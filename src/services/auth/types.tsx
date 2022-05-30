@@ -20,6 +20,11 @@ export interface IAuthState {
   progress: number;
 }
 
+export interface IVerifyToken {
+  success: boolean;
+  payload?: string | null;
+}
+
 // Procedures actions
 export interface IActionInitializeAuthRequested {
   type: typeof INITIALIZE_AUTH_REQUESTED;

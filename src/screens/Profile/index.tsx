@@ -84,10 +84,7 @@ const ProfileScreen = ({navigation}: any) => {
 
   return (
     <View style={[GlobalStyles.container]} key='profile'>
-      <ProfileTemplateScreen
-        onBack={onBack}
-        isRightButton={userState?.userInfo?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED}
-        onToggleDrawer={onToggleDrawer}>
+      <ProfileTemplateScreen onBack={onBack} isRightButton={true} onToggleDrawer={onToggleDrawer}>
         <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30, GlobalStyles.p15]}>
           <InputValidateControl
             label={`${t('first_name')}*`}

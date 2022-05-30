@@ -22,6 +22,10 @@ const InviteContactScreen = ({navigation}: Props) => {
     navigation.navigate(AppRoute.LIST_CONTACT);
   };
 
+  const onSkip = () => {
+    navigation.navigate(AppRoute.INTRO);
+  };
+
   return (
     <View style={[GlobalStyles.container, styles.container]}>
       <HeaderSmallBlue isBackButton={false} />
@@ -69,7 +73,7 @@ const InviteContactScreen = ({navigation}: Props) => {
               buttonContainerStyle={{...GlobalStyles.mb40, ...styles.btnContact}}
             />
             <Link
-              onPress={onLinkedIn}
+              onPress={onSkip}
               h4
               textSpanishGrayColor
               textDecoration

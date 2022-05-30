@@ -40,7 +40,7 @@ import TabBar from './TabBar';
 import Drawer from './Drawer';
 import {AppRoute} from './AppRoute';
 import styles from './styles';
-import {BottomTabParams, MainNavigatorParamsList, RootNavigatorParamsList} from './config';
+import {BottomTabParams, MainNavigatorParamsList, RootNavigatorParamsList, AskNavigatorParamsList} from './config';
 import {IGlobalState} from '~Root/types';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { IN_APP_STATUS_ENUM } from '~Root/utils/common';
@@ -49,12 +49,27 @@ enableScreens();
 
 const RootStack = createNativeStackNavigator<RootNavigatorParamsList>();
 const MainStack = createNativeStackNavigator<MainNavigatorParamsList>();
+const AskStack = createNativeStackNavigator<AskNavigatorParamsList>();
 const DrawerStack = createDrawerNavigator();
 const BottomTab = createBottomTabNavigator<BottomTabParams>();
 
-const MainNavigator = (props: any) => {
-  const userState = useSelector((state: IGlobalState) => state.userState);
+const AskNavigator = (props: any) => {
+  return (
+    <AskStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+      initialRouteName={AppRoute.ASK}
+      {...props}>
+      <AskStack.Screen name={AppRoute.ASK} component={AskScreen} />
+      <AskStack.Screen name={AppRoute.ASK_TWO} component={AskTwoScreen} />
+      <AskStack.Screen name={AppRoute.ASK_THREE} component={AskThreeScreen} />
+      <AskStack.Screen name={AppRoute.ASK_PUBLISH} component={AskPublishScreen} />
+    </AskStack.Navigator>
+  );
+};
 
+const MainNavigator = (props: any) => {
   return (
     <MainStack.Navigator
       screenOptions={{
@@ -70,8 +85,6 @@ const MainNavigator = (props: any) => {
 };
 
 const AppBottomTab = () => {
-  const userState = useSelector((state: IGlobalState) => state.userState);
-
   return (
     <BottomTab.Navigator
       initialRouteName={AppRoute.YOUR_ASK}
@@ -102,6 +115,8 @@ const AppDrawer = (props: any) => {
       }}>
       <DrawerStack.Screen name={AppRoute.BOTTOM_TAB} component={AppBottomTab} />
       <DrawerStack.Screen name={AppRoute.PROFILE_SECOND} component={ProfileSecondScreen} />
+      <DrawerStack.Screen name={AppRoute.ASK_NAVIGATOR} component={AskNavigator} />
+      <DrawerStack.Screen name={AppRoute.MAIN_NAVIGATOR} component={MainNavigator} />
     </DrawerStack.Navigator>
   );
 };
@@ -155,12 +170,8 @@ const AppNavigator = (props: any) => {
           <RootStack.Screen name={AppRoute.SEND_INVITES} component={SendInvitesScreen} />
           <RootStack.Screen name={AppRoute.INTRO} component={IntroScreen} />
           <RootStack.Screen name={AppRoute.APP_DRAWER} component={AppDrawer} />
-          <RootStack.Screen name={AppRoute.MAIN_NAVIGATOR} component={MainNavigator} />
           <RootStack.Screen name={AppRoute.HOME} component={YourAskScreen} />
-          <RootStack.Screen name={AppRoute.ASK} component={AskScreen} />
-          <RootStack.Screen name={AppRoute.ASK_TWO} component={AskTwoScreen} />
-          <RootStack.Screen name={AppRoute.ASK_THREE} component={AskThreeScreen} />
-          <RootStack.Screen name={AppRoute.ASK_PUBLISH} component={AskPublishScreen} />
+          {/* <RootStack.Screen name={AppRoute.ASK_NAVIGATOR} component={AskNavigator} /> */}
         </>
       ) : (
         <>

@@ -97,7 +97,7 @@ const TabBar = ({state, descriptors, navigation}: any) => {
             }).start();
             if (!isFocused) {
               route?.name === AppRoute.MAIN_NAVIGATOR
-                ? navigation.navigate(AppRoute.ASK)
+                ? navigation.navigate(AppRoute.ASK_NAVIGATOR)
                 : navigation.navigate(route.name);
             }
           };

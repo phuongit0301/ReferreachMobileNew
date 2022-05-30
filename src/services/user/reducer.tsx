@@ -12,6 +12,8 @@ import {
   UPDATE_USER_AVATAR_FAILURE,
   UPDATE_USER_AVATAR_REQUESTED,
   UPDATE_USER_AVATAR_SUCCESS,
+  UPDATE_USER_IN_APP_STATUS_REQUESTED,
+  UPDATE_USER_IN_APP_STATUS_SUCCESS,
 } from './constants';
 import {IUserState, IActionsUser, IUserInfoState} from './types';
 
@@ -46,6 +48,7 @@ const userReducer = (state: IUserState = initialState, action: IActionsUser): IU
     case USER_INFO_REQUESTED:
     case UPDATE_USER_PROFILE_REQUESTED:
     case UPDATE_USER_AVATAR_REQUESTED:
+    case UPDATE_USER_IN_APP_STATUS_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
     case USER_INFO_SUCCESS:
       return {
@@ -62,8 +65,9 @@ const userReducer = (state: IUserState = initialState, action: IActionsUser): IU
     }
     case UPDATE_USER_PROFILE_SUCCESS:
       return {...state, userInfo: {...state?.userInfo, ...action?.payload}};
+    case UPDATE_USER_IN_APP_STATUS_SUCCESS:
+      return {...state, userInfo: {...state?.userInfo, ...action?.payload?.data}};
     case UPDATE_USER_AVATAR_SUCCESS:
-      console.log('action?.payload=====>', action?.payload);
       return {
         ...state,
         userInfo: {

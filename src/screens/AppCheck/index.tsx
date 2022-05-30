@@ -30,7 +30,7 @@ const AppCheckScreen: React.FC<Props> = ({navigation}) => {
             }
 
             if (response?.data?.in_app_status === IN_APP_STATUS_ENUM.ONBOARDING) {
-              navigation.navigate(AppRoute.MAIN_NAVIGATOR);
+              navigation.navigate(AppRoute.APP_DRAWER, {screen: AppRoute.MAIN_NAVIGATOR});
               return;
             }
 

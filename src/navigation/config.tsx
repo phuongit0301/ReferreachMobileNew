@@ -14,7 +14,7 @@ export type RootNavigatorParamsList = {
   [AppRoute.RESET_PASSWORD]: undefined;
   [AppRoute.CREATE_ASK]: undefined;
   [AppRoute.ON_BOARDING_SCREEN]: {item: any};
-  [AppRoute.APP_DRAWER]: undefined;
+  [AppRoute.APP_DRAWER]: {screen?: undefined | string} | undefined;
   [AppRoute.BOTTOM_TAB]: undefined;
   [AppRoute.HOME_SHARE_SCREEN]: undefined;
   [AppRoute.HOME]: undefined;
@@ -40,6 +40,7 @@ export type RootNavigatorParamsList = {
   [AppRoute.CHAT_NOTIFICATION_ASKER]: undefined;
   [AppRoute.VIEW_PARTICIPANT]: undefined;
   [AppRoute.INTRO]: undefined;
+  [AppRoute.ASK_NAVIGATOR]: undefined;
   [AppRoute.ASK]: undefined;
   [AppRoute.ASK_TWO]: undefined;
   [AppRoute.ASK_THREE]: undefined;
@@ -100,6 +101,13 @@ export type MainNavigatorParamsList = {
   [AppRoute.JOINT_MESSAGE_MODAL]: undefined;
   [AppRoute.CHAT_INTERNAL]: undefined;
   [AppRoute.ASK]: undefined;
+};
+
+export type AskNavigatorParamsList = {
+  [AppRoute.ASK]: undefined;
+  [AppRoute.ASK_TWO]: undefined;
+  [AppRoute.ASK_THREE]: undefined;
+  [AppRoute.ASK_PUBLISH]: undefined;
 };
 
 // interface AuthNavigatorParamsList {

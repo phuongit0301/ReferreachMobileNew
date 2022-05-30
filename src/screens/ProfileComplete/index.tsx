@@ -4,13 +4,15 @@ import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {Button, Paragraph, ProfileTemplateScreen, Icon, Category} from '~Root/components';
+import {IActionUpdateUserInAppStatusSuccess, IUserState} from '~Root/services/user/types';
+import {updateUserInAppStatus} from '~Root/services/user/actions';
+import {hideLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import styles from './styles';
+import {AppRoute} from '~Root/navigation/AppRoute';
+import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 import {IGlobalState} from '~Root/types';
-
-import {IUserState} from '~Root/services/user/types';
 import {adjust} from '~Root/utils';
-import { AppRoute } from '~Root/navigation/AppRoute';
+import styles from './styles';
 
 // type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.PROFILE>;
 
@@ -29,7 +31,23 @@ const ProfileCompleteScreen = ({navigation, route}: any) => {
   };
 
   const onNext = () => {
-    navigation.navigate(AppRoute.BOTTOM_TAB, {screen: AppRoute.YOUR_ASK});
+    // Check if user have status onboard_completed then navigate to another screen
+    if (userState?.userInfo?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED) {
+      navigation.navigate(AppRoute.BOTTOM_TAB);
+      return false;
+    }
+
+    dispatch(
+      updateUserInAppStatus(
+        {in_app_status: IN_APP_STATUS_ENUM.ONBOARD_COMPLETED},
+        (response: IActionUpdateUserInAppStatusSuccess['payload']) => {
+          dispatch(hideLoading());
+          if (response.success) {
+            navigation.navigate(AppRoute.BOTTOM_TAB);
+          }
+        },
+      ),
+    );
   };
 
   return (

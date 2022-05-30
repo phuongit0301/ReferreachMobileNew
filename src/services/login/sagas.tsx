@@ -5,20 +5,23 @@ import axios from 'axios';
 
 import {initAuthSuccess} from '~Root/services/auth/actions';
 import {LOGIN_FAILURE, LOGIN_REQUESTED, LOGIN_SUCCESS} from './constants';
+import {USER_INFO_SUCCESS} from '~Root/services/user/constants';
 import LoginAPI from './apis';
 import {IActionLoginRequested, IActionLoginSuccess} from './types';
 
 function* handleLogin(payload: IActionLoginRequested) {
   try {
+    console.log('payload?.payload=========>', payload?.payload);
     const response: IActionLoginSuccess['payload'] = yield call(LoginAPI.handleLogin, payload?.payload);
+    console.log('response?.payload=========>', response);
     if (response?.success) {
       if (response?.data.confirmed_at) {
         yield AsyncStorage.setItem('token', response?.data?.token);
-        yield put({type: LOGIN_SUCCESS, payload: response?.data});
       } else {
         axios.defaults.headers.common = {Authorization: `Bearer ${response?.data?.token}`};
-        yield put({type: LOGIN_FAILURE, payload: {error: i18n.t('unauthorized')}});
+        yield put({type: USER_INFO_SUCCESS, payload: response});
       }
+      yield put({type: LOGIN_SUCCESS, payload: response?.data});
 
       yield put(initAuthSuccess());
       payload?.callback &&

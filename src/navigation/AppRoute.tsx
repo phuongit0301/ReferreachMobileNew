@@ -24,6 +24,7 @@ export enum AppRoute {
   AIR_FEED = 'AIRFeed',
   TRUST_NETWORK = 'TrustNetwork',
   YOUR_ASK = 'YourAsk',
+  ASK_NAVIGATOR = 'AskNavigator',
   ASK = 'Ask',
   ASK_TWO = 'AskTwo',
   ASK_THREE = 'AskThree',

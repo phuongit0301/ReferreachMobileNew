@@ -49,7 +49,7 @@ const IntroScreen = ({navigation}: Props) => {
         (response: IActionUpdateUserInAppStatusSuccess['payload']) => {
           dispatch(hideLoading());
           if (response.success) {
-            navigation.navigate(AppRoute.APP_DRAWER);
+            navigation.navigate(AppRoute.APP_DRAWER, {screen: AppRoute.MAIN_NAVIGATOR});
           }
         },
       ),
