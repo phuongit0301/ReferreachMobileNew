@@ -30,6 +30,7 @@ export enum IN_APP_STATUS_ENUM {
   SIGNIN_COMPLETED = 'signin_completed',
   ONBOARDING = 'onboarding',
   ONBOARD_COMPLETED = 'onboard_completed',
+  SIGNUP_GUIDE_TIPS = 'signup_guide_tips',
 }
 
 export const sideBarRoutes = [

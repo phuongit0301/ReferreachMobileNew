@@ -1,51 +1,70 @@
-import {GET_ASK_REQUESTED, GET_ASK_SUCCESS, GET_ASK_FAILURE} from './constants';
+import {
+  GET_ASK_REQUESTED,
+  GET_ASK_SUCCESS,
+  GET_ASK_FAILURE,
+  GET_JOB_REQUESTED,
+  GET_JOB_SUCCESS,
+  GET_JOB_FAILURE,
+  GET_LOCATION_REQUESTED,
+  GET_LOCATION_FAILURE,
+  GET_LOCATION_SUCCESS,
+  SET_DATA_CREATE_ASK_STEP_1,
+  SET_DATA_CREATE_ASK_STEP_2,
+  SET_DATA_CREATE_ASK_STEP_3,
+  SET_LOCATION,
+  CREATE_ASK_FAILURE,
+  CREATE_ASK_REQUESTED,
+  CREATE_ASK_SUCCESS,
+} from './constants';
 import {IActionsCreateAsk, IAskState} from './types';
 
 export const initialState: IAskState = {
-  errors: '',
+  message: '',
   loading: false,
   success: false,
-  data: [
-    {
-      id: 1,
-      greeting: "Hi. I'm looking for",
-      role: 'Custom build high end pc',
-      description: 'for gaming.',
-      date: '2022-05-18 23:28:14',
-      location: 'Singapore',
-      criteria: ['Must be able to play Crisis 6', 'Budget 3000 SGD', 'Nvidia 3080TI'],
-      files: [{fileType: 'pdf'}, {fileType: 'xlx'}],
-    },
-    {
-      id: 2,
-      greeting: "Hi. I'm looking for",
-      role: 'Front-end Developer',
-      description: "to develop my client's website",
-      date: '2022-05-19 10:28:14',
-      location: 'Singapore',
-      criteria: [
-        '5 Years Experience',
-        'Fast & Efficient',
-        'Proficiency with fundamental front-end languages such as HTML, CSS, and JavaScript.',
-      ],
-      files: [{fileType: 'pdf'}, {fileType: 'xlx'}],
-    },
-  ],
+  data: {
+    data: [],
+    included: [],
+  },
   dataGreetingSuggest: ['Good day,', 'Hello,', '你好！', 'Hey guys!', 'Hola!', 'Xin chào', 'Salaam', 'Namaste'],
   dataPositionDropDown: ["I'm looking for", 'I urgently need', "I'm hiring for", 'I want'],
-  dataPositionSuggest: ['customers', 'consultants'],
+  dataPositionSuggest: [],
+  dataLocationSuggest: [],
   textSearch: '',
+  dataStep1: null,
+  dataStep2: null,
+  dataStep3: null,
   callback: () => {},
 };
 
 const askReducer = (state: IAskState = initialState, action: IActionsCreateAsk): IAskState => {
   switch (action.type) {
     case GET_ASK_REQUESTED:
+    case GET_JOB_REQUESTED:
+    case GET_LOCATION_REQUESTED:
+    case CREATE_ASK_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
     case GET_ASK_SUCCESS:
-      return {...state, loading: false, data: action.payload};
+      return {...state, loading: false, data: action.payload?.data};
+    case CREATE_ASK_SUCCESS:
+      return {...state, loading: false, data: {...state.data, ...action?.payload?.data}};
+    case GET_JOB_SUCCESS:
+      return {...state, loading: false, dataPositionSuggest: action.payload?.data};
+    case GET_LOCATION_SUCCESS:
+      return {...state, loading: false, dataLocationSuggest: action.payload?.data};
+    case SET_LOCATION:
+      return {...state, loading: false, dataLocationSuggest: action.payload};
+    case SET_DATA_CREATE_ASK_STEP_1:
+      return {...state, dataStep1: action?.payload};
+    case SET_DATA_CREATE_ASK_STEP_2:
+      return {...state, dataStep2: action?.payload};
+    case SET_DATA_CREATE_ASK_STEP_3:
+      return {...state, dataStep3: action?.payload};
     case GET_ASK_FAILURE:
-      return {...state, loading: false, errors: action.payload.error};
+    case CREATE_ASK_FAILURE:
+    case GET_JOB_FAILURE:
+    case GET_LOCATION_FAILURE:
+      return {...state, loading: false, message: action.payload.message};
     default:
       return state;
   }

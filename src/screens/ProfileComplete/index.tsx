@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Button, Paragraph, ProfileTemplateScreen, Icon, Category} from '~Root/components';
 import {IActionUpdateUserInAppStatusSuccess, IUserState} from '~Root/services/user/types';
 import {updateUserInAppStatus} from '~Root/services/user/actions';
-import {hideLoading} from '~Root/services/loading/actions';
+import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
@@ -36,7 +36,7 @@ const ProfileCompleteScreen = ({navigation, route}: any) => {
       navigation.navigate(AppRoute.BOTTOM_TAB);
       return false;
     }
-
+    dispatch(showLoading());
     dispatch(
       updateUserInAppStatus(
         {in_app_status: IN_APP_STATUS_ENUM.ONBOARD_COMPLETED},

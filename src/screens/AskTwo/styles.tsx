@@ -111,10 +111,12 @@ export default StyleSheet.create({
     elevation: adjust(2),
   },
   inputWrapperStyle: {
+    ...GlobalStyles.h5,
     ...GlobalStyles.inputStyle,
     ...GlobalStyles.mb15,
     borderRadius: adjust(20),
     backgroundColor: BASE_COLORS.brightGrayColor,
+    color: BASE_COLORS.blackColor,
   },
   inputIconStyle: {
     ...GlobalStyles.h5,
@@ -142,5 +144,26 @@ export default StyleSheet.create({
   },
   btnAdd: {
     textAlign: 'right',
+  },
+  item: {
+    width: '100%',
+  },
+  borderBottom: {
+    borderBottomColor: BASE_COLORS.steelBlueColor,
+    borderBottomWidth: 1,
+    flex: 1,
+    width: '100%',
+  },
+  locationContainer: {
+    backgroundColor: BASE_COLORS.grayColor,
+    paddingVertical: adjust(5),
+    paddingHorizontal: adjust(5),
+    borderBottomLeftRadius: adjust(10),
+    borderBottomRightRadius: adjust(10),
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 50,
+    zIndex: 10,
   },
 });

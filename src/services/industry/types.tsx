@@ -12,17 +12,27 @@ import {
   DELETE_DATA_INDUSTRY,
 } from './constants';
 
+export interface IIndustrySave {
+  id: number;
+  name: string;
+}
+
 export interface IIndustry {
   id: string;
-  name: string;
+  type: string;
+  attributes: {
+    display_value: string;
+    metadata: any | null;
+    search_data: string;
+  };
 }
 
 export interface IIndustryState {
   errors: string[];
   loading: boolean;
-  industry_original: string[];
-  industry: string[];
-  industry_selected: string[];
+  industry_original: IIndustry[] | IIndustrySave[];
+  industry: IIndustry[] | IIndustrySave[];
+  industry_selected: IIndustry[] | IIndustrySave[];
   callback?: () => void;
   showModal: boolean;
   title?: string;
@@ -47,7 +57,7 @@ export interface IActionIndustryRequested {
 export interface IActionIndustrySuccess {
   type: typeof GET_INDUSTRY_SUCCESS;
   payload: {
-    data: string[];
+    data: IIndustry[] | IIndustrySave[];
     success: boolean;
     message: string;
   };
@@ -63,12 +73,13 @@ export interface IActionIndustryFailure {
 
 export interface IActionAllIndustriesRequested {
   type: typeof GET_ALL_INDUSTRIES_REQUESTED;
+  payload: string;
   callback?: any;
 }
 export interface IActionAllIndustriesSuccess {
   type: typeof GET_ALL_INDUSTRIES_SUCCESS;
   payload: {
-    data: string[];
+    data: IIndustry[] | IIndustrySave[];
     success: boolean;
     message: string;
   };
@@ -84,7 +95,7 @@ export interface IActionAllIndustriesFailure {
 
 export interface IActionSetDataIndustrySelected {
   type: typeof SET_DATA_INDUSTRY_SELECTED;
-  payload: string[];
+  payload: IIndustry[] | IIndustrySave[];
 }
 
 export interface IActionDeleteIndustry {

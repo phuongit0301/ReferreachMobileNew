@@ -11,9 +11,7 @@ import {IActionLoginRequested, IActionLoginSuccess} from './types';
 
 function* handleLogin(payload: IActionLoginRequested) {
   try {
-    console.log('payload?.payload=========>', payload?.payload);
     const response: IActionLoginSuccess['payload'] = yield call(LoginAPI.handleLogin, payload?.payload);
-    console.log('response?.payload=========>', response);
     if (response?.success) {
       if (response?.data.confirmed_at) {
         yield AsyncStorage.setItem('token', response?.data?.token);

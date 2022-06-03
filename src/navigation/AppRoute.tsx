@@ -32,6 +32,7 @@ export enum AppRoute {
   CREATE_ASK = 'CreateAsk',
   ASK_PREVIEW = 'AskPreview',
   ASK_PUBLISH = 'AskPublish',
+  ASK_EDIT = 'AskEdit',
   VERIFY_EMAIL = 'VerifyEmail',
   VERIFIED_EMAIL = 'VerifiedEmail',
   RECOVER_PASSWORD = 'RecoverPassword',
@@ -54,6 +55,8 @@ export enum AppRoute {
   HELP = 'Help',
   FEED_BACK = 'FeedBack',
   SETTING = 'Setting',
+  TIPS = 'Tips',
+  TIPS_TWO = 'TipsTwo',
 }
 
 export const AppRouteNotTabBar = {

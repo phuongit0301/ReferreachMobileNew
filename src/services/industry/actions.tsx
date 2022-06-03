@@ -44,9 +44,10 @@ export const filterIndustry = (payload: string) => {
   };
 };
 
-export const getAllIndustries = (callback: () => void) => {
+export const getAllIndustries = (payload: string, callback: () => void) => {
   return {
     type: GET_ALL_INDUSTRIES_REQUESTED,
+    payload,
     callback,
   };
 };

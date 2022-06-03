@@ -36,6 +36,7 @@ import CheckBox from './CheckBox';
 import DatePicker from './DatePicker';
 import TransContent from './TransContent';
 import AvatarGradient from './AvatarGradient';
+import Avatar from './Avatar';
 import Icon from './Icon';
 import BackButton from './BackButton';
 import UserCard from './UserCard';
@@ -56,6 +57,7 @@ import ProfileBlock from './ProfileBlock';
 import Otp from './Otp';
 import Intro from './Widgets/Slider';
 import AskItem from './AskItem';
+import AskGreeting from './AskGreeting';
 /** Define Template */
 
 import HomeTemplateScreen from './HomeTemplate';
@@ -101,6 +103,7 @@ export {
   DatePicker,
   TransContent,
   AvatarGradient,
+  Avatar,
   Icon,
   BackButton,
   UserCard,
@@ -124,4 +127,5 @@ export {
   Otp,
   Intro,
   AskItem,
+  AskGreeting,
 };

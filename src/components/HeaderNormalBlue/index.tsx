@@ -1,8 +1,10 @@
 import React from 'react';
 import {View, TouchableOpacity, ViewStyle, TextStyle} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
-import {GlobalStyles, IMAGES} from '~Root/config';
+import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import {Image, Paragraph} from '~Root/components';
+import styles from './styles';
 
 interface Props {
   isBackButton?: boolean;
@@ -19,27 +21,23 @@ const HeaderNormalBlue: React.FC<Props> = ({
   title = '',
   containerHeaderStyle = {},
   headerTextStyle = {},
-  showTitle = false,
+  showTitle = true,
   children,
 }) => {
   return (
-    <View
-      style={[
-        GlobalStyles.containerHeader,
-        GlobalStyles.containerHeaderBlueMD,
-        GlobalStyles.flexRow,
-        containerHeaderStyle,
-      ]}>
-      <View style={[GlobalStyles.flexRow, GlobalStyles.header]}>
+    <LinearGradient
+      colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
+      style={[GlobalStyles.flexRow, styles.container]}>
+      <View style={[GlobalStyles.flexRow, GlobalStyles.ph5]}>
         {isBackButton && (
           <TouchableOpacity onPress={onBack} style={[GlobalStyles.mr10]}>
-            <Image source={IMAGES.iconBack} style={GlobalStyles.iconBack} />
+            <Image source={IMAGES.iconBackWhite} style={GlobalStyles.iconBack} />
           </TouchableOpacity>
         )}
         {showTitle && <Paragraph h5 style={[GlobalStyles.headerTextWhite, headerTextStyle]} title={title} />}
         {children}
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 

@@ -6,7 +6,7 @@ import FastImage from 'react-native-fast-image';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {AvatarGradient, Paragraph} from '~Root/components';
+import {Avatar, AvatarGradient, Paragraph} from '~Root/components';
 import {sideBarRoutes} from '~Root/utils';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import styles from './styles';
@@ -14,7 +14,7 @@ import {logout} from '~Root/services/auth/actions';
 import {IUserState} from '~Root/services/user/types';
 import {IGlobalState} from '~Root/types';
 import {AppRoute} from './AppRoute';
-import { IN_APP_STATUS_ENUM } from '~Root/utils/common';
+import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 
 const Drawer = ({props, navigation}) => {
   const {t} = useTranslation();
@@ -48,9 +48,7 @@ const Drawer = ({props, navigation}) => {
             </TouchableOpacity>
           </View>
           <View style={[styles.content]}>
-            <TouchableOpacity
-              style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}
-              onPress={onProfile}>
+            <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]} onPress={onProfile}>
               {userState?.userInfo?.avatar_metadata?.avatar_url &&
               userState?.userInfo?.avatar_metadata?.avatar_url !== '' ? (
                 <FastImage

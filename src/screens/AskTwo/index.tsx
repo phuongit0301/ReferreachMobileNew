@@ -1,38 +1,52 @@
-import React, {useState} from 'react';
-import {View, ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {View, ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView, FlatList, TextInput} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import FastImage from 'react-native-fast-image';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useTranslation} from 'react-i18next';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {useForm, SubmitHandler} from 'react-hook-form';
+import {ChangeHandler, useForm} from 'react-hook-form';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-
-import {BottomTabParams} from '~Root/navigation/config';
-import {AppRoute} from '~Root/navigation/AppRoute';
-import {HeaderSmallBlueWithBG, InputIconValidate, Paragraph} from '~Root/components';
-import {BASE_COLORS, CREATE_ASK_FIELDS, CREATE_ASK_KEYS, GlobalStyles, IMAGES} from '~Root/config';
-import LinearGradient from 'react-native-linear-gradient';
-import FastImage from 'react-native-fast-image';
-import styles from './styles';
+import {useDispatch, useSelector} from 'react-redux';
 import Svg, {Path} from 'react-native-svg';
-import { dateFormat3, dateWithMonthsDelay } from '~Root/utils';
+
+import {BASE_COLORS, CREATE_ASK_FIELDS, CREATE_ASK_KEYS, GlobalStyles, IMAGES} from '~Root/config';
+import {HeaderSmallBlueWithBG, InputIconValidate, Paragraph} from '~Root/components';
+import {BottomTabParams} from '~Root/navigation/config';
+import {dateFormat3, dateWithMonthsDelay} from '~Root/utils';
+import {getLocation, setDataCreateAsk2, setLocation} from '~Root/services/ask/actions';
+import {AppRoute} from '~Root/navigation/AppRoute';
+import {IGlobalState} from '~Root/types';
+import styles from './styles';
 
 type Props = NativeStackScreenProps<BottomTabParams, AppRoute.AIR_FEED>;
 
 const PAGINATION = [1, 2, 3];
 
 const schema = yup.object().shape({
-  [CREATE_ASK_FIELDS.location]: yup.string().required('Location is required'),
-  [CREATE_ASK_FIELDS.deadline]: yup.string().required('Deadline is required'),
+  [CREATE_ASK_FIELDS.location]: yup.string().required('Field is required'),
+  [CREATE_ASK_FIELDS.deadline]: yup.string().required('Field is required'),
+  [CREATE_ASK_FIELDS.criteria1]: yup.string(),
+  [CREATE_ASK_FIELDS.criteria2]: yup.string(),
+  [CREATE_ASK_FIELDS.criteria3]: yup.string(),
+  [CREATE_ASK_FIELDS.criteria4]: yup.string(),
+  [CREATE_ASK_FIELDS.criteria5]: yup.string(),
 });
 
 const AskTwocreen = ({navigation}: any) => {
   const {t} = useTranslation();
+  const dispatch = useDispatch();
+  const askState = useSelector((state: IGlobalState) => state.askState);
+
   const [currentPage, setPage] = useState(2);
   const [showTooltip, setShowTooltip] = useState(true);
   const [titleTooltip, setTitleTooltip] = useState('Where and when do you need it? Any criteria?');
+  const [textLocation, setTextLocation] = useState('');
+  const [visibleLocation, setVisibleLocation] = useState(false);
   const [inputDynamic, setInputDynamic] = useState(['1']);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
+  const [keyword, setKeyword] = useState('');
 
   const {
     register,
@@ -41,10 +55,21 @@ const AskTwocreen = ({navigation}: any) => {
     setFocus,
     setValue,
     formState: {errors, isValid},
+    watch,
   } = useForm<any>({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
+
+  // useMemo(() => {
+  //   if (watch(CREATE_ASK_FIELDS.location) !== '') {
+  //     dispatch(
+  //       getLocation(watch(CREATE_ASK_FIELDS.location), response => {
+  //         // setVisibleLocation(true);
+  //       }),
+  //     );
+  //   }
+  // }, [watch(CREATE_ASK_FIELDS.location)]);
 
   const onBack = () => {
     navigation.goBack();
@@ -90,6 +115,41 @@ const AskTwocreen = ({navigation}: any) => {
     setVisibleDatePicker(!visibleDatePicker);
   };
 
+  const onNext = (credentials: any) => {
+    dispatch(setDataCreateAsk2(credentials));
+    navigation.navigate(AppRoute.ASK_THREE);
+  };
+
+  const onSelectLocation = (text: string) => {
+    dispatch(setLocation(null));
+    setValue(CREATE_ASK_FIELDS.location, text);
+    setKeyword(text);
+  };
+
+  const renderLocationItem = ({item}: {item: any}) => {
+    return (
+      <TouchableOpacity
+        onPress={() => onSelectLocation(item?.attributes?.display_value)}
+        style={[GlobalStyles.mh10, GlobalStyles.ph10, GlobalStyles.pv10, GlobalStyles.mb10]}>
+        <View style={styles.item}>
+          <Paragraph p textWhite bold600 title={item?.attributes?.display_value} />
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const onSearch = useCallback(
+    text => {
+      setKeyword(text);
+      dispatch(
+        getLocation(text, response => {
+          // setVisibleLocation(true);
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   return (
     <View style={[GlobalStyles.container]}>
       <HeaderSmallBlueWithBG
@@ -108,9 +168,9 @@ const AskTwocreen = ({navigation}: any) => {
             <ScrollView>
               <View style={[GlobalStyles.flexColumn, GlobalStyles.mt10]}>
                 <View style={[GlobalStyles.flexRow, GlobalStyles.justifyCenter]}>
-                  {PAGINATION.map(item => {
+                  {PAGINATION.map((item, index) => {
                     return (
-                      <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]} key={`pagination-2-${item}`}>
+                      <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]} key={`pagination-2-${index}`}>
                         {currentPage === item ? (
                           <LinearGradient
                             colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
@@ -132,7 +192,7 @@ const AskTwocreen = ({navigation}: any) => {
                   })}
                 </View>
                 <View style={[GlobalStyles.container, GlobalStyles.mh15, GlobalStyles.mt20]}>
-                  <InputIconValidate
+                  {/* <InputIconValidate
                     label={`${t('location')}*`}
                     inputStyleWrapper={styles.inputWrapperStyle}
                     inputStyle={styles.inputIconStyle}
@@ -150,8 +210,30 @@ const AskTwocreen = ({navigation}: any) => {
                     imageStyleContainer={styles.iconContainer}
                     styleContainer={GlobalStyles.mb5}
                     imageStyle={styles.icon}
-                    onSubmitEditing={() => onSubmitEditing(CREATE_ASK_KEYS.deadline)}
+                  /> */}
+                  <TextInput
+                    {...register(CREATE_ASK_FIELDS.location)}
+                    value={keyword}
+                    placeholder={'Select Your Location'}
+                    onChangeText={onSearch}
+                    selectionColor={BASE_COLORS.blackColor}
+                    placeholderTextColor={BASE_COLORS.grayColor}
+                    style={[GlobalStyles.ph10, styles.inputWrapperStyle]}
                   />
+                  {askState?.dataLocationSuggest && askState?.dataLocationSuggest?.length > 0 && (
+                    <View style={[GlobalStyles.container, GlobalStyles.pv15, styles.locationContainer]}>
+                      <FlatList
+                        contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
+                        style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
+                        data={askState?.dataLocationSuggest}
+                        renderItem={renderLocationItem}
+                        keyExtractor={(item, index) => `location-suggest-${index}`}
+                        ItemSeparatorComponent={() => <View style={styles.borderBottom} />}
+                        keyboardShouldPersistTaps='handled'
+                        numColumns={1}
+                      />
+                    </View>
+                  )}
                   <InputIconValidate
                     label={`${t('by_when')}*`}
                     inputStyleWrapper={styles.inputWrapperStyle}
@@ -190,7 +272,7 @@ const AskTwocreen = ({navigation}: any) => {
                     placeholder={t('criteria')}
                     errors={errors}
                     control={control}
-                    name={CREATE_ASK_FIELDS.criteria}
+                    name={CREATE_ASK_FIELDS.criteria1}
                     register={register}
                     showIcon={false}
                     styleContainer={GlobalStyles.mb5}
@@ -198,6 +280,7 @@ const AskTwocreen = ({navigation}: any) => {
                   {inputDynamic.length > 0 &&
                     inputDynamic.map((item, index) => (
                       <InputIconValidate
+                        key={`input-dynamic-${index}`}
                         label={`${t('criteria')} ${index + 2}`}
                         inputStyleWrapper={styles.inputWrapperStyle}
                         inputStyle={styles.inputIconStyle}
@@ -207,7 +290,7 @@ const AskTwocreen = ({navigation}: any) => {
                         placeholder='Deadline'
                         errors={errors}
                         control={control}
-                        name={CREATE_ASK_FIELDS.criteria}
+                        name={CREATE_ASK_FIELDS[`criteria${index + 2}`]}
                         register={register}
                         showIcon={true}
                         isIconImage={true}
@@ -246,7 +329,7 @@ const AskTwocreen = ({navigation}: any) => {
                   </View>
                 </View>
               )}
-              <TouchableOpacity style={styles.iconCatContainer} onPress={() => navigation.navigate(AppRoute.ASK_THREE)}>
+              <TouchableOpacity style={styles.iconCatContainer} onPress={handleSubmit(onNext)}>
                 <FastImage source={IMAGES.iconCatNext} resizeMode='cover' style={styles.iconCatNext} />
               </TouchableOpacity>
             </View>

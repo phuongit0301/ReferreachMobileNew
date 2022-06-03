@@ -4,20 +4,20 @@ import Modal from 'react-native-modal';
 
 import {ButtonSecond, Icon, Category, Paragraph} from '~Root/components';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import {IIndustry} from '~Root/services/industry/types';
+import {IIndustry, IIndustrySave} from '~Root/services/industry/types';
 
 import styles from './styles';
 
 interface Props {
   isVisible: boolean;
-  onSelect: (item: IIndustry | string) => void;
+  onSelect: (item: IIndustry | IIndustrySave) => void;
   onClose: (index: number) => void;
   onSave: () => void;
   onInputChange: (text: string) => void;
   onHideModal: () => void;
-  onAdd: (item: IIndustry | string) => void;
-  data?: any;
-  dataSelected?: IIndustry[] | string[];
+  onAdd: (item: IIndustry | IIndustrySave) => void;
+  data?: IIndustry[] | IIndustrySave[];
+  dataSelected?: IIndustry[] | IIndustrySave[];
   textSearch?: string;
   title?: string;
 }
@@ -35,6 +35,22 @@ const ModalDialog: React.FC<Props> = ({
   textSearch,
   title,
 }) => {
+  const renderItem = ({item, index}: {item: IIndustry | IIndustrySave; index: number}) => {
+    return typeof item === 'object' ? (
+      <View key={`item-${index}`} style={styles.itemContainer}>
+        <TouchableOpacity onPress={() => onSelect(item)} style={styles.item}>
+          <Paragraph h5 textBlack title={item?.attributes?.display_value} />
+        </TouchableOpacity>
+      </View>
+    ) : (
+      <View key={`item-${index}`} style={styles.itemContainer}>
+        <TouchableOpacity onPress={() => onSelect(item)} style={styles.item}>
+          <Paragraph h5 textBlack title={item} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Modal
@@ -60,21 +76,7 @@ const ModalDialog: React.FC<Props> = ({
             numColumns={1}
             key={'grid'}
             keyExtractor={(item, index) => `grid-${index}`}
-            renderItem={({item, index}: {item: IIndustry | string; index: number}) =>
-              typeof item === 'object' ? (
-                <View key={`item-${index}`} style={styles.itemContainer}>
-                  <TouchableOpacity onPress={() => onSelect(item)} style={styles.item}>
-                    <Paragraph h5 textBlack title={item.name} />
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View key={`item-${index}`} style={styles.itemContainer}>
-                  <TouchableOpacity onPress={() => onSelect(item)} style={styles.item}>
-                    <Paragraph h5 textBlack title={item} />
-                  </TouchableOpacity>
-                </View>
-              )
-            }
+            renderItem={renderItem}
           />
           <View style={styles.btnAddContainer}>
             <TouchableOpacity
@@ -86,14 +88,14 @@ const ModalDialog: React.FC<Props> = ({
             </TouchableOpacity>
           </View>
           <View style={styles.selectedContainer}>
-            {dataSelected && dataSelected.length > 0 && (
+            {dataSelected && dataSelected?.length > 0 && (
               <View style={styles.tagContainer}>
-                {dataSelected.map((item: IIndustry | string, index: number) =>
+                {dataSelected.map((item: IIndustry | IIndustrySave, index: number) =>
                   typeof item === 'object' ? (
                     <Category
                       key={`selected-${index}`}
                       itemKey={item?.id}
-                      name={item?.name}
+                      name={item?.name ?? item?.attributes?.display_value}
                       showButton={true}
                       onPress={() => onClose(index)}
                     />

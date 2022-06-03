@@ -52,4 +52,10 @@ export default StyleSheet.create({
     shadowRadius: adjust(3),
     elevation: adjust(2),
   },
+  menu: {
+    position: 'absolute',
+    width: '100%',
+    top: 0,
+    right: 0,
+  },
 });

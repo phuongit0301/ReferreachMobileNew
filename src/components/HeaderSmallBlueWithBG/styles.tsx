@@ -28,4 +28,13 @@ export default StyleSheet.create({
   groupHeader: {
     marginBottom: adjust(-10),
   },
+  imageBgContainer: {
+    ...StyleSheet.absoluteFill,
+    position: 'absolute',
+    height: 100,
+  },
+  imageBg: {
+    width: '100%',
+    height: '100%',
+  },
 });

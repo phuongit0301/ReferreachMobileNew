@@ -88,7 +88,7 @@ const userReducer = (state: IUserState = initialState, action: IActionsUser): IU
   }
 };
 
-const filterIndustry = (industries: IUserInfoState['industries'], {index, target}: {index: number; target: string}) => {
+const filterIndustry = (industries: IUserInfoState, {index, target}: {index: number; target: string}) => {
   if (target && (industries as any)[target].length > 0) {
     const temp = {...industries};
     delete (temp as any)[target];

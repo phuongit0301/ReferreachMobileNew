@@ -45,7 +45,10 @@ export type RootNavigatorParamsList = {
   [AppRoute.ASK_TWO]: undefined;
   [AppRoute.ASK_THREE]: undefined;
   [AppRoute.ASK_PUBLISH]: undefined;
+  [AppRoute.ASK_EDIT]: undefined;
   [AppRoute.MAIN_NAVIGATOR]: undefined;
+  [AppRoute.TIPS]: undefined;
+  [AppRoute.TIPS_TWO]: undefined;
 };
 
 export type BottomTabParams = {
@@ -107,7 +110,9 @@ export type AskNavigatorParamsList = {
   [AppRoute.ASK]: undefined;
   [AppRoute.ASK_TWO]: undefined;
   [AppRoute.ASK_THREE]: undefined;
+  [AppRoute.ASK_PREVIEW]: undefined;
   [AppRoute.ASK_PUBLISH]: undefined;
+  [AppRoute.ASK_EDIT]: undefined;
 };
 
 // interface AuthNavigatorParamsList {

@@ -29,9 +29,6 @@ const DEFAULT_FORM_STATE = {
   descriptionSuggestion: false,
 };
 
-const DEFAULT_TITLE =
-  'Hi there! This is where you can start to create an Ask and send it to your network. \n\n You can long press on me to access the tutorial and speech-to-text Ask creation.';
-
 const AskPubish = ({navigation}: any) => {
   const {t} = useTranslation();
 
@@ -39,7 +36,7 @@ const AskPubish = ({navigation}: any) => {
     console.log(123123);
   };
   const onLinkClick = () => {
-    console.log(123123);
+    navigation.navigate(AppRoute.YOUR_ASK);
   };
 
   return (

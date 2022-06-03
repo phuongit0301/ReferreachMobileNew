@@ -1,7 +1,16 @@
 import React, {useCallback, useState} from 'react';
-import {View, ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView, TextInput} from 'react-native';
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Platform,
+  KeyboardAvoidingView,
+  TextInput,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import DocumentPicker, {DocumentPickerResponse} from 'react-native-document-picker';
+import Modal from 'react-native-modal';
 
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {HeaderSmallBlueWithBG, Paragraph} from '~Root/components';
@@ -10,13 +19,22 @@ import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import styles from './styles';
 import Svg, {Path} from 'react-native-svg';
+import {setDataCreateAsk3} from '~Root/services/ask/actions';
+import {useDispatch, useSelector} from 'react-redux';
+import AskPreviewScreen from '../AskPreview';
+import {IGlobalState} from '~Root/types';
 
 const PAGINATION = [1, 2, 3];
 
 const AskThreeScreen = ({navigation}: any) => {
   const {t} = useTranslation();
+  const dispatch = useDispatch();
+  const askState = useSelector((state: IGlobalState) => state.askState);
+  const userState = useSelector((state: IGlobalState) => state.userState);
+
   const [currentPage, setPage] = useState(3);
   const [showTooltip, setShowTooltip] = useState(true);
+  const [visiblePreview, setVisiblePreview] = useState(false);
   const [titleTooltip, setTitleTooltip] = useState(
     'You can upload any additional info to give more context. Or you can tap Preview to proceed.',
   );
@@ -45,17 +63,24 @@ const AskThreeScreen = ({navigation}: any) => {
     setTextDescription(text);
   };
 
-  const onSelect = useCallback(async () => {
+  const onSelect = async () => {
     try {
       const res = await DocumentPicker.pick({
         // Provide which type of file you want user to pick
-        type: [DocumentPicker.types.pdf, DocumentPicker.types.images],
+        type: [
+          DocumentPicker.types.pdf,
+          DocumentPicker.types.images,
+          DocumentPicker.types.xlsx,
+          DocumentPicker.types.xls,
+        ],
         presentationStyle: 'fullScreen',
         allowMultiSelection: true,
       });
       // Printing the log realted to the file
       console.log('res : ' + JSON.stringify(res));
-      setFilesUpload(res);
+      console.log('filesUpload1111 : ' + filesUpload);
+
+      setFilesUpload([...filesUpload, ...res]);
       // Setting the state to show single file attributes
     } catch (err) {
       // Handling any exception (If any)
@@ -63,10 +88,29 @@ const AskThreeScreen = ({navigation}: any) => {
         console.log('Unknown Error: ' + JSON.stringify(err));
       }
     }
-  }, []);
+  };
 
   const removeFile = (index: number) => {
-    setFilesUpload(filesUpload.filter((_, i) => index !== i));
+    setFilesUpload([...filesUpload.filter((_, i) => index !== i)]);
+  };
+
+  const onNext = (credentials: any) => {
+    dispatch(
+      setDataCreateAsk3({
+        additional_detail: textDescription,
+        filesUpload,
+      }),
+    );
+    setVisiblePreview(true);
+  };
+
+  const dismissModalHandler = () => {
+    setVisiblePreview(false);
+  };
+
+  const onSuccess = () => {
+    setVisiblePreview(false);
+    navigation.navigate(AppRoute.ASK_PUBLISH);
   };
 
   return (
@@ -116,7 +160,7 @@ const AskThreeScreen = ({navigation}: any) => {
                     filesUpload.map((item, index) => (
                       <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb15]}>
                         <FastImage source={IMAGES.iconUploadDone} resizeMode='cover' style={styles.iconUploadDone} />
-                        <Paragraph textSteelBlue2Color title={item?.name} style={GlobalStyles.mr5} />
+                        <Paragraph numberOfLines={1} ellipsizeMode='tail' textSteelBlue2Color title={item?.name} style={[GlobalStyles.mr5, {width: '60%'}]} />
                         <TouchableOpacity onPress={() => removeFile(index)}>
                           <FastImage source={IMAGES.iconTrash} resizeMode='cover' style={styles.iconTrash} />
                         </TouchableOpacity>
@@ -189,15 +233,27 @@ const AskThreeScreen = ({navigation}: any) => {
                   </View>
                 </View>
               )}
-              <TouchableOpacity
-                style={styles.iconCatContainer}
-                onPress={() => navigation.navigate(AppRoute.ASK_PUBLISH)}>
+              <TouchableOpacity style={styles.iconCatContainer} onPress={onNext}>
                 <FastImage source={IMAGES.iconCatPreview} resizeMode='cover' style={styles.iconCatNext} />
               </TouchableOpacity>
             </View>
           </View>
         </KeyboardAvoidingView>
       </View>
+      {visiblePreview && (
+        <Modal isVisible={true} onBackdropPress={dismissModalHandler}>
+          <View style={{height: '60%', borderRadius: 30, overflow: 'hidden'}}>
+            <AskPreviewScreen
+              navigation={navigation}
+              userInfo={userState?.userInfo}
+              dataStep1={askState?.dataStep1}
+              dataStep2={askState?.dataStep2}
+              dataStep3={askState?.dataStep3}
+              onSuccess={onSuccess}
+            />
+          </View>
+        </Modal>
+      )}
     </View>
   );
 };

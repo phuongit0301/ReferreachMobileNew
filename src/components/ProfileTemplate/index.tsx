@@ -9,7 +9,7 @@ import ImagePicker, {Options} from 'react-native-image-crop-picker';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {updateUserAvatar} from '~Root/services/user/actions';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import {AvatarGradient, Button, HeaderSmallTransparent, Icon, ModalDialogCommon, Paragraph} from '~Root/components';
+import {Avatar, AvatarGradient, Button, HeaderSmallTransparent, Icon, ModalDialogCommon, Paragraph} from '~Root/components';
 import styles from './styles';
 import {IUserState} from '~Root/services/user/types';
 import {useDispatch, useSelector} from 'react-redux';

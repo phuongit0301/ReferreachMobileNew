@@ -27,10 +27,14 @@ import AIRFeedScreen from '~Root/screens/AIRFeed';
 import AskScreen from '~Root/screens/Ask';
 import AskTwoScreen from '~Root/screens/AskTwo';
 import AskThreeScreen from '~Root/screens/AskThree';
+import AskPreviewScreen from '~Root/screens/AskPreview';
 import AskPublishScreen from '~Root/screens/AskPublish';
+import AskEditScreen from '~Root/screens/AskEdit';
 import TrustNetworkScreen from '~Root/screens/TrustNetwork';
 import ChatScreen from '~Root/screens/Chat';
 import AppCheckScreen from '~Root/screens/AppCheck';
+import TipsScreen from '~Root/screens/Tips';
+import TipsTwoScreen from '~Root/screens/TipsTwo';
 
 import {BASE_SETTINGS} from '~Root/config';
 import {AppState} from '~Root/reducers';
@@ -42,8 +46,8 @@ import {AppRoute} from './AppRoute';
 import styles from './styles';
 import {BottomTabParams, MainNavigatorParamsList, RootNavigatorParamsList, AskNavigatorParamsList} from './config';
 import {IGlobalState} from '~Root/types';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { IN_APP_STATUS_ENUM } from '~Root/utils/common';
+import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 
 enableScreens();
 
@@ -64,7 +68,16 @@ const AskNavigator = (props: any) => {
       <AskStack.Screen name={AppRoute.ASK} component={AskScreen} />
       <AskStack.Screen name={AppRoute.ASK_TWO} component={AskTwoScreen} />
       <AskStack.Screen name={AppRoute.ASK_THREE} component={AskThreeScreen} />
+      <AskStack.Group
+        screenOptions={{
+          presentation: 'modal',
+          contentStyle: {backgroundColor: 'rgba(18, 20, 26, 0.8);'},
+          headerShown: false,
+        }}>
+        <AskStack.Screen name={AppRoute.ASK_PREVIEW} component={AskPreviewScreen} />
+      </AskStack.Group>
       <AskStack.Screen name={AppRoute.ASK_PUBLISH} component={AskPublishScreen} />
+      <AskStack.Screen name={AppRoute.ASK_EDIT} component={AskEditScreen} />
     </AskStack.Navigator>
   );
 };
@@ -171,6 +184,15 @@ const AppNavigator = (props: any) => {
           <RootStack.Screen name={AppRoute.INTRO} component={IntroScreen} />
           <RootStack.Screen name={AppRoute.APP_DRAWER} component={AppDrawer} />
           <RootStack.Screen name={AppRoute.HOME} component={YourAskScreen} />
+          <RootStack.Group
+            screenOptions={{
+              presentation: 'modal',
+              contentStyle: {backgroundColor: 'rgba(18, 20, 26, 0.8);'},
+              headerShown: false,
+            }}>
+            <RootStack.Screen name={AppRoute.TIPS} component={TipsScreen} />
+            <RootStack.Screen name={AppRoute.TIPS_TWO} component={TipsTwoScreen} />
+          </RootStack.Group>
           {/* <RootStack.Screen name={AppRoute.ASK_NAVIGATOR} component={AskNavigator} /> */}
         </>
       ) : (

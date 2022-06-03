@@ -6,6 +6,7 @@ import registerWatchers from '~Root/services/register/sagas';
 import userWatchers from '~Root/services/user/sagas';
 import industryWatchers from '~Root/services/industry/sagas';
 import contactWatchers from '~Root/services/contact/sagas';
+import askWatchers from '~Root/services/ask/sagas';
 
 export default function* rootSaga() {
   yield all([fork(appWatchers)]);
@@ -14,4 +15,5 @@ export default function* rootSaga() {
   yield all([fork(userWatchers)]);
   yield all([fork(industryWatchers)]);
   yield all([fork(contactWatchers)]);
+  yield all([fork(askWatchers)]);
 }
