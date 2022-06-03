@@ -55,7 +55,7 @@ function* getAsks(payload: IActionGetAskRequest) {
       payload?.callback({
         success: false,
         message: error as string,
-        data: {data: [], included: []},
+        data: [],
       });
   }
 }
@@ -86,7 +86,7 @@ function* createAsk(payload: IActionCreateAskRequest) {
       payload?.callback({
         success: false,
         message: error as string,
-        data: {data: [], included: []},
+        data: [] as any,
       });
   }
 }

@@ -419,7 +419,7 @@ const AskScreen = ({navigation}: any) => {
               />
             </View>
           )}
-          <View style={GlobalStyles.container}>
+          <View>
             {showTooltip && (
               <View style={styles.tooltipContentStyle}>
                 <View style={GlobalStyles.flexColumn}>

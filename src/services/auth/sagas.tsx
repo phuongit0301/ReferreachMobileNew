@@ -1,5 +1,6 @@
 import {all, call, put, select, take, takeEvery} from 'redux-saga/effects';
 import {END, EventChannel, eventChannel} from 'redux-saga';
+import axios from 'axios';
 
 import {
   INITIALIZE_AUTH_FAILURE,

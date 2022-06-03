@@ -55,12 +55,14 @@ const sortAndGroupData = (payload: IActionSetContact['payload']) => {
   const contacts: any = [];
 
   datas.forEach(item => {
-    contacts.push({
-      id: item.recordID,
-      name: `${item.givenName} ${item.familyName}`,
-      phone: item.phoneNumbers.length ?? item.phoneNumbers[0]?.number,
-      email: item.emailAddresses.length ?? item.emailAddresses[0].email,
-    });
+    if (item.emailAddresses.length) {
+      contacts.push({
+        id: item.recordID,
+        name: `${item.givenName} ${item.familyName}`,
+        phone: item.phoneNumbers.length ?? item.phoneNumbers[0]?.number,
+        email: item.emailAddresses.length ?? item.emailAddresses[0].email,
+      });
+    }
   });
   return contacts;
 };

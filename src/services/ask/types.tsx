@@ -8,7 +8,6 @@ import {
   GET_JOB_SUCCESS,
   GET_LOCATION_FAILURE,
   GET_LOCATION_SUCCESS,
-  SET_DATA_CREATE_ASK,
   SET_DATA_CREATE_ASK_STEP_1,
   SET_DATA_CREATE_ASK_STEP_2,
   SET_DATA_CREATE_ASK_STEP_3,
@@ -20,7 +19,7 @@ import {
 
 export interface IAskState {
   message: string;
-  data: IActionListAskState;
+  data: IAskInside[];
   dataGreetingSuggest?: string[];
   dataPositionDropDown: any[];
   dataPositionSuggest?: any[];
@@ -105,7 +104,10 @@ export interface IFiles {
 
 export interface IActionListAskState {
   data: IAskInside[];
-  included?: IFiles[];
+}
+
+export interface IActionCreateAskState {
+  data: IAskInside;
 }
 
 export interface IActionGetAskRequest {
@@ -115,7 +117,7 @@ export interface IActionGetAskRequest {
 export interface IActionGetAskSuccess {
   type: typeof GET_ASK_SUCCESS;
   payload: {
-    data: IActionListAskState;
+    data: IAskInside[];
     message: string;
     success: boolean;
   };
@@ -139,7 +141,7 @@ export interface IActionCreateAskRequest {
 export interface IActionCreateAskSuccess {
   type: typeof CREATE_ASK_SUCCESS;
   payload: {
-    data: IActionListAskState;
+    data: IAskInside;
     message: string;
     success: boolean;
   };

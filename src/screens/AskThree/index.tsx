@@ -1,13 +1,5 @@
-import React, {useCallback, useState} from 'react';
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Platform,
-  KeyboardAvoidingView,
-  TextInput,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView, TextInput} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import DocumentPicker, {DocumentPickerResponse} from 'react-native-document-picker';
 import Modal from 'react-native-modal';
@@ -78,7 +70,6 @@ const AskThreeScreen = ({navigation}: any) => {
       });
       // Printing the log realted to the file
       console.log('res : ' + JSON.stringify(res));
-      console.log('filesUpload1111 : ' + filesUpload);
 
       setFilesUpload([...filesUpload, ...res]);
       // Setting the state to show single file attributes
@@ -110,7 +101,9 @@ const AskThreeScreen = ({navigation}: any) => {
 
   const onSuccess = () => {
     setVisiblePreview(false);
-    navigation.navigate(AppRoute.ASK_PUBLISH);
+    setTimeout(() => {
+      navigation.navigate(AppRoute.ASK_PUBLISH);
+    }, 500);
   };
 
   return (
@@ -160,7 +153,13 @@ const AskThreeScreen = ({navigation}: any) => {
                     filesUpload.map((item, index) => (
                       <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb15]}>
                         <FastImage source={IMAGES.iconUploadDone} resizeMode='cover' style={styles.iconUploadDone} />
-                        <Paragraph numberOfLines={1} ellipsizeMode='tail' textSteelBlue2Color title={item?.name} style={[GlobalStyles.mr5, {width: '60%'}]} />
+                        <Paragraph
+                          numberOfLines={1}
+                          ellipsizeMode='tail'
+                          textSteelBlue2Color
+                          title={item?.name}
+                          style={[GlobalStyles.mr5, {width: '60%'}]}
+                        />
                         <TouchableOpacity onPress={() => removeFile(index)}>
                           <FastImage source={IMAGES.iconTrash} resizeMode='cover' style={styles.iconTrash} />
                         </TouchableOpacity>

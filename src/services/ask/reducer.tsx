@@ -22,10 +22,7 @@ export const initialState: IAskState = {
   message: '',
   loading: false,
   success: false,
-  data: {
-    data: [],
-    included: [],
-  },
+  data: [],
   dataGreetingSuggest: ['Good day,', 'Hello,', '你好！', 'Hey guys!', 'Hola!', 'Xin chào', 'Salaam', 'Namaste'],
   dataPositionDropDown: ["I'm looking for", 'I urgently need', "I'm hiring for", 'I want'],
   dataPositionSuggest: [],
@@ -47,7 +44,7 @@ const askReducer = (state: IAskState = initialState, action: IActionsCreateAsk):
     case GET_ASK_SUCCESS:
       return {...state, loading: false, data: action.payload?.data};
     case CREATE_ASK_SUCCESS:
-      return {...state, loading: false, data: {...state.data, ...action?.payload?.data}};
+      return {...state, loading: false, data: [...state.data, action?.payload?.data]};
     case GET_JOB_SUCCESS:
       return {...state, loading: false, dataPositionSuggest: action.payload?.data};
     case GET_LOCATION_SUCCESS:

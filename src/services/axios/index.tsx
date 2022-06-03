@@ -10,7 +10,11 @@ axios.interceptors.request.use(
 
     if (response.success) {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      config.headers.Authorization = `Bearer ${response?.payload}`;
+      if (response?.payload) {
+        config.headers.Authorization = `Bearer ${response?.payload}`;
+      } else {
+        delete config.headers.Authorization;
+      }
     }
     // config.headers['Content-Type'] = 'application/json';
     return config;

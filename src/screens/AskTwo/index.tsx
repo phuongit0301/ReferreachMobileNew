@@ -128,11 +128,9 @@ const AskTwocreen = ({navigation}: any) => {
 
   const renderLocationItem = ({item}: {item: any}) => {
     return (
-      <TouchableOpacity
-        onPress={() => onSelectLocation(item?.attributes?.display_value)}
-        style={[GlobalStyles.mh10, GlobalStyles.ph10, GlobalStyles.pv10, GlobalStyles.mb10]}>
-        <View style={styles.item}>
-          <Paragraph p textWhite bold600 title={item?.attributes?.display_value} />
+      <TouchableOpacity onPress={() => onSelectLocation(item?.attributes?.display_value)}>
+        <View style={[GlobalStyles.mh10, GlobalStyles.ph10, GlobalStyles.pv10, styles.item]}>
+          <Paragraph p textBlack bold600 title={item?.attributes?.display_value} />
         </View>
       </TouchableOpacity>
     );

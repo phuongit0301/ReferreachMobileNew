@@ -1,8 +1,8 @@
-import {Platform, StyleSheet} from 'react-native';
+import {Platform, StyleSheet, Dimensions} from 'react-native';
 import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
-import {headerByRatio, adjust} from '~Root/utils';
+import {adjust} from '~Root/utils';
 
-const ratio = headerByRatio();
+const windowWidth = Dimensions.get('window').width;
 
 export default StyleSheet.create({
   container: {
@@ -146,16 +146,17 @@ export default StyleSheet.create({
     textAlign: 'right',
   },
   item: {
-    width: '100%',
+    width: windowWidth - 80,
   },
   borderBottom: {
+    ...GlobalStyles.mh10,
     borderBottomColor: BASE_COLORS.steelBlueColor,
     borderBottomWidth: 1,
     flex: 1,
-    width: '100%',
+    width: '90%',
   },
   locationContainer: {
-    backgroundColor: BASE_COLORS.grayColor,
+    backgroundColor: BASE_COLORS.brightGrayColor,
     paddingVertical: adjust(5),
     paddingHorizontal: adjust(5),
     borderBottomLeftRadius: adjust(10),

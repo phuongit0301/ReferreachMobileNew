@@ -70,7 +70,7 @@ const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3
         });
       }
     }
-    console.log('formData=========>', JSON.stringify(formData));
+
     dispatch(showLoading());
     dispatch(
       createAsk(formData, (response: any) => {
@@ -137,7 +137,7 @@ const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3
                 <View style={[GlobalStyles.flexRow, GlobalStyles.mb30]}>
                   <View style={[GlobalStyles.flexColumn, GlobalStyles.container]}>
                     {dataStep2?.criteria1 !== '' && (
-                      <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb5]}>
+                      <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
                         <FastImage source={IMAGES.iconCircleCheck} resizeMode='cover' style={styles.iconCircle} />
                         <Paragraph title={dataStep2?.criteria1} />
                       </View>

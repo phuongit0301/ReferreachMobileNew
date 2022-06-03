@@ -23,6 +23,10 @@ const AppCheckScreen: React.FC<Props> = ({navigation}) => {
     if (authState.isLoggedIn) {
       dispatch(
         userInfoRequest((response: any) => {
+          if (!response.success) {
+            return false;
+          }
+
           if (response?.data?.confirmed_at) {
             if (
               response?.data?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED ||
