@@ -13,24 +13,27 @@ import styles from './styles';
 
 interface Props {
   item: IAskInside;
+  onMenu: (item: IAskInside, event: any) => void;
 }
 
-const AskItem: React.FC<Props> = ({item = {}}) => {
+const AskItem: React.FC<Props> = ({item, onMenu = () => {}}) => {
   return (
     <View style={[GlobalStyles.flexColumn, GlobalStyles.mb15, GlobalStyles.p15, styles.cardContainer]}>
       <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
         <View style={GlobalStyles.container}>
           {item?.attributes?.deadline && (
             <Category
-              styleTag={+dateToHours(moment(item?.attributes?.deadline)) > 7 ? styles.styleTagPurple : styles.styleTag}
+              styleTag={
+                +dateToHours(new Date(item?.attributes?.deadline)) > 7 ? styles.styleTagPurple : styles.styleTag
+              }
               itemKey={item?.id}
-              name={`${dateToHours(moment(item?.attributes?.deadline))} hours left`}
+              name={`${dateToHours(new Date(item?.attributes?.deadline))} hours left`}
               showButton={false}
               tagText={styles.tagText}
             />
           )}
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPressIn={event => onMenu(item, event)} style={styles.iconThreeDotContainer}>
           <FastImage source={IMAGES.iconThreeDot} resizeMode='cover' style={styles.iconThreeDot} />
         </TouchableOpacity>
       </View>

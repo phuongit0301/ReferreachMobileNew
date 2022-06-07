@@ -89,5 +89,6 @@
     "what": "what",
     "edit_this_ask": "Edit this Ask",
     "extend_deadline": "Extend Deadline",
-    "end_this_ask": "End this Ask"
+    "end_this_ask": "End this Ask",
+    "time_left": "<normal>Time left to edit this Ask: <highlight>{{mins}} mins</highlight>"
 }

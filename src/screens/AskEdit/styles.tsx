@@ -1,15 +1,22 @@
-import {Platform, StyleSheet} from 'react-native';
-import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
-import {headerByRatio, adjust} from '~Root/utils';
+import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {BASE_COLORS, BASE_FONTS, GlobalStyles} from '~Root/config';
+import {adjust} from '~Root/utils';
 
-const ratio = headerByRatio();
+const windowWidth = Dimensions.get('window').width;
 
 export default StyleSheet.create({
-  inputWrapperStyle: {
-    ...GlobalStyles.inputStyle,
-    ...GlobalStyles.mb15,
-    borderRadius: adjust(20),
-    backgroundColor: BASE_COLORS.brightGrayColor,
+  inputDynamicContainer: {
+    ...GlobalStyles.mb5,
+    ...GlobalStyles.ph10,
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: 'rgba(229, 229, 229, 0.46);',
+    borderColor: BASE_COLORS.steelBlue2Color,
+    borderRadius: adjust(22),
+    borderWidth: 1,
+    paddingVertical: Platform.OS === 'ios' ? adjust(10) : 0,
+    alignItems: 'center',
+    height: adjust(35),
   },
   inputIconStyle: {
     ...GlobalStyles.h5,
@@ -24,7 +31,6 @@ export default StyleSheet.create({
     position: 'absolute',
     right: adjust(10),
     zIndex: 10,
-    ...GlobalStyles.ph10,
     ...GlobalStyles.pv10,
   },
   icon: {
@@ -81,7 +87,7 @@ export default StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     backgroundColor: BASE_COLORS.brightGrayColor,
-    borderRadius: adjust(4),
+    borderRadius: adjust(12),
     width: '100%',
     height: adjust(150),
     paddingVertical: Platform.OS === 'ios' ? adjust(10) : 0,
@@ -123,5 +129,34 @@ export default StyleSheet.create({
     borderWidth: 1,
     backgroundColor: BASE_COLORS.forestGreenColor,
     borderColor: BASE_COLORS.forestGreenColor,
+  },
+  fileName: {
+    width: '60%',
+  },
+  borderBottom: {
+    ...GlobalStyles.mh10,
+    borderBottomColor: BASE_COLORS.steelBlueColor,
+    borderBottomWidth: 1,
+    flex: 1,
+    width: '90%',
+  },
+  locationContainer: {
+    position: 'relative',
+    zIndex: 50,
+  },
+  locationArea: {
+    backgroundColor: BASE_COLORS.brightGrayColor,
+    paddingVertical: adjust(5),
+    paddingHorizontal: adjust(5),
+    borderBottomLeftRadius: adjust(10),
+    borderBottomRightRadius: adjust(10),
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: adjust(40),
+    zIndex: 50,
+  },
+  item: {
+    width: windowWidth - 80,
   },
 });

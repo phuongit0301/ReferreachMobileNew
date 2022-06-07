@@ -1,5 +1,5 @@
 import {PixelRatio, Platform} from 'react-native';
-import moment from 'moment';
+import moment, {now} from 'moment';
 import * as yup from 'yup';
 
 import {adjust} from '.';
@@ -185,4 +185,13 @@ export const headerTop = () => {
   } else {
     return Platform.OS === 'ios' ? adjust(45) : adjust(30);
   }
+};
+
+export const calculateExpiredTime = (createdAt: Date = new Date()) => {
+  if (!createdAt) return 0;
+  const createdAtPlus = moment(createdAt).add(65, 'minutes');
+  const experiedTime = moment();
+  return moment
+    .duration(moment(createdAtPlus, 'DD/MM/YYYY HH:mm').diff(moment(experiedTime, 'DD/MM/YYYY HH:mm')))
+    .asMinutes();
 };

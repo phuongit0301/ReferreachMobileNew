@@ -15,6 +15,13 @@ import {
   CREATE_ASK_FAILURE,
   CREATE_ASK_REQUESTED,
   CREATE_ASK_SUCCESS,
+  GET_ASK_DETAILS_FAILURE,
+  GET_ASK_DETAILS_REQUESTED,
+  GET_ASK_DETAILS_SUCCESS,
+  UPDATE_ASK_FAILURE,
+  UPDATE_ASK_REQUESTED,
+  UPDATE_ASK_SUCCESS,
+  SET_VISIBLE_MENU,
 } from './constants';
 
 export interface IAskState {
@@ -31,15 +38,34 @@ export interface IAskState {
   dataStep1: any | null;
   dataStep2: any | null;
   dataStep3: any | null;
+  dataDetails: IAskInside | null;
+  dataAskSelected: IAskInside | null;
+  visibleMenu: {
+    show: boolean;
+    coordinate: {
+      top: number;
+      left: number;
+    };
+  };
 }
 
 export interface IAttributesState {
   greeting: string;
+  user_role: string;
   demographic: string;
   business_requirement: string;
   business_detail: string;
   deadline: Date;
   additional_detail: string;
+  location: string;
+  criteria1?: string;
+  criteria2?: string;
+  criteria3?: string;
+  criteria4?: string;
+  criteria5?: string;
+  documents: IFiles[];
+  criterium: ICriteriumDataState[];
+  ask_location: IAskLocationDataState;
   created_at: Date;
   updated_at: Date;
   status: string;
@@ -94,12 +120,9 @@ export interface IAskInside {
 }
 
 export interface IFiles {
-  id: string;
-  type: string;
-  attributes: {
-    file_url: string;
-    content_type: string; // application/pdf, application/vnd.ms-excel
-  };
+  id?: string;
+  content_type: string;
+  file_url: string;
 }
 
 export interface IActionListAskState {
@@ -133,6 +156,30 @@ export interface IActionGetAskFailure {
   };
 }
 
+export interface IActionGetAskDetailsRequest {
+  type: typeof GET_ASK_DETAILS_REQUESTED;
+  payload: number;
+  callback: (response: IActionGetAskDetailsSuccess['payload']) => void;
+}
+export interface IActionGetAskDetailsSuccess {
+  type: typeof GET_ASK_DETAILS_SUCCESS;
+  payload: {
+    data: IAskInside | null;
+    message: string;
+    success: boolean;
+  };
+  callback: () => void;
+}
+
+export interface IActionGetAskDetailsFailure {
+  type: typeof GET_ASK_DETAILS_FAILURE;
+  payload: {
+    data: null;
+    message: string;
+    success: boolean;
+  };
+}
+
 export interface IActionCreateAskRequest {
   type: typeof CREATE_ASK_REQUESTED;
   payload: any;
@@ -150,6 +197,37 @@ export interface IActionCreateAskSuccess {
 
 export interface IActionCreateAskFailure {
   type: typeof CREATE_ASK_FAILURE;
+  payload: {
+    data: null;
+    message: string;
+    success: boolean;
+  };
+}
+
+export interface IActionUpdateAskRequest {
+  type: typeof UPDATE_ASK_REQUESTED;
+  payload: {
+    id: number;
+    formData: any;
+    formDataDocument: {
+      'documents_attributes[][id]': number;
+      'documents_attributes[][_destroy]': boolean;
+    };
+  };
+  callback: (response: IActionUpdateAskSuccess['payload']) => void;
+}
+export interface IActionUpdateAskSuccess {
+  type: typeof UPDATE_ASK_SUCCESS;
+  payload: {
+    data: IAskInside;
+    message: string;
+    success: boolean;
+  };
+  callback: () => void;
+}
+
+export interface IActionUpdateAskFailure {
+  type: typeof UPDATE_ASK_FAILURE;
   payload: {
     data: null;
     message: string;
@@ -221,6 +299,12 @@ export interface IActionSetDataCreateAskStep3 {
   callback: () => void;
 }
 
+export interface IActionSetVisibleMenu {
+  type: typeof SET_VISIBLE_MENU;
+  payload: any;
+  callback: () => void;
+}
+
 export interface IActionSetLocation {
   type: typeof SET_LOCATION;
   payload: any;
@@ -230,6 +314,9 @@ export type IActionsCreateAsk =
   | IActionGetAskRequest
   | IActionGetAskSuccess
   | IActionGetAskFailure
+  | IActionGetAskDetailsRequest
+  | IActionGetAskDetailsSuccess
+  | IActionGetAskDetailsFailure
   | IActionCreateAskRequest
   | IActionCreateAskSuccess
   | IActionCreateAskFailure
@@ -242,4 +329,5 @@ export type IActionsCreateAsk =
   | IActionSetDataCreateAskStep1
   | IActionSetDataCreateAskStep2
   | IActionSetDataCreateAskStep3
-  | IActionSetLocation;
+  | IActionSetLocation
+  | IActionSetVisibleMenu;

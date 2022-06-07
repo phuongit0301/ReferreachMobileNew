@@ -17,10 +17,12 @@ export const USER_AVATAR_URL = `${ROOT_API_URL}/users/avatar`;
 export const INVITE_USER_CONTACT_URL = `${ROOT_API_URL}/invitations/invite_bulk_users/`;
 export const USER_IN_APP_STATUS_URL = `${ROOT_API_URL}/users/update_in_app_status`;
 export const ASK_LIST_URL = `${ROOT_API_URL}/asks/list`;
+export const ASK_DETAILS_URL = (id: number) => `${ROOT_API_URL}/asks/${id}`;
 export const GET_ALL_INDUSTRIES_URL = `${ROOT_API_URL}/autocomplete/industry`;
 export const GET_ALL_LOCATION = `${ROOT_API_URL}/autocomplete/location`;
 export const GET_ALL_JOB = `${ROOT_API_URL}/autocomplete/job`;
 export const CREATE_ASK_URL = `${ROOT_API_URL}/asks`;
+export const UPDATE_ASK_URL = (id: number) => `${ROOT_API_URL}/asks/${id}`;
 
 export const ASK_TEMPLATE_URL = `${ROOT_API_URL}/ask-template`;
 export const CREATE_ASK_TEMPLATE_URL = (id: string) => `${ROOT_API_URL}/ask-template/${id}/submissions`;

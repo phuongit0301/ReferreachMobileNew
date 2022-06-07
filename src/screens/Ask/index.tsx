@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, ScrollView, TouchableOpacity, TextInput, FlatList, Platform, KeyboardAvoidingView} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useTranslation} from 'react-i18next';
@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import Svg, {Path} from 'react-native-svg';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {useForm, SubmitHandler} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 
 import {BottomTabParams} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
@@ -58,7 +58,6 @@ const AskScreen = ({navigation}: any) => {
     register,
     control,
     handleSubmit,
-    setFocus,
     setValue,
     watch,
     formState: {errors, isValid},
@@ -75,7 +74,6 @@ const AskScreen = ({navigation}: any) => {
   const [showTooltip, setShowTooltip] = useState(true);
   const [textDemographic, setTextDemographic] = useState(askState?.dataPositionDropDown?.[0]);
   const [textGreeting, setTextGreeting] = useState('');
-  const [textDescriptionDefault, setTextDescriptionDefault] = useState('to');
 
   const [textGreetingDefault, setTextGreetingDefault] = useState('');
   const [textUserRoleDefault, setTextUserRoleDefault] = useState('business developer');

@@ -79,6 +79,7 @@ export const IMAGES = {
   arrowTrustNetwork: require('~Root/assets/images/arrow_trust_network.png'),
   arrowChat: require('~Root/assets/images/arrow_chat.png'),
   iconEditAsk: require('~Root/assets/images/icon_edit_ask.png'),
+  iconEditAskGray: require('~Root/assets/images/icon_edit_ask_gray.png'),
   iconExtendDeadline: require('~Root/assets/images/icon_extend_deadline.png'),
   iconEndAsk: require('~Root/assets/images/icon_end_ask.png'),
   headerSmalBg: require('~Root/assets/images/header_small_bg.png'),

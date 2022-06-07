@@ -54,8 +54,50 @@ export default StyleSheet.create({
   },
   menu: {
     position: 'absolute',
-    width: '100%',
+    backgroundColor: BASE_COLORS.whiteColor,
+    shadowColor: BASE_COLORS.blackColor,
+    shadowOffset: {
+      width: 0,
+      height: adjust(4),
+    },
+    shadowOpacity: adjust(0.1),
+    shadowRadius: adjust(4),
+    elevation: adjust(4),
     top: 0,
     right: 0,
+    width: '55%',
+  },
+  iconEditAsk: {
+    width: adjust(24),
+    height: adjust(24),
+  },
+  iconEditAskContainer: {
+    width: adjust(24),
+    height: adjust(24),
+  },
+  iconExtendDeadline: {
+    width: adjust(17),
+    height: adjust(17),
+  },
+  iconExtendDeadlineContainer: {
+    width: adjust(24),
+    height: adjust(24),
+  },
+  iconEndAskContainer: {
+    width: adjust(24),
+    height: adjust(24),
+  },
+  iconEndAsk: {
+    width: adjust(18),
+    height: adjust(18),
+  },
+  border: {
+    borderWidth: 1,
+    borderColor: BASE_COLORS.gainsboroColor,
+    width: '100%',
+  },
+  bgBlur: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
 });

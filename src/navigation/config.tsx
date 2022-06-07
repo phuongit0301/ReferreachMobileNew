@@ -45,7 +45,7 @@ export type RootNavigatorParamsList = {
   [AppRoute.ASK_TWO]: undefined;
   [AppRoute.ASK_THREE]: undefined;
   [AppRoute.ASK_PUBLISH]: undefined;
-  [AppRoute.ASK_EDIT]: undefined;
+  [AppRoute.ASK_EDIT]: {id: number} | undefined;
   [AppRoute.MAIN_NAVIGATOR]: undefined;
   [AppRoute.TIPS]: undefined;
   [AppRoute.TIPS_TWO]: undefined;

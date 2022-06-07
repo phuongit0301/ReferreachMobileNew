@@ -15,16 +15,26 @@ import {
   CREATE_ASK_SUCCESS,
   CREATE_ASK_FAILURE,
   CREATE_ASK_REQUESTED,
+  GET_ASK_DETAILS_REQUESTED,
+  GET_ASK_DETAILS_FAILURE,
+  GET_ASK_DETAILS_SUCCESS,
+  UPDATE_ASK_FAILURE,
+  UPDATE_ASK_SUCCESS,
+  UPDATE_ASK_REQUESTED,
 } from './constants';
 import {
   IActionCreateAskRequest,
   IActionCreateAskSuccess,
+  IActionGetAskDetailsRequest,
+  IActionGetAskDetailsSuccess,
   IActionGetAskRequest,
   IActionGetAskSuccess,
   IActionGetJobRequest,
   IActionGetJobSuccess,
   IActionGetLocationRequest,
   IActionGetLocationSuccess,
+  IActionUpdateAskRequest,
+  IActionUpdateAskSuccess,
 } from './types';
 
 const getItems = (state: IGlobalState) => state.askState;
@@ -60,6 +70,37 @@ function* getAsks(payload: IActionGetAskRequest) {
   }
 }
 
+function* getAskDetails(payload: IActionGetAskDetailsRequest) {
+  try {
+    const response: IActionGetAskDetailsSuccess['payload'] = yield call(AskAPI.getAskDetails, payload?.payload);
+    if (response?.success) {
+      yield put({type: GET_ASK_DETAILS_SUCCESS, payload: response?.data});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: '',
+          data: response?.data?.data,
+        });
+    } else {
+      yield put({type: GET_ASK_DETAILS_FAILURE, payload: {error: response?.message}});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: response?.message,
+          data: response?.data,
+        });
+    }
+  } catch (error) {
+    yield put({type: GET_ASK_DETAILS_FAILURE, payload: {error: error}});
+    payload?.callback &&
+      payload?.callback({
+        success: false,
+        message: error as string,
+        data: null,
+      });
+  }
+}
+
 function* createAsk(payload: IActionCreateAskRequest) {
   try {
     const response: IActionCreateAskSuccess['payload'] = yield call(AskAPI.createAsk, payload?.payload);
@@ -82,6 +123,53 @@ function* createAsk(payload: IActionCreateAskRequest) {
     }
   } catch (error) {
     yield put({type: CREATE_ASK_FAILURE, payload: {error: error}});
+    payload?.callback &&
+      payload?.callback({
+        success: false,
+        message: error as string,
+        data: [] as any,
+      });
+  }
+}
+
+function* updateAsk(payload: IActionUpdateAskRequest) {
+  try {
+    if (payload?.payload?.formDataDocument) {
+      const responseRemoveDocument: IActionUpdateAskSuccess['payload'] = yield call(
+        AskAPI.updateAsk,
+        payload?.payload.id,
+        payload?.payload.formDataDocument,
+      );
+
+      if (!responseRemoveDocument.success) {
+        throw new Error(responseRemoveDocument.message);
+      }
+    }
+
+    const response: IActionUpdateAskSuccess['payload'] = yield call(
+      AskAPI.updateAsk,
+      payload?.payload.id,
+      payload?.payload.formData,
+    );
+    if (response?.success) {
+      yield put({type: UPDATE_ASK_SUCCESS, payload: response?.data});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: '',
+          data: response?.data,
+        });
+    } else {
+      yield put({type: UPDATE_ASK_FAILURE, payload: {error: response?.message}});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: response?.message,
+          data: response?.data,
+        });
+    }
+  } catch (error) {
+    yield put({type: UPDATE_ASK_FAILURE, payload: {error: error}});
     payload?.callback &&
       payload?.callback({
         success: false,
@@ -159,8 +247,16 @@ function* watchGetAsk() {
   yield takeEvery(GET_ASK_REQUESTED, getAsks);
 }
 
+function* watchGetAskDetails() {
+  yield takeEvery(GET_ASK_DETAILS_REQUESTED, getAskDetails);
+}
+
 function* watchCreateAsk() {
   yield takeEvery(CREATE_ASK_REQUESTED, createAsk);
+}
+
+function* watchUpdateAsk() {
+  yield takeEvery(UPDATE_ASK_REQUESTED, updateAsk);
 }
 
 function* watchGetJob() {
@@ -172,5 +268,12 @@ function* watchGetLocation() {
 }
 
 export default function* askWatchers() {
-  yield all([watchGetAsk(), watchGetJob(), watchGetLocation(), watchCreateAsk()]);
+  yield all([
+    watchGetAsk(),
+    watchGetAskDetails(),
+    watchGetJob(),
+    watchGetLocation(),
+    watchCreateAsk(),
+    watchUpdateAsk(),
+  ]);
 }

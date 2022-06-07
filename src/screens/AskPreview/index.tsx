@@ -1,20 +1,17 @@
-import React, {useCallback, useState} from 'react';
+import React from 'react';
 import {View, ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView, TextInput, AppState} from 'react-native';
-import {useTranslation} from 'react-i18next';
-import DocumentPicker, {DocumentPickerResponse} from 'react-native-document-picker';
 
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {Avatar, HeaderNormalBlue, Loading, Paragraph} from '~Root/components';
-import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
+import {CREATE_ASK_FIELDS, GlobalStyles, IMAGES} from '~Root/config';
 
 import styles from './styles';
 import {useDispatch, useSelector} from 'react-redux';
-import {IUserState} from '~Root/services/user/types';
 import {IGlobalState} from '~Root/types';
 import FastImage from 'react-native-fast-image';
 import moment from 'moment';
 import {createAsk} from '~Root/services/ask/actions';
-import { hideLoading, showLoading } from '~Root/services/loading/actions';
+import {hideLoading, showLoading} from '~Root/services/loading/actions';
 
 const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3, onSuccess}: any) => {
   const dispatch = useDispatch();
@@ -27,19 +24,22 @@ const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3
   const onPublish = () => {
     const formData = new FormData();
     if (dataStep1.greeting) {
-      formData.append('greeting', dataStep1.greeting);
+      formData.append(CREATE_ASK_FIELDS.greeting, dataStep1.greeting);
     }
     if (dataStep1.demographic) {
-      formData.append('demographic', dataStep1.demographic);
+      formData.append(CREATE_ASK_FIELDS.demographic, dataStep1.demographic);
+    }
+    if (dataStep1.user_role) {
+      formData.append(CREATE_ASK_FIELDS.userRole, dataStep1.user_role);
     }
     if (dataStep1.business_requirement) {
-      formData.append('business_requirement', dataStep1.business_requirement);
+      formData.append(CREATE_ASK_FIELDS.businessRequirement, dataStep1.business_requirement);
     }
     if (dataStep1.business_detail) {
-      formData.append('business_detail', dataStep1.business_detail);
+      formData.append(CREATE_ASK_FIELDS.businessDetail, dataStep1.business_detail);
     }
     if (dataStep2.deadline) {
-      formData.append('deadline', moment(dataStep2.deadline).format('DD/MM/YYYY'));
+      formData.append(CREATE_ASK_FIELDS.deadline, moment(dataStep2.deadline).format('DD/MM/YYYY'));
     }
     if (dataStep2.location) {
       formData.append('ask_location_attributes[text]', dataStep2.location);
@@ -59,7 +59,6 @@ const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3
     if (dataStep2.criteria5) {
       formData.append('criterium_attributes[][text]', dataStep2.criteria5);
     }
-    formData.append('user_role', 'as a business developer');
 
     if (dataStep3.filesUpload?.length) {
       for (const file of dataStep3.filesUpload) {

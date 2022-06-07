@@ -29,11 +29,89 @@ export default class AskAPI {
     }
   }
 
+  static async getAskDetails(payload: number): Promise<any> {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: API.ASK_DETAILS_URL(payload),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+      if (response?.data) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+    } catch (error) {
+      return {
+        data: null,
+        message: error,
+        success: false,
+      };
+    }
+  }
+
   static async createAsk(formData: any): Promise<any> {
     try {
       const response = await axios({
         method: 'POST',
         url: API.CREATE_ASK_URL,
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      if (response?.data) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+    } catch (error) {
+      return {
+        data: null,
+        message: error,
+        success: false,
+      };
+    }
+  }
+
+  static async updateAsk(id: number, formData: any): Promise<any> {
+    try {
+      const response = await axios({
+        method: 'PUT',
+        url: API.UPDATE_ASK_URL(id),
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      if (response?.data) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+    } catch (error) {
+      return {
+        data: null,
+        message: error,
+        success: false,
+      };
+    }
+  }
+
+  static async deleteDocumentAsk(id: number, formData: any): Promise<any> {
+    try {
+      const response = await axios({
+        method: 'PUT',
+        url: API.UPDATE_ASK_URL(id),
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data',

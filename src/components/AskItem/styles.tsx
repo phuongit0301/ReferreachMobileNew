@@ -22,6 +22,10 @@ export default StyleSheet.create({
   tagContainer: {
     flexWrap: 'wrap',
   },
+  iconThreeDotContainer: {
+    width: adjust(32),
+    height: adjust(8),
+  },
   iconThreeDot: {
     width: adjust(16),
     height: adjust(4),
