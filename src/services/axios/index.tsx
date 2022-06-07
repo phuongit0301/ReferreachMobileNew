@@ -1,12 +1,20 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import {getToken} from '~Root/services/storage';
+import AuthAPI from '~Root/services/auth/apis';
 
 // Add a request interceptor
 axios.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
-    const token = await getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const response = await AuthAPI.verifyToken();
+
+    if (!config.headers) config.headers = {};
+
+    if (response.success) {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      if (response?.payload) {
+        config.headers.Authorization = `Bearer ${response?.payload}`;
+      } else {
+        delete config.headers.Authorization;
+      }
     }
     // config.headers['Content-Type'] = 'application/json';
     return config;

@@ -1,6 +1,8 @@
-import {all, put, takeEvery, call} from 'redux-saga/effects';
+import {all, put, takeEvery, call, select} from 'redux-saga/effects';
 import i18n from 'i18next';
+import AsyncStorage from '@react-native-community/async-storage';
 
+import {IGlobalState} from '~Root/types';
 import RegisterAPI from './apis';
 import {
   REGISTER_FAILURE,
@@ -26,6 +28,8 @@ import {
   IActionVerifyAccountRequested,
   IActionVerifyAccountSuccess,
 } from './types';
+
+const getItems = (state: IGlobalState) => state.loginState;
 
 function* handleRegister(payload: IActionRegisterRequested) {
   try {
@@ -54,6 +58,9 @@ function* handleVerifyCode(payload: IActionVerifyAccountRequested) {
   try {
     const response: IActionVerifyAccountSuccess['payload'] = yield call(RegisterAPI.verifyAccount, payload?.payload);
     if (response?.success) {
+      const loginState = yield select(getItems);
+      yield AsyncStorage.setItem('token', loginState?.token);
+
       yield put({type: VERIFY_ACCOUNT_SUCCESS, payload: response});
       payload?.callback &&
         payload?.callback({

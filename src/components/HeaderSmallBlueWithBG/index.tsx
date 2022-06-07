@@ -43,6 +43,9 @@ const HeaderSmallBlueWithBG: React.FC<Props> = ({
     <LinearGradient
       colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
       style={[GlobalStyles.pt40, GlobalStyles.pb40, GlobalStyles.flexRow]}>
+      <View style={styles.imageBgContainer}>
+        <FastImage source={IMAGES.headerSmalBg} resizeMode='contain' style={styles.imageBg} />
+      </View>
       <View
         style={[
           GlobalStyles.flexRow,

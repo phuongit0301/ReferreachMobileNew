@@ -3,7 +3,6 @@ import axios from '~Root/services/axios';
 
 import * as API from '~Root/private/api';
 import {IActionUpdateUserAvatarRequested, IActionUpdateUserInAppStatusRequested} from './types';
-import AsyncStorage from '@react-native-community/async-storage';
 
 export default class UserAPI {
   static async handleUserInfo() {
@@ -34,8 +33,6 @@ export default class UserAPI {
 
   static async updateUserAvatar(payload: IActionUpdateUserAvatarRequested['payload']) {
     try {
-      console.log('==========>', payload);
-      console.log('JSONSTRINGITY==========>', JSON.stringify(payload));
       // const response = await axios({
       //   method: 'PUT',
       //   url: 'http://127.0.0.1:8080/api/upload',

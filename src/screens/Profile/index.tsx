@@ -13,6 +13,7 @@ import {BASE_COLORS, GlobalStyles, PROFILE_FIELDS} from '~Root/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import styles from './styles';
 import {IGlobalState} from '~Root/types';
+import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 
 const schema = yup.object().shape({
   [PROFILE_FIELDS.first_name]: yup
@@ -77,12 +78,12 @@ const ProfileScreen = ({navigation}: any) => {
     navigation.toggleDrawer();
   };
 
-  if (userState.loading) {
+  if (userState.loading && !userState?.userInfo) {
     return null;
   }
 
   return (
-    <View style={[GlobalStyles.container]}>
+    <View style={[GlobalStyles.container]} key='profile'>
       <ProfileTemplateScreen onBack={onBack} isRightButton={true} onToggleDrawer={onToggleDrawer}>
         <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30, GlobalStyles.p15]}>
           <InputValidateControl

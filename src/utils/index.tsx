@@ -15,6 +15,7 @@ import {
   paddingByRatio,
   heightByRatio,
   headerTop,
+  calculateExpiredTime,
 } from './functions';
 
 export {
@@ -33,6 +34,7 @@ export {
   paddingByRatio,
   heightByRatio,
   headerTop,
+  calculateExpiredTime,
   sideBarRoutes,
   PURPOSE_OF_ASK,
   PURPOSE_OF_ASK_ENUM,

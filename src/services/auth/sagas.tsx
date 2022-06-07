@@ -1,5 +1,6 @@
 import {all, call, put, select, take, takeEvery} from 'redux-saga/effects';
 import {END, EventChannel, eventChannel} from 'redux-saga';
+import axios from 'axios';
 
 import {
   INITIALIZE_AUTH_FAILURE,
@@ -12,9 +13,10 @@ import {
   LOGOUT,
 } from './constants';
 import {getToken, clearToken} from '~Root/services/storage';
-import {IActionInitializeAuthRequested, IAuthState} from './types';
+import {IActionInitializeAuthRequested, IAuthState, IVerifyToken} from './types';
 import {IGlobalState} from '~Root/types';
 import {onSetProgress} from './actions';
+import AuthAPI from './apis';
 
 const getAuthState = (state: IGlobalState) => state.authState;
 let iv: any;
@@ -41,13 +43,11 @@ function* countDownFlow(secs: number) {
 
 function* initializeAuth(payload: IActionInitializeAuthRequested['payload']) {
   try {
-    const token: string = yield call(getToken);
-    if (!token) {
+    const response: IVerifyToken = yield call(AuthAPI.verifyToken);
+    if (!response?.success) {
       yield put({type: INITIALIZE_AUTH_FAILURE, payload: {error: 'Error: The token expired'}});
     } else {
-      // yield put({type: USER_INFO_REQUESTED});
-      // yield delay(1000);
-      yield put({type: INITIALIZE_AUTH_SUCCESS, payload: token});
+      yield put({type: INITIALIZE_AUTH_SUCCESS, payload: response?.payload});
     }
   } catch (error) {
     yield put({type: INITIALIZE_AUTH_FAILURE, payload: error});

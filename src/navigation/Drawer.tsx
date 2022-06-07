@@ -6,7 +6,7 @@ import FastImage from 'react-native-fast-image';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {AvatarGradient, Paragraph} from '~Root/components';
+import {Avatar, AvatarGradient, Paragraph} from '~Root/components';
 import {sideBarRoutes} from '~Root/utils';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import styles from './styles';
@@ -14,6 +14,7 @@ import {logout} from '~Root/services/auth/actions';
 import {IUserState} from '~Root/services/user/types';
 import {IGlobalState} from '~Root/types';
 import {AppRoute} from './AppRoute';
+import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 
 const Drawer = ({props, navigation}) => {
   const {t} = useTranslation();
@@ -21,8 +22,15 @@ const Drawer = ({props, navigation}) => {
   const userState: IUserState = useSelector((state: IGlobalState) => state.userState);
 
   const onLogout = () => {
-    console.log(1231231312);
     dispatch(logout());
+  };
+
+  const onProfile = () => {
+    if (userState?.userInfo?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED) {
+      navigation.navigate(AppRoute.BOTTOM_TAB, {screen: AppRoute.MAIN_NAVIGATOR});
+    } else {
+      navigation.navigate(AppRoute.MAIN_NAVIGATOR);
+    }
   };
 
   return (
@@ -40,12 +48,11 @@ const Drawer = ({props, navigation}) => {
             </TouchableOpacity>
           </View>
           <View style={[styles.content]}>
-            <TouchableOpacity
-              style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}
-              onPress={() => navigation.navigate(AppRoute.MAIN_NAVIGATOR)}>
-              {userState.userInfo?.avatar ? (
+            <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]} onPress={onProfile}>
+              {userState?.userInfo?.avatar_metadata?.avatar_url &&
+              userState?.userInfo?.avatar_metadata?.avatar_url !== '' ? (
                 <FastImage
-                  source={{uri: userState.userInfo?.avatar}}
+                  source={{uri: userState?.userInfo?.avatar_metadata?.avatar_url}}
                   style={[GlobalStyles.avatar, GlobalStyles.mr10, styles.avatarBorder]}
                 />
               ) : (
@@ -64,7 +71,7 @@ const Drawer = ({props, navigation}) => {
                   title={`${userState?.userInfo?.first_name ?? ''} ${userState?.userInfo?.last_name ?? ''}`}
                   style={GlobalStyles.mb5}
                 />
-                {userState?.userInfo?.email && <Paragraph textWhite title={userState?.userInfo?.email} />}
+                {!!userState?.userInfo?.email && <Paragraph textWhite title={userState?.userInfo?.email} />}
               </View>
             </TouchableOpacity>
             <FlatList

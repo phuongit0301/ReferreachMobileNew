@@ -2,8 +2,6 @@ import {Platform, StyleSheet} from 'react-native';
 import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
 import {headerByRatio, adjust} from '~Root/utils';
 
-const ratio = headerByRatio();
-
 export default StyleSheet.create({
   container: {
     backgroundColor: BASE_COLORS.whiteColor,
@@ -83,8 +81,8 @@ export default StyleSheet.create({
     right: adjust(25),
   },
   iconCat: {
-    width: adjust(80),
-    height: adjust(66),
+    width: adjust(55),
+    height: adjust(45),
   },
   iconCatNext: {
     width: adjust(107),
@@ -99,8 +97,8 @@ export default StyleSheet.create({
   tooltipContentStyle: {
     ...GlobalStyles.p20,
     position: 'absolute',
-    bottom: adjust(85),
-    left: adjust(30),
+    bottom: adjust(55),
+    left: adjust(40),
     borderRadius: adjust(10),
     backgroundColor: BASE_COLORS.whiteColor,
     width: '60%',
@@ -139,6 +137,7 @@ export default StyleSheet.create({
   },
   inputContainer: {
     ...GlobalStyles.mt5,
+    ...GlobalStyles.mb5,
     ...GlobalStyles.ph10,
     display: 'flex',
     flexDirection: 'row',
@@ -147,6 +146,7 @@ export default StyleSheet.create({
     width: '70%',
     paddingVertical: Platform.OS === 'ios' ? adjust(10) : 0,
     alignItems: 'center',
+    height: adjust(40),
   },
   inputAreaContainer: {
     ...GlobalStyles.mt5,
@@ -187,6 +187,7 @@ export default StyleSheet.create({
     width: '70%',
     paddingVertical: Platform.OS === 'ios' ? adjust(10) : 0,
     alignItems: 'center',
+    height: adjust(35),
   },
   borderTop: {
     borderTopWidth: 1,
@@ -209,5 +210,13 @@ export default StyleSheet.create({
     shadowOpacity: adjust(0.2),
     shadowRadius: adjust(5),
     elevation: adjust(2),
+  },
+  btnMain: {
+    backgroundColor: BASE_COLORS.forestGreenColor,
+    position: 'absolute',
+    top: adjust(21),
+    zIndex: 0,
+    width: adjust(79),
+    borderRadius: adjust(20),
   },
 });

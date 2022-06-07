@@ -53,14 +53,35 @@ export const INVITE_CONTACT_FIELDS = {
 };
 
 export enum CREATE_ASK_KEYS {
+  greeting = 'greeting',
+  userRole = 'user_role',
+  demographic = 'demographic',
+  businessRequirement = 'business_requirement',
+  businessDetail = 'business_requirement',
   location = 'location',
   deadline = 'deadline',
+  criteria1 = 'criteria1',
+  criteria2 = 'criteria2',
+  criteria3 = 'criteria3',
+  criteria4 = 'criteria4',
+  criteria5 = 'criteria5',
+  additiondalDetail = 'additional_detail',
 }
 
 export const CREATE_ASK_FIELDS = {
+  greeting: 'greeting',
+  userRole: 'user_role',
+  businessDetail: 'business_detail',
+  demographic: 'demographic',
+  businessRequirement: 'business_requirement',
   location: 'location',
   deadline: 'deadline',
-  criteria: 'criteria',
+  criteria1: 'criteria1',
+  criteria2: 'criteria2',
+  criteria3: 'criteria3',
+  criteria4: 'criteria4',
+  criteria5: 'criteria5',
+  additiondalDetail: 'additional_detail',
 };
 
 export enum PROFILE_KEYS {

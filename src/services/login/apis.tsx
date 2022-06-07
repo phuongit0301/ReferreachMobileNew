@@ -15,15 +15,16 @@ export default class LoginAPI {
           'Content-Type': 'application/json',
         },
       });
-      if (response?.data?.success) {
+      if ((response?.data as any)?.success) {
         const token = response?.headers?.authorization.split(' ')[1];
         return {
-          data: {...response.data?.data, token: token},
+          data: {...(response?.data as any)?.data, token: token},
           message: '',
           success: true,
         };
       }
     } catch (error) {
+      console.log(JSON.stringify(error));
       return {
         message: (error as any)?.response?.data?.message,
         success: false,

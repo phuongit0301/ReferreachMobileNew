@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {View, TouchableOpacity, Dimensions, Animated, Image} from 'react-native';
+import {View, TouchableOpacity, Dimensions, Animated} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {Paragraph} from '~Root/components';
 
 import {GlobalStyles, IMAGES} from '~Root/config';
@@ -43,47 +44,47 @@ const TabBar = ({state, descriptors, navigation}: any) => {
           switch (label) {
             case AppRoute.YOUR_ASK:
               iconName = isFocused ? (
-                <Image source={IMAGES.iconYourAskActive} resizeMode='cover' style={styles.iconYourAsk} />
+                <FastImage source={IMAGES.iconYourAskActive} resizeMode='cover' style={GlobalStyles.iconYourAsk} />
               ) : (
-                <Image source={IMAGES.iconYourAsk} resizeMode='cover' style={styles.iconYourAsk} />
+                <FastImage source={IMAGES.iconYourAsk} resizeMode='cover' style={GlobalStyles.iconYourAsk} />
               );
               title = 'Your Ask';
               break;
             case AppRoute.AIR_FEED:
               iconName = isFocused ? (
-                <Image source={IMAGES.iconAIRFeedActive} resizeMode='cover' style={styles.iconAirFeed} />
+                <FastImage source={IMAGES.iconAIRFeedActive} resizeMode='cover' style={styles.iconAirFeed} />
               ) : (
-                <Image source={IMAGES.iconAIRFeed} resizeMode='cover' style={styles.iconAirFeed} />
+                <FastImage source={IMAGES.iconAIRFeed} resizeMode='cover' style={styles.iconAirFeed} />
               );
               title = 'Air Feed';
               break;
             case AppRoute.ASK:
             case AppRoute.MAIN_NAVIGATOR:
-              iconName = <Image source={IMAGES.iconAsk} resizeMode='cover' style={styles.iconAsk} />;
+              iconName = <FastImage source={IMAGES.iconAsk} resizeMode='cover' style={styles.iconAsk} />;
               title = 'Ask';
               isCreateAsk = true;
               break;
             case AppRoute.TRUST_NETWORK:
               iconName = isFocused ? (
-                <Image source={IMAGES.iconTrustNetworkActive} resizeMode='cover' style={styles.iconTrustNetWork} />
+                <FastImage source={IMAGES.iconTrustNetworkActive} resizeMode='cover' style={styles.iconTrustNetWork} />
               ) : (
-                <Image source={IMAGES.iconTrustNetwork} resizeMode='cover' style={styles.iconTrustNetWork} />
+                <FastImage source={IMAGES.iconTrustNetwork} resizeMode='cover' style={styles.iconTrustNetWork} />
               );
               title = 'Trust';
               break;
             case AppRoute.CHAT:
               iconName = isFocused ? (
-                <Image source={IMAGES.iconChatActive} resizeMode='cover' style={styles.iconChat} />
+                <FastImage source={IMAGES.iconChatActive} resizeMode='cover' style={styles.iconChat} />
               ) : (
-                <Image source={IMAGES.iconChat} resizeMode='cover' style={styles.iconChat} />
+                <FastImage source={IMAGES.iconChat} resizeMode='cover' style={styles.iconChat} />
               );
               title = 'Chat';
               break;
             default:
               iconName = isFocused ? (
-                <Image source={IMAGES.iconYourAskActive} resizeMode='cover' style={styles.iconYourAsk} />
+                <FastImage source={IMAGES.iconYourAskActive} resizeMode='cover' style={styles.iconYourAsk} />
               ) : (
-                <Image source={IMAGES.iconYourAsk} resizeMode='cover' style={styles.iconYourAsk} />
+                <FastImage source={IMAGES.iconYourAsk} resizeMode='cover' style={styles.iconYourAsk} />
               );
               title = 'Your Ask';
               break;
@@ -97,7 +98,7 @@ const TabBar = ({state, descriptors, navigation}: any) => {
             }).start();
             if (!isFocused) {
               route?.name === AppRoute.MAIN_NAVIGATOR
-                ? navigation.navigate(AppRoute.ASK)
+                ? navigation.navigate(AppRoute.ASK_NAVIGATOR)
                 : navigation.navigate(route.name);
             }
           };

@@ -42,14 +42,13 @@ function* getUserInfo(payload: IActionUserInfoRequested) {
     } else {
       yield call(clearToken);
       yield put({type: USER_INFO_FAILURE, payload: {error: response?.message}});
+      yield put(initAuthFailure({error: response?.message}));
       payload?.callback &&
         payload?.callback({
           success: response?.success,
           message: response?.message,
           data: null,
         });
-
-      yield put(initAuthFailure({error: response?.message}));
     }
   } catch (error) {
     yield call(clearToken);

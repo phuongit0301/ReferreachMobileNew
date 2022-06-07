@@ -23,16 +23,25 @@ const AppCheckScreen: React.FC<Props> = ({navigation}) => {
     if (authState.isLoggedIn) {
       dispatch(
         userInfoRequest((response: any) => {
+          if (!response.success) {
+            return false;
+          }
+
           if (response?.data?.confirmed_at) {
-            if (response?.data?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED) {
+            if (
+              response?.data?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED ||
+              response?.data?.in_app_status === IN_APP_STATUS_ENUM.SIGNUP_GUIDE_TIPS
+            ) {
               navigation.navigate(AppRoute.APP_DRAWER);
               return;
             }
 
-            if (
-              response?.data?.in_app_status === IN_APP_STATUS_ENUM.ONBOARDING ||
-              response?.data?.in_app_status === IN_APP_STATUS_ENUM.INVITATION_SENT
-            ) {
+            if (response?.data?.in_app_status === IN_APP_STATUS_ENUM.ONBOARDING) {
+              navigation.navigate(AppRoute.APP_DRAWER, {screen: AppRoute.MAIN_NAVIGATOR});
+              return;
+            }
+
+            if (response?.data?.in_app_status === IN_APP_STATUS_ENUM.INVITATION_SENT) {
               navigation.navigate(AppRoute.INTRO);
               return;
             }

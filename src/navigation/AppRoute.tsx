@@ -24,12 +24,15 @@ export enum AppRoute {
   AIR_FEED = 'AIRFeed',
   TRUST_NETWORK = 'TrustNetwork',
   YOUR_ASK = 'YourAsk',
+  ASK_NAVIGATOR = 'AskNavigator',
   ASK = 'Ask',
   ASK_TWO = 'AskTwo',
+  ASK_THREE = 'AskThree',
   TABS = 'Tabs',
   CREATE_ASK = 'CreateAsk',
   ASK_PREVIEW = 'AskPreview',
   ASK_PUBLISH = 'AskPublish',
+  ASK_EDIT = 'AskEdit',
   VERIFY_EMAIL = 'VerifyEmail',
   VERIFIED_EMAIL = 'VerifiedEmail',
   RECOVER_PASSWORD = 'RecoverPassword',
@@ -52,6 +55,8 @@ export enum AppRoute {
   HELP = 'Help',
   FEED_BACK = 'FeedBack',
   SETTING = 'Setting',
+  TIPS = 'Tips',
+  TIPS_TWO = 'TipsTwo',
 }
 
 export const AppRouteNotTabBar = {

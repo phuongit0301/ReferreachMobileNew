@@ -1,4 +1,5 @@
 import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
+import {IIndustry, IIndustrySave} from '../industry/types';
 import {
   USER_INFO_REQUESTED,
   USER_INFO_SUCCESS,
@@ -41,9 +42,9 @@ export interface IUserInfoState {
   confirmed_at: string | null;
   in_app_status: IN_APP_STATUS_ENUM;
   avatar?: string;
-  self_industries: string[];
-  partner_industries: string[];
-  sell_industries: string[];
+  self_industries: IIndustry[] | IIndustrySave[];
+  partner_industries: IIndustry[] | IIndustrySave[];
+  sell_industries: IIndustry[] | IIndustrySave[];
   avatar_metadata: IAvatarMetaData;
 }
 

@@ -2,13 +2,14 @@ import React from 'react';
 import {View} from 'react-native';
 import {useTranslation} from 'react-i18next';
 
+import {IIndustry, IIndustrySave} from '~Root/services/industry/types';
 import {GlobalStyles} from '~Root/config';
 import {UserCard} from '~Root/components';
 import styles from './styles';
 interface Props {
-  selfIndustries: any[];
-  sellIndustries: any[];
-  partnerIndustries: any[];
+  selfIndustries: IIndustry[] | IIndustrySave[];
+  sellIndustries: IIndustry[] | IIndustrySave[];
+  partnerIndustries: IIndustry[] | IIndustrySave[];
   onDelete: ({index, target}: {index: number; target: string}) => void;
   handleModal: ({title, target}: {title: string; target: number}) => void;
   showTooltip?: any;

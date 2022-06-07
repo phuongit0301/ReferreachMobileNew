@@ -154,15 +154,15 @@ export const GlobalStyles = StyleSheet.create({
     top: 0,
   },
   scrollView: {
-    marginTop: 20,
-    paddingTop: 20,
+    marginTop: adjust(20),
+    paddingTop: adjust(20),
     flex: 1,
   },
   scrollViewTealBlue: {
     backgroundColor: BASE_COLORS.tealBlueColor,
     zIndex: -1,
-    marginHorizontal: 30,
-    marginVertical: 20,
+    marginHorizontal: adjust(30),
+    marginVertical: adjust(20),
     flex: 1,
   },
   scrollViewWhite: {
@@ -205,11 +205,11 @@ export const GlobalStyles = StyleSheet.create({
     borderRadius: adjust(120),
   },
   tagStyleContainer: {
-    borderRadius: 10,
+    borderRadius: adjust(10),
     backgroundColor: BASE_COLORS.primary,
     alignSelf: 'flex-start',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+    paddingHorizontal: adjust(15),
+    paddingVertical: adjust(8),
   },
   tagStyle: {
     color: BASE_COLORS.whiteColor,
@@ -227,14 +227,12 @@ export const GlobalStyles = StyleSheet.create({
     fontFamily: BASE_FONTS.regular,
     fontWeight: '500',
     fontSize: BASE_STYLES.h5,
-    lineHeight: 24,
     color: BASE_COLORS.lightBlackColor,
   },
   textBlue: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
     fontSize: BASE_STYLES.h5,
-    lineHeight: 24,
     color: BASE_COLORS.primary,
   },
   textSteelBlue: {
@@ -256,7 +254,6 @@ export const GlobalStyles = StyleSheet.create({
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
     fontSize: BASE_STYLES.h5,
-    lineHeight: 24,
   },
   keyboard: {
     flex: 1,
@@ -363,6 +360,9 @@ export const GlobalStyles = StyleSheet.create({
   },
   mt5: {
     marginTop: adjust(5),
+  },
+  mt0: {
+    marginTop: 0,
   },
   mt10: {
     marginTop: adjust(10),
@@ -592,8 +592,8 @@ export const GlobalStyles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   iconBack: {
-    width: adjust(16),
-    height: adjust(29),
+    width: adjust(17),
+    height: adjust(17),
   },
   iconEdit: {
     padding: adjust(5),
@@ -763,22 +763,14 @@ export const GlobalStyles = StyleSheet.create({
   flexWrap: {
     flexWrap: 'wrap',
   },
-});
-
-/**
- * Common basic style defines
- */
-export const BaseStyle = StyleSheet.create({
-  textInput: {
-    height: 46,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    width: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
+  /** =========== Ask =========== */
+  iconYourAsk: {
+    width: adjust(28),
+    height: adjust(27),
   },
-  safeAreaView: {
-    flex: 1,
+  /** =========== End Ask =========== */
+
+  bgGray: {
+    
   },
 });

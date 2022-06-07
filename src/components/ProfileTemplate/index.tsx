@@ -9,7 +9,7 @@ import ImagePicker, {Options} from 'react-native-image-crop-picker';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {updateUserAvatar} from '~Root/services/user/actions';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import {AvatarGradient, Button, HeaderSmallTransparent, Icon, ModalDialogCommon, Paragraph} from '~Root/components';
+import {Avatar, AvatarGradient, Button, HeaderSmallTransparent, Icon, ModalDialogCommon, Paragraph} from '~Root/components';
 import styles from './styles';
 import {IUserState} from '~Root/services/user/types';
 import {useDispatch, useSelector} from 'react-redux';
@@ -18,6 +18,7 @@ import {useTranslation} from 'react-i18next';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import {adjust} from '~Root/utils';
+import { AppRoute } from '~Root/navigation/AppRoute';
 
 interface Action {
   title: string;
@@ -124,13 +125,6 @@ const ProfileTemplateScreen: React.FC<Props> = ({
             dispatch(hideLoading());
           }),
         );
-        // dispatch(
-        //   setUserProfileAvatar({
-        //     name: response?.assets[0]?.fileName,
-        //     type: response?.assets[0]?.type,
-        //     uri: response?.assets[0]?.uri,
-        //   }),
-        // );
       })
       .catch(error => {
         console.log(`Error in open cropper: ${error as string}`);
@@ -172,7 +166,14 @@ const ProfileTemplateScreen: React.FC<Props> = ({
             colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
             style={[GlobalStyles.center, styles.profileGradient]}>
             <View style={GlobalStyles.flexRow}>
-              {imageAvatar?.uri ? (
+              {userState.userInfo?.avatar_metadata?.avatar_url ? (
+                <FastImage
+                  source={{
+                    uri: userState.userInfo?.avatar_metadata?.avatar_url,
+                  }}
+                  style={[GlobalStyles.avatar, GlobalStyles.mb10]}
+                />
+              ) : imageAvatar?.uri ? (
                 <FastImage
                   source={{
                     uri: imageAvatar?.uri,
@@ -191,13 +192,6 @@ const ProfileTemplateScreen: React.FC<Props> = ({
                     }}
                   />
                 </FastImage>
-              ) : userState.userInfo?.avatar ? (
-                <FastImage
-                  source={{
-                    uri: userState.userInfo?.avatar,
-                  }}
-                  style={[GlobalStyles.avatar, GlobalStyles.mb10]}
-                />
               ) : (
                 <AvatarGradient
                   title='AD'
@@ -212,7 +206,7 @@ const ProfileTemplateScreen: React.FC<Props> = ({
                 </TouchableOpacity>
               </View>
             </View>
-            <Paragraph textWhite bold600 title='kelly.choo@referreach.com' style={GlobalStyles.mb10} />
+            <Paragraph textWhite bold600 title={userState.userInfo?.email} style={GlobalStyles.mb10} />
             <Button
               title={t('update_email')}
               h5

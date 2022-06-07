@@ -62,12 +62,15 @@ interface Props {
   iconColor?: string;
   iconContainerStyle?: ViewStyle & TextStyle;
   iconStyle?: ViewStyle & TextStyle;
+  errorStyle?: TextStyle;
   isIconImage?: boolean;
   imageStyleContainer?: ViewStyle;
   imageStyle?: ImageStyle & TextStyle;
   uri?: any;
   onPressIn?: () => void;
   onSubmitEditing?: () => void;
+  onEndEditing?: () => void;
+  onFocus?: () => void;
   onIconClick?: () => void;
 }
 
@@ -103,12 +106,15 @@ const InputIconValidate: React.FC<Props> = ({
   iconColor = BASE_COLORS.blackColor,
   iconContainerStyle = {},
   iconStyle = {},
+  errorStyle = {},
   isIconImage = false,
   imageStyleContainer = {},
   imageStyle = {},
   uri,
   onPressIn = () => {},
   onSubmitEditing = () => {},
+  onEndEditing = () => {},
+  onFocus = () => {},
   onIconClick = () => {},
 }) => {
   const isError = errors?.[name] && Boolean(errors[name]);
@@ -117,7 +123,7 @@ const InputIconValidate: React.FC<Props> = ({
 
   return (
     <View style={[styles.container, styleContainer]}>
-      {isText && <Paragraph h4 style={[styles.labelStyle, labelStyle]} title={label} />}
+      {isText && <Paragraph h5 style={[styles.labelStyle, labelStyle]} title={label} />}
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value, ref}}) => {
@@ -154,6 +160,8 @@ const InputIconValidate: React.FC<Props> = ({
                   onPressIn={onPressIn}
                   autoFocus={autoFocus}
                   onSubmitEditing={onSubmitEditing}
+                  onFocus={onFocus}
+                  onEndEditing={onEndEditing}
                 />
               </View>
             </Pressable>
@@ -164,7 +172,7 @@ const InputIconValidate: React.FC<Props> = ({
         defaultValue={defaultValue}
       />
       {children}
-      {isError && <Text style={styles.textError}>{errors[name]?.message}</Text>}
+      {isError && <Text style={[styles.textError, errorStyle]}>{errors[name]?.message}</Text>}
     </View>
   );
 };

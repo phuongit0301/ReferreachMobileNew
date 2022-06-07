@@ -3,12 +3,13 @@ import {View, ViewStyle, TextStyle, TouchableOpacity} from 'react-native';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+import {IIndustry, IIndustrySave} from '~Root/services/industry/types';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import {Paragraph, Icon, Button, CheckBox, Category} from '~Root/components';
 import {adjust} from '~Root/utils';
 import styles from './styles';
 interface Props {
-  data: string[];
+  data: IIndustry[] | IIndustrySave[];
   showIcon?: boolean;
   styleContainer?: ViewStyle;
   showTitle?: boolean;
@@ -127,13 +128,13 @@ const UserCard: React.FC<Props> = ({
       )}
       <View style={[GlobalStyles.mt10, GlobalStyles.flexRow, styles.tagContainer]}>
         {data.length > 0 &&
-          data.map((item: any, index: number) =>
+          data.map((item: IIndustry | IIndustrySave, index: number) =>
             typeof item === 'object' ? (
               <Category
                 styleTag={styleTag}
                 key={`selected-target-${dataTarget}-${index}`}
                 itemKey={`${index}`}
-                name={item?.name}
+                name={item?.name ?? item?.attributes?.display_value}
                 showButton={true}
                 onPress={() => onDelete({index, target: dataTarget})}
               />
