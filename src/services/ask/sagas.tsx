@@ -43,7 +43,7 @@ function* getAsks(payload: IActionGetAskRequest) {
   try {
     const response: IActionGetAskSuccess['payload'] = yield call(AskAPI.getAsks);
     if (response?.success) {
-      yield put({type: GET_ASK_SUCCESS, payload: response?.data});
+      yield put({type: GET_ASK_SUCCESS, payload: response});
       payload?.callback &&
         payload?.callback({
           success: response?.success,

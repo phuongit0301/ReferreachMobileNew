@@ -90,10 +90,14 @@ const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3
         <View style={[GlobalStyles.flexColumn, GlobalStyles.ph10]}>
           <View style={[GlobalStyles.flexRow, GlobalStyles.mb10]}>
             <Avatar
-              userAvatar={userInfo?.avatar_metadata}
-              userInfo={userInfo}
+              userInfo={{
+                ...userInfo?.avatar_metadata,
+                first_name: userInfo?.first_name,
+                last_name: userInfo?.last_name,
+              }}
               onProfile={onProfile}
               styleAvatar={styles.styleAvatar}
+              styleContainerGradient={GlobalStyles.mb15}
             />
             <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15, GlobalStyles.mt10, styles.userProfile]}>
               <Paragraph textWhite h5 bold600 title={`${userInfo?.first_name} ${userInfo?.last_name}`} />

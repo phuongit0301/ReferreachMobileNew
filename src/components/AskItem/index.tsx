@@ -58,9 +58,14 @@ const AskItem: React.FC<Props> = ({item, onMenu = () => {}}) => {
           <FastImage source={IMAGES.iconCalendar} resizeMode='cover' style={[GlobalStyles.mr5, styles.iconCalendar]} />
           <Paragraph textDarkGrayColor title={moment(item?.attributes?.deadline).format('YYYY-MM-DD')} />
         </View>
-        <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
+        <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, styles.globeContainer]}>
           <FastImage source={IMAGES.iconGlobe} resizeMode='cover' style={[GlobalStyles.mr5, styles.iconGlobe]} />
-          <Paragraph textDarkGrayColor title={item?.relationships?.ask_location?.data?.text} />
+          <Paragraph
+            textDarkGrayColor
+            numberOfLines={1}
+            ellipsizeMode={'tail'}
+            title={item?.relationships?.ask_location?.data?.text}
+          />
         </View>
       </View>
       {item?.relationships?.criterium?.data && item?.relationships?.criterium?.data?.length > 0 && (

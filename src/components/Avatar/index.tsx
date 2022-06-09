@@ -4,35 +4,33 @@ import {ActivityIndicator, TouchableOpacity, View, ViewStyle} from 'react-native
 import FastImage, {ImageStyle} from 'react-native-fast-image';
 
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import {IAvatarMetaData, IUserInfoState} from '~Root/services/user/types';
 import {AvatarGradient} from '~Root/components';
-import styles from './styles';
 
 interface Props {
-  userAvatar?: IAvatarMetaData;
-  userInfo?: IUserInfoState;
+  userInfo?: any;
   styleContainer?: ViewStyle;
   styleAvatar?: ImageStyle;
+  styleContainerGradient?: ViewStyle;
   characters?: string;
-  onProfile: () => void;
+  onProfile?: () => void;
 }
 
 const Avatar: React.FC<Props> = ({
-  userAvatar,
   characters = 'UN',
   styleAvatar = {},
   userInfo,
   onProfile = () => {},
   styleContainer = {},
+  styleContainerGradient = {},
 }) => {
   characters = `${userInfo?.first_name?.charAt(0)}${userInfo?.last_name?.charAt(0)}`;
 
   return (
     <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, styleContainer]} onPress={onProfile}>
-      {userAvatar ? (
+      {userInfo?.avatar_url ? (
         <FastImage
           source={{
-            uri: userAvatar?.avatar_url,
+            uri: userInfo?.avatar_url,
           }}
           resizeMode='cover'
           onProgress={() => <ActivityIndicator />}
@@ -43,8 +41,8 @@ const Avatar: React.FC<Props> = ({
               styleAvatar,
               {
                 transform: [
-                  {translateX: userAvatar?.avatar_lat ? +userAvatar?.avatar_lat : 0},
-                  {translateY: userAvatar?.avatar_lng ? +userAvatar?.avatar_lng : 0},
+                  {translateX: userInfo?.avatar_lat ? +userInfo?.avatar_lat : 0},
+                  {translateY: userInfo?.avatar_lng ? +userInfo?.avatar_lng : 0},
                 ],
               },
             ]}
@@ -55,7 +53,7 @@ const Avatar: React.FC<Props> = ({
           title={characters}
           color1={BASE_COLORS.oxleyColor}
           color2={BASE_COLORS.oxleyColor}
-          stylesContainer={GlobalStyles.mb15}
+          stylesContainer={styleContainerGradient}
         />
       )}
     </TouchableOpacity>

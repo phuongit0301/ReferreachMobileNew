@@ -9,6 +9,7 @@ import {IContactState} from '~Root/services/contact/types';
 import {IIndustryState} from '~Root/services/industry/types';
 import {IRegisterState} from '~Root/services/register/types';
 import {IAskState} from '~Root/services/ask/types';
+import {INetworkConnectionListState} from '~Root/services/network/types';
 
 // Global state
 export interface IGlobalState {
@@ -20,6 +21,7 @@ export interface IGlobalState {
   industryState: IIndustryState;
   registerState: IRegisterState;
   askState: IAskState;
+  networkState: INetworkConnectionListState;
 }
 
 // Interface for async call steps

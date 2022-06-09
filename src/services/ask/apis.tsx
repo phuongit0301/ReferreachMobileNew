@@ -15,7 +15,7 @@ export default class AskAPI {
       });
       if (response?.data) {
         return {
-          data: response.data,
+          data: (response.data as any)?.data?.reverse(),
           message: '',
           success: true,
         };

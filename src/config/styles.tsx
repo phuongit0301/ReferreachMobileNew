@@ -743,6 +743,9 @@ export const GlobalStyles = StyleSheet.create({
   justifyStart: {
     justifyContent: 'flex-start',
   },
+  justifyEnd: {
+    justifyContent: 'flex-end',
+  },
   fullWidth: {
     width: '100%',
   },

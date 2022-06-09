@@ -53,4 +53,7 @@ export default StyleSheet.create({
   tagText: {
     color: BASE_COLORS.whiteColor,
   },
+  globeContainer: {
+    width: '55%',
+  },
 });

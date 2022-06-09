@@ -1,186 +1,163 @@
-import {StyleSheet} from 'react-native';
-import {BASE_COLORS, BASE_FONTS, GlobalStyles} from '~Root/config';
-import {headerByRatio, adjust} from '~Root/utils';
-
-const ratio = headerByRatio();
+import {Platform, StyleSheet} from 'react-native';
+import {BASE_COLORS, GlobalStyles} from '~Root/config';
+import {adjust} from '~Root/utils';
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: BASE_COLORS.whiteColor,
+    backgroundColor: BASE_COLORS.brightGrayColor,
   },
-  scrollView: {
-    backgroundColor: BASE_COLORS.whiteColor,
-    marginTop: 0,
-    zIndex: -1,
-    paddingTop: 0,
-    flex: 1,
-  },
-  scrollViewContentContainer: {
-    ...GlobalStyles.pb80,
-  },
-  areaViewContainer: {
-    marginTop: ratio?.marginTop,
-    flex: 1,
-  },
-  btnSecond: {
-    borderColor: BASE_COLORS.whiteColor,
-  },
-  titleStyle: {
-    color: BASE_COLORS.whiteColor,
-  },
-  headerContainer: {
-    backgroundColor: BASE_COLORS.whiteColor,
-    marginTop: ratio?.marginTop,
-  },
-  title: {
-    textTransform: 'uppercase',
-  },
-  titleNetwork: {
-    textTransform: 'capitalize',
-  },
-  highlightTitle: {
-    ...GlobalStyles.mt5,
-  },
-  titleBlue: {
-    ...GlobalStyles.mr5,
-    color: BASE_COLORS.primary,
-  },
-  header: {
-    width: '100%',
-    justifyContent: 'flex-start',
-  },
-  headerText: {
-    color: BASE_COLORS.primary,
-    fontFamily: BASE_FONTS.semiBold,
-    fontWeight: '600',
-    fontSize: 12,
-  },
-  limitWidth: {
-    width: '60%',
-  },
-  userInfoArea: {
-    alignItems: 'flex-start',
-  },
-  tabView: {
-    ...GlobalStyles.p10,
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.01)',
-  },
-  card: {
-    ...GlobalStyles.m5,
-    ...GlobalStyles.p15,
-    borderWidth: 1,
-    backgroundColor: '#fff',
-    borderColor: 'rgba(0,0,0,0.1)',
-    height: adjust(150),
-    shadowColor: '#ccc',
-    shadowOffset: {width: 2, height: 2},
-    shadowOpacity: 0.5,
-    shadowRadius: 3,
-  },
-  tab: {
-    ...GlobalStyles.pb10,
-    width: '25%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: 0,
-  },
-  tabActive: {
-    borderBottomColor: BASE_COLORS.primary,
-    borderBottomWidth: 2,
-  },
-  tabIcon: {
-    width: adjust(20),
-    height: adjust(20),
-    opacity: 0.5,
-  },
-  tabIconActive: {
-    opacity: 1,
-  },
-  tabScrollContainer: {
-    flex: 1,
-  },
-  tabs: {
-    ...GlobalStyles.pt5,
+  inputContainer: {
+    ...GlobalStyles.mt15,
+    ...GlobalStyles.ph15,
+    display: 'flex',
     flexDirection: 'row',
-    borderBottomWidth: 2,
-    borderTopWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderBottomColor: BASE_COLORS.whiteColor,
-    justifyContent: 'center',
+    backgroundColor: BASE_COLORS.whiteColor,
+    borderRadius: adjust(50),
+    paddingVertical: Platform.OS === 'ios' ? adjust(5) : 0,
     alignItems: 'center',
   },
-  askContainer: {
-    marginTop: 12,
-    flex: 1,
+  iconSearch: {
+    width: adjust(18),
+    height: adjust(18),
   },
-  askHeader: {
-    ...GlobalStyles.flexRow,
-    ...GlobalStyles.ph10,
-    ...GlobalStyles.pb5,
-    borderBottomWidth: 1,
-    borderBottomColor: BASE_COLORS.primary,
-    alignItems: 'center',
-  },
-  mainButtonContainer: {
-    ...GlobalStyles.mainButtonContainer,
-  },
-  textStyle: {
+  input: {
     ...GlobalStyles.h5,
-    ...GlobalStyles.mainButtonTextStyle,
-  },
-  mainButtonArea: {
-    ...GlobalStyles.mainButtonArea,
-  },
-  cancelButtonArea: {
-    ...GlobalStyles.mainButtonArea,
-    ...GlobalStyles.mr10,
-    backgroundColor: BASE_COLORS.indianRedColor,
-  },
-  networkContainer: {
-    ...GlobalStyles.mt10,
     flex: 1,
+    lineHeight: adjust(17),
+    color: BASE_COLORS.gunmetalColor,
+    fontSize: adjust(13),
   },
-  editButton: {
-    flex: 1,
-    alignItems: 'flex-end',
+  itemContainer: {
+    backgroundColor: BASE_COLORS.whiteColor,
+    borderRadius: adjust(12),
   },
-  iconContainer: {
-    ...GlobalStyles.mr5,
+  cardContainer: {
+    backgroundColor: BASE_COLORS.steelBlue2Color,
+    borderRadius: adjust(12),
   },
-  tooltipStyle: {
-    height: '38%',
+  cardImage: {
+    width: adjust(120),
+    height: adjust(161),
   },
-  tooltipNetworkStyle: {
-    height: '34%',
-  },
-  tooltipContentStyle: {
-    ...GlobalStyles.p20,
-    backgroundColor: BASE_COLORS.davysGreyColor,
-    flex: 1,
-    width: '85%',
-  },
-  tooltipTextColor: {
-    color: BASE_COLORS.antiFlashWhiteColor,
-  },
-  tooltipNetwork: {
-    width: '80%',
-  },
-  tooltipCloseBtn: {
-    flex: 1,
-    alignItems: 'flex-end',
-  },
-  inviteLeftArea: {
-    ...GlobalStyles.pv5,
-    ...GlobalStyles.ph10,
-    ...GlobalStyles.textUppercase,
-    fontSize: adjust(8),
-    borderRadius: adjust(24),
+  buttonContainerStyle: {
+    ...GlobalStyles.mb20,
+    ...GlobalStyles.ph15,
+    ...GlobalStyles.pv8,
+    borderBottomRightRadius: adjust(24),
+    borderWidth: 1,
     backgroundColor: BASE_COLORS.forestGreenColor,
+    borderColor: BASE_COLORS.whiteColor,
+    shadowColor: BASE_COLORS.blackColor,
+    shadowOffset: {
+      width: 0,
+      height: adjust(3),
+    },
+    shadowOpacity: adjust(0.2),
+    shadowRadius: adjust(3),
+    elevation: adjust(2),
   },
-  buttonGroup: {
-    ...GlobalStyles.flexRow,
-    justifyContent: 'center',
+  avatarContainer: {
+    width: adjust(50),
+    height: adjust(50),
+    borderRadius: adjust(100),
+    overflow: 'hidden',
+  },
+  avatar: {
+    width: adjust(50),
+    height: adjust(50),
+  },
+  menu: {
+    position: 'absolute',
+    backgroundColor: BASE_COLORS.whiteColor,
+    shadowColor: BASE_COLORS.blackColor,
+    shadowOffset: {
+      width: 0,
+      height: adjust(4),
+    },
+    shadowOpacity: adjust(0.1),
+    shadowRadius: adjust(4),
+    elevation: adjust(4),
+    top: 0,
+    right: 0,
+    width: '55%',
+  },
+  iconEditAsk: {
+    width: adjust(24),
+    height: adjust(24),
+  },
+  iconEditAskContainer: {
+    width: adjust(24),
+    height: adjust(24),
+  },
+  iconExtendDeadline: {
+    width: adjust(17),
+    height: adjust(17),
+  },
+  iconExtendDeadlineContainer: {
+    width: adjust(24),
+    height: adjust(24),
+  },
+  iconEndAskContainer: {
+    width: adjust(24),
+    height: adjust(24),
+  },
+  iconEndAsk: {
+    width: adjust(18),
+    height: adjust(18),
+  },
+  border: {
+    borderWidth: 1,
+    borderColor: BASE_COLORS.gainsboroColor,
+    width: '100%',
+  },
+  text: {
+    lineHeight: adjust(20),
+  },
+  iconEditBg: {
+    backgroundColor: BASE_COLORS.gray2Color,
+    borderRadius: adjust(50),
+    padding: adjust(5),
+  },
+  iconEditBgActive: {
+    backgroundColor: BASE_COLORS.forestGreenColor,
+    borderRadius: adjust(50),
+    padding: adjust(5),
+  },
+  iconEdit: {
+    width: adjust(13),
+    height: adjust(12),
+  },
+  iconMessageContainer: {
+    backgroundColor: BASE_COLORS.oxleyColor,
+    borderRadius: adjust(50),
+  },
+  iconMessage: {
+    width: adjust(18),
+    height: adjust(18),
+  },
+  iconDelete: {
+    width: adjust(26),
+    height: adjust(25),
+  },
+  btnText: {
+    backgroundColor: BASE_COLORS.steelBlue2Color,
+    borderRadius: adjust(50),
+  },
+  btnContainer: {
+    width: adjust(80),
+    alignItems: 'flex-end',
+  },
+  nameContainer: {
+    width: '45%',
+  },
+  textSmall: {
+    fontSize: adjust(10),
+  },
+  btnBottom: {
+    backgroundColor: BASE_COLORS.forestGreenColor,
+    borderRadius: adjust(12),
+    position: 'absolute',
+    bottom: adjust(30),
+    right: adjust(30),
   },
 });
