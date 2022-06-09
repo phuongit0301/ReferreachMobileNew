@@ -118,6 +118,7 @@ const AppDrawer = (props: any) => {
   return (
     <DrawerStack.Navigator
       initialRouteName={AppRoute.BOTTOM_TAB}
+      useLegacyImplementation={true}
       screenOptions={() => ({
         headerShown: false,
         drawerStyle: {width: '100%'},

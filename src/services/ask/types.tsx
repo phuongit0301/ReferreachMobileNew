@@ -76,6 +76,7 @@ export interface ICriteriumDataState {
   id: string;
   ask_id: string;
   text: string;
+  deleted?: boolean;
   created_at: Date;
   updated_at: Date;
 }
@@ -209,10 +210,16 @@ export interface IActionUpdateAskRequest {
   payload: {
     id: number;
     formData: any;
-    formDataDocument: {
-      'documents_attributes[][id]': number;
-      'documents_attributes[][_destroy]': boolean;
-    };
+    formDataRemove: Array<
+      | {
+          'documents_attributes[][id]': number;
+          'documents_attributes[][_destroy]': boolean;
+        }
+      | {
+          'criterium_attributes[][id]': number;
+          'criterium_attributes[][_destroy]': boolean;
+        }
+    >;
   };
   callback: (response: IActionUpdateAskSuccess['payload']) => void;
 }
@@ -222,6 +229,7 @@ export interface IActionUpdateAskSuccess {
     data: IAskInside;
     message: string;
     success: boolean;
+    isExpired: boolean;
   };
   callback: () => void;
 }
@@ -232,6 +240,7 @@ export interface IActionUpdateAskFailure {
     data: null;
     message: string;
     success: boolean;
+    isExpired: boolean;
   };
 }
 

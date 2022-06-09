@@ -21,6 +21,8 @@ import {useForm} from 'react-hook-form';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SelectDropdown from 'react-native-select-dropdown';
 import DocumentPicker, {DocumentPickerResponse} from 'react-native-document-picker';
+import Toast from 'react-native-toast-message';
+import moment from 'moment';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
@@ -40,7 +42,6 @@ import {
   IAskInside,
   IFiles,
 } from '~Root/services/ask/types';
-import moment from 'moment';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -78,11 +79,13 @@ const AskEditScreen = ({route, navigation}: Props) => {
   const {t} = useTranslation();
   const {
     register,
+    unregister,
     control,
     handleSubmit,
     setFocus,
     setValue,
     watch,
+    reset,
     formState: {errors, isValid},
   } = useForm<any>({
     resolver: yupResolver(schema),
@@ -95,7 +98,13 @@ const AskEditScreen = ({route, navigation}: Props) => {
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
   const askState = useSelector((state: IGlobalState) => state.askState);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
-  const [inputDynamic, setInputDynamic] = useState<string[]>([]);
+  const [inputDynamic, setInputDynamic] = useState<{
+    items: any[];
+    deleted: any[];
+  }>({
+    items: [],
+    deleted: [],
+  });
   const [textAdditionalDetail, setTextAdditionalDetail] = useState('');
   const [textBusinessDetail, setTextBusinessDetail] = useState('');
   const [keyword, setKeyword] = useState('');
@@ -115,6 +124,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
         (route.params as any)?.id,
         (response: IActionGetAskDetailsSuccess['payload'] | IActionGetAskDetailsFailure['payload']) => {
           if (response?.data) {
+            setFilesDeleted([]);
             setDataForm(response?.data?.attributes);
             setFilesUpload(response?.data?.attributes?.documents);
           }
@@ -133,6 +143,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
     }
     if (item?.demographic) {
       setValue(CREATE_ASK_FIELDS.demographic, item.demographic);
+      setTextDemographic(item.demographic);
     }
     if (item?.business_requirement) {
       setValue(CREATE_ASK_FIELDS.businessRequirement, item.business_requirement);
@@ -149,24 +160,10 @@ const AskEditScreen = ({route, navigation}: Props) => {
       setValue(CREATE_ASK_FIELDS.deadline, dateFormat3(item.deadline));
     }
     if (item?.criterium && item?.criterium?.length > 0) {
-      let inputTemp: string[] = [];
-      item?.criterium?.forEach((x, index) => {
-        setValue(CREATE_ASK_FIELDS[`criteria${index + 1}`], x.text);
-        inputTemp = [...inputTemp, '1'];
+      setInputDynamic({
+        deleted: [],
+        items: item?.criterium,
       });
-      setInputDynamic(inputTemp);
-    }
-    if (item?.criteria2) {
-      setValue(CREATE_ASK_FIELDS.criteria2, item.criteria2);
-    }
-    if (item?.criteria3) {
-      setValue(CREATE_ASK_FIELDS.criteria3, item.criteria3);
-    }
-    if (item?.criteria4) {
-      setValue(CREATE_ASK_FIELDS.criteria4, item.criteria4);
-    }
-    if (item?.criteria5) {
-      setValue(CREATE_ASK_FIELDS.criteria5, item.criteria5);
     }
     if (item?.additional_detail) {
       setValue(CREATE_ASK_FIELDS.additiondalDetail, item.additional_detail);
@@ -174,18 +171,41 @@ const AskEditScreen = ({route, navigation}: Props) => {
     }
   };
 
+  useEffect(() => {
+    inputDynamic.items?.forEach((x, index) => {
+      if (watch(CREATE_ASK_FIELDS[`criteria${index + 1}`])) {
+        setValue(CREATE_ASK_FIELDS[`criteria${index + 1}`], watch(CREATE_ASK_FIELDS[`criteria${index + 1}`]));
+      } else {
+        setValue(CREATE_ASK_FIELDS[`criteria${index + 1}`], x.text);
+      }
+    });
+  }, [inputDynamic]);
+
   const onToggleDrawer = () => {
     navigation.toggleDrawer();
   };
 
   const onRemoveInput = (index: number) => {
-    const temp = inputDynamic.filter((_item: any, i: number) => i !== index);
-    setInputDynamic(temp);
+    const temp = inputDynamic.items.filter((x, i) => i !== index);
+    let tempDeleted = inputDynamic.deleted;
+    if (inputDynamic?.items[index]?.id) {
+      tempDeleted = [...tempDeleted, inputDynamic?.items[index]];
+      unregister(CREATE_ASK_FIELDS[`criteria${index + 1}`], {keepValue: false});
+    }
+
+    setInputDynamic({
+      deleted: tempDeleted,
+      items: temp,
+    });
   };
 
   const onAddInput = () => {
-    if (inputDynamic.length < 4) {
-      setInputDynamic(prevState => [...prevState, '1']);
+    if (inputDynamic?.items.length < 4) {
+      setInputDynamic({
+        ...inputDynamic,
+        items: [...inputDynamic?.items, {id: null, value: '1'}],
+      });
+      setValue(CREATE_ASK_FIELDS[`criteria${inputDynamic?.items?.length + 1}`], '');
     }
   };
 
@@ -225,7 +245,6 @@ const AskEditScreen = ({route, navigation}: Props) => {
         presentationStyle: 'fullScreen',
         allowMultiSelection: true,
       });
-      console.log('filesUpload?.length====>', filesUpload?.length);
       const items = [...filesUpload, ...res];
       if (items.length > 2) {
         Alert.alert('Maximum files exceeded');
@@ -286,6 +305,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
     credentials[CREATE_ASK_FIELDS.demographic] = textDemographic;
     credentials[CREATE_ASK_FIELDS.additiondalDetail] = textAdditionalDetail;
     const formData = new FormData();
+    const formDataRemove = new FormData();
 
     if (credentials.greeting) {
       formData.append(CREATE_ASK_FIELDS.greeting, credentials.greeting);
@@ -309,21 +329,23 @@ const AskEditScreen = ({route, navigation}: Props) => {
       formData.append('ask_location_attributes[text]', credentials.location);
       formData.append('ask_location_attributes[id]', askState?.dataDetails?.attributes?.ask_location?.id);
     }
-    if (credentials.criteria1 && credentials.criteria1 !== '') {
-      formData.append('criterium_attributes[][text]', credentials.criteria1);
+    for (let i = 0; i < inputDynamic.items?.length; i++) {
+      if (credentials[`criteria${i + 1}`] && credentials[`criteria${i + 1}`] !== '' && inputDynamic.items[i]) {
+        formData.append('criterium_attributes[][text]', credentials[`criteria${i + 1}`]);
+
+        if (inputDynamic.items[i]?.id) {
+          formData.append('criterium_attributes[][id]', inputDynamic.items[i]?.id);
+        }
+      }
     }
-    if (credentials.criteria2 && credentials.criteria2 !== '') {
-      formData.append('criterium_attributes[][text]', credentials.criteria2);
+
+    if (inputDynamic.deleted.length > 0) {
+      for (const item of inputDynamic.deleted) {
+        formDataRemove.append('criterium_attributes[][id]', item.id);
+        formDataRemove.append('criterium_attributes[][_destroy]', true);
+      }
     }
-    if (credentials.criteria3 && credentials.criteria3 !== '') {
-      formData.append('criterium_attributes[][text]', credentials.criteria3);
-    }
-    if (credentials.criteria4 && credentials.criteria4 !== '') {
-      formData.append('criterium_attributes[][text]', credentials.criteria4);
-    }
-    if (credentials.criteria5 && credentials.criteria5 !== '') {
-      formData.append('criterium_attributes[][text]', credentials.criteria5);
-    }
+
     if (credentials.additional_detail) {
       formData.append(CREATE_ASK_FIELDS.additiondalDetail, credentials.additional_detail);
     }
@@ -331,7 +353,6 @@ const AskEditScreen = ({route, navigation}: Props) => {
     if (filesUpload?.length) {
       for (const file of filesUpload) {
         if (!file?.id) {
-          console.log('file---->', file);
           formData.append('documents_attributes[][file]', {
             name: file?.name,
             type: file?.type,
@@ -341,22 +362,44 @@ const AskEditScreen = ({route, navigation}: Props) => {
       }
     }
 
-    const formDataDocument = new FormData();
     if (filesDeleted?.length) {
       for (const file of filesDeleted) {
-        formDataDocument.append('documents_attributes[][id]', file?.id);
-        formDataDocument.append('documents_attributes[][_destroy]', true);
+        formDataRemove.append('documents_attributes[][id]', file?.id);
+        formDataRemove.append('documents_attributes[][_destroy]', true);
       }
     }
-
     dispatch(showLoading());
     dispatch(
       updateAsk(
-        {formData, formDataDocument: filesDeleted?.length > 0 ? formDataDocument : null, id: (route.params as any)?.id},
+        {
+          formData,
+          formDataRemove: filesDeleted?.length > 0 || inputDynamic?.deleted?.length > 0 ? formDataRemove : null,
+          id: (route.params as any)?.id,
+        },
         (response: IActionUpdateAskSuccess['payload']) => {
           dispatch(hideLoading());
+          reset();
           if (response.success) {
-            navigation.goBack();
+            if (response.isExpired) {
+              Toast.show({
+                position: 'bottom',
+                type: 'info',
+                text1: response.message,
+                visibilityTime: 2000,
+                autoHide: true,
+              });
+            } else {
+              Toast.show({
+                position: 'bottom',
+                type: 'success',
+                text1: response.message,
+                visibilityTime: 2000,
+                autoHide: true,
+              });
+            }
+            setTimeout(() => {
+              navigation.goBack();
+            }, 2200);
           }
         },
       ),
@@ -536,8 +579,8 @@ const AskEditScreen = ({route, navigation}: Props) => {
                     onCancel={onShowDatePicker}
                   />
                   <View>
-                    {inputDynamic.length > 0 &&
-                      inputDynamic.map((_item, index) => (
+                    {inputDynamic.items.length > 0 &&
+                      inputDynamic.items.map((item, index) => (
                         <InputIconValidate
                           label={`${t('criteria')} ${index + 1}`}
                           inputStyleWrapper={styles.inputDynamicContainer}
@@ -667,20 +710,6 @@ const AskEditScreen = ({route, navigation}: Props) => {
               </ScrollView>
             </View>
           </KeyboardAvoidingView>
-          {/* {askState?.dataLocationSuggest && askState?.dataLocationSuggest?.length > 0 && (
-            <View style={[GlobalStyles.container, GlobalStyles.pv15, styles.locationContainer]}>
-              <FlatList
-                contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
-                style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
-                data={askState?.dataLocationSuggest}
-                renderItem={renderLocationItem}
-                keyExtractor={(_item, index) => `location-suggest-${index}`}
-                ItemSeparatorComponent={() => <View style={styles.borderBottom} />}
-                keyboardShouldPersistTaps='handled'
-                numColumns={1}
-              />
-            </View>
-          )} */}
         </View>
       </SafeAreaView>
     </View>
