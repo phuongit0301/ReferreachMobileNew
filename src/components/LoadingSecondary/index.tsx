@@ -9,7 +9,7 @@ const LoadingSecondary = () => {
     <View style={styles.container}>
       <View style={styles.bgBlur} />
       <View style={styles.waitingContainer}>
-        <ActivityIndicator animating={true} color={`${BASE_COLORS.whiteColor}`} />
+        <ActivityIndicator size={'large'} animating={true} color={`${BASE_COLORS.whiteColor}`} />
       </View>
     </View>
   );

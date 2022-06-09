@@ -26,7 +26,7 @@ import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {Button, HeaderSmallTransparent, InputIconValidate, Loading, Paragraph} from '~Root/components';
 import {BASE_COLORS, CREATE_ASK_FIELDS, CREATE_ASK_KEYS, GlobalStyles, IMAGES} from '~Root/config';
-import {CompositeScreenProps} from '@react-navigation/native';
+import {CompositeScreenProps, useIsFocused} from '@react-navigation/native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
@@ -89,6 +89,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
     mode: 'onChange',
   });
   const refLocation = useRef(null);
+  const isFocused = useIsFocused();
 
   const dispatch = useDispatch();
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
@@ -121,7 +122,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
         },
       ),
     );
-  }, [(route.params as any)?.id]);
+  }, [isFocused]);
 
   const setDataForm = (item: IAskInside['attributes']) => {
     if (item?.greeting) {
@@ -130,9 +131,9 @@ const AskEditScreen = ({route, navigation}: Props) => {
     if (item?.user_role) {
       setValue(CREATE_ASK_FIELDS.userRole, item.user_role);
     }
-    // if (item?.demographic) {
-    //   setValue(CREATE_ASK_FIELDS.demographic, item.demographic);
-    // }
+    if (item?.demographic) {
+      setValue(CREATE_ASK_FIELDS.demographic, item.demographic);
+    }
     if (item?.business_requirement) {
       setValue(CREATE_ASK_FIELDS.businessRequirement, item.business_requirement);
     }
@@ -304,9 +305,10 @@ const AskEditScreen = ({route, navigation}: Props) => {
     if (credentials.deadline) {
       formData.append(CREATE_ASK_FIELDS.deadline, moment(credentials.deadline).format('DD/MM/YYYY'));
     }
-    // if (credentials.location) {
-    //   formData.append('ask_location_attributes[text]', credentials.location);
-    // }
+    if (credentials.location) {
+      formData.append('ask_location_attributes[text]', credentials.location);
+      formData.append('ask_location_attributes[id]', askState?.dataDetails?.attributes?.ask_location?.id);
+    }
     if (credentials.criteria1 && credentials.criteria1 !== '') {
       formData.append('criterium_attributes[][text]', credentials.criteria1);
     }

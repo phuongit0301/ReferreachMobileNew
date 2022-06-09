@@ -83,4 +83,7 @@ export const IMAGES = {
   iconExtendDeadline: require('~Root/assets/images/icon_extend_deadline.png'),
   iconEndAsk: require('~Root/assets/images/icon_end_ask.png'),
   headerSmalBg: require('~Root/assets/images/header_small_bg.png'),
+  iconEdit: require('~Root/assets/images/icon_edit.png'),
+  iconMessage: require('~Root/assets/images/icon_message.png'),
+  iconDelete: require('~Root/assets/images/icon_delete.png'),
 };

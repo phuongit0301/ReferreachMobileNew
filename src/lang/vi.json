@@ -57,6 +57,8 @@
     "save": "Save",
     "your_ask": "Your Ask",
     "do_you_need": "What do you need today?",
+    "scale_your_network": "Scale Your Network",
+    "inviting_more_friends": "by inviting more friends to join your Trust Network",
     "sharing_your_network": "Create an Ask now and start sharing with your network",
     "create_ask": "Create Ask",
     "ask_content": "<normal>{{greeting}} {{role}} </normal><highlight>{{description}} </highlight><normal>{{businessDetail}}</normal>",
@@ -90,5 +92,10 @@
     "edit_this_ask": "Edit this Ask",
     "extend_deadline": "Extend Deadline",
     "end_this_ask": "End this Ask",
-    "time_left": "<normal>Time left to edit this Ask: <highlight>{{mins}} mins</highlight>"
+    "time_left": "<normal>Time left to edit this Ask: <highlight>{{mins}} mins</highlight>",
+    "air_feed": "Air Feed",
+    "invite_friends": "Invite Friends",
+    "your_trust_network": "Your Trusted Network",
+    "edit": "Edit",
+    "cancel_edit": "Cancel Edit"
 }

@@ -12,7 +12,7 @@ import {AppRoute} from '~Root/navigation/AppRoute';
 import {AskItem, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root/components';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
-import {CompositeScreenProps} from '@react-navigation/native';
+import {CompositeScreenProps, useIsFocused} from '@react-navigation/native';
 import {IAskInside} from '~Root/services/ask/types';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
@@ -20,7 +20,6 @@ import {getAsk, setVisibleMenu} from '~Root/services/ask/actions';
 import {calculateExpiredTime, dateToHours} from '~Root/utils';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -31,6 +30,7 @@ const YourAskScreen = ({navigation}: Props) => {
   const {t} = useTranslation();
   const scrollAnim = new Animated.Value(0);
   const inputEl = useRef(null);
+  const isFocused = useIsFocused();
 
   const dispatch = useDispatch();
   const askState = useSelector((state: IGlobalState) => state.askState);
@@ -112,10 +112,7 @@ const YourAskScreen = ({navigation}: Props) => {
 
   const onEdit = () => {
     onMenuHide();
-    navigation.navigate(AppRoute.ASK_NAVIGATOR, {
-      screen: AppRoute.ASK_EDIT,
-      params: {id: askState?.dataAskSelected?.id},
-    });
+    navigation.navigate(AppRoute.ASK_EDIT, {id: askState?.dataAskSelected?.id});
   };
 
   if (loadingState?.loading) {
