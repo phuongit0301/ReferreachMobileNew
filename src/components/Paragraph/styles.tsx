@@ -98,6 +98,9 @@ export default StyleSheet.create({
   textGraniteGrayColor: {
     color: BASE_COLORS.graniteGrayColor,
   },
+  textBrightGrayColor: {
+    color: BASE_COLORS.brightGrayColor,
+  },
   textCenter: {
     textAlign: 'center',
   },

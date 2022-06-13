@@ -10,6 +10,8 @@ import {IIndustryState} from '~Root/services/industry/types';
 import {IRegisterState} from '~Root/services/register/types';
 import {IAskState} from '~Root/services/ask/types';
 import {INetworkConnectionListState} from '~Root/services/network/types';
+import {IChatState} from '~Root/services/chat/types';
+import {IFeedItemsState} from '~Root/services/feed/types';
 
 // Global state
 export interface IGlobalState {
@@ -22,6 +24,8 @@ export interface IGlobalState {
   registerState: IRegisterState;
   askState: IAskState;
   networkState: INetworkConnectionListState;
+  chatState: IChatState;
+  feedState: IFeedItemsState;
 }
 
 // Interface for async call steps

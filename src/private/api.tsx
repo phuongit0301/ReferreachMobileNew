@@ -25,6 +25,7 @@ export const CREATE_ASK_URL = `${ROOT_API_URL}/asks`;
 export const UPDATE_ASK_URL = (id: number) => `${ROOT_API_URL}/asks/${id}`;
 export const NETWORK_CONNECTION_LIST_URL = `${ROOT_API_URL}/network_connections/list`;
 export const REMOVE_NETWORK_CONNECTION_URL = (id: string) => `${ROOT_API_URL}/network_connections/${id}`;
+export const FEED_ITEMS_LIST_URL = (page: number) => `${ROOT_API_URL}/feed_items?page=${page}`;
 
 export const ASK_TEMPLATE_URL = `${ROOT_API_URL}/ask-template`;
 export const CREATE_ASK_TEMPLATE_URL = (id: string) => `${ROOT_API_URL}/ask-template/${id}/submissions`;

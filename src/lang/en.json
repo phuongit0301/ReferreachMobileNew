@@ -61,7 +61,8 @@
     "inviting_more_friends": "by inviting more friends to join your Trust Network",
     "sharing_your_network": "Create an Ask now and start sharing with your network",
     "create_ask": "Create Ask",
-    "ask_content": "<normal>{{greeting}} {{role}} </normal><highlight>{{description}} </highlight><normal>{{businessDetail}}</normal>",
+    "ask_content": "<normal>{{greeting}}. {{role}} </normal><highlight>{{description}} </highlight><normal>{{businessDetail}}</normal>",
+    "air_feed_content": "<normal>{{greeting}}. {{demographic}}, {{role}} </normal><highlight>{{description}} </highlight><normal>{{businessDetail}}</normal>",
     "location": "Location",
     "by_when": "By When",
     "criteria": "Criteria",
@@ -97,5 +98,8 @@
     "invite_friends": "Invite Friends",
     "your_trust_network": "Your Trusted Network",
     "edit": "Edit",
-    "cancel_edit": "Cancel Edit"
+    "cancel_edit": "Cancel Edit",
+    "prev_ask": "Previous Ask",
+    "next_ask": "Next Ask",
+    "intro": "Intro"
 }

@@ -1,15 +1,5 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {
-  Alert,
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Alert, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Trans, useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -26,14 +16,14 @@ import moment from 'moment';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {Button, HeaderSmallTransparent, InputIconValidate, Loading, Paragraph} from '~Root/components';
+import {Button, HeaderSmallTransparent, InputIconValidate, Loading, Location, Paragraph} from '~Root/components';
 import {BASE_COLORS, CREATE_ASK_FIELDS, CREATE_ASK_KEYS, GlobalStyles, IMAGES} from '~Root/config';
-import {CompositeScreenProps, useIsFocused} from '@react-navigation/native';
+import {CompositeScreenProps, CommonActions, useIsFocused} from '@react-navigation/native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
 import {calculateExpiredTime, dateFormat3, dateWithMonthsDelay} from '~Root/utils';
-import {getAskDetails, getLocation, setLocation, updateAsk} from '~Root/services/ask/actions';
+import {getAskDetails, updateAsk} from '~Root/services/ask/actions';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {
   IActionGetAskDetailsFailure,
@@ -91,7 +81,6 @@ const AskEditScreen = ({route, navigation}: Props) => {
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
-  const refLocation = useRef(null);
   const isFocused = useIsFocused();
 
   const dispatch = useDispatch();
@@ -107,14 +96,12 @@ const AskEditScreen = ({route, navigation}: Props) => {
   });
   const [textAdditionalDetail, setTextAdditionalDetail] = useState('');
   const [textBusinessDetail, setTextBusinessDetail] = useState('');
-  const [keyword, setKeyword] = useState('');
-  const [visibleLocation, setVisibleLocation] = useState(false);
   const [textDemographic, setTextDemographic] = useState(askState?.dataPositionDropDown?.[0]);
-  const [filesUpload, setFilesUpload] = useState<DocumentPickerResponse[] | IFiles[] | []>([]);
-  const [filesDeleted, setFilesDeleted] = useState<DocumentPickerResponse[] | IFiles[] | []>([]);
+  const [filesUpload, setFilesUpload] = useState<Array<DocumentPickerResponse | IFiles>>([]);
+  const [filesDeleted, setFilesDeleted] = useState<Array<DocumentPickerResponse | IFiles>>([]);
 
   useEffect(() => {
-    if (!route.params?.id) {
+    if (!(route.params as any)?.id) {
       navigation.goBack();
     }
 
@@ -151,10 +138,6 @@ const AskEditScreen = ({route, navigation}: Props) => {
     if (item?.business_detail) {
       setValue(CREATE_ASK_FIELDS.businessDetail, item.business_detail);
       setTextBusinessDetail(item.business_detail);
-    }
-    if (item?.ask_location) {
-      setKeyword(item.ask_location?.text);
-      setValue(CREATE_ASK_FIELDS.location, item.ask_location?.text);
     }
     if (item?.deadline) {
       setValue(CREATE_ASK_FIELDS.deadline, dateFormat3(item.deadline));
@@ -260,44 +243,15 @@ const AskEditScreen = ({route, navigation}: Props) => {
 
   const removeFile = (index: number) => {
     const file = filesUpload[index];
-    if (file?.id) {
+    if ('id' in file && file?.id) {
       const items = filesDeleted && filesDeleted?.length > 0 ? [...filesDeleted, file] : [file];
       setFilesDeleted(items);
     }
     setFilesUpload([...filesUpload.filter((_: any, i: number) => index !== i)]);
   };
 
-  const onSelectLocation = (text: string) => {
-    dispatch(setLocation(null));
-    setValue(CREATE_ASK_FIELDS.location, text);
-    setKeyword(text);
-    setVisibleLocation(false);
-  };
-
-  const renderLocationItem = ({item}: {item: any}) => {
-    return (
-      <TouchableOpacity onPress={() => onSelectLocation(item?.attributes?.display_value)}>
-        <View style={[GlobalStyles.mh10, GlobalStyles.ph10, GlobalStyles.pv10, styles.item]}>
-          <Paragraph p textBlack bold600 title={item?.attributes?.display_value} />
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
-  const onSearch = useCallback(
-    text => {
-      setKeyword(text);
-      dispatch(
-        getLocation(text, response => {
-          setVisibleLocation(true);
-        }),
-      );
-    },
-    [dispatch, keyword],
-  );
-
   const onBack = () => {
-    navigation.goBack();
+    navigation.navigate(AppRoute.YOUR_ASK);
   };
 
   const onSave = (credentials: any) => {
@@ -354,8 +308,8 @@ const AskEditScreen = ({route, navigation}: Props) => {
       for (const file of filesUpload) {
         if (!file?.id) {
           formData.append('documents_attributes[][file]', {
-            name: file?.name,
-            type: file?.type,
+            name: 'name' in file ? file?.name : '',
+            type: 'type' in file ? file?.type : '',
             uri: Platform.OS === 'android' ? file.uri : file.uri.replace('file://', ''),
           });
         }
@@ -524,31 +478,11 @@ const AskEditScreen = ({route, navigation}: Props) => {
                     </View>
                   </View>
                   <View style={styles.locationContainer}>
-                    <TextInput
-                      {...register(CREATE_ASK_FIELDS.location)}
-                      ref={refLocation}
-                      value={keyword}
-                      placeholder={`${t('location')}*`}
-                      onChangeText={onSearch}
-                      selectionColor={BASE_COLORS.blackColor}
-                      placeholderTextColor={BASE_COLORS.grayColor}
-                      style={[GlobalStyles.ph10, GlobalStyles.mb10, styles.inputDynamicContainer]}
+                    <Location
+                      register={register}
+                      setValue={setValue}
+                      data={askState?.dataDetails?.attributes?.ask_location}
                     />
-                    {visibleLocation && askState?.dataLocationSuggest && askState?.dataLocationSuggest?.length > 0 && (
-                      <View style={[GlobalStyles.container, GlobalStyles.pv15, styles.locationArea]}>
-                        <FlatList
-                          contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
-                          style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
-                          data={askState?.dataLocationSuggest}
-                          renderItem={renderLocationItem}
-                          keyExtractor={(_item, index) => `location-suggest-${index}`}
-                          ItemSeparatorComponent={() => <View style={styles.borderBottom} />}
-                          keyboardShouldPersistTaps='handled'
-                          numColumns={1}
-                          nestedScrollEnabled={true}
-                        />
-                      </View>
-                    )}
                   </View>
                   <InputIconValidate
                     label={`${t('by_when')}*`}

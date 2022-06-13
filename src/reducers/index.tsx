@@ -11,6 +11,8 @@ import industryReducer from '~Root/services/industry/reducer';
 import registerReducer from '~Root/services/register/reducer';
 import askReducer from '~Root/services/ask/reducer';
 import networkReducer from '~Root/services/network/reducer';
+import chatReducer from '~Root/services/chat/reducer';
+import feedReducer from '~Root/services/feed/reducer';
 import {IGlobalState} from '~Root/types';
 import {ASYNC_INITIALIZE_AUTH, LOGOUT} from '~Root/services/auth/constants';
 
@@ -35,6 +37,8 @@ const appReducer = combineReducers<IGlobalState>({
   registerState: registerReducer,
   askState: askReducer,
   networkState: networkReducer,
+  chatState: chatReducer,
+  feedState: feedReducer,
 });
 
 export const rootReducer = (state: IGlobalState | undefined, action: any) => {

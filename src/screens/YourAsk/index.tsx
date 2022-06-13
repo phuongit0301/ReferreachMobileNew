@@ -49,7 +49,7 @@ const YourAskScreen = ({navigation}: Props) => {
 
   useEffect(() => {
     initData();
-  }, [navigation, isFocused]);
+  }, [navigation]);
 
   const initData = () => {
     dispatch(showLoading());
@@ -112,10 +112,12 @@ const YourAskScreen = ({navigation}: Props) => {
 
   const onEdit = () => {
     onMenuHide();
-    navigation.navigate(AppRoute.ASK_NAVIGATOR, {
-      screen: AppRoute.ASK_EDIT,
-      params: {id: askState?.dataAskSelected?.id},
-    });
+    if (askState?.dataAskSelected?.id) {
+      navigation.navigate(AppRoute.ASK_NAVIGATOR, {
+        screen: AppRoute.ASK_EDIT,
+        params: {id: askState?.dataAskSelected?.id},
+      });
+    }
   };
 
   if (loadingState?.loading) {

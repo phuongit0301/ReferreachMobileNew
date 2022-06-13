@@ -13,7 +13,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: BASE_COLORS.whiteColor,
     borderRadius: adjust(50),
-    paddingVertical: Platform.OS === 'ios' ? adjust(5) : 0,
+    paddingVertical: Platform.OS === 'ios' ? adjust(8) : 0,
     alignItems: 'center',
   },
   iconSearch: {

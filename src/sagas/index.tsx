@@ -8,6 +8,7 @@ import industryWatchers from '~Root/services/industry/sagas';
 import contactWatchers from '~Root/services/contact/sagas';
 import askWatchers from '~Root/services/ask/sagas';
 import networkWatchers from '~Root/services/network/sagas';
+import feedWatchers from '~Root/services/feed/sagas';
 
 export default function* rootSaga() {
   yield all([fork(appWatchers)]);
@@ -18,4 +19,5 @@ export default function* rootSaga() {
   yield all([fork(contactWatchers)]);
   yield all([fork(askWatchers)]);
   yield all([fork(networkWatchers)]);
+  yield all([fork(feedWatchers)]);
 }
