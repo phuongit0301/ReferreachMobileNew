@@ -1,5 +1,5 @@
 import {Platform, StyleSheet} from 'react-native';
-import {BASE_COLORS, GlobalStyles} from '~Root/config';
+import {BASE_COLORS, BASE_FONTS, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
 
 export default StyleSheet.create({
@@ -13,7 +13,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: BASE_COLORS.whiteColor,
     borderRadius: adjust(50),
-    paddingVertical: Platform.OS === 'ios' ? adjust(5) : 0,
+    paddingVertical: Platform.OS === 'ios' ? adjust(8) : 0,
     alignItems: 'center',
   },
   iconSearch: {
@@ -102,5 +102,83 @@ export default StyleSheet.create({
   },
   text: {
     lineHeight: adjust(20),
+  },
+  profileGradient: {
+    borderBottomRightRadius: adjust(65),
+  },
+  iconThreeDotContainer: {
+    width: adjust(32),
+    height: adjust(8),
+  },
+  iconThreeDot: {
+    width: adjust(16),
+    height: adjust(4),
+    tintColor: BASE_COLORS.whiteColor,
+  },
+  contentNormal: {
+    color: BASE_COLORS.whiteColor,
+    fontSize: adjust(12),
+  },
+  contentBold: {
+    color: BASE_COLORS.whiteColor,
+    fontFamily: BASE_FONTS.semiBold,
+    fontWeight: '600',
+    fontSize: adjust(12),
+  },
+  globeContainer: {
+    width: '55%',
+  },
+  iconCalendar: {
+    width: adjust(16),
+    height: adjust(16),
+  },
+  iconGlobe: {
+    width: adjust(16),
+    height: adjust(16),
+  },
+  iconCircle: {
+    width: adjust(17),
+    height: adjust(17),
+  },
+  icon: {
+    width: adjust(35),
+    height: adjust(35),
+  },
+  textUnderline: {
+    textDecorationLine: 'underline',
+  },
+  btnGroup: {
+    flex: 1,
+    position: 'absolute',
+    bottom: adjust(-30),
+    left: 0,
+    right: 0,
+    zIndex: 100,
+  },
+  btnCircle: {
+    backgroundColor: BASE_COLORS.whiteColor,
+    borderRadius: adjust(100),
+    width: adjust(75),
+    height: adjust(75),
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: BASE_COLORS.blackColor,
+    shadowOffset: {
+      width: 0,
+      height: adjust(3),
+    },
+    shadowOpacity: adjust(0.2),
+    shadowRadius: adjust(3),
+    elevation: adjust(2),
+  },
+  btnText: {
+    fontSize: adjust(9),
+    lineHeight: adjust(15),
+    width: '70%',
+  },
+  btnText2: {
+    fontSize: adjust(9),
+    lineHeight: adjust(15),
+    width: '60%',
   },
 });

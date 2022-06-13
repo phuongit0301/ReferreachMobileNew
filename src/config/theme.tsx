@@ -44,6 +44,7 @@ export const BASE_COLORS = {
   brightGrayColor: '#E9EDF2',
   gray2Color: '#818282',
   platinumColor: '#E3E3E3',
+  platinum1Color: '#e6e6e6',
   cyanCornflowerBlueColor: '#2790B0',
   jetColor: '#313437',
   starCommandBlueColor: '#0077B5',
@@ -55,6 +56,7 @@ export const BASE_COLORS = {
   metallicBlueColor: '#204F70',
   desireColor: '#EF4056',
   graniteGrayColor: '#646464',
+  taupeGrayColor: '#888888',
 };
 
 export const BASE_FONTS = {

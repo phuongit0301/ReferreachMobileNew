@@ -134,15 +134,15 @@ function* createAsk(payload: IActionCreateAskRequest) {
 
 function* updateAsk(payload: IActionUpdateAskRequest) {
   try {
-    if (payload?.payload?.formDataDocument) {
-      const responseRemoveDocument: IActionUpdateAskSuccess['payload'] = yield call(
+    if (payload?.payload?.formDataRemove) {
+      const responseRemove: IActionUpdateAskSuccess['payload'] = yield call(
         AskAPI.updateAsk,
         payload?.payload.id,
-        payload?.payload.formDataDocument,
+        payload?.payload?.formDataRemove,
       );
 
-      if (!responseRemoveDocument.success) {
-        throw new Error(responseRemoveDocument.message);
+      if (!responseRemove.success) {
+        throw new Error(responseRemove.message);
       }
     }
 
@@ -151,28 +151,33 @@ function* updateAsk(payload: IActionUpdateAskRequest) {
       payload?.payload.id,
       payload?.payload.formData,
     );
+
     if (response?.success) {
       yield put({type: UPDATE_ASK_SUCCESS, payload: response?.data});
       payload?.callback &&
         payload?.callback({
           success: response?.success,
-          message: '',
+          isExpired: !!(response?.data as any)?.json?.errors,
+          message: (response?.data as any)?.json?.errors ? 'Ask is expired' : '',
           data: response?.data,
         });
     } else {
-      yield put({type: UPDATE_ASK_FAILURE, payload: {error: response?.message}});
+      yield put({type: UPDATE_ASK_FAILURE, payload: {message: response?.message}});
       payload?.callback &&
         payload?.callback({
           success: response?.success,
+          isExpired: false,
           message: response?.message,
           data: response?.data,
         });
     }
   } catch (error) {
-    yield put({type: UPDATE_ASK_FAILURE, payload: {error: error}});
+    console.log('response.error=======>', error);
+    yield put({type: UPDATE_ASK_FAILURE, payload: {message: error}});
     payload?.callback &&
       payload?.callback({
         success: false,
+        isExpired: false,
         message: error as string,
         data: [] as any,
       });

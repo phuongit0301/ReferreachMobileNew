@@ -71,6 +71,6 @@ function* watchRemoveNetworkConnection() {
   yield takeEvery(REMOVE_NETWORK_CONNECTION_REQUESTED, removeNetworkConnection);
 }
 
-export default function* industryWatchers() {
+export default function* networkWatchers() {
   yield all([watchGetNetworkConnectionList(), watchRemoveNetworkConnection()]);
 }

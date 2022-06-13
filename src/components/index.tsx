@@ -57,7 +57,9 @@ import ProfileBlock from './ProfileBlock';
 import Otp from './Otp';
 import Intro from './Widgets/Slider';
 import AskItem from './AskItem';
+import AirFeedItem from './AirFeedItem';
 import AskGreeting from './AskGreeting';
+import Location from './Location';
 /** Define Template */
 
 import HomeTemplateScreen from './HomeTemplate';
@@ -127,5 +129,7 @@ export {
   Otp,
   Intro,
   AskItem,
+  AirFeedItem,
   AskGreeting,
+  Location,
 };

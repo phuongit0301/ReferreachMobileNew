@@ -1,23 +1,30 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, RefreshControl, TextInput, View, TouchableOpacity, Alert} from 'react-native';
+import {
+  Animated,
+  RefreshControl,
+  TextInput,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  Text,
+  Easing,
+} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useTranslation} from 'react-i18next';
+import {Trans, useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import FastImage from 'react-native-fast-image';
-import Tooltip from 'react-native-walkthrough-tooltip';
+import LinearGradient from 'react-native-linear-gradient';
+import moment from 'moment';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
-import {AppRoute} from '~Root/navigation/AppRoute';
-import {AskItem, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root/components';
+import {getFeedItemPagination, getFeedItemsList} from '~Root/services/feed/actions';
+import {AirFeedItem, AvatarGradient, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root/components';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import {CompositeScreenProps} from '@react-navigation/native';
-import {IAskInside} from '~Root/services/ask/types';
 import {DrawerScreenProps} from '@react-navigation/drawer';
-import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
-import {getAsk, setVisibleMenu} from '~Root/services/ask/actions';
-import {calculateExpiredTime, dateToHours} from '~Root/utils';
+import {AppRoute} from '~Root/navigation/AppRoute';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
 
@@ -25,26 +32,24 @@ type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
   DrawerScreenProps<TabNavigatorParamsList>
 >;
-
+const url =
+  'https://s3-alpha-sig.figma.com/img/cbb4/3ee6/9695bea370a2dee12e503d07053faeca?Expires=1655683200&Signature=CmavZ8PoONPTxOoP8u7slvnIU61uaHFUOnjVX~vn9Pu1Rus4t0qpOzim8Bq265-YI-KgXqzyh4vRauowvFxi7dUaF78kxJkRNHTKQdbv241SJPA8K4jkkfAh6iU0Iab~QMFNGwazg15DAmYY34-9BbbLNlTrssGf76uogvvhhXchJGCQAR23mesI16E2yo0alkCjzzoyT0OJtchDw1jtYYQsYBGlyy1ID9cdSQioikf-SM405wo~IsaFZbCuLNJWEd9HTl63ZeIbPlVreoDnibMLFUcQ9s2mv91hE8dZ-Rta9w8BDST7sd98vFBDwcPOzQWTxuxh1IoAFU-g2MIzpA__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA';
 const AirFeedScreen = ({navigation}: Props) => {
   const {t} = useTranslation();
   const scrollAnim = new Animated.Value(0);
-  const inputEl = useRef(null);
 
   const dispatch = useDispatch();
-  const askState = useSelector((state: IGlobalState) => state.askState);
+  const feedState = useSelector((state: IGlobalState) => state.feedState);
   const userState = useSelector((state: IGlobalState) => state.userState);
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [textSearch, setTextSearch] = useState('');
-  // const [visibleMenu, setVisibleMenu] = useState({
-  //   ask: {},
-  //   show: false,
-  //   coordinate: {
-  //     top: 0,
-  //     left: 0,
-  //   },
-  // });
+  const [animation, setAnimation] = useState({
+    expanded: false,
+    opacity: new Animated.Value(0),
+    height: new Animated.Value(0),
+  });
 
   useEffect(() => {
     initData();
@@ -53,12 +58,8 @@ const AirFeedScreen = ({navigation}: Props) => {
   const initData = () => {
     dispatch(showLoading());
     dispatch(
-      getAsk(() => {
+      getFeedItemsList(1, () => {
         dispatch(hideLoading());
-
-        if (userState?.userInfo?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED) {
-          navigation.navigate(AppRoute.TIPS);
-        }
       }),
     );
   };
@@ -78,208 +79,294 @@ const AirFeedScreen = ({navigation}: Props) => {
     }, 1000);
   };
 
-  const onMenu = (item: IAskInside | null, evt?: any) => {
-    evt.persist();
-    dispatch(
-      setVisibleMenu({
-        dataAskSelected: item,
-        visibleMenu: {
-          show: true,
-          coordinate: {
-            top: +evt.nativeEvent?.pageY + 15,
-            left: evt.nativeEvent?.pageX - 200,
-          },
-        },
-      }),
-    );
-  };
-
-  const onMenuHide = () => {
-    dispatch(
-      setVisibleMenu({
-        dataAskSelected: null,
-        visibleMenu: {
-          show: false,
-          coordinate: {
-            top: 0,
-            left: 0,
-          },
-        },
-      }),
-    );
-  };
-
-  const onEdit = () => {
-    onMenuHide();
-    navigation.navigate(AppRoute.ASK_NAVIGATOR, {
-      screen: AppRoute.ASK_EDIT,
-      params: {id: askState?.dataAskSelected?.id},
+  const onToggle = () => {
+    Animated.timing(animation?.height, {
+      toValue: animation?.expanded ? 0 : 1,
+      duration: 100,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    }).start(() => {
+      Animated.timing(animation?.opacity, {
+        toValue: animation?.expanded ? 0 : 1,
+        duration: 100,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }).start();
     });
+
+    setAnimation({...animation, expanded: !animation?.expanded});
   };
+
+  const onPrev = () => {
+    if (+feedState?.page > 1) {
+      setLoading(true);
+      dispatch(
+        getFeedItemPagination(+feedState?.page - 1, () => {
+          setLoading(false);
+        }),
+      );
+    }
+  };
+
+  const onNext = () => {
+    if (+feedState?.page <= +feedState?.dataFeed?.meta?.total_pages) {
+      setLoading(true);
+      dispatch(
+        getFeedItemPagination(+feedState?.page + 1, () => {
+          setLoading(false);
+        }),
+      );
+    }
+  };
+
+  const visibleAnim = animation.opacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
 
   if (loadingState?.loading) {
     return <Loading />;
   }
 
+  const feedItem = feedState.dataFeed?.included?.length > 0 ? feedState.dataFeed?.included[0] : null;
+
   return (
     <View style={[GlobalStyles.container]}>
       <SafeAreaView style={GlobalStyles.container} edges={['top', 'right', 'left']}>
         <HeaderSmallTransparent title={t('air_feed')} isRightButton={true} onRightPress={onToggleDrawer} />
-        <View style={[GlobalStyles.container, GlobalStyles.ph15, styles.container]}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder='Search for contacts'
-              value={textSearch}
-              style={styles.input}
-              onChangeText={onInputChange}
-            />
-            <FastImage source={IMAGES.iconSearch} style={styles.iconSearch} />
-          </View>
-          <Animated.FlatList
-            contentContainerStyle={[GlobalStyles.pb150]}
-            style={GlobalStyles.mt15}
-            nestedScrollEnabled={true}
-            refreshControl={
-              <RefreshControl
-                colors={[BASE_COLORS.primary]}
-                tintColor={BASE_COLORS.primary}
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-              />
-            }
-            scrollEventThrottle={1}
-            onScroll={Animated.event(
-              [
-                {
-                  nativeEvent: {
-                    contentOffset: {
-                      y: scrollAnim,
-                    },
-                  },
-                },
-              ],
-              {useNativeDriver: true},
-            )}
-            showsVerticalScrollIndicator={false}
-            data={[]}
-            key={'air-feed'}
-            keyExtractor={(item, index) => `air-feed-item-${index}`}
-            renderItem={({item, index}: {item: any; index: number}) => (
-              <AskItem item={item} key={`ask-item-${index}`} onMenu={onMenu} />
-            )}
-            ListEmptyComponent={() => (
-              <View
-                style={[
-                  GlobalStyles.flexRow,
-                  GlobalStyles.center,
-                  GlobalStyles.mt15,
-                  GlobalStyles.pv15,
-                  GlobalStyles.ph10,
-                  styles.cardContainer,
-                ]}>
-                <View style={GlobalStyles.container}>
-                  <FastImage source={IMAGES.onboard2} resizeMode='cover' style={styles.cardImage} />
+        <View style={[GlobalStyles.container, styles.container]}>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30]}>
+            <LinearGradient
+              colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
+              style={[GlobalStyles.p15, GlobalStyles.pb60, GlobalStyles.flexColumn, styles.profileGradient]}>
+              <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
+                <View style={[GlobalStyles.flexRow, GlobalStyles.mr10]}>
+                  {userState.userInfo?.avatar_metadata?.avatar_url ? (
+                    <FastImage
+                      source={{
+                        uri: userState.userInfo?.avatar_metadata?.avatar_url,
+                      }}
+                      style={[GlobalStyles.avatar2]}
+                    />
+                  ) : url ? (
+                    <FastImage
+                      source={{
+                        uri: url,
+                      }}
+                      resizeMode='cover'
+                      onProgress={() => <ActivityIndicator />}
+                      style={[GlobalStyles.avatar]}>
+                      <View
+                        style={{
+                          width: 0,
+                          height: 0,
+                          transform: [{translateX: 0}, {translateY: 0}],
+                        }}
+                      />
+                    </FastImage>
+                  ) : (
+                    <AvatarGradient title='AD' color1={BASE_COLORS.oxleyColor} color2={BASE_COLORS.oxleyColor} />
+                  )}
                 </View>
-                <View style={[GlobalStyles.container, GlobalStyles.flexColumn]}>
-                  <Paragraph p bold600 textWhite title={t('scale_your_network')} style={GlobalStyles.mt10} />
-                  <Paragraph textWhite title={t('inviting_more_friends')} style={[GlobalStyles.mt10, styles.text]} />
-                  <Button
-                    title={t('invite_friends')}
-                    p
-                    bold600
-                    textCenter
-                    containerStyle={{
-                      ...GlobalStyles.buttonContainerStyle,
-                      ...GlobalStyles.mt15,
-                      ...styles.buttonContainerStyle,
-                    }}
+                <View style={[GlobalStyles.flexColumn, GlobalStyles.container]}>
+                  <Paragraph textWhite bold600 title={`Emily Koh`} />
+                  <Paragraph textWhite title={`Business developer`} />
+                </View>
+                <TouchableOpacity style={styles.iconThreeDotContainer}>
+                  <FastImage source={IMAGES.iconThreeDotWhite} resizeMode='cover' style={styles.iconThreeDot} />
+                </TouchableOpacity>
+              </View>
+              <View style={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.mv15]}>
+                <Trans
+                  i18nKey='air_feed_content'
+                  values={{
+                    greeting: feedItem?.attributes?.greeting,
+                    demographic: feedItem?.attributes?.demographic,
+                    role: feedItem?.attributes?.business_requirement,
+                    description: feedItem?.attributes?.additional_detail,
+                    businessDetail: feedItem?.attributes?.business_detail,
+                  }}
+                  parent={Text}
+                  components={{
+                    normal: <Text style={styles.contentNormal} />,
+                    highlight: <Text style={styles.contentBold} />,
+                  }}
+                />
+              </View>
+              <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb15]}>
+                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mr20]}>
+                  <FastImage
+                    source={IMAGES.iconCalendarWhite}
+                    resizeMode='cover'
+                    style={[GlobalStyles.mr10, styles.iconCalendar]}
+                  />
+                  <Paragraph textWhite title={moment(feedItem?.attributes?.deadline).format('MMM DD, YYYY')} />
+                </View>
+                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, styles.globeContainer]}>
+                  <FastImage
+                    source={IMAGES.iconGlobeWhite}
+                    resizeMode='cover'
+                    style={[GlobalStyles.mr10, styles.iconGlobe]}
+                  />
+                  <Paragraph
+                    textWhite
+                    numberOfLines={1}
+                    ellipsizeMode={'tail'}
+                    title={feedItem?.attributes?.ask_location?.text}
                   />
                 </View>
               </View>
-            )}
-          />
-        </View>
-      </SafeAreaView>
-      {askState?.visibleMenu?.show && (
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={onMenuHide}
-          style={[GlobalStyles.flexColumn, GlobalStyles.container, styles.bgBlur]}>
-          <View
-            style={[
-              GlobalStyles.flexColumn,
-              GlobalStyles.pv10,
-              GlobalStyles.ph20,
-              styles.menu,
-              {...askState?.visibleMenu?.coordinate},
-            ]}
-            ref={inputEl}>
-            {parseInt(`${calculateExpiredTime(askState?.dataAskSelected?.attributes?.created_at)}`, 10) > 0 ? (
-              <TouchableOpacity
-                style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}
-                onPress={onEdit}>
-                <View
-                  style={[
-                    GlobalStyles.justifyCenter,
-                    GlobalStyles.justifyCenter,
-                    GlobalStyles.mr5,
-                    styles.iconEditAskContainer,
-                  ]}>
-                  <FastImage source={IMAGES.iconEditAsk} resizeMode='contain' style={styles.iconEditAsk} />
-                </View>
-                <Paragraph title={t('edit_this_ask')} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
-                <View
-                  style={[
-                    GlobalStyles.justifyCenter,
-                    GlobalStyles.justifyCenter,
-                    GlobalStyles.mr5,
-                    styles.iconEditAskContainer,
-                  ]}>
-                  <FastImage source={IMAGES.iconEditAskGray} resizeMode='contain' style={styles.iconEditAsk} />
-                </View>
-                <Paragraph textDarkGrayColor title={t('edit_this_ask')} />
-              </TouchableOpacity>
-            )}
-            <View style={[GlobalStyles.justifyCenter, styles.border]} />
-            {+dateToHours(new Date(askState?.dataAskSelected?.attributes?.deadline)) > 0 && (
-              <>
-                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
-                  <View
-                    style={[
-                      GlobalStyles.alignCenter,
-                      GlobalStyles.justifyCenter,
-                      GlobalStyles.mr5,
-                      styles.iconExtendDeadlineContainer,
-                    ]}>
-                    <FastImage
-                      source={IMAGES.iconExtendDeadline}
-                      resizeMode='cover'
-                      style={styles.iconExtendDeadline}
-                    />
-                  </View>
-                  <Paragraph title={t('extend_deadline')} />
-                </View>
-                <View style={[styles.border]} />
-              </>
-            )}
-            <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
-              <View
+              <Animated.View
                 style={[
-                  GlobalStyles.alignCenter,
-                  GlobalStyles.justifyCenter,
-                  GlobalStyles.mr5,
-                  styles.iconEndAskContainer,
+                  GlobalStyles.flexColumn,
+                  {opacity: visibleAnim, display: animation?.expanded ? 'flex' : 'none'},
                 ]}>
-                <FastImage source={IMAGES.iconEndAsk} resizeMode='cover' style={styles.iconEndAsk} />
+                {feedItem?.attributes?.criterium && feedItem?.attributes?.criterium?.length > 0 && (
+                  <View style={[GlobalStyles.flexColumn, GlobalStyles.mb15]}>
+                    <Paragraph textWhite bold600 title='Criteria' style={GlobalStyles.mb10} />
+                    {feedItem?.attributes?.criterium.map((item, index) => (
+                      <View style={[GlobalStyles.flexRow, GlobalStyles.mb10]} key={`feed-criterium-${index}`}>
+                        <FastImage
+                          source={IMAGES.iconCircleCheckWhite}
+                          resizeMode='cover'
+                          style={[GlobalStyles.mr10, styles.iconCircle]}
+                        />
+                        <Paragraph textWhite title={item?.text} />
+                      </View>
+                    ))}
+                  </View>
+                )}
+                {feedItem?.attributes?.documents && feedItem?.attributes?.documents.length > 0 && (
+                  <View style={[GlobalStyles.flexRow, GlobalStyles.mb15]}>
+                    {feedItem?.attributes?.documents.map((item, index) =>
+                      item?.content_type?.includes('pdf') ? (
+                        <FastImage
+                          source={IMAGES.iconPdf}
+                          resizeMode='cover'
+                          style={[GlobalStyles.mr10, styles.icon]}
+                        />
+                      ) : (
+                        <FastImage source={IMAGES.iconXls} resizeMode='cover' style={styles.icon} />
+                      ),
+                    )}
+                  </View>
+                )}
+              </Animated.View>
+              <View style={GlobalStyles.flexRow}>
+                {animation?.expanded ? (
+                  <TouchableOpacity style={GlobalStyles.container} onPress={onToggle}>
+                    <Paragraph textWhite bold600 title={'Read Less...'} style={styles.textUnderline} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={GlobalStyles.container} onPress={onToggle}>
+                    <Paragraph textWhite bold600 title={'Read More...'} style={styles.textUnderline} />
+                  </TouchableOpacity>
+                )}
+                <Paragraph textBrightGrayColor title='edited' />
               </View>
-              <Paragraph title={t('end_this_ask')} />
+              {loading && (
+                <View style={GlobalStyles.waitingContainer}>
+                  <ActivityIndicator animating={true} size='large' color={`${BASE_COLORS.forestGreenColor}`} />
+                </View>
+              )}
+            </LinearGradient>
+            <View style={[GlobalStyles.flexRow, GlobalStyles.justifyCenter, styles.btnGroup]}>
+              <TouchableOpacity style={[GlobalStyles.mr20, styles.btnCircle]} onPress={onPrev} disabled={loading}>
+                <Paragraph
+                  textCenter
+                  textForestGreenColor
+                  bold600
+                  title={t('prev_ask').toUpperCase()}
+                  style={styles.btnText}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.btnCircle} onPress={onNext} disabled={loading}>
+                <Paragraph
+                  textCenter
+                  textForestGreenColor
+                  bold600
+                  title={t('next_ask').toUpperCase()}
+                  style={styles.btnText2}
+                />
+              </TouchableOpacity>
             </View>
           </View>
-        </TouchableOpacity>
-      )}
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder='Search for contacts'
+                value={textSearch}
+                style={styles.input}
+                onChangeText={onInputChange}
+              />
+              <FastImage source={IMAGES.iconSearch} style={styles.iconSearch} />
+            </View>
+            <Animated.FlatList
+              contentContainerStyle={[GlobalStyles.pb150]}
+              style={[GlobalStyles.mt15]}
+              nestedScrollEnabled={true}
+              refreshControl={
+                <RefreshControl
+                  colors={[BASE_COLORS.primary]}
+                  tintColor={BASE_COLORS.primary}
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                />
+              }
+              scrollEventThrottle={1}
+              onScroll={Animated.event(
+                [
+                  {
+                    nativeEvent: {
+                      contentOffset: {
+                        y: scrollAnim,
+                      },
+                    },
+                  },
+                ],
+                {useNativeDriver: true},
+              )}
+              showsVerticalScrollIndicator={false}
+              data={feedState?.dataNetwork?.data}
+              key={'air-feed'}
+              keyExtractor={(item, index) => `air-feed-item-${index}`}
+              renderItem={({item, index}: {item: any; index: number}) => (
+                <AirFeedItem item={feedState?.dataNetwork.included[index]} key={`ask-item-${index}`} />
+              )}
+              ListEmptyComponent={() => (
+                <View
+                  style={[
+                    GlobalStyles.flexRow,
+                    GlobalStyles.center,
+                    GlobalStyles.mt15,
+                    GlobalStyles.pv15,
+                    GlobalStyles.ph10,
+                    styles.cardContainer,
+                  ]}>
+                  <View style={GlobalStyles.container}>
+                    <FastImage source={IMAGES.onboard2} resizeMode='cover' style={styles.cardImage} />
+                  </View>
+                  <View style={[GlobalStyles.container, GlobalStyles.flexColumn]}>
+                    <Paragraph p bold600 textWhite title={t('scale_your_network')} style={GlobalStyles.mt10} />
+                    <Paragraph textWhite title={t('inviting_more_friends')} style={[GlobalStyles.mt10, styles.text]} />
+                    <Button
+                      title={t('invite_friends')}
+                      p
+                      bold600
+                      textCenter
+                      containerStyle={{
+                        ...GlobalStyles.buttonContainerStyle,
+                        ...GlobalStyles.mt15,
+                        ...styles.buttonContainerStyle,
+                      }}
+                    />
+                  </View>
+                </View>
+              )}
+            />
+          </View>
+        </View>
+      </SafeAreaView>
     </View>
   );
 };

@@ -51,7 +51,7 @@ const LoginScreen = ({navigation}: Props) => {
           if (response.success) {
             Toast.show({
               position: 'bottom',
-              type: response.success ? 'success' : 'warning',
+              type: response.success ? 'success' : 'info',
               text1: response.message,
               visibilityTime: 4000,
               autoHide: true,

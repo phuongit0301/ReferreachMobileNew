@@ -112,7 +112,12 @@ const YourAskScreen = ({navigation}: Props) => {
 
   const onEdit = () => {
     onMenuHide();
-    navigation.navigate(AppRoute.ASK_EDIT, {id: askState?.dataAskSelected?.id});
+    if (askState?.dataAskSelected?.id) {
+      navigation.navigate(AppRoute.ASK_NAVIGATOR, {
+        screen: AppRoute.ASK_EDIT,
+        params: {id: askState?.dataAskSelected?.id},
+      });
+    }
   };
 
   if (loadingState?.loading) {
@@ -228,7 +233,7 @@ const YourAskScreen = ({navigation}: Props) => {
                 <Paragraph title={t('edit_this_ask')} />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
+              <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]} onPress={onEdit}>
                 <View
                   style={[
                     GlobalStyles.justifyCenter,

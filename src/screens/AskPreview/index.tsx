@@ -124,7 +124,7 @@ const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3
                 <View style={[GlobalStyles.flexRow, GlobalStyles.mb10]}>
                   <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mr15]}>
                     <FastImage source={IMAGES.iconCalendarBlue} resizeMode='cover' style={[styles.icon]} />
-                    <Paragraph title={`By ${moment(dataStep2?.deadline).format('DD/MM/YYYY')}`} />
+                    <Paragraph title={`By ${moment(dataStep2?.deadline).format('MMM DD, YYYY')}`} />
                   </View>
                   <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
                     <FastImage source={IMAGES.iconGlobeEarth} resizeMode='cover' style={styles.icon} />

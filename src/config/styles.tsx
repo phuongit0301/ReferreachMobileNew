@@ -253,7 +253,7 @@ export const GlobalStyles = StyleSheet.create({
   textBold: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
-    fontSize: BASE_STYLES.h5,
+    fontSize: adjust(BASE_STYLES.h5),
   },
   keyboard: {
     flex: 1,
@@ -495,6 +495,12 @@ export const GlobalStyles = StyleSheet.create({
   pv5: {
     paddingVertical: adjust(5),
   },
+  pv6: {
+    paddingVertical: adjust(6),
+  },
+  pv7: {
+    paddingVertical: adjust(7),
+  },
   pv8: {
     paddingVertical: adjust(8),
   },
@@ -578,6 +584,9 @@ export const GlobalStyles = StyleSheet.create({
   },
   pb45: {
     paddingBottom: adjust(45),
+  },
+  pb60: {
+    paddingBottom: adjust(60),
   },
   pb80: {
     paddingBottom: adjust(80),
@@ -773,7 +782,13 @@ export const GlobalStyles = StyleSheet.create({
   },
   /** =========== End Ask =========== */
 
-  bgGray: {
-    
+  waitingContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
+    display: 'flex',
+    justifyContent: 'center',
   },
 });
