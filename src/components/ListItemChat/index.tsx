@@ -57,7 +57,9 @@ const ListItemChat: React.FC<Props> = ({
             </View>
             <View style={[GlobalStyles.flexColumn, GlobalStyles.itemCenter, GlobalStyles.mr10]}>
               <Paragraph p textOxleyColor title={hour} numberOfLines={1} style={GlobalStyles.mb5} />
-              <Paragraph p textWhite title={`${count}`} numberOfLines={1} style={styles.count} />
+              <View style={styles.countContainer}>
+                <Paragraph p textWhite title={`${count}`} numberOfLines={1} />
+              </View>
             </View>
           </View>
         </View>

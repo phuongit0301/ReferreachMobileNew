@@ -5,6 +5,8 @@ import {
   GET_FEED_ITEM_PAGINATION_REQUESTED,
   GET_FEED_ITEM_PAGINATION_SUCCESS,
   GET_FEED_ITEM_PAGINATION_FAILURE,
+  SET_FEED_ITEM_READ_REQUESTED,
+  SET_FEED_ITEM_READ_FAILURE,
 } from './constants';
 import {IFeedItemsState, IActionsUser} from './types';
 
@@ -27,6 +29,7 @@ export const initialState: IFeedItemsState = {
 const userReducer = (state: IFeedItemsState = initialState, action: IActionsUser): IFeedItemsState => {
   switch (action.type) {
     case GET_FEED_ITEMS_LIST_REQUESTED:
+    case SET_FEED_ITEM_READ_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
     case GET_FEED_ITEM_PAGINATION_REQUESTED:
       return {...state, callback: action?.callback, page: action?.payload, loading: true};
@@ -40,6 +43,7 @@ const userReducer = (state: IFeedItemsState = initialState, action: IActionsUser
       };
     case GET_FEED_ITEMS_LIST_FAILURE:
     case GET_FEED_ITEM_PAGINATION_FAILURE:
+    case SET_FEED_ITEM_READ_FAILURE:
       return {...state, loading: false, message: action.payload.message};
     default:
       return state;

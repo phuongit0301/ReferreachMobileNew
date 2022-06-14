@@ -1,7 +1,6 @@
 import {all, put, takeEvery, call} from 'redux-saga/effects';
 
 import FeedItemsAPI from './apis';
-import NetworkAPI from '~Root/services/network/apis';
 import {
   GET_FEED_ITEMS_LIST_REQUESTED,
   GET_FEED_ITEMS_LIST_SUCCESS,
@@ -9,12 +8,17 @@ import {
   GET_FEED_ITEM_PAGINATION_SUCCESS,
   GET_FEED_ITEM_PAGINATION_FAILURE,
   GET_FEED_ITEM_PAGINATION_REQUESTED,
+  SET_FEED_ITEM_READ_REQUESTED,
+  SET_FEED_ITEM_READ_SUCCESS,
+  SET_FEED_ITEM_READ_FAILURE,
 } from './constants';
 import {
   IActionFeedItemPaginationRequested,
   IActionFeedItemPaginationSuccess,
   IActionFeedItemsListRequested,
   IActionFeedItemsListSuccess,
+  IActionSetFeedItemReadRequested,
+  IActionSetFeedItemReadSuccess,
 } from './types';
 import {IActionNetworkConnectionListSuccess} from '~Root/services/network/types';
 
@@ -23,7 +27,7 @@ function* getFeedItemsList(payload: IActionFeedItemsListRequested) {
     const [responseFeed, responseNetwork]: [
       IActionFeedItemsListSuccess['payload'],
       IActionNetworkConnectionListSuccess['payload'],
-    ] = yield all([call(FeedItemsAPI.getList, payload?.payload), call(NetworkAPI.getList)]);
+    ] = yield all([call(FeedItemsAPI.getList, payload?.payload), call(FeedItemsAPI.getSuggestIntroductionsList)]);
     if (responseFeed.success && responseNetwork.success) {
       yield put({
         type: GET_FEED_ITEMS_LIST_SUCCESS,
@@ -57,6 +61,26 @@ function* getFeedItemPagination(payload: IActionFeedItemPaginationRequested) {
   }
 }
 
+function* setFeedItemRead(payload: IActionSetFeedItemReadRequested) {
+  try {
+    const response: IActionSetFeedItemReadSuccess['payload'] = yield call(
+      FeedItemsAPI.setFeedItemRead,
+      payload?.payload,
+    );
+    if (response.success) {
+      yield put({
+        type: SET_FEED_ITEM_READ_SUCCESS,
+      });
+      payload?.callback && payload?.callback(response.data);
+    } else {
+      yield put({type: SET_FEED_ITEM_READ_FAILURE, payload: {message: response}});
+      payload?.callback && payload?.callback(response?.data);
+    }
+  } catch (error) {
+    yield put({type: SET_FEED_ITEM_READ_FAILURE, payload: {message: error}});
+  }
+}
+
 function* watchGetFeedItemsList() {
   yield takeEvery(GET_FEED_ITEMS_LIST_REQUESTED, getFeedItemsList);
 }
@@ -65,6 +89,10 @@ function* watchGetFeedItemPagination() {
   yield takeEvery(GET_FEED_ITEM_PAGINATION_REQUESTED, getFeedItemPagination);
 }
 
+function* watchSetFeedItemRead() {
+  yield takeEvery(SET_FEED_ITEM_READ_REQUESTED, setFeedItemRead);
+}
+
 export default function* feedItemsWatchers() {
-  yield all([watchGetFeedItemsList(), watchGetFeedItemPagination()]);
+  yield all([watchGetFeedItemsList(), watchGetFeedItemPagination(), watchSetFeedItemRead()]);
 }
