@@ -6,6 +6,10 @@ export default StyleSheet.create({
   container: {
     backgroundColor: BASE_COLORS.brightGrayColor,
   },
+  contentContainer: {
+    paddingBottom: adjust(350),
+    flexGrow: 1,
+  },
   inputContainer: {
     ...GlobalStyles.mt15,
     ...GlobalStyles.ph15,

@@ -101,5 +101,10 @@
     "cancel_edit": "Cancel Edit",
     "prev_ask": "Previous Ask",
     "next_ask": "Next Ask",
-    "intro": "Intro"
+    "intro": "Intro",
+    "chat": "Chat",
+    "message": "Message",
+    "read_less": "Read Less",
+    "read_more": "Read More",
+    "search_for_contacts": "Search for contacts"
 }

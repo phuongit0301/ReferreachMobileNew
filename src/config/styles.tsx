@@ -286,6 +286,9 @@ export const GlobalStyles = StyleSheet.create({
   m5: {
     margin: adjust(5),
   },
+  m15: {
+    margin: adjust(15),
+  },
   mb5: {
     marginBottom: adjust(5),
   },
@@ -440,6 +443,10 @@ export const GlobalStyles = StyleSheet.create({
   ph5: {
     paddingLeft: adjust(5),
     paddingRight: adjust(5),
+  },
+  ph6: {
+    paddingLeft: adjust(6),
+    paddingRight: adjust(6),
   },
   ph10: {
     paddingLeft: adjust(10),
@@ -790,5 +797,13 @@ export const GlobalStyles = StyleSheet.create({
     bottom: 0,
     display: 'flex',
     justifyContent: 'center',
+  },
+  inputContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: BASE_COLORS.whiteColor,
+    borderRadius: adjust(50),
+    paddingVertical: Platform.OS === 'ios' ? adjust(8) : 0,
+    alignItems: 'center',
   },
 });

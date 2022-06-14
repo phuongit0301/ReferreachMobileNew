@@ -53,8 +53,9 @@ export default StyleSheet.create({
     fontFamily: BASE_FONTS.regular,
     fontSize: adjust(10),
   },
-  count: {
-    ...GlobalStyles.ph5,
+  countContainer: {
+    ...GlobalStyles.ph6,
+    ...GlobalStyles.pv2,
     borderRadius: adjust(10),
     backgroundColor: BASE_COLORS.oxleyColor,
     justifyContent: 'center',

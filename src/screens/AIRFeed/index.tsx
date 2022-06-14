@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Animated,
   RefreshControl,
@@ -18,8 +18,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
-import {getFeedItemPagination, getFeedItemsList} from '~Root/services/feed/actions';
-import {AirFeedItem, AvatarGradient, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root/components';
+import {getFeedItemPagination, getFeedItemsList, setFeedItemRead} from '~Root/services/feed/actions';
+import {AirFeedItem, Avatar, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root/components';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import {CompositeScreenProps} from '@react-navigation/native';
@@ -27,20 +27,19 @@ import {DrawerScreenProps} from '@react-navigation/drawer';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
+import {IData, IFeedItemsState} from '~Root/services/feed/types';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
   DrawerScreenProps<TabNavigatorParamsList>
 >;
-const url =
-  'https://s3-alpha-sig.figma.com/img/cbb4/3ee6/9695bea370a2dee12e503d07053faeca?Expires=1655683200&Signature=CmavZ8PoONPTxOoP8u7slvnIU61uaHFUOnjVX~vn9Pu1Rus4t0qpOzim8Bq265-YI-KgXqzyh4vRauowvFxi7dUaF78kxJkRNHTKQdbv241SJPA8K4jkkfAh6iU0Iab~QMFNGwazg15DAmYY34-9BbbLNlTrssGf76uogvvhhXchJGCQAR23mesI16E2yo0alkCjzzoyT0OJtchDw1jtYYQsYBGlyy1ID9cdSQioikf-SM405wo~IsaFZbCuLNJWEd9HTl63ZeIbPlVreoDnibMLFUcQ9s2mv91hE8dZ-Rta9w8BDST7sd98vFBDwcPOzQWTxuxh1IoAFU-g2MIzpA__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA';
+
 const AirFeedScreen = ({navigation}: Props) => {
   const {t} = useTranslation();
   const scrollAnim = new Animated.Value(0);
 
   const dispatch = useDispatch();
   const feedState = useSelector((state: IGlobalState) => state.feedState);
-  const userState = useSelector((state: IGlobalState) => state.userState);
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -108,12 +107,19 @@ const AirFeedScreen = ({navigation}: Props) => {
     }
   };
 
-  const onNext = () => {
+  const onNext = (item: any) => {
     if (+feedState?.page <= +feedState?.dataFeed?.meta?.total_pages) {
       setLoading(true);
       dispatch(
-        getFeedItemPagination(+feedState?.page + 1, () => {
-          setLoading(false);
+        getFeedItemPagination(+feedState?.page + 1, (response: IFeedItemsState['dataFeed']) => {
+          if (response?.data?.length > 0) {
+            const item = response?.data[0];
+            dispatch(
+              setFeedItemRead(+item?.id, () => {
+                setLoading(false);
+              }),
+            );
+          }
         }),
       );
     }
@@ -128,7 +134,8 @@ const AirFeedScreen = ({navigation}: Props) => {
     return <Loading />;
   }
 
-  const feedItem = feedState.dataFeed?.included?.length > 0 ? feedState.dataFeed?.included[0] : null;
+  const feedItemAttributes = feedState.dataFeed?.included?.length > 0 ? feedState.dataFeed?.included[0] : null;
+  const feedItemData = feedState.dataFeed?.data?.length > 0 ? feedState.dataFeed?.data[0] : null;
 
   return (
     <View style={[GlobalStyles.container]}>
@@ -141,36 +148,28 @@ const AirFeedScreen = ({navigation}: Props) => {
               style={[GlobalStyles.p15, GlobalStyles.pb60, GlobalStyles.flexColumn, styles.profileGradient]}>
               <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
                 <View style={[GlobalStyles.flexRow, GlobalStyles.mr10]}>
-                  {userState.userInfo?.avatar_metadata?.avatar_url ? (
-                    <FastImage
-                      source={{
-                        uri: userState.userInfo?.avatar_metadata?.avatar_url,
-                      }}
-                      style={[GlobalStyles.avatar2]}
-                    />
-                  ) : url ? (
-                    <FastImage
-                      source={{
-                        uri: url,
-                      }}
-                      resizeMode='cover'
-                      onProgress={() => <ActivityIndicator />}
-                      style={[GlobalStyles.avatar]}>
-                      <View
-                        style={{
-                          width: 0,
-                          height: 0,
-                          transform: [{translateX: 0}, {translateY: 0}],
-                        }}
-                      />
-                    </FastImage>
-                  ) : (
-                    <AvatarGradient title='AD' color1={BASE_COLORS.oxleyColor} color2={BASE_COLORS.oxleyColor} />
-                  )}
+                  <Avatar
+                    styleAvatar={GlobalStyles.avatar2}
+                    userInfo={{
+                      avatar_url: feedItemData?.attributes?.user?.avatar_metadata?.avatar_url,
+                      avatar_lat: feedItemData?.attributes?.user?.avatar_metadata?.avatar_lat,
+                      avatar_lng: feedItemData?.attributes?.user?.avatar_metadata?.avatar_lng,
+                      first_name: feedItemData?.attributes?.user?.first_name,
+                      last_name: feedItemData?.attributes?.user?.last_name,
+                    }}
+                  />
                 </View>
                 <View style={[GlobalStyles.flexColumn, GlobalStyles.container]}>
-                  <Paragraph textWhite bold600 title={`Emily Koh`} />
-                  <Paragraph textWhite title={`Business developer`} />
+                  <Paragraph
+                    textWhite
+                    bold600
+                    title={`${feedItemData?.attributes?.user?.first_name ?? ''} ${
+                      feedItemData?.attributes?.user?.last_name ?? ''
+                    }`}
+                  />
+                  {feedItemData?.attributes?.user?.title && (
+                    <Paragraph textWhite title={`${feedItemData?.attributes?.user?.title}`} />
+                  )}
                 </View>
                 <TouchableOpacity style={styles.iconThreeDotContainer}>
                   <FastImage source={IMAGES.iconThreeDotWhite} resizeMode='cover' style={styles.iconThreeDot} />
@@ -180,11 +179,11 @@ const AirFeedScreen = ({navigation}: Props) => {
                 <Trans
                   i18nKey='air_feed_content'
                   values={{
-                    greeting: feedItem?.attributes?.greeting,
-                    demographic: feedItem?.attributes?.demographic,
-                    role: feedItem?.attributes?.business_requirement,
-                    description: feedItem?.attributes?.additional_detail,
-                    businessDetail: feedItem?.attributes?.business_detail,
+                    greeting: feedItemAttributes?.attributes?.greeting,
+                    demographic: feedItemAttributes?.attributes?.demographic,
+                    role: feedItemAttributes?.attributes?.business_requirement,
+                    description: feedItemAttributes?.attributes?.additional_detail,
+                    businessDetail: feedItemAttributes?.attributes?.business_detail,
                   }}
                   parent={Text}
                   components={{
@@ -200,7 +199,10 @@ const AirFeedScreen = ({navigation}: Props) => {
                     resizeMode='cover'
                     style={[GlobalStyles.mr10, styles.iconCalendar]}
                   />
-                  <Paragraph textWhite title={moment(feedItem?.attributes?.deadline).format('MMM DD, YYYY')} />
+                  <Paragraph
+                    textWhite
+                    title={moment(feedItemAttributes?.attributes?.deadline).format('MMM DD, YYYY')}
+                  />
                 </View>
                 <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, styles.globeContainer]}>
                   <FastImage
@@ -212,7 +214,7 @@ const AirFeedScreen = ({navigation}: Props) => {
                     textWhite
                     numberOfLines={1}
                     ellipsizeMode={'tail'}
-                    title={feedItem?.attributes?.ask_location?.text}
+                    title={feedItemAttributes?.attributes?.ask_location?.text}
                   />
                 </View>
               </View>
@@ -221,10 +223,10 @@ const AirFeedScreen = ({navigation}: Props) => {
                   GlobalStyles.flexColumn,
                   {opacity: visibleAnim, display: animation?.expanded ? 'flex' : 'none'},
                 ]}>
-                {feedItem?.attributes?.criterium && feedItem?.attributes?.criterium?.length > 0 && (
+                {feedItemAttributes?.attributes?.criterium && feedItemAttributes?.attributes?.criterium?.length > 0 && (
                   <View style={[GlobalStyles.flexColumn, GlobalStyles.mb15]}>
                     <Paragraph textWhite bold600 title='Criteria' style={GlobalStyles.mb10} />
-                    {feedItem?.attributes?.criterium.map((item, index) => (
+                    {feedItemAttributes?.attributes?.criterium.map((item, index) => (
                       <View style={[GlobalStyles.flexRow, GlobalStyles.mb10]} key={`feed-criterium-${index}`}>
                         <FastImage
                           source={IMAGES.iconCircleCheckWhite}
@@ -236,9 +238,9 @@ const AirFeedScreen = ({navigation}: Props) => {
                     ))}
                   </View>
                 )}
-                {feedItem?.attributes?.documents && feedItem?.attributes?.documents.length > 0 && (
+                {feedItemAttributes?.attributes?.documents && feedItemAttributes?.attributes?.documents.length > 0 && (
                   <View style={[GlobalStyles.flexRow, GlobalStyles.mb15]}>
-                    {feedItem?.attributes?.documents.map((item, index) =>
+                    {feedItemAttributes?.attributes?.documents.map((item, index) =>
                       item?.content_type?.includes('pdf') ? (
                         <FastImage
                           source={IMAGES.iconPdf}
@@ -255,14 +257,14 @@ const AirFeedScreen = ({navigation}: Props) => {
               <View style={GlobalStyles.flexRow}>
                 {animation?.expanded ? (
                   <TouchableOpacity style={GlobalStyles.container} onPress={onToggle}>
-                    <Paragraph textWhite bold600 title={'Read Less...'} style={styles.textUnderline} />
+                    <Paragraph textWhite bold600 title={`${t('read_less')}...`} style={styles.textUnderline} />
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity style={GlobalStyles.container} onPress={onToggle}>
-                    <Paragraph textWhite bold600 title={'Read More...'} style={styles.textUnderline} />
+                    <Paragraph textWhite bold600 title={`${t('read_more')}...`} style={styles.textUnderline} />
                   </TouchableOpacity>
                 )}
-                <Paragraph textBrightGrayColor title='edited' />
+                {feedItemAttributes?.attributes?.edited && <Paragraph textBrightGrayColor title='edited' />}
               </View>
               {loading && (
                 <View style={GlobalStyles.waitingContainer}>
@@ -280,7 +282,7 @@ const AirFeedScreen = ({navigation}: Props) => {
                   style={styles.btnText}
                 />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnCircle} onPress={onNext} disabled={loading}>
+              <TouchableOpacity style={styles.btnCircle} onPress={() => onNext(feedItemAttributes)} disabled={loading}>
                 <Paragraph
                   textCenter
                   textForestGreenColor
@@ -294,7 +296,7 @@ const AirFeedScreen = ({navigation}: Props) => {
           <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
             <View style={styles.inputContainer}>
               <TextInput
-                placeholder='Search for contacts'
+                placeholder={t('search_for_contacts')}
                 value={textSearch}
                 style={styles.input}
                 onChangeText={onInputChange}
@@ -302,8 +304,8 @@ const AirFeedScreen = ({navigation}: Props) => {
               <FastImage source={IMAGES.iconSearch} style={styles.iconSearch} />
             </View>
             <Animated.FlatList
-              contentContainerStyle={[GlobalStyles.pb150]}
-              style={[GlobalStyles.mt15]}
+              contentContainerStyle={styles.contentContainer}
+              style={GlobalStyles.mt15}
               nestedScrollEnabled={true}
               refreshControl={
                 <RefreshControl
