@@ -24,7 +24,12 @@ import {
   SET_VISIBLE_MENU,
 } from './constants';
 
-export interface IAskState {
+export interface IPaginationAndSearch {
+  page: number;
+  per: number;
+  keyword?: string;
+}
+export interface IAskState extends IPaginationAndSearch {
   message: string;
   data: IAskInside[];
   dataGreetingSuggest?: string[];
@@ -136,6 +141,7 @@ export interface IActionCreateAskState {
 
 export interface IActionGetAskRequest {
   type: typeof GET_ASK_REQUESTED;
+  payload: IPaginationAndSearch;
   callback: (response: IActionGetAskSuccess['payload']) => void;
 }
 export interface IActionGetAskSuccess {

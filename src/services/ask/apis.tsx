@@ -1,13 +1,22 @@
+/* eslint-disable @typescript-eslint/no-base-to-string */
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import axios from '~Root/services/axios';
 
 import * as API from '~Root/private/api';
+import {IPaginationAndSearch} from './types';
 export default class AskAPI {
-  static async getAsks(): Promise<any> {
+  static async getAsks(payload: IPaginationAndSearch): Promise<any> {
     try {
+      let params = {};
+      if (payload) {
+        params = Object.keys(payload)
+          .map((key: string) => `${key}=${payload[key]}`)
+          .join('&');
+      }
       const response = await axios({
         method: 'GET',
-        url: API.ASK_LIST_URL,
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        url: `${API.ASK_LIST_URL}?${params}`,
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',

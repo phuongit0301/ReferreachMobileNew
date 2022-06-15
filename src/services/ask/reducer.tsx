@@ -37,6 +37,9 @@ export const initialState: IAskState = {
   dataStep3: null,
   dataDetails: null,
   dataAskSelected: null,
+  page: 1,
+  per: 10,
+  keyword: '',
   visibleMenu: {
     show: false,
     coordinate: {

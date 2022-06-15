@@ -1,5 +1,4 @@
 import {all, put, takeEvery, call, takeLatest, delay} from 'redux-saga/effects';
-import {IGlobalState} from '~Root/types';
 
 import AskAPI from './apis';
 import {
@@ -37,11 +36,10 @@ import {
   IActionUpdateAskSuccess,
 } from './types';
 
-const getItems = (state: IGlobalState) => state.askState;
-
 function* getAsks(payload: IActionGetAskRequest) {
   try {
-    const response: IActionGetAskSuccess['payload'] = yield call(AskAPI.getAsks);
+    yield delay(300);
+    const response: IActionGetAskSuccess['payload'] = yield call(AskAPI.getAsks, payload?.payload);
     if (response?.success) {
       yield put({type: GET_ASK_SUCCESS, payload: response});
       payload?.callback &&
@@ -249,7 +247,7 @@ function* getLocations(payload: IActionGetLocationRequest) {
 }
 
 function* watchGetAsk() {
-  yield takeEvery(GET_ASK_REQUESTED, getAsks);
+  yield takeLatest(GET_ASK_REQUESTED, getAsks);
 }
 
 function* watchGetAskDetails() {

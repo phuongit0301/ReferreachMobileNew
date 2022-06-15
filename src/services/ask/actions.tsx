@@ -11,11 +11,17 @@ import {
   UPDATE_ASK_REQUESTED,
   SET_VISIBLE_MENU,
 } from './constants';
-import {IActionGetAskDetailsFailure, IActionGetAskDetailsSuccess, IActionUpdateAskSuccess} from './types';
+import {
+  IActionGetAskDetailsFailure,
+  IActionGetAskDetailsSuccess,
+  IActionUpdateAskSuccess,
+  IPaginationAndSearch,
+} from './types';
 
-export const getAsk = (callback: () => void) => {
+export const getAsk = (payload: IPaginationAndSearch, callback: () => void) => {
   return {
     type: GET_ASK_REQUESTED,
+    payload,
     callback,
   };
 };

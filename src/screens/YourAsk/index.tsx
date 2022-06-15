@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Animated, RefreshControl, TextInput, View, TouchableOpacity, Alert} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useTranslation} from 'react-i18next';
@@ -13,7 +13,7 @@ import {AskItem, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import {CompositeScreenProps, useIsFocused} from '@react-navigation/native';
-import {IAskInside} from '~Root/services/ask/types';
+import {IAskInside, IPaginationAndSearch} from '~Root/services/ask/types';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 import {getAsk, setVisibleMenu} from '~Root/services/ask/actions';
@@ -37,6 +37,7 @@ const YourAskScreen = ({navigation}: Props) => {
   const userState = useSelector((state: IGlobalState) => state.userState);
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
   const [refreshing, setRefreshing] = useState(false);
+  const [initPage, setInitPage] = useState(false);
   const [textSearch, setTextSearch] = useState('');
   // const [visibleMenu, setVisibleMenu] = useState({
   //   ask: {},
@@ -52,10 +53,15 @@ const YourAskScreen = ({navigation}: Props) => {
   }, [navigation]);
 
   const initData = () => {
+    const params = {
+      page: askState?.page,
+      per: askState?.per,
+    };
     dispatch(showLoading());
     dispatch(
-      getAsk(() => {
+      getAsk(params, () => {
         dispatch(hideLoading());
+        setInitPage(true);
 
         if (userState?.userInfo?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED) {
           navigation.navigate(AppRoute.TIPS);
@@ -64,13 +70,28 @@ const YourAskScreen = ({navigation}: Props) => {
     );
   };
 
+  useEffect(() => {
+    const params: IPaginationAndSearch = {
+      page: askState?.page,
+      per: askState?.per,
+    };
+    if (initPage) {
+      params.keyword = textSearch;
+      dispatch(
+        getAsk(params, (response: any) => {
+          console.log('search response====>', response);
+        }),
+      );
+    }
+  }, [textSearch]);
+
   const onToggleDrawer = () => {
     navigation.toggleDrawer();
   };
 
-  const onInputChange = (text: string) => {
+  const onInputChange = useCallback((text: string) => {
     setTextSearch(text);
-  };
+  }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -233,7 +254,9 @@ const YourAskScreen = ({navigation}: Props) => {
                 <Paragraph title={t('edit_this_ask')} />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]} onPress={onEdit}>
+              <TouchableOpacity
+                style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}
+                onPress={onEdit}>
                 <View
                   style={[
                     GlobalStyles.justifyCenter,
