@@ -1,23 +1,24 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Animated, RefreshControl, TextInput, View, TouchableOpacity, Alert} from 'react-native';
+import {Animated, RefreshControl, TextInput, View, TouchableOpacity} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import FastImage from 'react-native-fast-image';
-import Tooltip from 'react-native-walkthrough-tooltip';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {AskItem, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root/components';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
-import {CompositeScreenProps, useIsFocused} from '@react-navigation/native';
+import {CompositeScreenProps} from '@react-navigation/native';
 import {IAskInside, IPaginationAndSearch} from '~Root/services/ask/types';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 import {getAsk, setVisibleMenu} from '~Root/services/ask/actions';
 import {calculateExpiredTime, dateToHours} from '~Root/utils';
+import {DEEP_LINK_URL} from '~Root/private/api';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
 
@@ -30,7 +31,6 @@ const YourAskScreen = ({navigation}: Props) => {
   const {t} = useTranslation();
   const scrollAnim = new Animated.Value(0);
   const inputEl = useRef(null);
-  const isFocused = useIsFocused();
 
   const dispatch = useDispatch();
   const askState = useSelector((state: IGlobalState) => state.askState);
@@ -39,17 +39,12 @@ const YourAskScreen = ({navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const [initPage, setInitPage] = useState(false);
   const [textSearch, setTextSearch] = useState('');
-  // const [visibleMenu, setVisibleMenu] = useState({
-  //   ask: {},
-  //   show: false,
-  //   coordinate: {
-  //     top: 0,
-  //     left: 0,
-  //   },
-  // });
 
   useEffect(() => {
-    initData();
+    const unsubscribe = navigation.addListener('focus', () => {
+      initData();
+    });
+    return unsubscribe;
   }, [navigation]);
 
   const initData = () => {
@@ -254,9 +249,7 @@ const YourAskScreen = ({navigation}: Props) => {
                 <Paragraph title={t('edit_this_ask')} />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity
-                style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}
-                onPress={onEdit}>
+              <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
                 <View
                   style={[
                     GlobalStyles.justifyCenter,

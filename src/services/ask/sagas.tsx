@@ -139,8 +139,8 @@ function* updateAsk(payload: IActionUpdateAskRequest) {
         payload?.payload?.formDataRemove,
       );
 
-      if (!responseRemove.success) {
-        throw new Error(responseRemove.message);
+      if (!responseRemove?.success) {
+        throw new Error(responseRemove?.message);
       }
     }
 
@@ -156,7 +156,7 @@ function* updateAsk(payload: IActionUpdateAskRequest) {
         payload?.callback({
           success: response?.success,
           isExpired: !!(response?.data as any)?.json?.errors,
-          message: (response?.data as any)?.json?.errors ? 'Ask is expired' : '',
+          message: (response?.data as any)?.json?.errors ? 'Ask is expired' : 'Update Successfully!',
           data: response?.data,
         });
     } else {

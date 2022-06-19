@@ -1,3 +1,4 @@
+import {IAvatarMetadata} from '../network/types';
 import {
   GET_ASK_REQUESTED,
   GET_ASK_SUCCESS,
@@ -25,8 +26,8 @@ import {
 } from './constants';
 
 export interface IPaginationAndSearch {
-  page: number;
-  per: number;
+  page?: number;
+  per?: number;
   keyword?: string;
 }
 export interface IAskState extends IPaginationAndSearch {
@@ -71,6 +72,7 @@ export interface IAttributesState {
   documents: IFiles[];
   criterium: ICriteriumDataState[];
   ask_location: IAskLocationDataState;
+  avatar_metadata?: IAvatarMetadata;
   created_at: Date;
   updated_at: Date;
   status: string;

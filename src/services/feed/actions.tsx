@@ -2,6 +2,7 @@ import {
   GET_FEED_ITEMS_LIST_REQUESTED,
   GET_FEED_ITEM_PAGINATION_REQUESTED,
   SET_FEED_ITEM_READ_REQUESTED,
+  SET_FEED_VISIBLE_MENU,
 } from './constants';
 import {IActionFeedItemPaginationSuccess, IActionFeedItemsListSuccess, IActionSetFeedItemReadSuccess} from './types';
 
@@ -33,6 +34,14 @@ export const setFeedItemRead = (
 ) => {
   return {
     type: SET_FEED_ITEM_READ_REQUESTED,
+    payload,
+    callback,
+  };
+};
+
+export const setVisibleMenu = (payload: any, callback?: () => void) => {
+  return {
+    type: SET_FEED_VISIBLE_MENU,
     payload,
     callback,
   };

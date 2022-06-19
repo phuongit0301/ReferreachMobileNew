@@ -113,7 +113,6 @@ export default StyleSheet.create({
   inputWrapperStyle: {
     ...GlobalStyles.h5,
     ...GlobalStyles.inputStyle,
-    ...GlobalStyles.mb15,
     borderRadius: adjust(20),
     backgroundColor: BASE_COLORS.brightGrayColor,
     color: BASE_COLORS.blackColor,
@@ -164,7 +163,7 @@ export default StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: 50,
-    zIndex: 10,
+    top: adjust(65),
+    zIndex: 100,
   },
 });

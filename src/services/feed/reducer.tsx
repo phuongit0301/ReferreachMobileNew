@@ -7,6 +7,7 @@ import {
   GET_FEED_ITEM_PAGINATION_FAILURE,
   SET_FEED_ITEM_READ_REQUESTED,
   SET_FEED_ITEM_READ_FAILURE,
+  SET_FEED_VISIBLE_MENU,
 } from './constants';
 import {IFeedItemsState, IActionsUser} from './types';
 
@@ -23,6 +24,14 @@ export const initialState: IFeedItemsState = {
     included: [],
   },
   page: 1,
+  dataSelected: null,
+  visibleMenu: {
+    show: false,
+    coordinate: {
+      top: 0,
+      left: 0,
+    },
+  },
   callback: () => {},
 };
 
@@ -45,6 +54,8 @@ const userReducer = (state: IFeedItemsState = initialState, action: IActionsUser
     case GET_FEED_ITEM_PAGINATION_FAILURE:
     case SET_FEED_ITEM_READ_FAILURE:
       return {...state, loading: false, message: action.payload.message};
+    case SET_FEED_VISIBLE_MENU:
+      return {...state, ...action?.payload};
     default:
       return state;
   }

@@ -10,6 +10,7 @@ import loadingReducer from '~Root/services/loading/reducer';
 import industryReducer from '~Root/services/industry/reducer';
 import registerReducer from '~Root/services/register/reducer';
 import askReducer from '~Root/services/ask/reducer';
+import askDetailsReducer from '~Root/services/askDetails/reducer';
 import networkReducer from '~Root/services/network/reducer';
 import chatReducer from '~Root/services/chat/reducer';
 import feedReducer from '~Root/services/feed/reducer';
@@ -36,6 +37,7 @@ const appReducer = combineReducers<IGlobalState>({
   industryState: industryReducer,
   registerState: registerReducer,
   askState: askReducer,
+  askDetailState: askDetailsReducer,
   networkState: networkReducer,
   chatState: chatReducer,
   feedState: feedReducer,

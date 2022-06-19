@@ -8,6 +8,8 @@ import {
   ActivityIndicator,
   Text,
   Easing,
+  Share,
+  Alert,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Trans, useTranslation} from 'react-i18next';
@@ -18,16 +20,17 @@ import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
-import {getFeedItemPagination, getFeedItemsList, setFeedItemRead} from '~Root/services/feed/actions';
+import {getFeedItemPagination, getFeedItemsList, setFeedItemRead, setVisibleMenu} from '~Root/services/feed/actions';
 import {AirFeedItem, Avatar, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root/components';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
+import {IFeedItemsState} from '~Root/services/feed/types';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
-import {IData, IFeedItemsState} from '~Root/services/feed/types';
+import { DEEP_LINK_URL } from '~Root/private/api';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -62,6 +65,9 @@ const AirFeedScreen = ({navigation}: Props) => {
       }),
     );
   };
+
+  const feedItemAttributes = feedState.dataFeed?.included?.length > 0 ? feedState.dataFeed?.included[0] : null;
+  const feedItemData = feedState.dataFeed?.data?.length > 0 ? feedState.dataFeed?.data[0] : null;
 
   const onToggleDrawer = () => {
     navigation.toggleDrawer();
@@ -113,7 +119,6 @@ const AirFeedScreen = ({navigation}: Props) => {
       dispatch(
         getFeedItemPagination(+feedState?.page + 1, (response: IFeedItemsState['dataFeed']) => {
           if (response?.data?.length > 0) {
-            const item = response?.data[0];
             dispatch(
               setFeedItemRead(+item?.id, () => {
                 setLoading(false);
@@ -130,12 +135,53 @@ const AirFeedScreen = ({navigation}: Props) => {
     outputRange: [0, 1],
   });
 
+  const onMenu = (evt?: any) => {
+    evt.persist();
+
+    dispatch(
+      setVisibleMenu({
+        dataSelected: feedItemAttributes,
+        visibleMenu: {
+          show: true,
+          coordinate: {
+            top: +evt.nativeEvent?.pageY + 15,
+            left: evt.nativeEvent?.pageX - 200,
+          },
+        },
+      }),
+    );
+  };
+
+  const onMenuHide = () => {
+    dispatch(
+      setVisibleMenu({
+        dataSelected: null,
+        visibleMenu: {
+          show: false,
+          coordinate: {
+            top: 0,
+            left: 0,
+          },
+        },
+      }),
+    );
+  };
+
+  const onShare = async () => {
+    try {
+      onMenuHide();
+      await Share.share({
+        title: feedState?.dataSelected?.attributes?.greeting ?? '',
+        message: `${DEEP_LINK_URL}/a/${feedState?.dataSelected?.id}`,
+      });
+    } catch (error) {
+      Alert.alert((error as any).message);
+    }
+  };
+
   if (loadingState?.loading) {
     return <Loading />;
   }
-
-  const feedItemAttributes = feedState.dataFeed?.included?.length > 0 ? feedState.dataFeed?.included[0] : null;
-  const feedItemData = feedState.dataFeed?.data?.length > 0 ? feedState.dataFeed?.data[0] : null;
 
   return (
     <View style={[GlobalStyles.container]}>
@@ -171,7 +217,7 @@ const AirFeedScreen = ({navigation}: Props) => {
                     <Paragraph textWhite title={`${feedItemData?.attributes?.user?.title}`} />
                   )}
                 </View>
-                <TouchableOpacity style={styles.iconThreeDotContainer}>
+                <TouchableOpacity style={styles.iconThreeDotContainer} onPress={onMenu}>
                   <FastImage source={IMAGES.iconThreeDotWhite} resizeMode='cover' style={styles.iconThreeDot} />
                 </TouchableOpacity>
               </View>
@@ -369,6 +415,50 @@ const AirFeedScreen = ({navigation}: Props) => {
           </View>
         </View>
       </SafeAreaView>
+      {feedState?.visibleMenu?.show && (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={onMenuHide}
+          style={[GlobalStyles.flexColumn, GlobalStyles.container, styles.bgBlur]}>
+          <View
+            style={[
+              GlobalStyles.flexColumn,
+              GlobalStyles.pv10,
+              GlobalStyles.ph20,
+              styles.menu,
+              {...feedState?.visibleMenu?.coordinate},
+            ]}>
+            <TouchableOpacity
+              style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onPress={onShare}>
+              <View
+                style={[
+                  GlobalStyles.justifyCenter,
+                  GlobalStyles.justifyCenter,
+                  GlobalStyles.mr5,
+                  styles.iconEditAskContainer,
+                ]}>
+                <FastImage source={IMAGES.iconShareThis} resizeMode='contain' style={styles.iconEditAsk} />
+              </View>
+              <Paragraph textDarkGrayColor title={t('share_this')} />
+            </TouchableOpacity>
+            <View style={[GlobalStyles.justifyCenter, styles.border]} />
+            <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
+              <View
+                style={[
+                  GlobalStyles.alignCenter,
+                  GlobalStyles.justifyCenter,
+                  GlobalStyles.mr5,
+                  styles.iconStartChatContainer,
+                ]}>
+                <FastImage source={IMAGES.iconStartChat} resizeMode='cover' style={styles.iconEndAsk} />
+              </View>
+              <Paragraph title={t('start_chat')} />
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

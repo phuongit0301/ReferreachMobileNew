@@ -1,4 +1,4 @@
-import {all, put, takeEvery, call} from 'redux-saga/effects';
+import {all, put, takeEvery, call, takeLatest} from 'redux-saga/effects';
 
 import NetworkAPI from './apis';
 import {
@@ -18,7 +18,7 @@ import {
 
 function* getNetworkConnectionList(payload: IActionNetworkConnectionListRequested) {
   try {
-    const response: IActionNetworkConnectionListSuccess['payload'] = yield call(NetworkAPI.getList);
+    const response: IActionNetworkConnectionListSuccess['payload'] = yield call(NetworkAPI.getList, payload?.payload);
     if (response.success) {
       yield put({type: GET_NETWORK_CONNECTION_LIST_SUCCESS, payload: response.data});
       payload?.callback(response.data);
@@ -64,7 +64,7 @@ function* removeNetworkConnection(payload: IActionRemoveNetworkConnectionRequest
 }
 
 function* watchGetNetworkConnectionList() {
-  yield takeEvery(GET_NETWORK_CONNECTION_LIST_REQUESTED, getNetworkConnectionList);
+  yield takeLatest(GET_NETWORK_CONNECTION_LIST_REQUESTED, getNetworkConnectionList);
 }
 
 function* watchRemoveNetworkConnection() {

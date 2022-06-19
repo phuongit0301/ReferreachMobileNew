@@ -33,6 +33,7 @@ export enum AppRoute {
   ASK_PREVIEW = 'AskPreview',
   ASK_PUBLISH = 'AskPublish',
   ASK_EDIT = 'AskEdit',
+  ASK_DETAILS = 'AskDetails',
   VERIFY_EMAIL = 'VerifyEmail',
   VERIFIED_EMAIL = 'VerifiedEmail',
   RECOVER_PASSWORD = 'RecoverPassword',

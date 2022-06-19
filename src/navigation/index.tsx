@@ -6,7 +6,6 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {useSelector, useDispatch} from 'react-redux';
 import i18n from 'i18next';
 import {initReactI18next} from 'react-i18next';
-import AsyncStorage from '@react-native-community/async-storage';
 
 import LoginScreen from '~Root/screens/Login';
 import RegisterScreen from '~Root/screens/Register';
@@ -30,6 +29,7 @@ import AskThreeScreen from '~Root/screens/AskThree';
 import AskPreviewScreen from '~Root/screens/AskPreview';
 import AskPublishScreen from '~Root/screens/AskPublish';
 import AskEditScreen from '~Root/screens/AskEdit';
+import AskDetailsScreen from '~Root/screens/AskDetails';
 import TrustNetworkScreen from '~Root/screens/TrustNetwork';
 import ChatScreen from '~Root/screens/Chat';
 import AppCheckScreen from '~Root/screens/AppCheck';
@@ -43,11 +43,7 @@ import * as AuthActions from '~Root/services/auth/actions';
 import TabBar from './TabBar';
 import Drawer from './Drawer';
 import {AppRoute} from './AppRoute';
-import styles from './styles';
 import {BottomTabParams, MainNavigatorParamsList, RootNavigatorParamsList, AskNavigatorParamsList} from './config';
-import {IGlobalState} from '~Root/types';
-import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
-import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 
 enableScreens();
 
@@ -192,6 +188,9 @@ const AppNavigator = (props: any) => {
             }}>
             <RootStack.Screen name={AppRoute.TIPS} component={TipsScreen} />
             <RootStack.Screen name={AppRoute.TIPS_TWO} component={TipsTwoScreen} />
+          </RootStack.Group>
+          <RootStack.Group>
+            <RootStack.Screen name={AppRoute.ASK_DETAILS} component={AskDetailsScreen} />
           </RootStack.Group>
           {/* <RootStack.Screen name={AppRoute.ASK_NAVIGATOR} component={AskNavigator} /> */}
         </>

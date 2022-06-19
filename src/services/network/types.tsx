@@ -1,3 +1,4 @@
+import {IPaginationAndSearch} from '~Root/services/ask/types';
 import {
   GET_NETWORK_CONNECTION_LIST_REQUESTED,
   GET_NETWORK_CONNECTION_LIST_SUCCESS,
@@ -5,9 +6,12 @@ import {
   REMOVE_NETWORK_CONNECTION_REQUESTED,
   REMOVE_NETWORK_CONNECTION_SUCCESS,
   REMOVE_NETWORK_CONNECTION_FAILURE,
+  ON_INVITE_USER_FAILURE,
+  ON_INVITE_USER_REQUESTED,
+  ON_INVITE_USER_SUCCESS,
 } from './constants';
 
-export interface INetworkConnectionListState {
+export interface INetworkConnectionListState extends IPaginationAndSearch {
   message: string;
   loading: boolean;
   data: any;
@@ -36,8 +40,18 @@ export interface IIncluded {
   };
 }
 
+export interface IInviteList {
+  email: string;
+  name: string;
+  phone?: string;
+}
+export interface IInviteUser {
+  contacts_list: IInviteList[];
+}
+
 export interface IActionNetworkConnectionListRequested {
   type: typeof GET_NETWORK_CONNECTION_LIST_REQUESTED;
+  payload: string;
   callback?: any;
 }
 export interface IActionNetworkConnectionListSuccess {
@@ -87,10 +101,37 @@ export interface IActionRemoveNetworkConnectionFailure {
   callback?: () => void;
 }
 
+export interface IActionInviteUserRequested {
+  type: typeof ON_INVITE_USER_REQUESTED;
+  payload: IInviteUser[];
+  callback?: (response: IActionInviteUserSuccess['payload']) => void;
+}
+export interface IActionInviteUserSuccess {
+  type: typeof ON_INVITE_USER_SUCCESS;
+  payload: {
+    data: any;
+    success: boolean;
+    message: string;
+  };
+  callback?: () => void;
+}
+export interface IActionInviteUserFailure {
+  type: typeof ON_INVITE_USER_FAILURE;
+  payload: {
+    data: any;
+    success: boolean;
+    message: string;
+  };
+  callback?: () => void;
+}
+
 export type IActionsUser =
   | IActionNetworkConnectionListRequested
   | IActionNetworkConnectionListSuccess
   | IActionNetworkConnectionListFailure
   | IActionRemoveNetworkConnectionRequested
   | IActionRemoveNetworkConnectionSuccess
-  | IActionRemoveNetworkConnectionFailure;
+  | IActionRemoveNetworkConnectionFailure
+  | IActionInviteUserRequested
+  | IActionInviteUserSuccess
+  | IActionInviteUserFailure;

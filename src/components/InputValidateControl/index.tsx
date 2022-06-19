@@ -14,6 +14,7 @@ interface Props {
   styleArea?: ViewStyle;
   inputStyle?: any;
   inputErrorStyle?: any;
+  textErrorStyle?: TextStyle;
   defaultValue?: string;
   control?: any;
   name?: string;
@@ -57,6 +58,7 @@ const InputValidateControl: React.FC<Props> = ({
   styleArea = {},
   inputStyle = {},
   inputErrorStyle = {},
+  textErrorStyle = {},
   defaultValue = '',
   errors = null,
   control = null,
@@ -120,7 +122,7 @@ const InputValidateControl: React.FC<Props> = ({
         defaultValue={defaultValue}
       />
       {children}
-      {isError && <Paragraph p style={styles.textError} title={errors[name]?.message} />}
+      {isError && <Paragraph p style={[styles.textError, textErrorStyle]} title={errors[name]?.message} />}
     </View>
   );
 };

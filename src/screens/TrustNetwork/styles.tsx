@@ -1,5 +1,5 @@
 import {Platform, StyleSheet} from 'react-native';
-import {BASE_COLORS, GlobalStyles} from '~Root/config';
+import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
 
 export default StyleSheet.create({
@@ -43,18 +43,8 @@ export default StyleSheet.create({
     ...GlobalStyles.mb20,
     ...GlobalStyles.ph15,
     ...GlobalStyles.pv8,
-    borderBottomRightRadius: adjust(24),
-    borderWidth: 1,
+    borderBottomRightRadius: adjust(12),
     backgroundColor: BASE_COLORS.forestGreenColor,
-    borderColor: BASE_COLORS.whiteColor,
-    shadowColor: BASE_COLORS.blackColor,
-    shadowOffset: {
-      width: 0,
-      height: adjust(3),
-    },
-    shadowOpacity: adjust(0.2),
-    shadowRadius: adjust(3),
-    elevation: adjust(2),
   },
   avatarContainer: {
     width: adjust(50),
@@ -159,5 +149,32 @@ export default StyleSheet.create({
     position: 'absolute',
     bottom: adjust(30),
     right: adjust(30),
+  },
+  inputWrapperStyle: {
+    ...GlobalStyles.inputStyle,
+    borderRadius: adjust(20),
+    backgroundColor: BASE_COLORS.brightGrayColor,
+  },
+  labelStyle: {
+    ...GlobalStyles.labelStyle,
+    color: BASE_COLORS.steelBlueColor,
+  },
+  inputStyle: {
+    ...GlobalStyles.inputStyle,
+    borderRadius: adjust(20),
+    color: BASE_COLORS.blackColor,
+    backgroundColor: BASE_COLORS.brightGrayColor,
+  },
+  inputErrorStyle: {
+    borderColor: BASE_COLORS.persianRedColor,
+  },
+  h3BoldDefault: {
+    fontFamily: BASE_FONTS.semiBold,
+    fontWeight: '600',
+    lineHeight: adjust(BASE_STYLES.h3),
+    color: BASE_COLORS.whiteColor,
+  },
+  styleModal: {
+    flex: 0.5,
   },
 });

@@ -61,6 +61,7 @@ const AskScreen = ({navigation}: any) => {
     setValue,
     watch,
     formState: {errors, isValid},
+    reset,
   } = useForm<any>({
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -89,6 +90,12 @@ const AskScreen = ({navigation}: any) => {
     }
   }, [watch(CREATE_ASK_FIELDS.businessRequirement), showForm?.business_requirement]);
 
+  useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, []);
+
   const onBack = () => {
     navigation.goBack();
   };
@@ -113,7 +120,7 @@ const AskScreen = ({navigation}: any) => {
   const onShowRole = () => {
     setShowForm({
       ...showForm,
-      business_detail: true,
+      user_role: true,
     });
   };
 
@@ -201,6 +208,7 @@ const AskScreen = ({navigation}: any) => {
     }
     credentials.demographic = textDemographic;
     credentials.user_role = `${t('role')} ${credentials.user_role}`;
+    console.log('credentials==========>', credentials);
     dispatch(setDataCreateAsk1(credentials));
     navigation.navigate(AppRoute.ASK_TWO);
   };

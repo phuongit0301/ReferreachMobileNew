@@ -60,6 +60,10 @@ const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3
       formData.append('criterium_attributes[][text]', dataStep2.criteria5);
     }
 
+    if (dataStep3?.additional_detail) {
+      formData.append('additional_detail', dataStep3?.additional_detail);
+    }
+
     if (dataStep3.filesUpload?.length) {
       for (const file of dataStep3.filesUpload) {
         formData.append('documents_attributes[][file]', {
@@ -69,7 +73,7 @@ const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3
         });
       }
     }
-
+    console.log('formData======>', formData);
     dispatch(showLoading());
     dispatch(
       createAsk(formData, (response: any) => {
@@ -79,9 +83,6 @@ const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3
         }
       }),
     );
-    // if (dataStep1.details) {
-    //   formData.append('details', dataStep1.business_detail);
-    // }
   };
 
   return (
