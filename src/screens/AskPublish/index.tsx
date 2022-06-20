@@ -1,33 +1,13 @@
-import React, {useState} from 'react';
-import {View, ScrollView, TouchableOpacity, TextInput, FlatList, Platform, KeyboardAvoidingView} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React from 'react';
+import {View} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import SelectDropdown from 'react-native-select-dropdown';
-import {useSelector} from 'react-redux';
-import Svg, {Path} from 'react-native-svg';
 
-import {BottomTabParams} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {ButtonSecond, Category, HeaderSmallBlueWithBG, Link, Paragraph, Tags} from '~Root/components';
-import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
-import LinearGradient from 'react-native-linear-gradient';
+import {ButtonSecond, Link, Paragraph} from '~Root/components';
+import {GlobalStyles, IMAGES} from '~Root/config';
 import FastImage from 'react-native-fast-image';
-import {IGlobalState} from '~Root/types';
 import styles from './styles';
-import {adjust} from '~Root/utils';
-
-type Props = NativeStackScreenProps<BottomTabParams, AppRoute.AIR_FEED>;
-
-const PAGINATION = [1, 2, 3];
-const DEFAULT_FORM_STATE = {
-  greeting: false,
-  role: false,
-  position: true,
-  description: false,
-  details: false,
-  positionSuggestion: false,
-  descriptionSuggestion: false,
-};
+import {CommonActions} from '@react-navigation/native';
 
 const AskPubish = ({navigation}: any) => {
   const {t} = useTranslation();
@@ -36,6 +16,11 @@ const AskPubish = ({navigation}: any) => {
     console.log(123123);
   };
   const onLinkClick = () => {
+    const resetAction = CommonActions.reset({
+      index: 0,
+      routes: [{name: AppRoute.ASK}],
+    });
+    navigation.dispatch(resetAction);
     navigation.navigate(AppRoute.YOUR_ASK);
   };
 

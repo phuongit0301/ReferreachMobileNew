@@ -11,6 +11,7 @@ import {
   SET_FEED_ITEM_READ_REQUESTED,
   SET_FEED_ITEM_READ_SUCCESS,
   SET_FEED_ITEM_READ_FAILURE,
+  SET_FEED_VISIBLE_MENU,
 } from './constants';
 export interface IFeedItemsState {
   message: string;
@@ -24,7 +25,15 @@ export interface IFeedItemsState {
     data: IDataSuggest[];
     included: IIncluded[];
   };
+  dataSelected: any;
   page: number;
+  visibleMenu: {
+    show: boolean;
+    coordinate: {
+      top: number;
+      left: number;
+    };
+  };
   callback: () => void;
 }
 
@@ -159,6 +168,12 @@ export interface IActionSetFeedItemReadFailure {
   callback?: () => void;
 }
 
+export interface IActionSetFeedVisibleMenu {
+  type: typeof SET_FEED_VISIBLE_MENU;
+  payload: any;
+  callback: () => void;
+}
+
 export type IActionsUser =
   | IActionFeedItemsListRequested
   | IActionFeedItemsListSuccess
@@ -168,4 +183,5 @@ export type IActionsUser =
   | IActionFeedItemPaginationFailure
   | IActionSetFeedItemReadRequested
   | IActionSetFeedItemReadSuccess
-  | IActionSetFeedItemReadFailure;
+  | IActionSetFeedItemReadFailure
+  | IActionSetFeedVisibleMenu;

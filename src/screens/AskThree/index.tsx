@@ -46,8 +46,11 @@ const AskThreeScreen = ({navigation}: any) => {
   };
 
   const onPage = (number: number) => {
-    if (number === 1) {
+    if (number === 2) {
       navigation.goBack();
+    }
+    if (number === 1) {
+      navigation.pop(2);
     }
   };
 

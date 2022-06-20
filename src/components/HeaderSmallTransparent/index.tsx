@@ -19,6 +19,7 @@ interface Props {
   isRightButton?: boolean;
   onRightPress?: () => void;
   iconRightUrl?: number;
+  iconRightContainerStyle?: ViewStyle;
   iconRightStyle?: ImageStyle;
 }
 
@@ -33,6 +34,7 @@ const HeaderSmallTransparent: React.FC<Props> = ({
   iconStyle = {},
   isRightButton = false,
   onRightPress = () => {},
+  iconRightContainerStyle = {},
   iconRightStyle = {},
   iconRightUrl = IMAGES.iconBurgerMenu,
 }) => {
@@ -53,7 +55,7 @@ const HeaderSmallTransparent: React.FC<Props> = ({
         style={[GlobalStyles.headerTextBlue, styles.center, headerTextStyle]}
         title={title ?? t('referreach')}
       />
-      <View style={styles.right}>
+      <View style={[styles.right, iconRightContainerStyle]}>
         {isRightButton && (
           <TouchableOpacity onPress={onRightPress} style={[GlobalStyles.mr15]}>
             <Image source={iconRightUrl} resizeMode='contain' style={[styles.iconRight, iconRightStyle]} />

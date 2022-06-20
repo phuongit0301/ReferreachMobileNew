@@ -28,9 +28,10 @@ const Location: React.FC<Props> = ({register, setValue, visibleLocation = false,
   });
 
   useEffect(() => {
-      console.log('data======>', data)
-    setLocationState({...locationState, keyword: data?.text ?? ''});
-    setValue(CREATE_ASK_FIELDS.location, data?.text);
+    if (data) {
+      setLocationState({...locationState, keyword: data?.text ?? ''});
+      setValue(CREATE_ASK_FIELDS.location, data?.text);
+    }
   }, [data]);
 
   const onSearch = useCallback(

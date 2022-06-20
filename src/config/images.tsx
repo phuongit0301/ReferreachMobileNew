@@ -25,6 +25,7 @@ export const IMAGES = {
   iconBurgerMenuWhite: require('~Root/assets/images/icon_burger_menu_white.png'),
   iconCloseWhite: require('~Root/assets/images/icon_close_white.png'),
   iconCloseBlue: require('~Root/assets/images/icon_close_blue.png'),
+  iconCloseBlueTransparent: require('~Root/assets/images/icon_close_blue_transparent.png'),
   iconYourAsk: require('~Root/assets/images/icon_your_ask.png'),
   iconYourAskActive: require('~Root/assets/images/icon_your_ask_active.png'),
   iconAIRFeed: require('~Root/assets/images/icon_air_feed.png'),
@@ -91,4 +92,6 @@ export const IMAGES = {
   iconMessage: require('~Root/assets/images/icon_message.png'),
   iconDelete: require('~Root/assets/images/icon_delete.png'),
   iconShare: require('~Root/assets/images/icon_share.png'),
+  iconShareThis: require('~Root/assets/images/icon_share_this.png'),
+  iconStartChat: require('~Root/assets/images/icon_start_chat.png'),
 };

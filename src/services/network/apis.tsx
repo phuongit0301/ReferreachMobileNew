@@ -4,11 +4,16 @@ import axios from '~Root/services/axios';
 import * as API from '~Root/private/api';
 
 export default class NetworkAPI {
-  static async getList() {
+  static async getList(payload: string) {
     try {
+      let url = API.NETWORK_CONNECTION_LIST_URL;
+
+      if (payload && payload !== '') {
+        url += `?keyword=${payload}`;
+      }
       const response = await axios({
         method: 'GET',
-        url: API.NETWORK_CONNECTION_LIST_URL,
+        url: url,
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',

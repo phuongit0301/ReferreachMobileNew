@@ -107,4 +107,7 @@ export default StyleSheet.create({
   textRight: {
     textAlign: 'right',
   },
+  textLeft: {
+    textAlign: 'left',
+  },
 });

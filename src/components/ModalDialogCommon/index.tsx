@@ -129,7 +129,6 @@ const ModalDialogCommon: React.FC<Props> = ({
               </View>
               <Button
                 title={btnText}
-                bordered
                 onPress={onPositive}
                 containerStyle={{...styles.btnStyle, ...styleBtnText}}
                 textStyle={styles.h3BoldDefault}

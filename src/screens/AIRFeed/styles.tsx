@@ -72,8 +72,8 @@ export default StyleSheet.create({
     width: '55%',
   },
   iconEditAsk: {
-    width: adjust(24),
-    height: adjust(24),
+    width: adjust(23),
+    height: adjust(16),
   },
   iconEditAskContainer: {
     width: adjust(24),
@@ -83,17 +83,13 @@ export default StyleSheet.create({
     width: adjust(17),
     height: adjust(17),
   },
-  iconExtendDeadlineContainer: {
-    width: adjust(24),
-    height: adjust(24),
-  },
-  iconEndAskContainer: {
+  iconStartChatContainer: {
     width: adjust(24),
     height: adjust(24),
   },
   iconEndAsk: {
-    width: adjust(18),
-    height: adjust(18),
+    width: adjust(15),
+    height: adjust(16),
   },
   border: {
     borderWidth: 1,
@@ -178,7 +174,7 @@ export default StyleSheet.create({
   btnText: {
     fontSize: adjust(9),
     lineHeight: adjust(15),
-    width: '70%',
+    width: Platform.OS === 'android' ? '80%' : '70%',
   },
   btnText2: {
     fontSize: adjust(9),

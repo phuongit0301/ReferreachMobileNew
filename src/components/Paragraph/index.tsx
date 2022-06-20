@@ -37,6 +37,7 @@ interface Props {
   textBrightGrayColor?: boolean;
   textCenter?: boolean;
   textRight?: boolean;
+  textLeft?: boolean;
   title?: string;
   style?: any;
   numberOfLines?: number;
@@ -77,6 +78,7 @@ const Paragraph: React.FC<Props> = ({
   textBrightGrayColor,
   textCenter,
   textRight,
+  textLeft,
   title,
   style,
   numberOfLines = undefined,
@@ -122,6 +124,7 @@ const Paragraph: React.FC<Props> = ({
         textBrightGrayColor && styles.textBrightGrayColor,
         textCenter && styles.textCenter,
         textRight && styles.textRight,
+        textLeft && styles.textLeft,
         style,
       ]}
       {...rest}>

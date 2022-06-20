@@ -12,6 +12,9 @@ export const initialState: INetworkConnectionListState = {
   loading: false,
   data: [],
   included: [],
+  page: 1,
+  per: 10,
+  keyword: '',
   callback: () => {},
 };
 
@@ -33,7 +36,7 @@ const userReducer = (
       };
     case GET_NETWORK_CONNECTION_LIST_FAILURE:
     case REMOVE_NETWORK_CONNECTION_FAILURE:
-      return {...state, loading: false, message: action.payload.error};
+      return {...state, loading: false, message: action.payload.message};
     default:
       return state;
   }

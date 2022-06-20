@@ -18,7 +18,7 @@ import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {Button, HeaderSmallTransparent, InputIconValidate, Loading, Location, Paragraph} from '~Root/components';
 import {BASE_COLORS, CREATE_ASK_FIELDS, CREATE_ASK_KEYS, GlobalStyles, IMAGES} from '~Root/config';
-import {CompositeScreenProps, CommonActions, useIsFocused} from '@react-navigation/native';
+import {CompositeScreenProps, useIsFocused} from '@react-navigation/native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
@@ -32,6 +32,7 @@ import {
   IAskInside,
   IFiles,
 } from '~Root/services/ask/types';
+import { setAskDetails } from '~Root/services/askDetails/actions';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -119,6 +120,9 @@ const AskEditScreen = ({route, navigation}: Props) => {
         },
       ),
     );
+    return () => {
+      setAskDetails();
+    };
   }, [isFocused]);
 
   const setDataForm = (item: IAskInside['attributes']) => {
@@ -162,7 +166,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
         setValue(CREATE_ASK_FIELDS[`criteria${index + 1}`], x.text);
       }
     });
-  }, [inputDynamic]);
+  }, [inputDynamic.items]);
 
   const onToggleDrawer = () => {
     navigation.toggleDrawer();
@@ -173,6 +177,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
     let tempDeleted = inputDynamic.deleted;
     if (inputDynamic?.items[index]?.id) {
       tempDeleted = [...tempDeleted, inputDynamic?.items[index]];
+      setValue(CREATE_ASK_FIELDS[`criteria${index + 1}`], '');
       unregister(CREATE_ASK_FIELDS[`criteria${index + 1}`], {keepValue: false});
     }
 
@@ -322,6 +327,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
         formDataRemove.append('documents_attributes[][_destroy]', true);
       }
     }
+
     dispatch(showLoading());
     dispatch(
       updateAsk(
@@ -333,12 +339,12 @@ const AskEditScreen = ({route, navigation}: Props) => {
         (response: IActionUpdateAskSuccess['payload']) => {
           dispatch(hideLoading());
           reset();
-          if (response.success) {
-            if (response.isExpired) {
+          if (response?.success) {
+            if (response?.isExpired) {
               Toast.show({
                 position: 'bottom',
                 type: 'info',
-                text1: response.message,
+                text1: response?.message,
                 visibilityTime: 2000,
                 autoHide: true,
               });

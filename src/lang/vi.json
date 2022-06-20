@@ -106,5 +106,9 @@
     "message": "Message",
     "read_less": "Read Less",
     "read_more": "Read More",
-    "search_for_contacts": "Search for contacts"
+    "search_for_contacts": "Search for contacts",
+    "share_this": "Share this",
+    "start_chat": "Start chat",
+    "name": "Name",
+    "send_invite": "Send invite"
 }

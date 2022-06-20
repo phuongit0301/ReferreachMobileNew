@@ -9,6 +9,7 @@ import {IContactState} from '~Root/services/contact/types';
 import {IIndustryState} from '~Root/services/industry/types';
 import {IRegisterState} from '~Root/services/register/types';
 import {IAskState} from '~Root/services/ask/types';
+import {IAskDetailsState} from '~Root/services/askDetails/types';
 import {INetworkConnectionListState} from '~Root/services/network/types';
 import {IChatState} from '~Root/services/chat/types';
 import {IFeedItemsState} from '~Root/services/feed/types';
@@ -23,6 +24,7 @@ export interface IGlobalState {
   industryState: IIndustryState;
   registerState: IRegisterState;
   askState: IAskState;
+  askDetailState: IAskDetailsState;
   networkState: INetworkConnectionListState;
   chatState: IChatState;
   feedState: IFeedItemsState;

@@ -61,16 +61,6 @@ const AskTwocreen = ({navigation}: any) => {
     mode: 'onChange',
   });
 
-  // useMemo(() => {
-  //   if (watch(CREATE_ASK_FIELDS.location) !== '') {
-  //     dispatch(
-  //       getLocation(watch(CREATE_ASK_FIELDS.location), response => {
-  //         // setVisibleLocation(true);
-  //       }),
-  //     );
-  //   }
-  // }, [watch(CREATE_ASK_FIELDS.location)]);
-
   const onBack = () => {
     navigation.goBack();
   };
@@ -116,6 +106,7 @@ const AskTwocreen = ({navigation}: any) => {
   };
 
   const onNext = (credentials: any) => {
+    console.log('credentials2=======>', credentials);
     dispatch(setDataCreateAsk2(credentials));
     navigation.navigate(AppRoute.ASK_THREE);
   };
@@ -158,10 +149,7 @@ const AskTwocreen = ({navigation}: any) => {
         onRightPress={onToggleDrawer}
       />
       <View style={[GlobalStyles.container, styles.container, styles.contentContainer]}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={GlobalStyles.container}
-          keyboardVerticalOffset={80}>
+        <KeyboardAvoidingView style={GlobalStyles.container}>
           <View style={[GlobalStyles.mb20, GlobalStyles.container]}>
             <ScrollView>
               <View style={[GlobalStyles.flexColumn, GlobalStyles.mt10]}>
@@ -190,48 +178,32 @@ const AskTwocreen = ({navigation}: any) => {
                   })}
                 </View>
                 <View style={[GlobalStyles.container, GlobalStyles.mh15, GlobalStyles.mt20]}>
-                  {/* <InputIconValidate
-                    label={`${t('location')}*`}
-                    inputStyleWrapper={styles.inputWrapperStyle}
-                    inputStyle={styles.inputIconStyle}
-                    labelStyle={styles.labelStyle}
-                    selectionColor={BASE_COLORS.blackColor}
-                    placeholderTextColor={BASE_COLORS.grayColor}
-                    placeholder='Select Your Location'
-                    errors={errors}
-                    control={control}
-                    name={CREATE_ASK_FIELDS.location}
-                    register={register}
-                    showIcon={true}
-                    isIconImage={true}
-                    uri={IMAGES.iconGlobeEarth}
-                    imageStyleContainer={styles.iconContainer}
-                    styleContainer={GlobalStyles.mb5}
-                    imageStyle={styles.icon}
-                  /> */}
-                  <TextInput
-                    {...register(CREATE_ASK_FIELDS.location)}
-                    value={keyword}
-                    placeholder={'Select Your Location'}
-                    onChangeText={onSearch}
-                    selectionColor={BASE_COLORS.blackColor}
-                    placeholderTextColor={BASE_COLORS.grayColor}
-                    style={[GlobalStyles.ph10, styles.inputWrapperStyle]}
-                  />
-                  {askState?.dataLocationSuggest && askState?.dataLocationSuggest?.length > 0 && (
-                    <View style={[GlobalStyles.container, GlobalStyles.pv15, styles.locationContainer]}>
-                      <FlatList
-                        contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
-                        style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
-                        data={askState?.dataLocationSuggest}
-                        renderItem={renderLocationItem}
-                        keyExtractor={(item, index) => `location-suggest-${index}`}
-                        ItemSeparatorComponent={() => <View style={styles.borderBottom} />}
-                        keyboardShouldPersistTaps='handled'
-                        numColumns={1}
-                      />
-                    </View>
-                  )}
+                  <View style={GlobalStyles.mb15}>
+                    <Paragraph h5 bold600 textSteelBlueColor title='Location *' style={GlobalStyles.mb5} />
+                    <TextInput
+                      {...register(CREATE_ASK_FIELDS.location)}
+                      value={keyword}
+                      placeholder={'Select Your Location'}
+                      onChangeText={onSearch}
+                      selectionColor={BASE_COLORS.blackColor}
+                      placeholderTextColor={BASE_COLORS.grayColor}
+                      style={[GlobalStyles.ph15, styles.inputWrapperStyle]}
+                    />
+                    {askState?.dataLocationSuggest && askState?.dataLocationSuggest?.length > 0 && (
+                      <View style={[GlobalStyles.container, GlobalStyles.pv15, styles.locationContainer]}>
+                        <FlatList
+                          contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
+                          style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
+                          data={askState?.dataLocationSuggest}
+                          renderItem={renderLocationItem}
+                          keyExtractor={(item, index) => `location-suggest-${index}`}
+                          ItemSeparatorComponent={() => <View style={styles.borderBottom} />}
+                          keyboardShouldPersistTaps='handled'
+                          numColumns={1}
+                        />
+                      </View>
+                    )}
+                  </View>
                   <InputIconValidate
                     label={`${t('by_when')}*`}
                     inputStyleWrapper={styles.inputWrapperStyle}
@@ -248,8 +220,9 @@ const AskTwocreen = ({navigation}: any) => {
                     isIconImage={true}
                     uri={IMAGES.iconCalendarBlue}
                     imageStyleContainer={styles.iconContainer}
-                    styleContainer={GlobalStyles.mb5}
+                    styleContainer={GlobalStyles.mb15}
                     imageStyle={styles.icon}
+                    errorStyle={GlobalStyles.mt0}
                     editable={false}
                     onPressIn={onShowDatePicker}
                   />

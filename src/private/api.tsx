@@ -3,7 +3,7 @@ export const MOCK_USER_INFO_URL = `${ROOT_MOCK_URL}/mock/users/current`;
 export const MOCK_LIST_ASK_URL = `${ROOT_MOCK_URL}/mock/users/current`;
 export const MOCK_CREATE_ASK_URL = `${ROOT_MOCK_URL}/asks/currentuser`;
 
-// export const ROOT_URL = 'https://investor-api.referreach.com/api';
+export const DEEP_LINK_URL = 'https://app-dev.referreach.com';
 export const ROOT_URL = 'https://dev-api-ls.referreach.com/v1';
 export const ROOT_API_URL = 'https://dev-api-ls.referreach.com/api/v1';
 export const LOGIN_URL = `${ROOT_URL}/auth/sign_in`;
@@ -22,6 +22,7 @@ export const GET_ALL_INDUSTRIES_URL = `${ROOT_API_URL}/autocomplete/industry`;
 export const GET_ALL_LOCATION = `${ROOT_API_URL}/autocomplete/location`;
 export const GET_ALL_JOB = `${ROOT_API_URL}/autocomplete/job`;
 export const CREATE_ASK_URL = `${ROOT_API_URL}/asks`;
+export const GET_ASK_DETAILS_URL = (id: number) => `${ROOT_API_URL}/asks/${id}`;
 export const UPDATE_ASK_URL = (id: number) => `${ROOT_API_URL}/asks/${id}`;
 export const NETWORK_CONNECTION_LIST_URL = `${ROOT_API_URL}/network_connections/list`;
 export const REMOVE_NETWORK_CONNECTION_URL = (id: string) => `${ROOT_API_URL}/network_connections/${id}`;
