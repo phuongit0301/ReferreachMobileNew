@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, {useEffect, useState} from 'react';
-import {View, ScrollView, TouchableOpacity, TextInput, FlatList, Platform, KeyboardAvoidingView} from 'react-native';
+import {View, ScrollView, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useTranslation} from 'react-i18next';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -9,6 +9,7 @@ import Svg, {Path} from 'react-native-svg';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {BottomTabParams} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
@@ -308,10 +309,10 @@ const AskScreen = ({navigation}: any) => {
       <View style={[GlobalStyles.container, styles.container, styles.contentContainer]}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={GlobalStyles.container}
-          keyboardVerticalOffset={80}>
+          keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+          style={GlobalStyles.container}>
           <View style={[GlobalStyles.mb20, GlobalStyles.container]}>
-            <ScrollView>
+            <ScrollView style={GlobalStyles.container}>
               <View style={[GlobalStyles.flexColumn, GlobalStyles.mt10]}>
                 <View style={[GlobalStyles.flexRow, GlobalStyles.justifyCenter]}>
                   {PAGINATION.map(item => {
@@ -507,7 +508,7 @@ const AskScreen = ({navigation}: any) => {
               textDefault={textGreetingDefault}
             />
           )}
-          {(showForm?.business_requirement_suggestion && !!watch(CREATE_ASK_FIELDS.businessRequirement)) && (
+          {(showForm?.business_requirement_suggestion && !!watch(CREATE_ASK_FIELDS.businessRequirement) && askState?.dataPositionSuggest?.length > 0) && (
             <View style={[GlobalStyles.mh20, GlobalStyles.container, GlobalStyles.pv15, styles.borderTop]}>
               <FlatList
                 contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}

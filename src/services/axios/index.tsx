@@ -1,7 +1,9 @@
 import axios, {AxiosRequestConfig} from 'axios';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import AuthAPI from '~Root/services/auth/apis';
 import {logout} from '~Root/services/auth/actions';
 import rootStore from '~Root/store';
+import { AppRoute } from '~Root/navigation/AppRoute';
 
 // Add a request interceptor
 axios.interceptors.request.use(
@@ -32,11 +34,21 @@ axios.interceptors.response.use(
     return response;
   },
   function (error) {
+    const navigation = useNavigation();
     //   const originalRequest = error.config;
-    console.log('error interceptor=======>', error);
+    console.log('error interceptor=======>', JSON.stringify(error));
+    console.log('error interceptor=======>', error?.response);
     if (error?.response?.status === 401) {
       const {store} = rootStore();
       store.dispatch(logout());
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [
+            { name: AppRoute.LOGIN },
+          ],
+        })
+      )
       return Promise.reject(error);
     }
 

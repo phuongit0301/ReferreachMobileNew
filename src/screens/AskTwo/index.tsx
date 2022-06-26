@@ -118,7 +118,6 @@ const AskTwocreen = ({navigation}: any) => {
   };
 
   const onNext = (credentials: any) => {
-    console.log('credentials2=======>', credentials);
     dispatch(setDataCreateAsk2(credentials));
     navigation.navigate(AppRoute.ASK_THREE);
   };
@@ -158,9 +157,12 @@ const AskTwocreen = ({navigation}: any) => {
         onRightPress={onToggleDrawer}
       />
       <View style={[GlobalStyles.container, styles.container, styles.contentContainer]}>
-        <KeyboardAvoidingView style={GlobalStyles.container}>
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+          style={GlobalStyles.container}>
           <View style={[GlobalStyles.mb20, GlobalStyles.container]}>
-            <ScrollView>
+            <ScrollView style={GlobalStyles.container}>
               <View style={[GlobalStyles.flexColumn, GlobalStyles.mt10]}>
                 <View style={[GlobalStyles.flexRow, GlobalStyles.justifyCenter]}>
                   {PAGINATION.map((item, index) => {
@@ -290,7 +292,7 @@ const AskTwocreen = ({navigation}: any) => {
                 </View>
               </View>
             </ScrollView>
-            <View style={GlobalStyles.container}>
+            <View>
               {showTooltip && (
                 <View style={styles.tooltipContentStyle}>
                   <View style={GlobalStyles.flexColumn}>

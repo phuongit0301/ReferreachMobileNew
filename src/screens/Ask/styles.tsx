@@ -1,6 +1,6 @@
 import {Platform, StyleSheet} from 'react-native';
 import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
-import {headerByRatio, adjust} from '~Root/utils';
+import {adjust} from '~Root/utils';
 
 export default StyleSheet.create({
   container: {
@@ -97,7 +97,7 @@ export default StyleSheet.create({
   tooltipContentStyle: {
     ...GlobalStyles.p20,
     position: 'absolute',
-    bottom: adjust(55),
+    bottom: adjust(60),
     left: adjust(40),
     borderRadius: adjust(10),
     backgroundColor: BASE_COLORS.whiteColor,
