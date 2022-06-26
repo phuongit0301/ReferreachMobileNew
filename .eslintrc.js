@@ -36,10 +36,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/strict-boolean-expressions': 'off',
     'no-empty-function': 'off',
-    '@typescript-eslint/no-empty-function': [
-      'error',
-      {allow: ['arrowFunctions', 'generatorFunctions']},
-    ],
+    '@typescript-eslint/no-empty-function': ['error', {allow: ['arrowFunctions', 'generatorFunctions']}],
     '@typescript-eslint/naming-convention': [
       'error',
       {
@@ -51,6 +48,24 @@ module.exports = {
     '@typescript-eslint/no-shadow': ['off'],
     'react-hooks/exhaustive-deps': 'warn',
     '@typescript-eslint/ban-types': 'off',
+    '@typescript-eslint/no-misused-promises': [
+      'error',
+      {
+        checksConditionals: false,
+        checksVoidReturn: false,
+        checksSpreads: false,
+      },
+    ],
+    '@typescript-eslint/promise-function-async': [
+      'error',
+      {
+        allowedPromiseNames: false,
+        checkArrowFunctions: true,
+        checkFunctionDeclarations: true,
+        checkFunctionExpressions: true,
+        checkMethodDeclarations: true,
+      },
+    ],
   },
   settings: {
     'import/resolver': {

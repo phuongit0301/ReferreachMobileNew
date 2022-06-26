@@ -13,6 +13,7 @@ import Input from './Input';
 import InputValidate from './InputValidate';
 import InputValidateControl from './InputValidateControl';
 import InputIconValidate from './InputIconValidate';
+import InputIconValidateNew from './InputIconValidateNew';
 import Paragraph from './Paragraph';
 import Link from './Link';
 import Button from './Button';
@@ -41,6 +42,7 @@ import Icon from './Icon';
 import BackButton from './BackButton';
 import UserCard from './UserCard';
 import Category from './Category';
+import Category2 from './Category2';
 import ModalDialog from './ModalDialog';
 import ModalDialogRefer from './ModalDialogRefer';
 import ModalDialogMessage from './ModalDialogMessage';
@@ -82,6 +84,7 @@ export {
   InputValidate,
   InputValidateControl,
   InputIconValidate,
+  InputIconValidateNew,
   Paragraph,
   Link,
   Button,
@@ -110,6 +113,7 @@ export {
   BackButton,
   UserCard,
   Category,
+  Category2,
   ModalDialog,
   ModalDialogRefer,
   ModalDialogMessage,

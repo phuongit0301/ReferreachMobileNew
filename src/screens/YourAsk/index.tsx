@@ -90,9 +90,15 @@ const YourAskScreen = ({navigation}: Props) => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
+    const params = {
+      page: askState?.page,
+      per: askState?.per,
+    };
+    dispatch(
+      getAsk(params, () => {
+        setRefreshing(false);
+      }),
+    );
   };
 
   const onMenu = (item: IAskInside | null, evt?: any) => {

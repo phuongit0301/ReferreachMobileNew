@@ -7,7 +7,7 @@ import {
   SET_DATA_CREATE_ASK_STEP_3,
   SET_LOCATION,
   CREATE_ASK_REQUESTED,
-  GET_ASK_DETAILS_REQUESTED,
+  GET_ASK_EDIT_REQUESTED,
   UPDATE_ASK_REQUESTED,
   SET_VISIBLE_MENU,
 } from './constants';
@@ -31,7 +31,7 @@ export const getAskDetails = (
   callback: (response: IActionGetAskDetailsSuccess['payload'] | IActionGetAskDetailsFailure['payload']) => void,
 ) => {
   return {
-    type: GET_ASK_DETAILS_REQUESTED,
+    type: GET_ASK_EDIT_REQUESTED,
     payload,
     callback,
   };

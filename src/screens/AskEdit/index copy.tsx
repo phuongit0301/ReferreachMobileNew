@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {useForm, useFieldArray} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SelectDropdown from 'react-native-select-dropdown';
 import DocumentPicker, {DocumentPickerResponse} from 'react-native-document-picker';
@@ -58,17 +58,11 @@ const schema = yup.object().shape({
     .max(130, 'Maximum characters exceeded'),
   [CREATE_ASK_FIELDS.location]: yup.string().required('Invalid Input'),
   [CREATE_ASK_FIELDS.deadline]: yup.string().required('Invalid Input'),
-  [CREATE_ASK_FIELDS.criteria]: yup.array().of(
-    yup.object().shape({
-      id: yup.string(),
-      text: yup.string().max(28, 'Maximum characters exceeded'),
-    }),
-  ),
-  [CREATE_ASK_FIELDS.criteria0]: yup.string().max(28, 'Maximum characters exceeded'),
   [CREATE_ASK_FIELDS.criteria1]: yup.string().max(28, 'Maximum characters exceeded'),
   [CREATE_ASK_FIELDS.criteria2]: yup.string().max(28, 'Maximum characters exceeded'),
   [CREATE_ASK_FIELDS.criteria3]: yup.string().max(28, 'Maximum characters exceeded'),
   [CREATE_ASK_FIELDS.criteria4]: yup.string().max(28, 'Maximum characters exceeded'),
+  [CREATE_ASK_FIELDS.criteria5]: yup.string().max(28, 'Maximum characters exceeded'),
   [CREATE_ASK_FIELDS.additiondalDetail]: yup.string().max(130, 'Maximum characters exceeded'),
 });
 
@@ -76,7 +70,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
   const {t} = useTranslation();
   const {
     register,
-    trigger,
+    unregister,
     control,
     handleSubmit,
     setFocus,
@@ -86,13 +80,8 @@ const AskEditScreen = ({route, navigation}: Props) => {
     formState: {errors, isValid},
   } = useForm<any>({
     resolver: yupResolver(schema),
-    mode: 'all',
+    mode: 'onChange',
   });
-  const {fields, append, remove} = useFieldArray({
-    control,
-    name: 'criteria',
-  });
-
   const isFocused = useIsFocused();
 
   const dispatch = useDispatch();
@@ -158,7 +147,10 @@ const AskEditScreen = ({route, navigation}: Props) => {
       setValue(CREATE_ASK_FIELDS.deadline, dateFormat3(item.deadline));
     }
     if (item?.criterium && item?.criterium?.length > 0) {
-      setValue(CREATE_ASK_FIELDS.criteria, item?.criterium);
+      setInputDynamic({
+        deleted: [],
+        items: item?.criterium,
+      });
     }
     if (item?.additional_detail) {
       setValue(CREATE_ASK_FIELDS.additiondalDetail, item.additional_detail);
@@ -167,31 +159,41 @@ const AskEditScreen = ({route, navigation}: Props) => {
   };
 
   useEffect(() => {
-    if (watch(CREATE_ASK_FIELDS.criteria)?.length > 0) {
-      watch(CREATE_ASK_FIELDS?.criteria).forEach((x: any, index: number) => {
-        if (CREATE_ASK_FIELDS[`criteria${index}`]) {
-          setValue(CREATE_ASK_FIELDS[`criteria${index}`], x?.text ?? '');
-        }
-      });
-    }
-  }, [watch(CREATE_ASK_FIELDS.criteria)]);
+    inputDynamic.items?.forEach((x, index) => {
+      if (watch(CREATE_ASK_FIELDS[`criteria${index + 1}`])) {
+        setValue(CREATE_ASK_FIELDS[`criteria${index + 1}`], watch(CREATE_ASK_FIELDS[`criteria${index + 1}`]));
+      } else {
+        setValue(CREATE_ASK_FIELDS[`criteria${index + 1}`], x.text);
+      }
+    });
+  }, [inputDynamic.items]);
 
   const onToggleDrawer = () => {
     navigation.toggleDrawer();
   };
 
   const onRemoveInput = (index: number) => {
-    const items = watch(CREATE_ASK_FIELDS.criteria);
-    remove(index);
+    const temp = inputDynamic.items.filter((x, i) => i !== index);
+    let tempDeleted = inputDynamic.deleted;
+    if (inputDynamic?.items[index]?.id) {
+      tempDeleted = [...tempDeleted, inputDynamic?.items[index]];
+      setValue(CREATE_ASK_FIELDS[`criteria${index + 1}`], '');
+      unregister(CREATE_ASK_FIELDS[`criteria${index + 1}`], {keepValue: false});
+    }
+
     setInputDynamic({
-      ...inputDynamic,
-      deleted: [...inputDynamic.deleted, items[index]],
+      deleted: tempDeleted,
+      items: temp,
     });
   };
 
   const onAddInput = () => {
-    if (watch(CREATE_ASK_FIELDS.criteria)?.length < 4) {
-      append({text: ''});
+    if (inputDynamic?.items.length < 4) {
+      setInputDynamic({
+        ...inputDynamic,
+        items: [...inputDynamic?.items, {id: null, value: '1'}],
+      });
+      setValue(CREATE_ASK_FIELDS[`criteria${inputDynamic?.items?.length + 1}`], '');
     }
   };
 
@@ -286,18 +288,14 @@ const AskEditScreen = ({route, navigation}: Props) => {
       formData.append('ask_location_attributes[text]', credentials.location);
       formData.append('ask_location_attributes[id]', askState?.dataDetails?.attributes?.ask_location?.id);
     }
+    for (let i = 0; i < inputDynamic.items?.length; i++) {
+      if (credentials[`criteria${i + 1}`] && credentials[`criteria${i + 1}`] !== '' && inputDynamic.items[i]) {
+        formData.append('criterium_attributes[][text]', credentials[`criteria${i + 1}`]);
 
-    if (credentials.criteria) {
-      for (let i = 0; i < credentials.criteria?.length; i++) {
-        if (credentials[`criteria${i}`] && credentials[`criteria${i}`] !== '') {
-          formData.append('criterium_attributes[][text]', credentials[`criteria${i}`]);
-
-          if (credentials.criteria[i]?.id) {
-            formData.append('criterium_attributes[][id]', credentials.criteria[i]?.id);
-          }
+        if (inputDynamic.items[i]?.id) {
+          formData.append('criterium_attributes[][id]', inputDynamic.items[i]?.id);
         }
       }
-      delete credentials.criteria;
     }
 
     if (inputDynamic.deleted.length > 0) {
@@ -347,7 +345,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
                 position: 'bottom',
                 type: 'info',
                 text1: response?.message,
-                visibilityTime: 1000,
+                visibilityTime: 2000,
                 autoHide: true,
               });
             } else {
@@ -355,13 +353,13 @@ const AskEditScreen = ({route, navigation}: Props) => {
                 position: 'bottom',
                 type: 'success',
                 text1: response.message,
-                visibilityTime: 1000,
+                visibilityTime: 2000,
                 autoHide: true,
               });
             }
             setTimeout(() => {
               navigation.goBack();
-            }, 1200);
+            }, 2200);
           }
         },
       ),
@@ -371,7 +369,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
   if (loadingState?.loading) {
     return <Loading />;
   }
-  console.log('errors====>', errors);
+console.log(inputDynamic);
   return (
     <View style={[GlobalStyles.container, GlobalStyles.bgWhite]}>
       <SafeAreaView style={GlobalStyles.container} edges={['top', 'right', 'left']}>
@@ -490,10 +488,6 @@ const AskEditScreen = ({route, navigation}: Props) => {
                       register={register}
                       setValue={setValue}
                       data={askState?.dataDetails?.attributes?.ask_location}
-                      errors={errors}
-                      control={control}
-                      watch={watch}
-                      trigger={trigger}
                     />
                   </View>
                   <InputIconValidate
@@ -525,8 +519,8 @@ const AskEditScreen = ({route, navigation}: Props) => {
                     onCancel={onShowDatePicker}
                   />
                   <View>
-                    {fields.length > 0 &&
-                      fields.map((item: any, index) => (
+                    {inputDynamic.items.length > 0 &&
+                      inputDynamic.items.map((item, index) => (
                         <InputIconValidate
                           label={`${t('criteria')} ${index + 1}`}
                           inputStyleWrapper={styles.inputDynamicContainer}
@@ -536,7 +530,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
                           placeholder={`${t('criteria')} ${index + 1}`}
                           errors={errors}
                           control={control}
-                          name={CREATE_ASK_FIELDS[`criteria${index}`]}
+                          name={CREATE_ASK_FIELDS[`criteria${index + 1}`]}
                           register={register}
                           showIcon={true}
                           isIconImage={true}
@@ -546,8 +540,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
                           imageStyle={styles.iconSubtract}
                           onIconClick={() => onRemoveInput(index)}
                           errorStyle={GlobalStyles.mt0}
-                          key={item?.id}
-                          defaultValue={item?.text}
+                          key={`edit-ask-criteria-${index + 1}`}
                         />
                       ))}
                     <TouchableOpacity onPress={onAddInput}>
@@ -576,7 +569,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
                   </View>
                   <View>
                     {filesUpload?.length > 0 &&
-                      filesUpload.map((item: any, index) =>
+                      filesUpload.map((item, index) =>
                         item?.id ? (
                           <View
                             style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb15]}

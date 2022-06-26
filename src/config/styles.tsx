@@ -340,6 +340,9 @@ export const GlobalStyles = StyleSheet.create({
   ml10: {
     marginLeft: adjust(10),
   },
+  mr3: {
+    marginRight: adjust(3),
+  },
   mr5: {
     marginRight: adjust(5),
   },
@@ -761,6 +764,9 @@ export const GlobalStyles = StyleSheet.create({
   },
   justifyEnd: {
     justifyContent: 'flex-end',
+  },
+  alignSelfStart: {
+    alignSelf: 'flex-start',
   },
   fullWidth: {
     width: '100%',

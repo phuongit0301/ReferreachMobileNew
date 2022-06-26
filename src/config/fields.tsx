@@ -76,6 +76,8 @@ export const CREATE_ASK_FIELDS = {
   businessRequirement: 'business_requirement',
   location: 'location',
   deadline: 'deadline',
+  criteria: 'criteria',
+  criteria0: 'criteria0',
   criteria1: 'criteria1',
   criteria2: 'criteria2',
   criteria3: 'criteria3',

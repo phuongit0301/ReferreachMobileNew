@@ -12,7 +12,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import Svg, {Path} from 'react-native-svg';
 
 import {BASE_COLORS, CREATE_ASK_FIELDS, CREATE_ASK_KEYS, GlobalStyles, IMAGES} from '~Root/config';
-import {HeaderSmallBlueWithBG, InputIconValidate, Paragraph} from '~Root/components';
+import {HeaderSmallBlueWithBG, InputIconValidate, InputIconValidateNew, Paragraph} from '~Root/components';
 import {BottomTabParams} from '~Root/navigation/config';
 import {dateFormat3, dateWithMonthsDelay} from '~Root/utils';
 import {getLocation, setDataCreateAsk2, setLocation} from '~Root/services/ask/actions';
@@ -42,11 +42,10 @@ const AskTwocreen = ({navigation}: any) => {
   const [currentPage, setPage] = useState(2);
   const [showTooltip, setShowTooltip] = useState(true);
   const [titleTooltip, setTitleTooltip] = useState('Where and when do you need it? Any criteria?');
-  const [textLocation, setTextLocation] = useState('');
-  const [visibleLocation, setVisibleLocation] = useState(false);
+  const [textLocation, setTextLocation] = useState(''); // location selected from search to compare with new value
+  const [isSelectedLocation, setSelectedLocation] = useState(false);
   const [inputDynamic, setInputDynamic] = useState(['1']);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
-  const [keyword, setKeyword] = useState('');
 
   const {
     register,
@@ -60,6 +59,19 @@ const AskTwocreen = ({navigation}: any) => {
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
+
+  useEffect(() => {
+    if (watch(CREATE_ASK_FIELDS.location) !== '') {
+      if (textLocation !== watch(CREATE_ASK_FIELDS.location)) {
+        setSelectedLocation(false);
+        dispatch(
+          getLocation(watch(CREATE_ASK_FIELDS.location), response => {
+            console.log(response);
+          }),
+        );
+      }
+    }
+  }, [watch(CREATE_ASK_FIELDS.location)]);
 
   const onBack = () => {
     navigation.goBack();
@@ -114,7 +126,8 @@ const AskTwocreen = ({navigation}: any) => {
   const onSelectLocation = (text: string) => {
     dispatch(setLocation(null));
     setValue(CREATE_ASK_FIELDS.location, text);
-    setKeyword(text);
+    setSelectedLocation(true);
+    setTextLocation(text);
   };
 
   const renderLocationItem = ({item}: {item: any}) => {
@@ -127,17 +140,13 @@ const AskTwocreen = ({navigation}: any) => {
     );
   };
 
-  const onSearch = useCallback(
-    text => {
-      setKeyword(text);
-      dispatch(
-        getLocation(text, response => {
-          // setVisibleLocation(true);
-        }),
-      );
-    },
-    [dispatch],
-  );
+  const onEndEditingLocation = () => {
+    dispatch(setLocation(null));
+    if (!isSelectedLocation) {
+      setValue(CREATE_ASK_FIELDS.location, '');
+    }
+    setSelectedLocation(false);
+  };
 
   return (
     <View style={[GlobalStyles.container]}>
@@ -178,16 +187,21 @@ const AskTwocreen = ({navigation}: any) => {
                   })}
                 </View>
                 <View style={[GlobalStyles.container, GlobalStyles.mh15, GlobalStyles.mt20]}>
-                  <View style={GlobalStyles.mb15}>
-                    <Paragraph h5 bold600 textSteelBlueColor title='Location *' style={GlobalStyles.mb5} />
-                    <TextInput
-                      {...register(CREATE_ASK_FIELDS.location)}
-                      value={keyword}
-                      placeholder={'Select Your Location'}
-                      onChangeText={onSearch}
+                  <View style={styles.locationWrapper}>
+                    <InputIconValidate
+                      label={`${t('location')}*`}
+                      inputStyleWrapper={styles.inputWrapperStyle}
+                      inputStyle={styles.inputIconStyle}
+                      labelStyle={styles.labelStyle}
                       selectionColor={BASE_COLORS.blackColor}
                       placeholderTextColor={BASE_COLORS.grayColor}
-                      style={[GlobalStyles.ph15, styles.inputWrapperStyle]}
+                      placeholder='Select Your Location'
+                      errors={errors}
+                      control={control}
+                      name={CREATE_ASK_FIELDS.location}
+                      register={register}
+                      onEndEditing={onEndEditingLocation}
+                      errorStyle={GlobalStyles.mt5}
                     />
                     {askState?.dataLocationSuggest && askState?.dataLocationSuggest?.length > 0 && (
                       <View style={[GlobalStyles.container, GlobalStyles.pv15, styles.locationContainer]}>
@@ -198,7 +212,6 @@ const AskTwocreen = ({navigation}: any) => {
                           renderItem={renderLocationItem}
                           keyExtractor={(item, index) => `location-suggest-${index}`}
                           ItemSeparatorComponent={() => <View style={styles.borderBottom} />}
-                          keyboardShouldPersistTaps='handled'
                           numColumns={1}
                         />
                       </View>
@@ -220,9 +233,8 @@ const AskTwocreen = ({navigation}: any) => {
                     isIconImage={true}
                     uri={IMAGES.iconCalendarBlue}
                     imageStyleContainer={styles.iconContainer}
-                    styleContainer={GlobalStyles.mb15}
                     imageStyle={styles.icon}
-                    errorStyle={GlobalStyles.mt0}
+                    errorStyle={GlobalStyles.mt5}
                     editable={false}
                     onPressIn={onShowDatePicker}
                   />

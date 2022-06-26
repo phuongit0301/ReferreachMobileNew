@@ -12,7 +12,15 @@ import {useForm} from 'react-hook-form';
 
 import {BottomTabParams} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {AskGreeting, Category, HeaderSmallBlueWithBG, InputIconValidate, Paragraph, Tags} from '~Root/components';
+import {
+  AskGreeting,
+  Category,
+  Category2,
+  HeaderSmallBlueWithBG,
+  InputIconValidate,
+  InputIconValidateNew,
+  Paragraph,
+} from '~Root/components';
 import {BASE_COLORS, CREATE_ASK_FIELDS, CREATE_ASK_KEYS, GlobalStyles, IMAGES} from '~Root/config';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
@@ -30,11 +38,15 @@ const DEFAULT_FORM_STATE = {
   business_requirement: true,
   description: false,
   business_requirement_suggestion: false,
-  description_suggestion: false,
+  business_details_suggestion: false,
 };
 
 const schema = yup.object().shape({
-  [CREATE_ASK_FIELDS.greeting]: yup.string().required('Field is a required').max(28, 'Maximum characters exceeded'),
+  [CREATE_ASK_FIELDS.greeting]: yup
+    .string()
+    .trim()
+    .required('Field is a required')
+    .max(28, 'Maximum characters exceeded'),
   [CREATE_ASK_FIELDS.userRole]: yup
     .string()
     .default('business developer')
@@ -62,9 +74,12 @@ const AskScreen = ({navigation}: any) => {
     watch,
     formState: {errors, isValid},
     reset,
+    setFocus,
+    trigger,
   } = useForm<any>({
     resolver: yupResolver(schema),
     mode: 'onChange',
+    reValidateMode: 'onChange',
   });
 
   const dispatch = useDispatch();
@@ -74,9 +89,8 @@ const AskScreen = ({navigation}: any) => {
   const [showForm, setShowForm] = useState(DEFAULT_FORM_STATE);
   const [showTooltip, setShowTooltip] = useState(true);
   const [textDemographic, setTextDemographic] = useState(askState?.dataPositionDropDown?.[0]);
-  const [textGreeting, setTextGreeting] = useState('');
 
-  const [textGreetingDefault, setTextGreetingDefault] = useState('');
+  const [textGreetingDefault, setTextGreetingDefault] = useState(`${t('hi')}, `);
   const [textUserRoleDefault, setTextUserRoleDefault] = useState('business developer');
   const [titleTooltip, setTitleTooltip] = useState(t('ask_suggest_1'));
 
@@ -97,6 +111,7 @@ const AskScreen = ({navigation}: any) => {
   }, []);
 
   const onBack = () => {
+    reset();
     navigation.goBack();
   };
 
@@ -108,30 +123,115 @@ const AskScreen = ({navigation}: any) => {
     console.log(number);
   };
 
+  /** Greeting Section */
+
   const onShowGreeting = () => {
     setShowForm({
       ...DEFAULT_FORM_STATE,
-      ...showForm,
       greeting: true,
     });
     setTitleTooltip(t('ask_suggest_2'));
   };
 
+  const onClearGreeting = async () => {
+    setShowForm({
+      ...DEFAULT_FORM_STATE,
+      ...showForm,
+      greeting: true,
+    });
+    setValue(CREATE_ASK_FIELDS.greeting, '');
+    setFocus(CREATE_ASK_FIELDS.greeting);
+    await trigger(CREATE_ASK_FIELDS.greeting);
+  };
+
+  const onSetGreetingValue = async (text: string) => {
+    setValue(CREATE_ASK_FIELDS.greeting, text);
+    setTextGreetingDefault(text);
+    setFocus(CREATE_ASK_FIELDS.greeting);
+    await trigger(CREATE_ASK_FIELDS.greeting);
+  };
+
+  const onHideGreeting = () => {
+    setShowForm({
+      ...DEFAULT_FORM_STATE,
+    });
+    if (watch(CREATE_ASK_FIELDS.greeting)) {
+      setTitleTooltip(t('ask_suggest_3'));
+    }
+  };
+  /** End Greeting Section */
+
+  /** Role Section */
   const onShowRole = () => {
     setShowForm({
-      ...showForm,
+      ...DEFAULT_FORM_STATE,
       user_role: true,
     });
   };
 
+  const onClearRole = async () => {
+    setShowForm({
+      ...DEFAULT_FORM_STATE,
+      ...showForm,
+      user_role: true,
+    });
+    setValue(CREATE_ASK_FIELDS.userRole, '');
+    setFocus(CREATE_ASK_FIELDS.userRole);
+    await trigger(CREATE_ASK_FIELDS.userRole);
+  };
+
+  const onHideRole = () => {
+    setShowForm({
+      ...DEFAULT_FORM_STATE,
+    });
+  };
+  /** End Role Section */
+
+  /** Business Requirement */
   const onShowBusinessRequirement = () => {
     setShowForm({
       ...DEFAULT_FORM_STATE,
       ...showForm,
       business_requirement: true,
     });
+    setTitleTooltip(t('ask_suggest_4'));
+    setTimeout(() => {
+      setTitleTooltip(t('ask_suggest_5'));
+    }, 5000);
   };
 
+  const onClearBusinessRequirement = async () => {
+    setShowForm({
+      ...DEFAULT_FORM_STATE,
+      ...showForm,
+      business_requirement: true,
+    });
+    setValue(CREATE_ASK_FIELDS.businessRequirement, '');
+    setFocus(CREATE_ASK_FIELDS.businessRequirement);
+    await trigger(CREATE_ASK_FIELDS.businessRequirement);
+  };
+
+  const onHideBusinessRequirement = () => {
+    setShowForm({
+      ...DEFAULT_FORM_STATE,
+      business_requirement: false,
+      business_detail: true,
+    });
+  };
+
+  const onShowBusinessRequirementSuggestion = () => {
+    setShowForm({
+      ...showForm,
+      business_requirement_suggestion: true,
+    });
+    setTitleTooltip(t('ask_suggest_4'));
+    setTimeout(() => {
+      setTitleTooltip(t('ask_suggest_5'));
+    }, 5000);
+  };
+  /** End Business Requirement */
+
+  /** Business Details */
   const onShowBusinessDetails = () => {
     setShowForm({
       ...DEFAULT_FORM_STATE,
@@ -140,21 +240,41 @@ const AskScreen = ({navigation}: any) => {
     });
   };
 
-  const onHideGreeting = () => {
+  const onClearBusinessDetails = async () => {
     setShowForm({
       ...DEFAULT_FORM_STATE,
+      ...showForm,
+      business_detail: true,
     });
-    if (textGreeting) {
-      setTitleTooltip(t('ask_suggest_3'));
-    }
+    setValue(CREATE_ASK_FIELDS.businessDetail, '');
+    setFocus(CREATE_ASK_FIELDS.businessDetail);
+    await trigger(CREATE_ASK_FIELDS.businessDetail);
   };
+
+  const onHideBusinessDetails = () => {
+    setShowForm({
+      ...DEFAULT_FORM_STATE,
+      ...showForm,
+      business_detail: false,
+    });
+    setTitleTooltip(t('ask_suggest_6'));
+  };
+
+  const onShowBusinessDetailsSuggestion = () => {
+    setShowForm({
+      ...showForm,
+      business_details_suggestion: true,
+    });
+    setTitleTooltip(t('ask_suggest_7'));
+  };
+
+  /** End Business Details */
 
   const onTooltipPress = () => {
     setShowTooltip(!showTooltip);
   };
 
   const onSetTextBusinessRequirement = (item: any) => {
-    // setTextBusinessRequirement(item?.attributes?.display_value);
     setValue(CREATE_ASK_FIELDS.businessRequirement, item?.attributes?.display_value);
   };
 
@@ -168,46 +288,9 @@ const AskScreen = ({navigation}: any) => {
     );
   };
 
-  const onEndBusinessRequirement = () => {
-    setShowForm({
-      ...DEFAULT_FORM_STATE,
-      business_requirement: false,
-    });
-  };
-
-  const onEndBusinessDetails = () => {
-    setShowForm({
-      ...showForm,
-      business_detail: false,
-    });
-    setTitleTooltip(t('ask_suggest_6'));
-  };
-
-  const onShowBusinessRequirementSuggestion = () => {
-    setShowForm({
-      ...showForm,
-      business_requirement_suggestion: true,
-    });
-    setTitleTooltip(t('ask_suggest_4'));
-    setTimeout(() => {
-      setTitleTooltip(t('ask_suggest_5'));
-    }, 5000);
-  };
-
-  const onShowDescriptionSuggestion = () => {
-    setShowForm({
-      ...showForm,
-      description_suggestion: true,
-    });
-    setTitleTooltip(t('ask_suggest_7'));
-  };
-
   const onNext = (credentials: any) => {
-    if (credentials?.greeting) {
-      credentials.greeting = `${textGreetingDefault !== '' ? textGreetingDefault : t('hi')} ${credentials?.greeting}`;
-    }
     credentials.demographic = textDemographic;
-    credentials.user_role = `${t('role')} ${credentials.user_role}`;
+    credentials.business_detail = `${t('to')} ${credentials.business_detail}`;
     console.log('credentials==========>', credentials);
     dispatch(setDataCreateAsk1(credentials));
     navigation.navigate(AppRoute.ASK_TWO);
@@ -255,63 +338,65 @@ const AskScreen = ({navigation}: any) => {
                   })}
                 </View>
                 <View style={[GlobalStyles.ph15, GlobalStyles.mt15, GlobalStyles.flexRow, GlobalStyles.flexWrap]}>
-                  {showForm?.greeting ? (
-                    <InputIconValidate
-                      inputStyleWrapper={styles.inputDynamicContainer}
-                      selectionColor={BASE_COLORS.blackColor}
-                      placeholderTextColor={BASE_COLORS.grayColor}
-                      placeholder={t('greeting')}
-                      errors={errors}
-                      control={control}
-                      name={CREATE_ASK_FIELDS.greeting}
-                      register={register}
-                      styleContainer={GlobalStyles.mb5}
-                      errorStyle={GlobalStyles.mt0}
-                      onEndEditing={onHideGreeting}
-                    />
-                  ) : (
-                    <Category
-                      styleTag={styles.styleTag}
-                      tagText={styles.tagText}
-                      key={`greeting`}
-                      name={`${textGreetingDefault !== '' ? textGreetingDefault : t('hi')} ${
-                        watch(CREATE_ASK_FIELDS.greeting) ? (watch(CREATE_ASK_FIELDS.greeting) as string) : ''
-                      }`}
-                      showButton={true}
-                      onPress={onShowGreeting}
-                      uri={IMAGES.iconCloseBlue}
-                    />
-                  )}
+                  <InputIconValidateNew
+                    inputStyleWrapper={{
+                      ...GlobalStyles.mr10,
+                      ...(showForm?.greeting ? styles.inputDynamicActiveContainer : styles.inputDynamicContainer),
+                    }}
+                    inputStyle={{
+                      ...GlobalStyles.mr5,
+                      ...styles.inputMinWidth,
+                      ...(showForm?.greeting ? styles.inputActiveStyle : styles.inputStyle),
+                    }}
+                    selectionColor={BASE_COLORS.blackColor}
+                    errors={errors}
+                    control={control}
+                    name={CREATE_ASK_FIELDS.greeting}
+                    register={register}
+                    styleContainer={GlobalStyles.mb5}
+                    errorStyle={GlobalStyles.mt0}
+                    uri={IMAGES.iconCloseBlue}
+                    isEdit={showForm?.greeting}
+                    imageStyleContainer={styles.styleTag}
+                    onEndEditing={onHideGreeting}
+                    onPressIn={onShowGreeting}
+                    onIconClick={onClearGreeting}
+                    defaultValue={textGreetingDefault}
+                  />
 
-                  {showForm?.user_role ? (
-                    <InputIconValidate
-                      inputStyleWrapper={styles.inputDynamicContainer}
-                      selectionColor={BASE_COLORS.blackColor}
-                      placeholderTextColor={BASE_COLORS.grayColor}
-                      placeholder={t('role')}
-                      errors={errors}
-                      control={control}
-                      name={CREATE_ASK_FIELDS.userRole}
-                      register={register}
-                      styleContainer={GlobalStyles.mb5}
-                      errorStyle={GlobalStyles.mt0}
-                      onEndEditing={onHideGreeting}
-                    />
-                  ) : (
-                    <Category
-                      styleTag={styles.styleTag}
-                      tagText={styles.tagText}
-                      key={`role`}
-                      name={`${t('role')} ${
-                        watch(CREATE_ASK_FIELDS.userRole)
-                          ? (watch(CREATE_ASK_FIELDS.userRole) as string)
-                          : textUserRoleDefault
-                      }`}
-                      showButton={true}
-                      onPress={onShowRole}
-                      uri={IMAGES.iconCloseBlue}
-                    />
-                  )}
+                  <InputIconValidateNew
+                    inputStyleWrapper={{
+                      ...GlobalStyles.mr10,
+                      ...(showForm?.user_role ? styles.inputDynamicActiveContainer : styles.inputDynamicContainer),
+                    }}
+                    inputStyle={{
+                      ...GlobalStyles.mr5,
+                      ...styles.inputMinWidth,
+                      ...(showForm?.user_role ? styles.inputActiveStyle : styles.inputStyle),
+                    }}
+                    selectionColor={BASE_COLORS.blackColor}
+                    errors={errors}
+                    control={control}
+                    name={CREATE_ASK_FIELDS.userRole}
+                    register={register}
+                    styleContainer={GlobalStyles.mb5}
+                    errorStyle={GlobalStyles.mt0}
+                    uri={IMAGES.iconCloseBlue}
+                    isEdit={showForm?.user_role}
+                    imageStyleContainer={styles.styleTag}
+                    onEndEditing={onHideRole}
+                    onPressIn={onShowRole}
+                    onIconClick={onClearRole}
+                    visiblePlaceholderInput={true}
+                    placeholderInput={t('role')}
+                    placeholderTextInputStyle={{
+                      ...GlobalStyles.mr3,
+                      ...(showForm?.user_role
+                        ? styles.placeholderTextInputActiveStyle
+                        : styles.placeholderTextInputStyle),
+                    }}
+                    defaultValue={`${textUserRoleDefault}`}
+                  />
 
                   <View style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}>
                     <SelectDropdown
@@ -321,7 +406,7 @@ const AskScreen = ({navigation}: any) => {
                         setTextDemographic(selectedItem);
                       }}
                       dropdownStyle={[styles.styleDropDown]}
-                      buttonStyle={[styles.styleButton, GlobalStyles.ml5, GlobalStyles.mb5, GlobalStyles.pv5]}
+                      buttonStyle={[styles.styleButton, GlobalStyles.ml5, GlobalStyles.mb10, GlobalStyles.pv5]}
                       buttonTextStyle={styles.buttonTextStyle}
                       buttonTextAfterSelection={(selectedItem, index) => {
                         // text represented after item is selected
@@ -338,70 +423,79 @@ const AskScreen = ({navigation}: any) => {
                       )}
                     />
 
-                    {!watch(CREATE_ASK_FIELDS.businessRequirement) || showForm?.business_requirement ? (
-                      <InputIconValidate
-                        inputStyleWrapper={styles.inputContainer}
-                        selectionColor={BASE_COLORS.blackColor}
-                        placeholderTextColor={BASE_COLORS.grayColor}
-                        placeholder={t('what')}
-                        errors={errors}
-                        control={control}
-                        name={CREATE_ASK_FIELDS.businessRequirement}
-                        register={register}
-                        styleContainer={GlobalStyles.mb5}
-                        errorStyle={GlobalStyles.mt0}
-                        onEndEditing={onEndBusinessRequirement}
-                        onFocus={onShowBusinessRequirementSuggestion}
-                        editable={!!watch(CREATE_ASK_FIELDS.greeting)}
-                      />
-                    ) : (
-                      <Category
-                        styleTag={styles.styleTag}
-                        tagText={styles.tagText}
-                        key={`businessRequirement`}
-                        name={`${
-                          watch(CREATE_ASK_FIELDS.businessRequirement)
-                            ? (watch(CREATE_ASK_FIELDS.businessRequirement) as string)
-                            : ''
-                        }`}
-                        showButton={true}
-                        onPress={onShowBusinessRequirement}
-                        uri={IMAGES.iconCloseBlue}
-                      />
-                    )}
+                    <InputIconValidateNew
+                      inputStyleWrapper={{
+                        ...GlobalStyles.mr10,
+                        ...(showForm?.business_requirement
+                          ? styles.inputDynamicActiveContainer
+                          : styles.inputDynamicContainer),
+                      }}
+                      inputStyle={{
+                        ...GlobalStyles.mr5,
+                        ...styles.inputMinWidth,
+                        ...(showForm?.business_requirement ? styles.inputActiveStyle : styles.inputStyle),
+                      }}
+                      selectionColor={BASE_COLORS.blackColor}
+                      errors={errors}
+                      control={control}
+                      name={CREATE_ASK_FIELDS.businessRequirement}
+                      register={register}
+                      styleContainer={GlobalStyles.mb5}
+                      errorStyle={GlobalStyles.mt0}
+                      uri={IMAGES.iconCloseBlue}
+                      isEdit={showForm?.business_requirement}
+                      imageStyleContainer={styles.styleTag}
+                      onEndEditing={onHideBusinessRequirement}
+                      onPressIn={onShowBusinessRequirement}
+                      onIconClick={onClearBusinessRequirement}
+                      onFocus={onShowBusinessRequirementSuggestion}
+                      visiblePlaceholderInput={true}
+                      placeholder={t('what')}
+                      placeholderTextColor={
+                        showForm?.business_requirement ? BASE_COLORS.steelBlue2Color : BASE_COLORS.whiteColor
+                      }
+                    />
                   </View>
-                  {!!watch(CREATE_ASK_FIELDS.businessRequirement) &&
-                    (showForm?.business_detail ? (
-                      <InputIconValidate
-                        inputStyleWrapper={styles.inputAreaContainer}
+                  <View style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}>
+                    {(!!watch(CREATE_ASK_FIELDS.businessRequirement) || !!watch(CREATE_ASK_FIELDS.businessDetail)) && (
+                      <InputIconValidateNew
+                        inputStyleWrapper={{
+                          ...GlobalStyles.mr10,
+                          ...(showForm?.business_detail
+                            ? styles.textAreaDynamicActiveContainer
+                            : styles.textAreaDynamicContainer),
+                        }}
+                        inputStyle={{
+                          ...GlobalStyles.mr5,
+                          ...styles.inputMinWidth,
+                          ...(showForm?.business_detail ? styles.inputActiveStyle : styles.inputStyle),
+                        }}
                         selectionColor={BASE_COLORS.blackColor}
-                        placeholderTextColor={BASE_COLORS.grayColor}
-                        placeholder='to...(elaborate on your Ask)'
                         errors={errors}
                         control={control}
                         name={CREATE_ASK_FIELDS.businessDetail}
                         register={register}
                         styleContainer={GlobalStyles.mb5}
                         errorStyle={GlobalStyles.mt0}
-                        onEndEditing={onEndBusinessDetails}
-                        onFocus={onShowDescriptionSuggestion}
+                        uri={IMAGES.iconCloseBlue}
+                        isEdit={showForm?.business_detail}
+                        imageStyleContainer={styles.styleTag}
+                        onEndEditing={onHideBusinessDetails}
+                        onPressIn={onShowBusinessDetails}
+                        onIconClick={onClearBusinessDetails}
+                        onFocus={onShowBusinessDetailsSuggestion}
+                        visiblePlaceholderInput={true}
+                        placeholderInput={t('to')}
+                        placeholderTextInputStyle={{
+                          ...GlobalStyles.mr3,
+                          ...(showForm?.business_detail
+                            ? styles.placeholderTextAreaActiveStyle
+                            : styles.placeholderTextAreaStyle),
+                        }}
                         multiline={true}
                       />
-                    ) : (
-                      <Category
-                        styleTag={styles.styleTag}
-                        tagText={styles.tagText}
-                        key={`details`}
-                        name={`${
-                          watch(CREATE_ASK_FIELDS.businessDetail)
-                            ? `to ${watch(CREATE_ASK_FIELDS.businessDetail).trim()}`
-                            : 'to '
-                        }`}
-                        showButton={true}
-                        onPress={onShowBusinessDetails}
-                        uri={IMAGES.iconCloseBlue}
-                      />
-                    ))}
+                    )}
+                  </View>
                 </View>
               </View>
             </ScrollView>
@@ -409,11 +503,11 @@ const AskScreen = ({navigation}: any) => {
           {showForm?.greeting && (
             <AskGreeting
               data={askState?.dataGreetingSuggest}
-              setText={setTextGreetingDefault}
+              setText={onSetGreetingValue}
               textDefault={textGreetingDefault}
             />
           )}
-          {showForm?.business_requirement_suggestion && (
+          {(showForm?.business_requirement_suggestion && !!watch(CREATE_ASK_FIELDS.businessRequirement)) && (
             <View style={[GlobalStyles.mh20, GlobalStyles.container, GlobalStyles.pv15, styles.borderTop]}>
               <FlatList
                 contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}

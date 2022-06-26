@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: adjust(40),
+    top: adjust(60),
     zIndex: 50,
   },
   borderBottom: {

@@ -154,7 +154,9 @@ const AskThreeScreen = ({navigation}: any) => {
                   <Paragraph bold600 textSteelBlue2Color textCenter title='Optional Details ' />
                   {filesUpload?.length > 0 &&
                     filesUpload.map((item, index) => (
-                      <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb15]}>
+                      <View
+                        key={`file-${index}`}
+                        style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb15]}>
                         <FastImage source={IMAGES.iconUploadDone} resizeMode='cover' style={styles.iconUploadDone} />
                         <Paragraph
                           numberOfLines={1}
@@ -168,30 +170,32 @@ const AskThreeScreen = ({navigation}: any) => {
                         </TouchableOpacity>
                       </View>
                     ))}
-                  <TouchableOpacity
-                    style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb20]}
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                    onPress={onSelect}>
-                    <FastImage source={IMAGES.iconUploadDone} resizeMode='cover' style={styles.iconUploadDone} />
-                    <View style={[GlobalStyles.flexColumn]}>
-                      <Paragraph
-                        h5
-                        textSpanishGray2Color
-                        title='Upload additional documents'
-                        style={GlobalStyles.mb5}
-                      />
-                      <Paragraph
-                        textSpanishGray2Color
-                        title='(pdf, jpg, gif, png, 2 MB max)'
-                        style={[GlobalStyles.mb5, styles.fileType]}
-                      />
-                      <Paragraph
-                        textSpanishGray2Color
-                        title='Please do not share sensitive files'
-                        style={[GlobalStyles.mr5, styles.fontSmall]}
-                      />
-                    </View>
-                  </TouchableOpacity>
+                  {filesUpload?.length < 2 && (
+                    <TouchableOpacity
+                      style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb20]}
+                      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                      onPress={onSelect}>
+                      <FastImage source={IMAGES.iconUploadDone} resizeMode='cover' style={styles.iconUploadDone} />
+                      <View style={[GlobalStyles.flexColumn]}>
+                        <Paragraph
+                          h5
+                          textSpanishGray2Color
+                          title='Upload additional documents'
+                          style={GlobalStyles.mb5}
+                        />
+                        <Paragraph
+                          textSpanishGray2Color
+                          title='(pdf, jpg, gif, png, 2 MB max)'
+                          style={[GlobalStyles.mb5, styles.fileType]}
+                        />
+                        <Paragraph
+                          textSpanishGray2Color
+                          title='Please do not share sensitive files'
+                          style={[GlobalStyles.mr5, styles.fontSmall]}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  )}
                   <View style={[GlobalStyles.flexColumn]}>
                     <Paragraph textSteelBlue2Color title='Additional details' style={GlobalStyles.mr5} />
                     <View style={[GlobalStyles.mb5, styles.inputAreaContainer]}>
