@@ -29,8 +29,8 @@ import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IFeedItemsState} from '~Root/services/feed/types';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {IGlobalState} from '~Root/types';
+import {DEEP_LINK_URL} from '~Root/private/api';
 import styles from './styles';
-import { DEEP_LINK_URL } from '~Root/private/api';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,

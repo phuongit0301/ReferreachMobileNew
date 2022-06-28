@@ -154,6 +154,9 @@ export default StyleSheet.create({
     flex: 1,
     width: '90%',
   },
+  locationWrapper: {
+    zIndex: 100,
+  },
   locationContainer: {
     backgroundColor: BASE_COLORS.brightGrayColor,
     paddingVertical: adjust(5),

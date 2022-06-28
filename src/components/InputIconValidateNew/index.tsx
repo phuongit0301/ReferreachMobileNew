@@ -12,9 +12,9 @@ import {
 } from 'react-native';
 import {Controller} from 'react-hook-form';
 
-import {BASE_COLORS} from '~Root/config';
+import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import styles from './styles';
-import {Icon, Paragraph} from '~Root/components';
+import {Paragraph} from '~Root/components';
 
 interface Props {
   label?: string;
@@ -23,7 +23,7 @@ interface Props {
   showIcon?: boolean;
   styleContainer?: ViewStyle & TextStyle;
   inputStyleWrapper?: ViewStyle;
-  inputStyle?: ViewStyle;
+  inputStyle?: ViewStyle & TextStyle;
   inputErrorStyle?: any;
   defaultValue?: string;
   control?: any;
@@ -39,6 +39,9 @@ interface Props {
   numberOfLines?: number;
   placeholder?: string;
   placeholderTextColor?: string;
+  placeholderInput?: string;
+  placeholderTextInputStyle?: TextStyle;
+  visiblePlaceholderInput?: boolean;
   selectionColor?: string;
   children?: React.ReactNode;
   autoCorrect?: boolean;
@@ -57,13 +60,8 @@ interface Props {
     | 'twitter'
     | 'web-search'
     | 'visible-password';
-  iconName?: string;
-  iconSize?: number;
-  iconColor?: string;
-  iconContainerStyle?: ViewStyle & TextStyle;
-  iconStyle?: ViewStyle & TextStyle;
   errorStyle?: TextStyle;
-  isIconImage?: boolean;
+  isEdit?: boolean;
   imageStyleContainer?: ViewStyle;
   imageStyle?: ImageStyle & TextStyle;
   uri?: any;
@@ -74,7 +72,7 @@ interface Props {
   onIconClick?: () => void;
 }
 
-const InputIconValidate: React.FC<Props> = ({
+const InputIconValidateNew: React.FC<Props> = ({
   label,
   labelStyle,
   showIcon = false,
@@ -96,18 +94,16 @@ const InputIconValidate: React.FC<Props> = ({
   numberOfLines = 8,
   placeholder = '',
   placeholderTextColor,
+  placeholderInput = '',
+  placeholderTextInputStyle,
+  visiblePlaceholderInput = false,
   selectionColor,
   children,
   autoCorrect = false,
   autoCapitalize = 'none',
   keyboardType = 'default',
-  iconName = 'home',
-  iconSize = 38,
-  iconColor = BASE_COLORS.blackColor,
-  iconContainerStyle = {},
-  iconStyle = {},
   errorStyle = {},
-  isIconImage = false,
+  isEdit = false,
   imageStyleContainer = {},
   imageStyle = {},
   uri,
@@ -128,18 +124,13 @@ const InputIconValidate: React.FC<Props> = ({
         control={control}
         render={({field: {onChange, onBlur, value, ref}}) => {
           return (
-            <Pressable onPress={onPressIn}>
-              <View style={[styles.textInputWrapper, inputStyleWrapper]}>
-                {showIcon &&
-                  (isIconImage ? (
-                    <TouchableOpacity onPress={onIconClick} style={imageStyleContainer}>
-                      <Image source={uri} resizeMode='contain' style={imageStyle} />
-                    </TouchableOpacity>
-                  ) : (
-                    <Pressable onPress={onIconClick} style={iconContainerStyle}>
-                      <Icon name={iconName} size={iconSize} color={iconColor} style={iconStyle} />
-                    </Pressable>
-                  ))}
+            <View style={[styles.textInputWrapper, inputStyleWrapper]}>
+              {visiblePlaceholderInput && (
+                <View style={GlobalStyles.alignSelfStart}>
+                  <Paragraph style={[styles.labelStyle, placeholderTextInputStyle]} title={placeholderInput} />
+                </View>
+              )}
+              <Pressable onPress={onPressIn}>
                 <TextInput
                   {...register(name, {required})}
                   inputRef={ref}
@@ -163,8 +154,13 @@ const InputIconValidate: React.FC<Props> = ({
                   onFocus={onFocus}
                   onEndEditing={onEndEditing}
                 />
-              </View>
-            </Pressable>
+              </Pressable>
+              {!isEdit && value !== '' && (
+                <TouchableOpacity onPress={onIconClick} style={imageStyleContainer}>
+                  <Image source={uri} resizeMode='contain' style={imageStyle} />
+                </TouchableOpacity>
+              )}
+            </View>
           );
         }}
         name={name}
@@ -177,4 +173,4 @@ const InputIconValidate: React.FC<Props> = ({
   );
 };
 
-export default InputIconValidate;
+export default InputIconValidateNew;

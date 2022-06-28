@@ -27,15 +27,26 @@ const schema = yup.object().shape({
   email: yup.string().required('Email is required').email('Invalid email format'),
   password: yup
     .string()
-    .min(8, 'Password must be at least 8 characters')
+    .min(
+      8,
+      'Password must be at least 8 characters, contain numbers, upper and lower case letters, and special characters',
+    )
     .required('Password is required')
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-      'Minimum of 8 characters, with upper and lowercase and a number, or a symbol.',
+      'Password must be at least 8 characters, contain numbers, upper and lower case letters, and special characters',
     ),
   confirm_password: yup
     .string()
+    .min(
+      8,
+      'Password must be at least 8 characters, contain numbers, upper and lower case letters, and special characters',
+    )
     .required('Confirm Password is required')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      'Password must be at least 8 characters, contain numbers, upper and lower case letters, and special characters',
+    )
     .oneOf([yup.ref('password')], 'Passwords must match'),
 });
 

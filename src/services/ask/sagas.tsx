@@ -14,9 +14,9 @@ import {
   CREATE_ASK_SUCCESS,
   CREATE_ASK_FAILURE,
   CREATE_ASK_REQUESTED,
-  GET_ASK_DETAILS_REQUESTED,
-  GET_ASK_DETAILS_FAILURE,
-  GET_ASK_DETAILS_SUCCESS,
+  GET_ASK_EDIT_REQUESTED,
+  GET_ASK_EDIT_FAILURE,
+  GET_ASK_EDIT_SUCCESS,
   UPDATE_ASK_FAILURE,
   UPDATE_ASK_SUCCESS,
   UPDATE_ASK_REQUESTED,
@@ -46,7 +46,7 @@ function* getAsks(payload: IActionGetAskRequest) {
         payload?.callback({
           success: response?.success,
           message: '',
-          data: response?.data,
+          data: response?.data?.reverse(),
         });
     } else {
       yield put({type: GET_ASK_FAILURE, payload: {error: response?.message}});
@@ -72,7 +72,7 @@ function* getAskDetails(payload: IActionGetAskDetailsRequest) {
   try {
     const response: IActionGetAskDetailsSuccess['payload'] = yield call(AskAPI.getAskDetails, payload?.payload);
     if (response?.success) {
-      yield put({type: GET_ASK_DETAILS_SUCCESS, payload: response?.data});
+      yield put({type: GET_ASK_EDIT_SUCCESS, payload: response?.data});
       payload?.callback &&
         payload?.callback({
           success: response?.success,
@@ -80,7 +80,7 @@ function* getAskDetails(payload: IActionGetAskDetailsRequest) {
           data: response?.data?.data,
         });
     } else {
-      yield put({type: GET_ASK_DETAILS_FAILURE, payload: {error: response?.message}});
+      yield put({type: GET_ASK_EDIT_FAILURE, payload: {error: response?.message}});
       payload?.callback &&
         payload?.callback({
           success: response?.success,
@@ -89,7 +89,7 @@ function* getAskDetails(payload: IActionGetAskDetailsRequest) {
         });
     }
   } catch (error) {
-    yield put({type: GET_ASK_DETAILS_FAILURE, payload: {error: error}});
+    yield put({type: GET_ASK_EDIT_FAILURE, payload: {error: error}});
     payload?.callback &&
       payload?.callback({
         success: false,
@@ -251,7 +251,7 @@ function* watchGetAsk() {
 }
 
 function* watchGetAskDetails() {
-  yield takeEvery(GET_ASK_DETAILS_REQUESTED, getAskDetails);
+  yield takeEvery(GET_ASK_EDIT_REQUESTED, getAskDetails);
 }
 
 function* watchCreateAsk() {

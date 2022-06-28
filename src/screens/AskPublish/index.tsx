@@ -1,20 +1,36 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Alert, Share, View} from 'react-native';
 import {useTranslation} from 'react-i18next';
+import {useSelector} from 'react-redux';
+import {CommonActions} from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {ButtonSecond, Link, Paragraph} from '~Root/components';
 import {GlobalStyles, IMAGES} from '~Root/config';
-import FastImage from 'react-native-fast-image';
+import {IGlobalState} from '~Root/types';
+import {DEEP_LINK_URL} from '~Root/private/api';
 import styles from './styles';
-import {CommonActions} from '@react-navigation/native';
 
 const AskPubish = ({navigation}: any) => {
   const {t} = useTranslation();
 
-  const onSave = () => {
-    console.log(123123);
+  const askState = useSelector((state: IGlobalState) => state.askState);
+
+  const onShare = async () => {
+    try {
+      if (!askState?.dataAskCreated?.id) {
+        return false;
+      }
+      await Share.share({
+        title: askState?.dataAskCreated?.attributes?.greeting ?? '',
+        message: `${DEEP_LINK_URL}/a/${askState?.dataAskCreated?.id}`,
+      });
+    } catch (error) {
+      Alert.alert((error as any).message);
+    }
   };
+
   const onLinkClick = () => {
     const resetAction = CommonActions.reset({
       index: 0,
@@ -33,7 +49,7 @@ const AskPubish = ({navigation}: any) => {
         title='Share you ask'
         buttonContainerStyle={{...GlobalStyles.mb30, ...styles.btnDone}}
         titleStyle={styles.titleStyle}
-        onPress={onSave}
+        onPress={onShare}
         showIcon={false}
         showIconImage={true}
         imageUrl={IMAGES.iconArrowUpCircle}

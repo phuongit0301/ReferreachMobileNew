@@ -1,6 +1,5 @@
 import {all, call, put, select, take, takeEvery} from 'redux-saga/effects';
 import {END, EventChannel, eventChannel} from 'redux-saga';
-import axios from 'axios';
 
 import {
   INITIALIZE_AUTH_FAILURE,
@@ -12,7 +11,7 @@ import {
   CLEAR_PROGRESS,
   LOGOUT,
 } from './constants';
-import {getToken, clearToken} from '~Root/services/storage';
+import {clearToken} from '~Root/services/storage';
 import {IActionInitializeAuthRequested, IAuthState, IVerifyToken} from './types';
 import {IGlobalState} from '~Root/types';
 import {onSetProgress} from './actions';

@@ -2,9 +2,9 @@ import {
   GET_ASK_REQUESTED,
   GET_ASK_SUCCESS,
   GET_ASK_FAILURE,
-  GET_ASK_DETAILS_REQUESTED,
-  GET_ASK_DETAILS_SUCCESS,
-  GET_ASK_DETAILS_FAILURE,
+  GET_ASK_EDIT_REQUESTED,
+  GET_ASK_EDIT_SUCCESS,
+  GET_ASK_EDIT_FAILURE,
   GET_JOB_REQUESTED,
   GET_JOB_SUCCESS,
   GET_JOB_FAILURE,
@@ -28,9 +28,10 @@ export const initialState: IAskState = {
   success: false,
   data: [],
   dataGreetingSuggest: ['Good day,', 'Hello,', '你好！', 'Hey guys!', 'Hola!', 'Xin chào', 'Salaam', 'Namaste'],
-  dataPositionDropDown: ["I'm looking for", 'I urgently need', "I'm hiring for", 'I want'],
+  dataPositionDropDown: ["I'm looking for", 'I urgently need', "I'm interested in", 'I want'],
   dataPositionSuggest: [],
   dataLocationSuggest: [],
+  dataAskCreated: null,
   textSearch: '',
   dataStep1: null,
   dataStep2: null,
@@ -56,17 +57,22 @@ const askReducer = (state: IAskState = initialState, action: IActionsCreateAsk):
     case GET_JOB_REQUESTED:
     case GET_LOCATION_REQUESTED:
     case CREATE_ASK_REQUESTED:
-    case GET_ASK_DETAILS_REQUESTED:
+    case GET_ASK_EDIT_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
     case GET_ASK_SUCCESS:
       return {...state, loading: false, data: action.payload?.data};
     case CREATE_ASK_SUCCESS:
-      return {...state, loading: false, data: [...state.data, action?.payload?.data]};
+      return {
+        ...state,
+        loading: false,
+        dataAskCreated: action?.payload?.data,
+        data: [...state.data, action?.payload?.data],
+      };
     case GET_JOB_SUCCESS:
       return {...state, loading: false, dataPositionSuggest: action.payload?.data};
     case GET_LOCATION_SUCCESS:
       return {...state, loading: false, dataLocationSuggest: action.payload?.data};
-    case GET_ASK_DETAILS_SUCCESS:
+    case GET_ASK_EDIT_SUCCESS:
       return {...state, loading: false, dataDetails: action.payload?.data};
     case SET_LOCATION:
       return {...state, loading: false, dataLocationSuggest: action.payload};
@@ -83,7 +89,7 @@ const askReducer = (state: IAskState = initialState, action: IActionsCreateAsk):
     case GET_JOB_FAILURE:
     case GET_LOCATION_FAILURE:
       return {...state, loading: false, message: action.payload.message};
-    case GET_ASK_DETAILS_FAILURE:
+    case GET_ASK_EDIT_FAILURE:
       return {...state, loading: false, dataDetails: null, message: action.payload.message};
     default:
       return state;

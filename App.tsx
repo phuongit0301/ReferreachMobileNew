@@ -1,5 +1,5 @@
 import React from 'react';
-import {ActivityIndicator, Alert, Linking} from 'react-native';
+import {ActivityIndicator, Linking} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import 'react-native-gesture-handler';
@@ -37,7 +37,10 @@ const linking = {
     }
   },
   subscribe(listener: any) {
-    const onReceiveURL = ({url}: {url: string}) => {console.log('listener=======>', url); listener(url)};
+    const onReceiveURL = ({url}: {url: string}) => {
+      console.log('listener=======>', url);
+      listener(url);
+    };
 
     // Listen to incoming links from deep linking
     const linkingSubscription = Linking.addEventListener('url', onReceiveURL);

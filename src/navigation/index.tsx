@@ -117,6 +117,7 @@ const AppDrawer = (props: any) => {
       screenOptions={() => ({
         headerShown: false,
         drawerStyle: {width: '100%'},
+        drawerPosition: 'right',
       })}
       drawerContent={({navigation}) => {
         const customProps = {};

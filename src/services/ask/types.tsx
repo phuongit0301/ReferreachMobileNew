@@ -16,9 +16,9 @@ import {
   CREATE_ASK_FAILURE,
   CREATE_ASK_REQUESTED,
   CREATE_ASK_SUCCESS,
-  GET_ASK_DETAILS_FAILURE,
-  GET_ASK_DETAILS_REQUESTED,
-  GET_ASK_DETAILS_SUCCESS,
+  GET_ASK_EDIT_FAILURE,
+  GET_ASK_EDIT_REQUESTED,
+  GET_ASK_EDIT_SUCCESS,
   UPDATE_ASK_FAILURE,
   UPDATE_ASK_REQUESTED,
   UPDATE_ASK_SUCCESS,
@@ -37,6 +37,7 @@ export interface IAskState extends IPaginationAndSearch {
   dataPositionDropDown: any[];
   dataPositionSuggest?: any[];
   dataLocationSuggest?: any[];
+  dataAskCreated: IAskInside | null;
   loading: boolean;
   success: boolean;
   textSearch?: string;
@@ -166,12 +167,12 @@ export interface IActionGetAskFailure {
 }
 
 export interface IActionGetAskDetailsRequest {
-  type: typeof GET_ASK_DETAILS_REQUESTED;
+  type: typeof GET_ASK_EDIT_REQUESTED;
   payload: number;
   callback: (response: IActionGetAskDetailsSuccess['payload']) => void;
 }
 export interface IActionGetAskDetailsSuccess {
-  type: typeof GET_ASK_DETAILS_SUCCESS;
+  type: typeof GET_ASK_EDIT_SUCCESS;
   payload: {
     data: IAskInside | null;
     message: string;
@@ -181,7 +182,7 @@ export interface IActionGetAskDetailsSuccess {
 }
 
 export interface IActionGetAskDetailsFailure {
-  type: typeof GET_ASK_DETAILS_FAILURE;
+  type: typeof GET_ASK_EDIT_FAILURE;
   payload: {
     data: null;
     message: string;

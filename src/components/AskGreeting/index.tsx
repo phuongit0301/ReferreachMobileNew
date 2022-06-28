@@ -15,7 +15,7 @@ const AskGreeting: React.FC<Props> = ({data, setText, textDefault = ''}) => {
     return (
       <TouchableOpacity
         onPress={() => setText(item)}
-        style={[GlobalStyles.mh10, GlobalStyles.ph10, GlobalStyles.pv5, GlobalStyles.mb10, textDefault === item ? styles.btnGreetingsSelected : styles.btnGreetings]}>
+        style={[GlobalStyles.mh10, GlobalStyles.ph10, GlobalStyles.pv5, GlobalStyles.mb10]}>
         <Paragraph p textSteelBlue2Color bold600 title={item} />
       </TouchableOpacity>
     );
