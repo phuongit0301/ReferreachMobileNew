@@ -84,4 +84,30 @@ export default class FeedItemsAPI {
       };
     }
   }
+
+  static async getPublicProfile(payload: number) {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: API.GET_PUBLIC_PROFILE_URL(payload),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+      if (response && response.status === 200) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+    } catch (error) {
+      return {
+        data: null,
+        message: error,
+        success: false,
+      };
+    }
+  }
 }

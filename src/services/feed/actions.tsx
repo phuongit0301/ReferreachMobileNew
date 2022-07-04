@@ -1,6 +1,7 @@
 import {
   GET_FEED_ITEMS_LIST_REQUESTED,
   GET_FEED_ITEM_PAGINATION_REQUESTED,
+  GET_PUBLIC_PROFILE_REQUESTED,
   SET_FEED_ITEM_READ_REQUESTED,
   SET_FEED_VISIBLE_MENU,
 } from './constants';
@@ -42,6 +43,14 @@ export const setFeedItemRead = (
 export const setVisibleMenu = (payload: any, callback?: () => void) => {
   return {
     type: SET_FEED_VISIBLE_MENU,
+    payload,
+    callback,
+  };
+};
+
+export const getPublicProfile = (payload: number, callback?: () => void) => {
+  return {
+    type: GET_PUBLIC_PROFILE_REQUESTED,
     payload,
     callback,
   };

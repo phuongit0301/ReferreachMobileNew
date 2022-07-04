@@ -123,9 +123,8 @@ const AskTwocreen = ({navigation}: any) => {
   };
 
   const onSelectLocation = (text: string) => {
-    dispatch(setLocation(null));
     setValue(CREATE_ASK_FIELDS.location, text);
-    setSelectedLocation(true);
+    dispatch(setLocation(null));
     setTextLocation(text);
   };
 
@@ -139,14 +138,6 @@ const AskTwocreen = ({navigation}: any) => {
     );
   };
 
-  const onEndEditingLocation = () => {
-    dispatch(setLocation(null));
-    if (!isSelectedLocation) {
-      setValue(CREATE_ASK_FIELDS.location, '');
-    }
-    setSelectedLocation(false);
-  };
-
   return (
     <View style={[GlobalStyles.container]}>
       <HeaderSmallBlueWithBG
@@ -157,12 +148,12 @@ const AskTwocreen = ({navigation}: any) => {
         onRightPress={onToggleDrawer}
       />
       <View style={[GlobalStyles.container, styles.container, styles.contentContainer]}>
-        <KeyboardAvoidingView 
+        <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
           style={GlobalStyles.container}>
           <View style={[GlobalStyles.mb20, GlobalStyles.container]}>
-            <ScrollView style={GlobalStyles.container}>
+            <ScrollView style={[GlobalStyles.container]}>
               <View style={[GlobalStyles.flexColumn, GlobalStyles.mt10]}>
                 <View style={[GlobalStyles.flexRow, GlobalStyles.justifyCenter]}>
                   {PAGINATION.map((item, index) => {
@@ -202,7 +193,6 @@ const AskTwocreen = ({navigation}: any) => {
                       control={control}
                       name={CREATE_ASK_FIELDS.location}
                       register={register}
-                      onEndEditing={onEndEditingLocation}
                       errorStyle={GlobalStyles.mt5}
                     />
                     {askState?.dataLocationSuggest && askState?.dataLocationSuggest?.length > 0 && (

@@ -25,13 +25,12 @@ import {
 import {IActionRemoveNetworkConnectionSuccess, IIncluded} from '~Root/services/network/types';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES, INVITE_CONTACT_FIELDS, INVITE_CONTACT_KEYS} from '~Root/config';
+import {inviteUserContact} from '~Root/services/contact/actions';
+import {IActionInviteUserContactSuccess} from '~Root/services/contact/types';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
-import { inviteUserContact } from '~Root/services/contact/actions';
-import { IActionInviteUserContactSuccess } from '~Root/services/contact/types';
-import { IPaginationAndSearch } from '~Root/services/ask/types';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,

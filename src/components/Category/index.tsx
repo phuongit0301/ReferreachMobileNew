@@ -28,11 +28,12 @@ const Category: React.FC<Props> = ({
   return (
     <TouchableOpacity onPress={() => onPress(itemKey)} style={[styles.tag, styles.mr10, styleTag]}>
       <Paragraph p style={[styles.tagText, tagText]} title={name} />
-      {showButton && uri ? (
-        <FastImage source={uri} resizeMode='cover' style={styles.iconCloseBlue} />
-      ) : (
-        <Icon name='times' size={12} color={BASE_COLORS.indianRedColor} />
-      )}
+      {showButton &&
+        (uri ? (
+          <FastImage source={uri} resizeMode='cover' style={styles.iconCloseBlue} />
+        ) : (
+          <Icon name='times' size={12} color={BASE_COLORS.indianRedColor} />
+        ))}
     </TouchableOpacity>
   );
 };

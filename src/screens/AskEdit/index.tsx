@@ -132,6 +132,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
       ),
     );
     return () => {
+      navigation.setParams({id: null});
       setAskDetails();
     };
   }, [isFocused]);
@@ -347,7 +348,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
                 position: 'bottom',
                 type: 'info',
                 text1: response?.message,
-                visibilityTime: 1000,
+                visibilityTime: 1200,
                 autoHide: true,
               });
             } else {
@@ -355,13 +356,15 @@ const AskEditScreen = ({route, navigation}: Props) => {
                 position: 'bottom',
                 type: 'success',
                 text1: response.message,
-                visibilityTime: 1000,
+                visibilityTime: 1200,
                 autoHide: true,
               });
             }
             setTimeout(() => {
-              navigation.goBack();
-            }, 1200);
+              navigation.navigate(AppRoute.BOTTOM_TAB, {
+                screen: AppRoute.YOUR_ASK,
+              });
+            }, 1400);
           }
         },
       ),
@@ -371,7 +374,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
   if (loadingState?.loading) {
     return <Loading />;
   }
-  console.log('errors====>', errors);
+
   return (
     <View style={[GlobalStyles.container, GlobalStyles.bgWhite]}>
       <SafeAreaView style={GlobalStyles.container} edges={['top', 'right', 'left']}>
@@ -494,6 +497,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
                       control={control}
                       watch={watch}
                       trigger={trigger}
+                      onSubmitEditing={onSubmitEditing}
                     />
                   </View>
                   <InputIconValidate
@@ -619,30 +623,32 @@ const AskEditScreen = ({route, navigation}: Props) => {
                           </View>
                         ),
                       )}
-                    <TouchableOpacity
-                      style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb20]}
-                      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                      onPress={onSelect}>
-                      <FastImage source={IMAGES.iconUploadDone} resizeMode='cover' style={styles.iconUploadDone} />
-                      <View style={[GlobalStyles.flexColumn]}>
-                        <Paragraph
-                          h5
-                          textSpanishGray2Color
-                          title='Upload additional documents'
-                          style={GlobalStyles.mb5}
-                        />
-                        <Paragraph
-                          textSpanishGray2Color
-                          title='(pdf, jpg, gif, png, 2 MB max)'
-                          style={[GlobalStyles.mb5, styles.fileType]}
-                        />
-                        <Paragraph
-                          textSpanishGray2Color
-                          title='Please do not share sensitive files'
-                          style={[GlobalStyles.mr5, styles.fontSmall]}
-                        />
-                      </View>
-                    </TouchableOpacity>
+                    {filesUpload?.length < 2 && (
+                      <TouchableOpacity
+                        style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb20]}
+                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                        onPress={onSelect}>
+                        <FastImage source={IMAGES.iconUploadDone} resizeMode='cover' style={styles.iconUploadDone} />
+                        <View style={[GlobalStyles.flexColumn]}>
+                          <Paragraph
+                            h5
+                            textSpanishGray2Color
+                            title='Upload additional documents'
+                            style={GlobalStyles.mb5}
+                          />
+                          <Paragraph
+                            textSpanishGray2Color
+                            title='(pdf, jpg, gif, png, 2 MB max)'
+                            style={[GlobalStyles.mb5, styles.fileType]}
+                          />
+                          <Paragraph
+                            textSpanishGray2Color
+                            title='Please do not share sensitive files'
+                            style={[GlobalStyles.mr5, styles.fontSmall]}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                    )}
                   </View>
                   <Button
                     onPress={handleSubmit(onSave)}
@@ -651,7 +657,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
                     textCenter
                     containerStyle={{...GlobalStyles.buttonContainerStyle, ...styles.buttonContainerStyle}}
                     textStyle={styles.h3BoldDefault}
-                    disabled={!isValid}
+                    disabled={!isValid && Object.keys(errors).length > 0}
                   />
                 </View>
               </ScrollView>

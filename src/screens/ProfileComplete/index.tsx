@@ -75,7 +75,7 @@ const ProfileCompleteScreen = ({navigation, route}: any) => {
             />
             <Paragraph
               textBlack
-              title={`${userState?.userInfo?.introductions ?? ''}`}
+              title={`${userState?.userInfo?.pitch ?? ''}`}
               style={[GlobalStyles.alignCenter, GlobalStyles.container]}
             />
             <View>

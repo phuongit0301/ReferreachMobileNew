@@ -11,12 +11,17 @@ import {
   SET_FEED_ITEM_READ_REQUESTED,
   SET_FEED_ITEM_READ_SUCCESS,
   SET_FEED_ITEM_READ_FAILURE,
+  GET_PUBLIC_PROFILE_SUCCESS,
+  GET_PUBLIC_PROFILE_FAILURE,
+  GET_PUBLIC_PROFILE_REQUESTED,
 } from './constants';
 import {
   IActionFeedItemPaginationRequested,
   IActionFeedItemPaginationSuccess,
   IActionFeedItemsListRequested,
   IActionFeedItemsListSuccess,
+  IActionGetPublicProfileRequested,
+  IActionGetPublicProfileSuccess,
   IActionSetFeedItemReadRequested,
   IActionSetFeedItemReadSuccess,
 } from './types';
@@ -81,6 +86,27 @@ function* setFeedItemRead(payload: IActionSetFeedItemReadRequested) {
   }
 }
 
+function* getPublicProfile(payload: IActionGetPublicProfileRequested) {
+  try {
+    const response: IActionGetPublicProfileSuccess['payload'] = yield call(
+      FeedItemsAPI.getPublicProfile,
+      payload?.payload,
+    );
+    if (response.success) {
+      yield put({
+        type: GET_PUBLIC_PROFILE_SUCCESS,
+        payload: response.data,
+      });
+      payload?.callback && payload?.callback(response.data);
+    } else {
+      yield put({type: GET_PUBLIC_PROFILE_FAILURE, payload: {message: response}});
+      payload?.callback && payload?.callback(response?.data);
+    }
+  } catch (error) {
+    yield put({type: GET_PUBLIC_PROFILE_FAILURE, payload: {message: error}});
+  }
+}
+
 function* watchGetFeedItemsList() {
   yield takeEvery(GET_FEED_ITEMS_LIST_REQUESTED, getFeedItemsList);
 }
@@ -93,6 +119,10 @@ function* watchSetFeedItemRead() {
   yield takeEvery(SET_FEED_ITEM_READ_REQUESTED, setFeedItemRead);
 }
 
+function* watchGetPublicProfile() {
+  yield takeEvery(GET_PUBLIC_PROFILE_REQUESTED, getPublicProfile);
+}
+
 export default function* feedItemsWatchers() {
-  yield all([watchGetFeedItemsList(), watchGetFeedItemPagination(), watchSetFeedItemRead()]);
+  yield all([watchGetFeedItemsList(), watchGetFeedItemPagination(), watchSetFeedItemRead(), watchGetPublicProfile()]);
 }

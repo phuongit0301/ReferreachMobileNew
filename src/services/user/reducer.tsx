@@ -25,7 +25,7 @@ export const initialState: IUserState = {
     title: '',
     first_name: '',
     last_name: '',
-    introductions: '',
+    pitch: '',
     onboard_completed: false,
     confirmed_at: '',
     in_app_status: IN_APP_STATUS_ENUM.SIGNIN_COMPLETED,

@@ -35,7 +35,7 @@ export interface IUserInfoState {
   title: string | null;
   first_name: string;
   last_name: string;
-  introductions: string | null;
+  pitch: string | null;
   created_at: string | null;
   updated_at: string | null;
   onboard_completed: boolean;
@@ -52,7 +52,7 @@ export interface IUserUpdateState {
   first_name: string;
   last_name: string;
   title: string;
-  introductions: string;
+  pitch: string;
   self_industry_list: string[];
   partner_industry_list: string[];
   sell_industry_list: string[];

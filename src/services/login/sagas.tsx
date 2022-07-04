@@ -4,10 +4,17 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 
 import {initAuthSuccess} from '~Root/services/auth/actions';
-import {LOGIN_FAILURE, LOGIN_REQUESTED, LOGIN_SUCCESS} from './constants';
+import {
+  FORGOT_PASSWORD_FAILURE,
+  FORGOT_PASSWORD_REQUESTED,
+  FORGOT_PASSWORD_SUCCESS,
+  LOGIN_FAILURE,
+  LOGIN_REQUESTED,
+  LOGIN_SUCCESS,
+} from './constants';
 import {USER_INFO_SUCCESS} from '~Root/services/user/constants';
 import LoginAPI from './apis';
-import {IActionLoginRequested, IActionLoginSuccess} from './types';
+import {IActionForgotPasswordRequested, IActionForgotPasswordSuccess, IActionLoginRequested, IActionLoginSuccess} from './types';
 
 function* handleLogin(payload: IActionLoginRequested) {
   try {
@@ -44,10 +51,39 @@ function* handleLogin(payload: IActionLoginRequested) {
   return payload;
 }
 
+function* handleForgotPassword(payload: IActionForgotPasswordRequested) {
+  try {
+    const response: IActionForgotPasswordSuccess['payload'] = yield call(
+      LoginAPI.handleForgotPassword,
+      payload?.payload,
+    );
+    if (response?.success) {
+      yield put({type: FORGOT_PASSWORD_SUCCESS, payload: response?.data});
+
+      payload?.callback && payload?.callback(response);
+    } else {
+      yield put({type: FORGOT_PASSWORD_FAILURE, payload: {message: response.message}});
+      payload?.callback && payload?.callback(response);
+    }
+  } catch (error) {
+    yield put({type: FORGOT_PASSWORD_FAILURE, payload: {message: error}});
+    payload?.callback &&
+      payload?.callback({
+        data: null,
+        success: false,
+        message: error,
+      });
+  }
+}
+
 function* watchLogin() {
   yield takeEvery(LOGIN_REQUESTED, handleLogin);
 }
 
+function* watchForgotPassword() {
+  yield takeEvery(FORGOT_PASSWORD_REQUESTED, handleForgotPassword);
+}
+
 export default function* loginWatchers() {
-  yield all([watchLogin()]);
+  yield all([watchLogin(), watchForgotPassword()]);
 }

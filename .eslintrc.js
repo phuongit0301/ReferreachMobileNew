@@ -56,16 +56,16 @@ module.exports = {
         checksSpreads: false,
       },
     ],
-    '@typescript-eslint/promise-function-async': [
-      'error',
-      {
-        allowedPromiseNames: false,
-        checkArrowFunctions: true,
-        checkFunctionDeclarations: true,
-        checkFunctionExpressions: true,
-        checkMethodDeclarations: true,
-      },
-    ],
+    // '@typescript-eslint/promise-function-async': [
+    //   'error',
+    //   {
+    //     allowedPromiseNames: false,
+    //     checkArrowFunctions: true,
+    //     checkFunctionDeclarations: true,
+    //     checkFunctionExpressions: true,
+    //     checkMethodDeclarations: true,
+    //   },
+    // ],
   },
   settings: {
     'import/resolver': {

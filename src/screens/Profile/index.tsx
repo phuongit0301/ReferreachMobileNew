@@ -25,7 +25,7 @@ const schema = yup.object().shape({
     .max(31, 'Last Name must be at most 31 characters')
     .required('Last Name is required'),
   [PROFILE_FIELDS.title]: yup.string().required('Job Title is required'),
-  [PROFILE_FIELDS.introductions]: yup.string().max(248).required('Expertise / Pitch is required'),
+  [PROFILE_FIELDS.pitch]: yup.string().max(248).required('Expertise / Pitch is required'),
 });
 
 type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.PROFILE>;
@@ -61,8 +61,8 @@ const ProfileScreen = ({navigation}: any) => {
     if (userState.userInfo?.title) {
       setValue(PROFILE_FIELDS.title, userState.userInfo?.title);
     }
-    if (userState.userInfo?.introductions) {
-      setValue(PROFILE_FIELDS.introductions, userState.userInfo?.introductions);
+    if (userState.userInfo?.pitch) {
+      setValue(PROFILE_FIELDS.pitch, userState.userInfo?.pitch);
     }
   }, [userState.userInfo]);
 
@@ -124,7 +124,7 @@ const ProfileScreen = ({navigation}: any) => {
             control={control}
             name={PROFILE_FIELDS.title}
             register={register}
-            onSubmitEditing={() => onSubmitEditing(PROFILE_FIELDS.introductions)}
+            onSubmitEditing={() => onSubmitEditing(PROFILE_FIELDS.pitch)}
           />
           <InputValidateControl
             label={`${t('expertise')}*`}
@@ -135,7 +135,7 @@ const ProfileScreen = ({navigation}: any) => {
             placeholderTextColor={BASE_COLORS.blackColor}
             errors={errors}
             control={control}
-            name={PROFILE_FIELDS.introductions}
+            name={PROFILE_FIELDS.pitch}
             register={register}
             multiline={true}>
             <View style={styles.countCharacters}>

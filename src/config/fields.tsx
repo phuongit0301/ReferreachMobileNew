@@ -90,14 +90,14 @@ export enum PROFILE_KEYS {
   first_name = 'first_name',
   last_name = 'last_name',
   title = 'title',
-  introductions = 'introductions',
+  pitch = 'pitch',
 }
 
 export const PROFILE_FIELDS = {
   first_name: 'first_name',
   last_name: 'last_name',
   title: 'title',
-  introductions: 'introductions',
+  pitch: 'pitch',
 };
 
 export const TABS = {

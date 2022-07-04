@@ -34,6 +34,7 @@ export const BASE_COLORS = {
   morningBlueColor: '#8C979A',
   antiFlashWhiteColor: '#F0F0F0',
   culturedColor: '#F7F8F9',
+  cultured1Color: '#F6F6F6',
   oldSilverColor: '#848383',
   timberWolfColor: '#DFD9D4',
   gainsboroColor: '#DEDEDE',

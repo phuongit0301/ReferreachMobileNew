@@ -6,7 +6,7 @@ import HeaderSmallTransparent from './HeaderSmallTransparent';
 import HeaderXSSmallBlue from './HeaderXSSmallBlue';
 import HeaderSmallBlue from './HeaderSmallBlue';
 import HeaderNormalBlue from './HeaderNormalBlue';
-import HeaderLargeBlue from './HeaderLargeBlue';
+import HeaderChatBlue from './HeaderChatBlue';
 import HeaderProfileBlue from './HeaderProfileBlue';
 import HeaderSmallBlueWithBG from './HeaderSmallBlueWithBG';
 import Input from './Input';
@@ -62,6 +62,7 @@ import AskItem from './AskItem';
 import AirFeedItem from './AirFeedItem';
 import AskGreeting from './AskGreeting';
 import Location from './Location';
+import ToggleSwitch from './ToggleSwitch';
 /** Define Template */
 
 import HomeTemplateScreen from './HomeTemplate';
@@ -77,7 +78,7 @@ export {
   HeaderSmallTransparent,
   HeaderSmallBlue,
   HeaderNormalBlue,
-  HeaderLargeBlue,
+  HeaderChatBlue,
   HeaderProfileBlue,
   HeaderSmallBlueWithBG,
   Input,
@@ -136,4 +137,5 @@ export {
   AirFeedItem,
   AskGreeting,
   Location,
+  ToggleSwitch,
 };

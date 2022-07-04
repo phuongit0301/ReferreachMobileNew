@@ -54,7 +54,10 @@ const AirFeedScreen = ({navigation}: Props) => {
   });
 
   useEffect(() => {
-    initData();
+    const unsubscribe = navigation.addListener('focus', () => {
+      initData();
+    });
+    return unsubscribe;
   }, [navigation]);
 
   const initData = () => {
@@ -179,6 +182,21 @@ const AirFeedScreen = ({navigation}: Props) => {
     }
   };
 
+  const onProfile = () => {
+    if (feedState?.dataFeed?.data?.length > 0) {
+      navigation.navigate(AppRoute.MAIN_NAVIGATOR, {
+        screen: AppRoute.PROFILE_OTHER,
+        params: {
+          id: feedState?.dataFeed?.data[0]?.attributes?.user?.id,
+        },
+      });
+    }
+  };
+
+  const onIntro = (item: any) => {
+    navigation.navigate(AppRoute.INDIVIDUAL_MESSAGE_MODAL);
+  };
+
   if (loadingState?.loading) {
     return <Loading />;
   }
@@ -203,6 +221,7 @@ const AirFeedScreen = ({navigation}: Props) => {
                       first_name: feedItemData?.attributes?.user?.first_name,
                       last_name: feedItemData?.attributes?.user?.last_name,
                     }}
+                    onProfile={onProfile}
                   />
                 </View>
                 <View style={[GlobalStyles.flexColumn, GlobalStyles.container]}>
@@ -379,7 +398,11 @@ const AirFeedScreen = ({navigation}: Props) => {
               key={'air-feed'}
               keyExtractor={(item, index) => `air-feed-item-${index}`}
               renderItem={({item, index}: {item: any; index: number}) => (
-                <AirFeedItem item={feedState?.dataNetwork.included[index]} key={`ask-item-${index}`} />
+                <AirFeedItem
+                  item={feedState?.dataNetwork.included[index]}
+                  key={`ask-item-${index}`}
+                  onIntro={() => onIntro(item)}
+                />
               )}
               ListEmptyComponent={() => (
                 <View

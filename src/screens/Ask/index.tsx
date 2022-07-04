@@ -309,7 +309,7 @@ const AskScreen = ({navigation}: any) => {
       <View style={[GlobalStyles.container, styles.container, styles.contentContainer]}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
           style={GlobalStyles.container}>
           <View style={[GlobalStyles.mb20, GlobalStyles.container]}>
             <ScrollView style={GlobalStyles.container}>
@@ -391,7 +391,7 @@ const AskScreen = ({navigation}: any) => {
                     visiblePlaceholderInput={true}
                     placeholderInput={t('role')}
                     placeholderTextInputStyle={{
-                      ...GlobalStyles.mr3,
+                      ...GlobalStyles.mr2,
                       ...(showForm?.user_role
                         ? styles.placeholderTextInputActiveStyle
                         : styles.placeholderTextInputStyle),
@@ -463,12 +463,12 @@ const AskScreen = ({navigation}: any) => {
                         inputStyleWrapper={{
                           ...GlobalStyles.mr10,
                           ...(showForm?.business_detail
-                            ? styles.textAreaDynamicActiveContainer
-                            : styles.textAreaDynamicContainer),
+                            ? styles.inputDynamicActiveContainer
+                            : styles.inputDynamicContainer),
                         }}
                         inputStyle={{
                           ...GlobalStyles.mr5,
-                          ...styles.inputMinWidth,
+                          ...GlobalStyles.fullWidth,
                           ...(showForm?.business_detail ? styles.inputActiveStyle : styles.inputStyle),
                         }}
                         selectionColor={BASE_COLORS.blackColor}
@@ -493,7 +493,6 @@ const AskScreen = ({navigation}: any) => {
                             ? styles.placeholderTextAreaActiveStyle
                             : styles.placeholderTextAreaStyle),
                         }}
-                        multiline={true}
                       />
                     )}
                   </View>
@@ -508,18 +507,20 @@ const AskScreen = ({navigation}: any) => {
               textDefault={textGreetingDefault}
             />
           )}
-          {(showForm?.business_requirement_suggestion && !!watch(CREATE_ASK_FIELDS.businessRequirement) && askState?.dataPositionSuggest?.length > 0) && (
-            <View style={[GlobalStyles.mh20, GlobalStyles.container, GlobalStyles.pv15, styles.borderTop]}>
-              <FlatList
-                contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
-                style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
-                data={askState?.dataPositionSuggest}
-                renderItem={renderPositionItem}
-                keyExtractor={(item, index) => `position-suggest-${index}`}
-                keyboardShouldPersistTaps='handled'
-              />
-            </View>
-          )}
+          {showForm?.business_requirement_suggestion &&
+            !!watch(CREATE_ASK_FIELDS.businessRequirement) &&
+            askState?.dataPositionSuggest?.length > 0 && (
+              <View style={[GlobalStyles.mh20, GlobalStyles.container, GlobalStyles.pv15, styles.borderTop]}>
+                <FlatList
+                  contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
+                  style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
+                  data={askState?.dataPositionSuggest}
+                  renderItem={renderPositionItem}
+                  keyExtractor={(item, index) => `position-suggest-${index}`}
+                  keyboardShouldPersistTaps='handled'
+                />
+              </View>
+            )}
           <View>
             {showTooltip && (
               <View style={styles.tooltipContentStyle}>

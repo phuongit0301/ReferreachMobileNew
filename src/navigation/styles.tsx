@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
     height: adjust(28),
   },
   iconAirFeed: {
-    width: adjust(40),
-    height: adjust(33),
+    width: adjust(37),
+    height: adjust(29),
   },
   iconAsk: {
     width: adjust(37),

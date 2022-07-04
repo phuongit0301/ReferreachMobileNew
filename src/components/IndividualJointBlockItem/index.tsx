@@ -1,16 +1,17 @@
 import React from 'react';
 import {View, Text, ViewStyle} from 'react-native';
-import {Trans, useTranslation} from 'react-i18next';
+import {Trans} from 'react-i18next';
 
-import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import {CheckBox, Icon, Image, InputValidateControl} from '~Root/components';
-import {IFeedInfoState} from '~Root/services/feed/types';
+import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
+import {CheckBox, Icon, Image, InputValidateControl, Paragraph} from '~Root/components';
+import {IFeedItemsState} from '~Root/services/feed/types';
 import styles from './styles';
 import {adjust} from '~Root/utils';
+import FastImage from 'react-native-fast-image';
 
 interface Props {
-  profile: IFeedInfoState | null;
-  profileJoint: IFeedInfoState | null;
+  profile: IFeedItemsState['dataUser'] | null;
+  profileRefer: IFeedItemsState['dataProfileRefer'] | null;
   name: string;
   isValid: boolean;
   errors: any;
@@ -21,11 +22,12 @@ interface Props {
   numberOfLines?: number;
   styleContainer?: ViewStyle;
   styleGroupImage?: ViewStyle;
+  isDisable?: boolean;
 }
 
-const IndividualJointBlockItem: React.FC<Props> = ({
+const IndividualMessageBlockItem: React.FC<Props> = ({
   profile,
-  profileJoint,
+  profileRefer,
   name,
   isValid,
   errors,
@@ -36,31 +38,39 @@ const IndividualJointBlockItem: React.FC<Props> = ({
   numberOfLines = 4,
   styleContainer = {},
   styleGroupImage = {},
+  isDisable = false,
 }) => {
   return (
-    <View style={[GlobalStyles.flexColumn, styleContainer]}>
-      <View style={GlobalStyles.mb15}>
-        <Trans
-          i18nKey='feed_joint'
-          values={{name: profile?.first_name, nameJoint: profileJoint?.first_name}}
-          parent={Text}
-          components={{
-            color: <Text style={styles.textColor} />,
-          }}
+    <View style={[GlobalStyles.flexColumn, GlobalStyles.p15, styles.itemContainer, styleContainer]}>
+      {isDisable && <View style={styles.disableContainer} />}
+      <View style={[GlobalStyles.flexRow, GlobalStyles.mb20, styleGroupImage]}>
+        <FastImage
+          source={{uri: profile?.data?.attributes?.avatar_metadata?.avatar_url}}
+          style={[GlobalStyles.mb5, styles.imageProfile]}
+        />
+        <FastImage
+          source={{uri: profileRefer?.data?.attributes?.avatar_metadata?.avatar_url}}
+          style={[GlobalStyles.mb5, styles.imageProfile2]}
         />
       </View>
-      <View style={[GlobalStyles.flexRow, GlobalStyles.mb10, styleGroupImage]}>
-        <View style={styles.imageProfileContainer}>
-          <Image source={{uri: profile?.profile_photo}} style={styles.imageProfile} />
-        </View>
-        <View style={styles.imageProfileContainerOverlap}>
-          <Image source={{uri: profileJoint?.profile_photo}} style={styles.imageProfile} />
-        </View>
-      </View>
+      <Trans
+        i18nKey='feed_message'
+        parent={Text}
+        values={{
+          name1: `${profile?.data?.attributes?.first_name} ${profile?.data?.attributes?.last_name}`,
+          name2: `${profileRefer?.data?.attributes?.first_name} ${profileRefer?.data?.attributes?.last_name}`,
+        }}
+        components={{
+          normal: <Text style={[styles.textNormal]} />,
+          blueHighlight: <Text style={[styles.textBlue]} />,
+          greenHighlight: <Text style={[styles.textGreen]} />,
+        }}
+      />
       <InputValidateControl
         styleContainer={styles.styleContainer}
         inputStyle={styles.inputBorderStyle}
         labelStyle={styles.labelStyle}
+        placeholder={'* Message will not be sent if left empty *'}
         inputErrorStyle={!isValid && styles.inputErrorStyle}
         selectionColor={BASE_COLORS.primary}
         errors={errors}
@@ -75,4 +85,4 @@ const IndividualJointBlockItem: React.FC<Props> = ({
   );
 };
 
-export default IndividualJointBlockItem;
+export default IndividualMessageBlockItem;

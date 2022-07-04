@@ -38,6 +38,7 @@
     "react-native-base64": "^0.2.1",
     "react-native-calendars": "^1.1282.0",
     "react-native-contacts": "^7.0.4",
+    "react-native-device-info": "^9.0.2",
     "react-native-document-picker": "^8.1.0",
     "react-native-fast-image": "^8.5.11",
     "react-native-fs": "^2.20.0",

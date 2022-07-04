@@ -39,7 +39,7 @@ export interface IAttributesState {
   title: string;
   first_name: string;
   last_name: string;
-  introductions: string;
+  pitch: string;
   created_at: Date;
   updated_at: Date;
   onboard_completed: boolean;

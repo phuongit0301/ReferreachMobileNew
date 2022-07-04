@@ -82,8 +82,8 @@ const LoginScreen = ({navigation}: Props) => {
     setFocus(LOGIN_KEYS.password);
   };
 
-  const onRegister = () => {
-    navigation.navigate(AppRoute.FEED_BACK_MODAL);
+  const onForgotPassword = () => {
+    navigation.navigate(AppRoute.FORGOT_PASSWORD);
   };
 
   const onInvite = () => {
@@ -148,7 +148,7 @@ const LoginScreen = ({navigation}: Props) => {
                 />
                 <View style={[GlobalStyles.flexRow, GlobalStyles.justifyBetween, GlobalStyles.alignCenter]}>
                   <CheckBox text={t('remember_me')} isChecked={isChecked} onChange={onCheckboxChange} size={30} />
-                  <Link onPress={onRegister} textDarkGrayColor textDecoration bold title={t('forgot_password')} />
+                  <Link onPress={onForgotPassword} textDarkGrayColor textDecoration bold title={t('forgot_password')} />
                 </View>
                 <View style={GlobalStyles.mt30}>
                   <Button

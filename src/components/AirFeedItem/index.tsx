@@ -11,9 +11,10 @@ import FastImage from 'react-native-fast-image';
 
 interface Props {
   item: IIncluded;
+  onIntro?: (item: any) => void;
 }
 
-const AirFeedItem: React.FC<Props> = ({item}) => {
+const AirFeedItem: React.FC<Props> = ({item, onIntro = () => {}}) => {
   const {t} = useTranslation();
 
   return (
@@ -64,8 +65,8 @@ const AirFeedItem: React.FC<Props> = ({item}) => {
           />
         </View>
       </View>
-      {item?.attributes?.introductions && (
-        <Paragraph textDarkGrayColor title={item?.attributes?.introductions} style={GlobalStyles.mb10} />
+      {item?.attributes?.pitch && (
+        <Paragraph textDarkGrayColor title={item?.attributes?.pitch} style={GlobalStyles.mb10} />
       )}
       <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, styles.groupBtn]}>
         <TouchableOpacity
@@ -81,6 +82,7 @@ const AirFeedItem: React.FC<Props> = ({item}) => {
             ...GlobalStyles.buttonContainerStyle,
             ...styles.buttonContainerStyle,
           }}
+          onPress={onIntro}
         />
       </View>
     </View>
