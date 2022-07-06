@@ -40,16 +40,6 @@ const IndividualJointModalScreen: React.FC<Props> = ({navigation}) => {
   });
 
   const feedState = useSelector((state: IGlobalState) => state.feedState);
-  const [isCheckedFirst, setCheckedFirst] = useState(false);
-  const [isCheckedSecond, setCheckedSecond] = useState(false);
-
-  const onCheckboxFirstChange = () => {
-    setCheckedFirst(!isCheckedFirst);
-  };
-
-  const onCheckboxSecondChange = () => {
-    setCheckedSecond(!isCheckedSecond);
-  };
 
   const onToggleDrawer = () => {
     navigation.toggleDrawer();
@@ -88,7 +78,7 @@ const IndividualJointModalScreen: React.FC<Props> = ({navigation}) => {
             <ToggleSwitch />
           </View>
           <IndividualJointBlockItem
-            profile={feedState?.dataProfile}
+            profile={feedState?.dataFeed}
             profileRefer={feedState?.dataProfileRefer}
             name={MESSAGE_FIELDS.individualMessage}
             register={register}
@@ -102,7 +92,6 @@ const IndividualJointModalScreen: React.FC<Props> = ({navigation}) => {
               ...GlobalStyles.fullWidth,
               ...GlobalStyles.alignCenter,
             }}
-            isDisable={isCheckedSecond}
           />
           <Button
             title={t('submit')}

@@ -15,6 +15,10 @@ import {
   GET_PUBLIC_PROFILE_FAILURE,
   GET_PUBLIC_PROFILE_REQUESTED,
   GET_PUBLIC_PROFILE_SUCCESS,
+  SET_FEED_INTRODUCTIONS,
+  CREATE_INTRODUCTION_FAILURE,
+  CREATE_INTRODUCTION_REQUESTED,
+  CREATE_INTRODUCTION_SUCCESS,
 } from './constants';
 export interface IFeedItemsState {
   message: string;
@@ -34,16 +38,11 @@ export interface IFeedItemsState {
     included: IProfileIncluded[];
     meta: IMeta | null;
   };
-  dataProfile: {
-    data: IPublicProfile | null;
-    included: IProfileIncluded[];
-    meta: IMeta | null;
-  };
   dataProfileRefer: {
-    data: IPublicProfile | null;
-    included: IProfileIncluded[];
+    data: IDataSuggest[] | null;
+    included: IIncluded[] | null;
     meta: IMeta | null;
-  };
+  } | null;
   page: number;
   visibleMenu: {
     show: boolean;
@@ -232,6 +231,11 @@ export interface IActionSetFeedVisibleMenu {
   callback: () => void;
 }
 
+export interface IActionSetFeedIntroductions {
+  type: typeof SET_FEED_INTRODUCTIONS;
+  payload: any;
+}
+
 export interface IActionGetPublicProfileRequested {
   type: typeof GET_PUBLIC_PROFILE_REQUESTED;
   payload: number;
@@ -260,6 +264,35 @@ export interface IActionGetPublicProfileFailure {
   callback?: () => void;
 }
 
+export interface IActionCreateIntroductionRequested {
+  type: typeof CREATE_INTRODUCTION_REQUESTED;
+  payload: {
+    message_for_asker: string;
+    message_for_introducee: string;
+    ask_id: number;
+    introducee_id: string;
+  };
+  callback?: any;
+}
+export interface IActionCreateIntroductionSuccess {
+  type: typeof CREATE_INTRODUCTION_SUCCESS;
+  payload: {
+    data: any;
+    success: boolean;
+    message: string;
+  };
+  callback?: () => void;
+}
+export interface IActionCreateIntroductionFailure {
+  type: typeof CREATE_INTRODUCTION_FAILURE;
+  payload: {
+    data: IPublicProfile | null;
+    success: boolean;
+    message: string;
+  };
+  callback?: () => void;
+}
+
 export type IActionsUser =
   | IActionFeedItemsListRequested
   | IActionFeedItemsListSuccess
@@ -273,4 +306,8 @@ export type IActionsUser =
   | IActionSetFeedVisibleMenu
   | IActionGetPublicProfileRequested
   | IActionGetPublicProfileSuccess
-  | IActionGetPublicProfileFailure;
+  | IActionGetPublicProfileFailure
+  | IActionSetFeedIntroductions
+  | IActionCreateIntroductionRequested
+  | IActionCreateIntroductionSuccess
+  | IActionCreateIntroductionFailure;

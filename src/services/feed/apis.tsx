@@ -2,6 +2,7 @@
 import axios from '~Root/services/axios';
 
 import * as API from '~Root/private/api';
+import {IActionCreateIntroductionRequested} from './types';
 
 export default class FeedItemsAPI {
   static async getList(payload = 1) {
@@ -96,6 +97,33 @@ export default class FeedItemsAPI {
         },
       });
       if (response && response.status === 200) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+    } catch (error) {
+      return {
+        data: null,
+        message: error,
+        success: false,
+      };
+    }
+  }
+
+  static async createIntroduction(payload: IActionCreateIntroductionRequested['payload']) {
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: API.CREATE_INTRODUCTION_URL,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        data: payload,
+      });
+      if (response && (response.status === 200 || response.status === 201)) {
         return {
           data: response.data,
           message: '',

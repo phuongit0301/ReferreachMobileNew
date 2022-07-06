@@ -14,8 +14,13 @@ import {
   GET_PUBLIC_PROFILE_SUCCESS,
   GET_PUBLIC_PROFILE_FAILURE,
   GET_PUBLIC_PROFILE_REQUESTED,
+  CREATE_INTRODUCTION_SUCCESS,
+  CREATE_INTRODUCTION_FAILURE,
+  CREATE_INTRODUCTION_REQUESTED,
 } from './constants';
 import {
+  IActionCreateIntroductionRequested,
+  IActionCreateIntroductionSuccess,
   IActionFeedItemPaginationRequested,
   IActionFeedItemPaginationSuccess,
   IActionFeedItemsListRequested,
@@ -45,6 +50,12 @@ function* getFeedItemsList(payload: IActionFeedItemsListRequested) {
     }
   } catch (error) {
     yield put({type: GET_FEED_ITEMS_LIST_FAILURE, payload: {message: error}});
+    payload?.callback &&
+      payload?.callback({
+        data: null,
+        success: false,
+        message: error,
+      });
   }
 }
 
@@ -63,6 +74,12 @@ function* getFeedItemPagination(payload: IActionFeedItemPaginationRequested) {
     }
   } catch (error) {
     yield put({type: GET_FEED_ITEM_PAGINATION_FAILURE, payload: {message: error}});
+    payload?.callback &&
+      payload?.callback({
+        data: null,
+        success: false,
+        message: error,
+      });
   }
 }
 
@@ -83,6 +100,12 @@ function* setFeedItemRead(payload: IActionSetFeedItemReadRequested) {
     }
   } catch (error) {
     yield put({type: SET_FEED_ITEM_READ_FAILURE, payload: {message: error}});
+    payload?.callback &&
+      payload?.callback({
+        data: null,
+        success: false,
+        message: error,
+      });
   }
 }
 
@@ -104,6 +127,39 @@ function* getPublicProfile(payload: IActionGetPublicProfileRequested) {
     }
   } catch (error) {
     yield put({type: GET_PUBLIC_PROFILE_FAILURE, payload: {message: error}});
+    payload?.callback &&
+      payload?.callback({
+        data: null,
+        success: false,
+        message: error,
+      });
+  }
+}
+
+function* createIntroduction(payload: IActionCreateIntroductionRequested) {
+  try {
+    const response: IActionCreateIntroductionSuccess['payload'] = yield call(
+      FeedItemsAPI.createIntroduction,
+      payload?.payload,
+    );
+    if (response.success) {
+      yield put({
+        type: CREATE_INTRODUCTION_SUCCESS,
+        payload: response.data,
+      });
+      payload?.callback && payload?.callback(response.data);
+    } else {
+      yield put({type: CREATE_INTRODUCTION_FAILURE, payload: {message: response}});
+      payload?.callback && payload?.callback(response?.data);
+    }
+  } catch (error) {
+    yield put({type: CREATE_INTRODUCTION_FAILURE, payload: {message: error}});
+    payload?.callback &&
+      payload?.callback({
+        data: null,
+        success: false,
+        message: error,
+      });
   }
 }
 
@@ -123,6 +179,16 @@ function* watchGetPublicProfile() {
   yield takeEvery(GET_PUBLIC_PROFILE_REQUESTED, getPublicProfile);
 }
 
+function* watchCreateIntroduction() {
+  yield takeEvery(CREATE_INTRODUCTION_REQUESTED, createIntroduction);
+}
+
 export default function* feedItemsWatchers() {
-  yield all([watchGetFeedItemsList(), watchGetFeedItemPagination(), watchSetFeedItemRead(), watchGetPublicProfile()]);
+  yield all([
+    watchGetFeedItemsList(),
+    watchGetFeedItemPagination(),
+    watchSetFeedItemRead(),
+    watchGetPublicProfile(),
+    watchCreateIntroduction(),
+  ]);
 }

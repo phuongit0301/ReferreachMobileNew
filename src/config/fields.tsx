@@ -111,9 +111,14 @@ export const FEED_BACK_FIELDS = {
 };
 
 export const MESSAGE_FIELDS = {
-  individualMessage: 'individualMessage',
-  individualJoint: 'individualJoint',
+  individualMessage: 'message_for_asker',
+  individualJoint: 'message_for_introducee',
 };
+
+export enum MESSAGE_KEYS {
+  individualMessage = 'message_for_asker',
+  individualJoint = 'message_for_introducee',
+}
 
 export const REPORT_FIELDS = {
   report: 'report',

@@ -308,4 +308,23 @@ export default StyleSheet.create({
     width: adjust(79),
     borderRadius: adjust(20),
   },
+  styleModalRemove: {
+    flex: 0.35,
+  },
+  h3BoldDefault: {
+    fontFamily: BASE_FONTS.semiBold,
+    fontWeight: '600',
+    lineHeight: adjust(BASE_STYLES.h3),
+    color: BASE_COLORS.whiteColor,
+  },
+  buttonConfirmContainerStyle: {
+    ...GlobalStyles.ph15,
+    ...GlobalStyles.pv8,
+    borderTopLeftRadius: adjust(32),
+    borderTopRightRadius: adjust(32),
+    borderBottomLeftRadius: adjust(32),
+    borderBottomRightRadius: adjust(32),
+    backgroundColor: BASE_COLORS.forestGreenColor,
+    alignSelf: 'flex-end',
+  },
 });

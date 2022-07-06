@@ -69,6 +69,9 @@ export default StyleSheet.create({
   textSpanishGrayColor: {
     color: BASE_COLORS.spanishGrayColor,
   },
+  textGray3Color: {
+    color: BASE_COLORS.gray3Color,
+  },
   textCenter: {
     textAlign: 'center',
   },

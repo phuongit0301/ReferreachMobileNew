@@ -15,11 +15,14 @@ import {BottomTabParams} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {
   AskGreeting,
+  Button,
   Category,
   Category2,
   HeaderSmallBlueWithBG,
   InputIconValidate,
   InputIconValidateNew,
+  Link,
+  ModalDialogCommon,
   Paragraph,
 } from '~Root/components';
 import {BASE_COLORS, CREATE_ASK_FIELDS, CREATE_ASK_KEYS, GlobalStyles, IMAGES} from '~Root/config';
@@ -89,6 +92,7 @@ const AskScreen = ({navigation}: any) => {
   const [currentPage] = useState(1);
   const [showForm, setShowForm] = useState(DEFAULT_FORM_STATE);
   const [showTooltip, setShowTooltip] = useState(true);
+  const [visibleBackModal, setVisibleBackModal] = useState(false);
   const [textDemographic, setTextDemographic] = useState(askState?.dataPositionDropDown?.[0]);
 
   const [textGreetingDefault, setTextGreetingDefault] = useState(`${t('hi')}, `);
@@ -111,7 +115,16 @@ const AskScreen = ({navigation}: any) => {
     };
   }, []);
 
+  const onVisibleBackModal = () => {
+    setVisibleBackModal(!visibleBackModal);
+  };
+
   const onBack = () => {
+    onVisibleBackModal();
+  };
+
+  const onExit = () => {
+    onVisibleBackModal();
     reset();
     navigation.goBack();
   };
@@ -556,6 +569,43 @@ const AskScreen = ({navigation}: any) => {
           </View>
         </KeyboardAvoidingView>
       </View>
+      {visibleBackModal && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={true}
+          onHideModal={onVisibleBackModal}
+          styleModal={styles.styleModalRemove}>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter]}>
+            <FastImage source={IMAGES.iconErrorGray} style={[GlobalStyles.mb15, GlobalStyles.iconErrors]} />
+            <Paragraph p textCenter textJetColor title={t('ask_warning')} style={GlobalStyles.mb15} />
+            <View
+              style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.justifyBetween, GlobalStyles.ph20]}>
+              <Link
+                h5
+                textGray3Color
+                textDecoration
+                title={t('cancel')}
+                onPress={onVisibleBackModal}
+                style={GlobalStyles.ph15}
+              />
+
+              <View style={GlobalStyles.container}>
+                <Button
+                  title={t('exit')}
+                  h4
+                  textCenter
+                  onPress={onExit}
+                  containerStyle={{
+                    ...GlobalStyles.buttonContainerStyle,
+                    ...styles.buttonConfirmContainerStyle,
+                  }}
+                  textStyle={styles.h3BoldDefault}
+                />
+              </View>
+            </View>
+          </View>
+        </ModalDialogCommon>
+      )}
     </View>
   );
 };

@@ -1670,6 +1670,14 @@
   resolved "https://registry.yarnpkg.com/@types/react-native-base64/-/react-native-base64-0.2.0.tgz#c934e7c3cd549d4613bbfa7929a6845ab07a20af"
   integrity sha512-5kUtS7Kf8Xl4zEwbqLITEuQReQTby4UOGfnsEeBFJEVmUfT+ygOv/Qmv0v6El0iV1eDhXS+/0i7CGR9d3/nRSA==
 
+"@types/react-native-indicators@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@types/react-native-indicators/-/react-native-indicators-0.16.2.tgz#f57c9bbf05aa9abefc0ef4b3b7c09e10eecccf3e"
+  integrity sha512-YXzfiMloDK2T0e46i/1/dG13U75A9RBdtoDtltCyJAEqPPtnNMnoWeQ3TWE/YNuptt/WLD0UOzjsjd9o/KyNdw==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
 "@types/react-native-scrollable-tab-view@^0.10.3":
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/@types/react-native-scrollable-tab-view/-/react-native-scrollable-tab-view-0.10.3.tgz#ce1d528b5ba6054a14dddb18d969f578e0816d5d"
@@ -6738,6 +6746,13 @@ react-native-image-picker@^4.7.3:
   version "4.7.3"
   resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-4.7.3.tgz#f5863b27bf2e76c83649dd8efea4598426bd04e8"
   integrity sha512-eRKm4wlsmZHmsWFyv77kYc2F+ZyEVqe0m7mqhsMzWk6TQT4FBDtEDxmRDDFq+ivCu/1QD+EPhmYcAIpeGr7Ekg==
+
+react-native-indicators@^0.17.0:
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/react-native-indicators/-/react-native-indicators-0.17.0.tgz#92f95efaf5fb53be576dfe4e1980a25655a93f55"
+  integrity sha512-s23em477GHGxWeGczWrixScAZD6tQU4mx1fttlrwhEGKOxhBgp55Kh3RoD9Wj4yna4e5W35xQNoPqoJAT6QW5A==
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-linear-gradient@^2.5.6:
   version "2.5.6"

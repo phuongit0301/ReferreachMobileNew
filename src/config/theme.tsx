@@ -44,6 +44,7 @@ export const BASE_COLORS = {
   darkGrayColor: '#6D6D6D',
   brightGrayColor: '#E9EDF2',
   gray2Color: '#818282',
+  gray3Color: '#7a8088',
   platinumColor: '#E3E3E3',
   platinum1Color: '#e6e6e6',
   cyanCornflowerBlueColor: '#2790B0',

@@ -43,6 +43,7 @@ export const IMAGES = {
   iconSetting: require('~Root/assets/images/icon_setting.png'),
   iconLogout: require('~Root/assets/images/icon_logout.png'),
   iconError: require('~Root/assets/images/icon_error.png'),
+  iconErrorGray: require('~Root/assets/images/icon_error_gray.png'),
   iconSearch: require('~Root/assets/images/icon_search.png'),
   iconSearchBlack: require('~Root/assets/images/icon_search_black.png'),
   iconThreeDot: require('~Root/assets/images/icon_three_dot.png'),

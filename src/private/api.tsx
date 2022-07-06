@@ -31,6 +31,7 @@ export const SUGGEST_INTRODUCTIONS_LIST_URL = `${ROOT_API_URL}/network_connectio
 export const SET_FEED_ITEM_READ_URL = (id: number) => `${ROOT_API_URL}/feed_items/${id}/read`;
 export const GET_PUBLIC_PROFILE_URL = (id: number) => `${ROOT_API_URL}/users/${id}/details`;
 export const FORGOT_PASSWORD_URL = `${ROOT_API_URL}/reset_passwords/send_request`;
+export const CREATE_INTRODUCTION_URL = `${ROOT_API_URL}/introductions`;
 
 export const ASK_TEMPLATE_URL = `${ROOT_API_URL}/ask-template`;
 export const CREATE_ASK_TEMPLATE_URL = (id: string) => `${ROOT_API_URL}/ask-template/${id}/submissions`;

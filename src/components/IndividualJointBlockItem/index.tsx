@@ -1,16 +1,15 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React from 'react';
 import {View, Text, ViewStyle} from 'react-native';
 import {Trans} from 'react-i18next';
 
-import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
-import {CheckBox, Icon, Image, InputValidateControl, Paragraph} from '~Root/components';
+import {BASE_COLORS, GlobalStyles} from '~Root/config';
+import {Avatar, InputValidateControl} from '~Root/components';
 import {IFeedItemsState} from '~Root/services/feed/types';
 import styles from './styles';
-import {adjust} from '~Root/utils';
-import FastImage from 'react-native-fast-image';
 
 interface Props {
-  profile: IFeedItemsState['dataUser'] | null;
+  profile: IFeedItemsState['dataFeed'] | null;
   profileRefer: IFeedItemsState['dataProfileRefer'] | null;
   name: string;
   isValid: boolean;
@@ -40,25 +39,43 @@ const IndividualMessageBlockItem: React.FC<Props> = ({
   styleGroupImage = {},
   isDisable = false,
 }) => {
+  if (!profile?.data || !profileRefer?.included) {
+    return null;
+  }
+
   return (
     <View style={[GlobalStyles.flexColumn, GlobalStyles.p15, styles.itemContainer, styleContainer]}>
       {isDisable && <View style={styles.disableContainer} />}
       <View style={[GlobalStyles.flexRow, GlobalStyles.mb20, styleGroupImage]}>
-        <FastImage
-          source={{uri: profile?.data?.attributes?.avatar_metadata?.avatar_url}}
-          style={[GlobalStyles.mb5, styles.imageProfile]}
+        <Avatar
+          styleAvatar={{...GlobalStyles.mb5, ...styles.imageProfile}}
+          styleContainerGradient={{...GlobalStyles.mb5, ...styles.imageProfile}}
+          userInfo={{
+            avatar_url: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_url,
+            avatar_lat: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_lat,
+            avatar_lng: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_lng,
+            first_name: profile?.data[0]?.attributes?.user?.first_name,
+            last_name: profile?.data[0]?.attributes?.user?.last_name,
+          }}
         />
-        <FastImage
-          source={{uri: profileRefer?.data?.attributes?.avatar_metadata?.avatar_url}}
-          style={[GlobalStyles.mb5, styles.imageProfile2]}
+        <Avatar
+          styleAvatar={{...GlobalStyles.mb5, ...styles.imageProfile2}}
+          styleContainerGradient={{...GlobalStyles.mb5, ...styles.imageProfile2}}
+          userInfo={{
+            avatar_url: profileRefer?.included[0]?.attributes?.avatar_metadata?.avatar_url,
+            avatar_lat: profileRefer?.included[0]?.attributes?.avatar_metadata?.avatar_lat,
+            avatar_lng: profileRefer?.included[0]?.attributes?.avatar_metadata?.avatar_lng,
+            first_name: profileRefer?.included[0]?.attributes?.first_name,
+            last_name: profileRefer?.included[0]?.attributes?.last_name,
+          }}
         />
       </View>
       <Trans
         i18nKey='feed_message'
         parent={Text}
         values={{
-          name1: `${profile?.data?.attributes?.first_name} ${profile?.data?.attributes?.last_name}`,
-          name2: `${profileRefer?.data?.attributes?.first_name} ${profileRefer?.data?.attributes?.last_name}`,
+          name1: `${profile?.data[0]?.attributes?.user?.first_name} ${profile?.data[0]?.attributes?.user?.last_name}`,
+          name2: `${profileRefer?.included[0]?.attributes?.first_name} ${profileRefer?.included[0]?.attributes?.last_name}`,
         }}
         components={{
           normal: <Text style={[styles.textNormal]} />,

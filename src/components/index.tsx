@@ -54,6 +54,7 @@ import ModalEndAsk from './ModalEndAsk';
 import ModalDialogFeedback from './ModalDialogFeedback';
 import FeedBackBlockItem from './FeedBackBlockItem';
 import IndividualMessageBlockItem from './IndividualMessageBlockItem';
+import IndividualMessageBlockItem2 from './IndividualMessageBlockItem2';
 import IndividualJointBlockItem from './IndividualJointBlockItem';
 import ProfileBlock from './ProfileBlock';
 import Otp from './Otp';
@@ -126,6 +127,7 @@ export {
   ModalDialogFeedback,
   FeedBackBlockItem,
   IndividualMessageBlockItem,
+  IndividualMessageBlockItem2,
   IndividualJointBlockItem,
   HomeTemplateScreen,
   InviteContactTemplateScreen,

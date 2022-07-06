@@ -808,6 +808,10 @@ export const GlobalStyles = StyleSheet.create({
     width: adjust(28),
     height: adjust(27),
   },
+  iconErrors: {
+    width: adjust(51),
+    height: adjust(51),
+  },
   /** =========== End Ask =========== */
 
   waitingContainer: {

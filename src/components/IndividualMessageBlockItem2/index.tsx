@@ -25,7 +25,7 @@ interface Props {
   isDisable?: boolean;
 }
 
-const IndividualMessageBlockItem: React.FC<Props> = ({
+const IndividualMessageBlockItem2: React.FC<Props> = ({
   profile,
   profileRefer,
   name,
@@ -53,27 +53,6 @@ const IndividualMessageBlockItem: React.FC<Props> = ({
             styleAvatar={{...GlobalStyles.mb5, ...styles.imageProfile}}
             styleContainerGradient={{...GlobalStyles.mb5, ...styles.imageProfile}}
             userInfo={{
-              avatar_url: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_url,
-              avatar_lat: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_lat,
-              avatar_lng: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_lng,
-              first_name: profile?.data[0]?.attributes?.user?.first_name,
-              last_name: profile?.data[0]?.attributes?.user?.last_name,
-            }}
-          />
-          <View style={GlobalStyles.container}>
-            <Paragraph
-              textSteelBlueColor
-              bold600
-              title={`${profile?.data[0]?.attributes?.user?.first_name} ${profile?.data[0]?.attributes?.user?.last_name}`}
-            />
-          </View>
-        </View>
-        <FastImage source={IMAGES.iconDoubleArrow} style={[GlobalStyles.mr10, styles.iconDoubleArrow]} />
-        <View style={[styles.imageProfileContainer, GlobalStyles.alignCenter]}>
-          <Avatar
-            styleAvatar={{...GlobalStyles.mb5, ...styles.imageProfile}}
-            styleContainerGradient={{...GlobalStyles.mb5, ...styles.imageProfile}}
-            userInfo={{
               avatar_url: profileRefer?.included[0]?.attributes?.avatar_metadata?.avatar_url,
               avatar_lat: profileRefer?.included[0]?.attributes?.avatar_metadata?.avatar_lat,
               avatar_lng: profileRefer?.included[0]?.attributes?.avatar_metadata?.avatar_lng,
@@ -89,13 +68,34 @@ const IndividualMessageBlockItem: React.FC<Props> = ({
             />
           </View>
         </View>
+        <FastImage source={IMAGES.iconDoubleArrow} style={[GlobalStyles.mr10, styles.iconDoubleArrow]} />
+        <View style={[styles.imageProfileContainer, GlobalStyles.alignCenter]}>
+          <Avatar
+            styleAvatar={{...GlobalStyles.mb5, ...styles.imageProfile}}
+            styleContainerGradient={{...GlobalStyles.mb5, ...styles.imageProfile}}
+            userInfo={{
+              avatar_url: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_url,
+              avatar_lat: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_lat,
+              avatar_lng: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_lng,
+              first_name: profile?.data[0]?.attributes?.user?.first_name,
+              last_name: profile?.data[0]?.attributes?.user?.last_name,
+            }}
+          />
+          <View style={GlobalStyles.container}>
+            <Paragraph
+              textSteelBlueColor
+              bold600
+              title={`${profile?.data[0]?.attributes?.user?.first_name} ${profile?.data[0]?.attributes?.user?.last_name}`}
+            />
+          </View>
+        </View>
       </View>
       <Trans
         i18nKey='feed_message'
         parent={Text}
         values={{
-          name1: `${profile?.data[0]?.attributes?.user?.first_name} ${profile?.data[0]?.attributes?.user?.last_name}`,
-          name2: `${profileRefer?.included[0]?.attributes?.first_name} ${profileRefer?.included[0]?.attributes?.last_name}`,
+          name1: `${profileRefer?.included[0]?.attributes?.first_name} ${profileRefer?.included[0]?.attributes?.last_name}`,
+          name2: `${profile?.data[0]?.attributes?.user?.first_name} ${profile?.data[0]?.attributes?.user?.last_name}`,
         }}
         components={{
           normal: <Text style={[styles.textNormal]} />,
@@ -122,4 +122,4 @@ const IndividualMessageBlockItem: React.FC<Props> = ({
   );
 };
 
-export default IndividualMessageBlockItem;
+export default IndividualMessageBlockItem2;
