@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
-import {Animated, RefreshControl, View} from 'react-native';
+import {Animated, RefreshControl, View, SectionList, ActivityIndicator} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import {IAuthState} from '~Root/services/auth/types';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import styles from './styles';
-import {ListItemChat} from '~Root/components';
+import {ListItemChat, Paragraph} from '~Root/components';
 import {IGlobalState} from '~Root/types';
 import {IPeopleToAsk} from '~Root/services/chat/types';
+import FastImage from 'react-native-fast-image';
 
 interface Props {
   data: any[];
@@ -15,55 +16,38 @@ interface Props {
 }
 
 const ListItemsChat: React.FC<Props> = ({data, onItemClick}: Props) => {
-  const [refreshing, setRefreshing] = useState(false);
   const authState: IAuthState = useSelector((state: IGlobalState) => state.authState);
 
-  const scrollAnim = new Animated.Value(0);
-
-  const onRefresh = () => {
-    if (authState?.isLoggedIn) {
-      setRefreshing(true);
-      setTimeout(() => {
-        setRefreshing(false);
-      }, 2000);
-    }
-  };
-
   return (
-    <Animated.FlatList
-      contentContainerStyle={styles.listContainer}
-      style={GlobalStyles.container}
-      nestedScrollEnabled={true}
-      refreshControl={
-        <RefreshControl
-          colors={[BASE_COLORS.primary]}
-          tintColor={BASE_COLORS.primary}
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-        />
-      }
-      scrollEventThrottle={1}
-      onScroll={Animated.event(
-        [
-          {
-            nativeEvent: {
-              contentOffset: {
-                y: scrollAnim,
-              },
-            },
-          },
-        ],
-        {useNativeDriver: true},
-      )}
-      showsVerticalScrollIndicator={false}
-      data={data}
-      key={'listItemChat'}
-      keyExtractor={(item, index) => `listItemChat-${item?.id ?? index}-${index}`}
-      ItemSeparatorComponent={() => <View style={styles.borderBottom} />}
-      renderItem={({item}: {item: IPeopleToAsk}) => (
-        <ListItemChat {...item} onPress={() => onItemClick?.(item)} tagStyle={styles.tagStyle} />
-      )}
-      onEndReachedThreshold={0.5}
+    <SectionList
+      sections={data}
+      keyExtractor={(item, index) => `list-item-${index}`}
+      renderItem={({item, index, section}) => {
+        return <ListItemChat items={item} isAsker={!!section?.asker} data={section?.data} index={index} />;
+      }}
+      stickySectionHeadersEnabled={false}
+      renderSectionHeader={({section}) => {
+        if (!section?.asker) {
+          return null;
+        }
+        return (
+          <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb5, GlobalStyles.ml15]}>
+            <FastImage
+              source={{
+                uri: section?.asker?.avatar_url,
+              }}
+              resizeMode='cover'
+              onProgress={() => <ActivityIndicator />}
+              style={[GlobalStyles.mr10, styles.avatar]}
+            />
+            <View style={GlobalStyles.flexRow}>
+              <Paragraph bold600 title='You ' />
+              <Paragraph title={`${section?.asker?.demographic} `} />
+              <Paragraph title={section?.asker?.business_requirement} />
+            </View>
+          </View>
+        );
+      }}
     />
   );
 };

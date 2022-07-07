@@ -33,7 +33,7 @@ export interface IIncluded {
     title: string;
     first_name?: string;
     last_name?: string;
-    introductions: string;
+    pitch: string;
     avatar_metadata: IAvatarMetadata;
     status: number; // 0: pending, 1: active
     phone?: string;

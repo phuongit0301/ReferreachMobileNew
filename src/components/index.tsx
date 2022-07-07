@@ -6,7 +6,7 @@ import HeaderSmallTransparent from './HeaderSmallTransparent';
 import HeaderXSSmallBlue from './HeaderXSSmallBlue';
 import HeaderSmallBlue from './HeaderSmallBlue';
 import HeaderNormalBlue from './HeaderNormalBlue';
-import HeaderLargeBlue from './HeaderLargeBlue';
+import HeaderChatBlue from './HeaderChatBlue';
 import HeaderProfileBlue from './HeaderProfileBlue';
 import HeaderSmallBlueWithBG from './HeaderSmallBlueWithBG';
 import Input from './Input';
@@ -54,6 +54,7 @@ import ModalEndAsk from './ModalEndAsk';
 import ModalDialogFeedback from './ModalDialogFeedback';
 import FeedBackBlockItem from './FeedBackBlockItem';
 import IndividualMessageBlockItem from './IndividualMessageBlockItem';
+import IndividualMessageBlockItem2 from './IndividualMessageBlockItem2';
 import IndividualJointBlockItem from './IndividualJointBlockItem';
 import ProfileBlock from './ProfileBlock';
 import Otp from './Otp';
@@ -62,6 +63,7 @@ import AskItem from './AskItem';
 import AirFeedItem from './AirFeedItem';
 import AskGreeting from './AskGreeting';
 import Location from './Location';
+import ToggleSwitch from './ToggleSwitch';
 /** Define Template */
 
 import HomeTemplateScreen from './HomeTemplate';
@@ -77,7 +79,7 @@ export {
   HeaderSmallTransparent,
   HeaderSmallBlue,
   HeaderNormalBlue,
-  HeaderLargeBlue,
+  HeaderChatBlue,
   HeaderProfileBlue,
   HeaderSmallBlueWithBG,
   Input,
@@ -125,6 +127,7 @@ export {
   ModalDialogFeedback,
   FeedBackBlockItem,
   IndividualMessageBlockItem,
+  IndividualMessageBlockItem2,
   IndividualJointBlockItem,
   HomeTemplateScreen,
   InviteContactTemplateScreen,
@@ -136,4 +139,5 @@ export {
   AirFeedItem,
   AskGreeting,
   Location,
+  ToggleSwitch,
 };

@@ -19,8 +19,9 @@ import {
   CREATE_ASK_REQUESTED,
   CREATE_ASK_SUCCESS,
   SET_VISIBLE_MENU,
+  UPDATE_ASK_SUCCESS,
 } from './constants';
-import {IActionsCreateAsk, IAskState} from './types';
+import {IActionsCreateAsk, IAskInside, IAskState} from './types';
 
 export const initialState: IAskState = {
   message: '',
@@ -68,6 +69,14 @@ const askReducer = (state: IAskState = initialState, action: IActionsCreateAsk):
         dataAskCreated: action?.payload?.data,
         data: [...state.data, action?.payload?.data],
       };
+    case UPDATE_ASK_SUCCESS: {
+      const items = populateUpdateData(state.data, action?.payload?.data);
+      return {
+        ...state,
+        loading: false,
+        data: items,
+      };
+    }
     case GET_JOB_SUCCESS:
       return {...state, loading: false, dataPositionSuggest: action.payload?.data};
     case GET_LOCATION_SUCCESS:
@@ -94,6 +103,13 @@ const askReducer = (state: IAskState = initialState, action: IActionsCreateAsk):
     default:
       return state;
   }
+};
+
+const populateUpdateData = (items: IAskInside[], item: IAskInside) => {
+  if (items.length > 0) {
+    return items.filter(x => (x.id === item?.id ? item : x));
+  }
+  return [...items, item];
 };
 
 export default askReducer;

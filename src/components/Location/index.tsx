@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, TextInput, TouchableOpacity, View} from 'react-native';
+import {FlatList, TouchableWithoutFeedback, TouchableOpacity, View} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -17,10 +17,20 @@ interface Props {
   control?: any;
   watch?: any;
   setValue?: any;
+  onSubmitEditing?: (key: string) => void;
   data?: IAskLocationState['data'];
 }
 
-const Location: React.FC<Props> = ({register, trigger, setValue, data, errors, control, watch}) => {
+const Location: React.FC<Props> = ({
+  register,
+  trigger,
+  setValue,
+  data,
+  errors,
+  control,
+  watch,
+  onSubmitEditing = () => {},
+}) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const askState = useSelector((state: IGlobalState) => state.askState);
@@ -59,6 +69,7 @@ const Location: React.FC<Props> = ({register, trigger, setValue, data, errors, c
     setSelectedLocation(true);
     setTextLocation(text);
     await trigger(CREATE_ASK_FIELDS.location);
+    onSubmitEditing(CREATE_ASK_FIELDS.location);
   };
 
   const renderLocationItem = ({item}: {item: any}) => {
@@ -71,48 +82,54 @@ const Location: React.FC<Props> = ({register, trigger, setValue, data, errors, c
     );
   };
 
-  const onEndEditingLocation = async () => {
-    if (!isSelectedLocation && textLocation !== watchLocation?.trim()) {
-      setValue(CREATE_ASK_FIELDS.location, '');
-      // await trigger(CREATE_ASK_FIELDS.location);
-    }
+  const onEndEditingLocation = useCallback(async () => {
+    console.log(textLocation);
+    console.log(watchLocation);
+    console.log(isSelectedLocation);
+    // if (!isSelectedLocation && textLocation !== watchLocation?.trim()) {
+    //   dispatch(setLocation(null));
+    //   setValue(CREATE_ASK_FIELDS.location, '');
+    //   // await trigger(CREATE_ASK_FIELDS.location);
+    // }
 
-    if (textLocation !== watchLocation?.trim()) {
-      setSelectedLocation(false);
-    }
-  };
+    // if (textLocation !== watchLocation?.trim()) {
+    //   setSelectedLocation(false);
+    // }
+  }, [textLocation, watchLocation, isSelectedLocation]);
 
   return (
-    <View>
-      <InputIconValidate
-        label={`${t('location')}*`}
-        inputStyleWrapper={styles.inputDynamicContainer}
-        selectionColor={BASE_COLORS.blackColor}
-        placeholderTextColor={BASE_COLORS.grayColor}
-        placeholder='Select Your Location'
-        errors={errors}
-        control={control}
-        name={CREATE_ASK_FIELDS.location}
-        register={register}
-        onEndEditing={onEndEditingLocation}
-        errorStyle={GlobalStyles.mt0}
-      />
-      {askState?.dataLocationSuggest && askState?.dataLocationSuggest?.length > 0 && (
-        <View style={[GlobalStyles.container, GlobalStyles.pv15, styles.locationArea]}>
-          <FlatList
-            contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
-            style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
-            data={askState?.dataLocationSuggest}
-            renderItem={renderLocationItem}
-            keyExtractor={(_item, index) => `location-suggest-${index}`}
-            ItemSeparatorComponent={() => <View style={styles.borderBottom} />}
-            keyboardShouldPersistTaps='handled'
-            numColumns={1}
-            nestedScrollEnabled={true}
-          />
-        </View>
-      )}
-    </View>
+    <TouchableWithoutFeedback onPress={console.log(3333333333)}>
+      <View style={{flex: 1}}>
+        <InputIconValidate
+          label={`${t('location')}*`}
+          inputStyleWrapper={styles.inputDynamicContainer}
+          selectionColor={BASE_COLORS.blackColor}
+          placeholderTextColor={BASE_COLORS.grayColor}
+          placeholder='Select Your Location'
+          errors={errors}
+          control={control}
+          name={CREATE_ASK_FIELDS.location}
+          register={register}
+          // onEndEditing={onEndEditingLocation}
+          errorStyle={GlobalStyles.mt0}
+        />
+        {askState?.dataLocationSuggest && askState?.dataLocationSuggest?.length > 0 && (
+          <View style={[GlobalStyles.container, GlobalStyles.pv15, styles.locationArea]}>
+            <FlatList
+              contentContainerStyle={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.container]}
+              style={[GlobalStyles.flexRow, GlobalStyles.flexWrap]}
+              data={askState?.dataLocationSuggest}
+              renderItem={renderLocationItem}
+              keyExtractor={(_item, index) => `location-suggest-${index}`}
+              ItemSeparatorComponent={() => <View style={styles.borderBottom} />}
+              keyboardShouldPersistTaps='handled'
+              numColumns={1}
+              nestedScrollEnabled={true}
+            />
+          </View>
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

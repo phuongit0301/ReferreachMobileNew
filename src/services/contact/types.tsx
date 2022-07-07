@@ -12,7 +12,7 @@ import {
 } from './constants';
 
 export interface RowItem {
-  id: string;
+  id?: string;
   name: string;
   phone?: string;
   email?: string;

@@ -20,13 +20,19 @@ import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
-import {getFeedItemPagination, getFeedItemsList, setFeedItemRead, setVisibleMenu} from '~Root/services/feed/actions';
+import {
+  getFeedItemPagination,
+  getFeedItemsList,
+  setFeedIntroductions,
+  setFeedItemRead,
+  setVisibleMenu,
+} from '~Root/services/feed/actions';
 import {AirFeedItem, Avatar, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root/components';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
-import {IFeedItemsState} from '~Root/services/feed/types';
+import {IDataSuggest, IFeedItemsState} from '~Root/services/feed/types';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {IGlobalState} from '~Root/types';
 import {DEEP_LINK_URL} from '~Root/private/api';
@@ -54,7 +60,10 @@ const AirFeedScreen = ({navigation}: Props) => {
   });
 
   useEffect(() => {
-    initData();
+    const unsubscribe = navigation.addListener('focus', () => {
+      initData();
+    });
+    return unsubscribe;
   }, [navigation]);
 
   const initData = () => {
@@ -179,6 +188,22 @@ const AirFeedScreen = ({navigation}: Props) => {
     }
   };
 
+  const onProfile = () => {
+    if (feedState?.dataFeed?.data?.length > 0) {
+      navigation.navigate(AppRoute.MAIN_NAVIGATOR, {
+        screen: AppRoute.PROFILE_OTHER,
+        params: {
+          id: feedState?.dataFeed?.data[0]?.attributes?.user?.id,
+        },
+      });
+    }
+  };
+
+  const onIntro = (item: IFeedItemsState['dataNetwork']) => {
+    dispatch(setFeedIntroductions(item));
+    navigation.navigate(AppRoute.INDIVIDUAL_MESSAGE_MODAL);
+  };
+
   if (loadingState?.loading) {
     return <Loading />;
   }
@@ -203,6 +228,7 @@ const AirFeedScreen = ({navigation}: Props) => {
                       first_name: feedItemData?.attributes?.user?.first_name,
                       last_name: feedItemData?.attributes?.user?.last_name,
                     }}
+                    onProfile={onProfile}
                   />
                 </View>
                 <View style={[GlobalStyles.flexColumn, GlobalStyles.container]}>
@@ -377,9 +403,15 @@ const AirFeedScreen = ({navigation}: Props) => {
               showsVerticalScrollIndicator={false}
               data={feedState?.dataNetwork?.data}
               key={'air-feed'}
-              keyExtractor={(item, index) => `air-feed-item-${index}`}
-              renderItem={({item, index}: {item: any; index: number}) => (
-                <AirFeedItem item={feedState?.dataNetwork.included[index]} key={`ask-item-${index}`} />
+              keyExtractor={(item, index) => `air-feed-item-${item?.id}-${index}`}
+              renderItem={({item, index}: {item: IDataSuggest; index: number}) => (
+                <AirFeedItem
+                  item={feedState?.dataNetwork.included[index]}
+                  key={`ask-item-${index}`}
+                  onIntro={() =>
+                    onIntro({data: [item], included: [feedState?.dataNetwork.included[index]], meta: null})
+                  }
+                />
               )}
               ListEmptyComponent={() => (
                 <View

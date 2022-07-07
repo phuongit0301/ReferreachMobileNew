@@ -126,7 +126,7 @@ const InputIconValidateNew: React.FC<Props> = ({
           return (
             <View style={[styles.textInputWrapper, inputStyleWrapper]}>
               {visiblePlaceholderInput && (
-                <View style={GlobalStyles.alignSelfStart}>
+                <View style={GlobalStyles.center}>
                   <Paragraph style={[styles.labelStyle, placeholderTextInputStyle]} title={placeholderInput} />
                 </View>
               )}

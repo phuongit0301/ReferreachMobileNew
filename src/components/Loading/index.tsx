@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, ActivityIndicator} from 'react-native';
+import {View} from 'react-native';
 import {useSelector} from 'react-redux';
+import {DotIndicator} from 'react-native-indicators';
 
 import {BASE_COLORS} from '~Root/config';
 import {IGlobalState} from '~Root/types';
@@ -14,10 +15,7 @@ const Loading = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.bgBlur} />
-      <View style={styles.waitingContainer}>
-        <ActivityIndicator animating={true} size='large' color={`${BASE_COLORS.whiteColor}`} />
-      </View>
+      <DotIndicator animating={true} color={`${BASE_COLORS.whiteColor}`} count={3} size={12} />
     </View>
   );
 };

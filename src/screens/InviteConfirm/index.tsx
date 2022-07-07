@@ -85,7 +85,7 @@ const InviteConfirmScreen = ({navigation, route}: Props) => {
                     textSteelBlueColor
                     bold600
                     p
-                    title={dataInvite?.included[0]?.attributes.introductions}
+                    title={dataInvite?.included[0]?.attributes.pitch}
                   />
                 )}
               </View>

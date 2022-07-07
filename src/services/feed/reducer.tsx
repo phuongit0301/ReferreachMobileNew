@@ -8,6 +8,12 @@ import {
   SET_FEED_ITEM_READ_REQUESTED,
   SET_FEED_ITEM_READ_FAILURE,
   SET_FEED_VISIBLE_MENU,
+  GET_PUBLIC_PROFILE_REQUESTED,
+  GET_PUBLIC_PROFILE_FAILURE,
+  GET_PUBLIC_PROFILE_SUCCESS,
+  SET_FEED_INTRODUCTIONS,
+  CREATE_INTRODUCTION_REQUESTED,
+  CREATE_INTRODUCTION_FAILURE,
 } from './constants';
 import {IFeedItemsState, IActionsUser} from './types';
 
@@ -25,6 +31,16 @@ export const initialState: IFeedItemsState = {
   },
   page: 1,
   dataSelected: null,
+  dataUser: {
+    data: null,
+    included: [],
+    meta: null,
+  },
+  dataProfileRefer: {
+    data: null,
+    included: null,
+    meta: null,
+  },
   visibleMenu: {
     show: false,
     coordinate: {
@@ -39,9 +55,22 @@ const userReducer = (state: IFeedItemsState = initialState, action: IActionsUser
   switch (action.type) {
     case GET_FEED_ITEMS_LIST_REQUESTED:
     case SET_FEED_ITEM_READ_REQUESTED:
+    case GET_PUBLIC_PROFILE_REQUESTED:
+    case CREATE_INTRODUCTION_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
     case GET_FEED_ITEM_PAGINATION_REQUESTED:
       return {...state, callback: action?.callback, page: action?.payload, loading: true};
+    case GET_PUBLIC_PROFILE_SUCCESS:
+      return {
+        ...state,
+        dataUser: {
+          ...state?.dataUser,
+          data: action?.payload?.data,
+          included: action?.payload?.included,
+          meta: action?.payload?.meta,
+        },
+        loading: true,
+      };
     case GET_FEED_ITEMS_LIST_SUCCESS:
     case GET_FEED_ITEM_PAGINATION_SUCCESS:
       return {
@@ -53,9 +82,13 @@ const userReducer = (state: IFeedItemsState = initialState, action: IActionsUser
     case GET_FEED_ITEMS_LIST_FAILURE:
     case GET_FEED_ITEM_PAGINATION_FAILURE:
     case SET_FEED_ITEM_READ_FAILURE:
+    case GET_PUBLIC_PROFILE_FAILURE:
+    case CREATE_INTRODUCTION_FAILURE:
       return {...state, loading: false, message: action.payload.message};
     case SET_FEED_VISIBLE_MENU:
       return {...state, ...action?.payload};
+    case SET_FEED_INTRODUCTIONS:
+      return {...state, dataProfileRefer: action?.payload};
     default:
       return state;
   }

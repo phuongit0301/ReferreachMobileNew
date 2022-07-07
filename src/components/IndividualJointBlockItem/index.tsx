@@ -1,16 +1,16 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React from 'react';
 import {View, Text, ViewStyle} from 'react-native';
-import {Trans, useTranslation} from 'react-i18next';
+import {Trans} from 'react-i18next';
 
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import {CheckBox, Icon, Image, InputValidateControl} from '~Root/components';
-import {IFeedInfoState} from '~Root/services/feed/types';
+import {Avatar, InputValidateControl} from '~Root/components';
+import {IFeedItemsState} from '~Root/services/feed/types';
 import styles from './styles';
-import {adjust} from '~Root/utils';
 
 interface Props {
-  profile: IFeedInfoState | null;
-  profileJoint: IFeedInfoState | null;
+  profile: IFeedItemsState['dataFeed'] | null;
+  profileRefer: IFeedItemsState['dataProfileRefer'] | null;
   name: string;
   isValid: boolean;
   errors: any;
@@ -21,11 +21,12 @@ interface Props {
   numberOfLines?: number;
   styleContainer?: ViewStyle;
   styleGroupImage?: ViewStyle;
+  isDisable?: boolean;
 }
 
-const IndividualJointBlockItem: React.FC<Props> = ({
+const IndividualMessageBlockItem: React.FC<Props> = ({
   profile,
-  profileJoint,
+  profileRefer,
   name,
   isValid,
   errors,
@@ -36,31 +37,57 @@ const IndividualJointBlockItem: React.FC<Props> = ({
   numberOfLines = 4,
   styleContainer = {},
   styleGroupImage = {},
+  isDisable = false,
 }) => {
+  if (!profile?.data || !profileRefer?.included) {
+    return null;
+  }
+
   return (
-    <View style={[GlobalStyles.flexColumn, styleContainer]}>
-      <View style={GlobalStyles.mb15}>
-        <Trans
-          i18nKey='feed_joint'
-          values={{name: profile?.first_name, nameJoint: profileJoint?.first_name}}
-          parent={Text}
-          components={{
-            color: <Text style={styles.textColor} />,
+    <View style={[GlobalStyles.flexColumn, GlobalStyles.p15, styles.itemContainer, styleContainer]}>
+      {isDisable && <View style={styles.disableContainer} />}
+      <View style={[GlobalStyles.flexRow, GlobalStyles.mb20, styleGroupImage]}>
+        <Avatar
+          styleAvatar={{...GlobalStyles.mb5, ...styles.imageProfile}}
+          styleContainerGradient={{...GlobalStyles.mb5, ...styles.imageProfile}}
+          userInfo={{
+            avatar_url: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_url,
+            avatar_lat: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_lat,
+            avatar_lng: profile?.data[0]?.attributes?.user?.avatar_metadata?.avatar_lng,
+            first_name: profile?.data[0]?.attributes?.user?.first_name,
+            last_name: profile?.data[0]?.attributes?.user?.last_name,
+          }}
+        />
+        <Avatar
+          styleAvatar={{...GlobalStyles.mb5, ...styles.imageProfile2}}
+          styleContainerGradient={{...GlobalStyles.mb5, ...styles.imageProfile2}}
+          userInfo={{
+            avatar_url: profileRefer?.included[0]?.attributes?.avatar_metadata?.avatar_url,
+            avatar_lat: profileRefer?.included[0]?.attributes?.avatar_metadata?.avatar_lat,
+            avatar_lng: profileRefer?.included[0]?.attributes?.avatar_metadata?.avatar_lng,
+            first_name: profileRefer?.included[0]?.attributes?.first_name,
+            last_name: profileRefer?.included[0]?.attributes?.last_name,
           }}
         />
       </View>
-      <View style={[GlobalStyles.flexRow, GlobalStyles.mb10, styleGroupImage]}>
-        <View style={styles.imageProfileContainer}>
-          <Image source={{uri: profile?.profile_photo}} style={styles.imageProfile} />
-        </View>
-        <View style={styles.imageProfileContainerOverlap}>
-          <Image source={{uri: profileJoint?.profile_photo}} style={styles.imageProfile} />
-        </View>
-      </View>
+      <Trans
+        i18nKey='feed_message'
+        parent={Text}
+        values={{
+          name1: `${profile?.data[0]?.attributes?.user?.first_name} ${profile?.data[0]?.attributes?.user?.last_name}`,
+          name2: `${profileRefer?.included[0]?.attributes?.first_name} ${profileRefer?.included[0]?.attributes?.last_name}`,
+        }}
+        components={{
+          normal: <Text style={[styles.textNormal]} />,
+          blueHighlight: <Text style={[styles.textBlue]} />,
+          greenHighlight: <Text style={[styles.textGreen]} />,
+        }}
+      />
       <InputValidateControl
         styleContainer={styles.styleContainer}
         inputStyle={styles.inputBorderStyle}
         labelStyle={styles.labelStyle}
+        placeholder={'* Message will not be sent if left empty *'}
         inputErrorStyle={!isValid && styles.inputErrorStyle}
         selectionColor={BASE_COLORS.primary}
         errors={errors}
@@ -75,4 +102,4 @@ const IndividualJointBlockItem: React.FC<Props> = ({
   );
 };
 
-export default IndividualJointBlockItem;
+export default IndividualMessageBlockItem;

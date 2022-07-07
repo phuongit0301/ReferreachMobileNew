@@ -340,6 +340,9 @@ export const GlobalStyles = StyleSheet.create({
   ml10: {
     marginLeft: adjust(10),
   },
+  mr2: {
+    marginRight: adjust(2),
+  },
   mr3: {
     marginRight: adjust(3),
   },
@@ -550,6 +553,9 @@ export const GlobalStyles = StyleSheet.create({
   pt10: {
     paddingTop: adjust(10),
   },
+  pt12: {
+    paddingTop: adjust(12),
+  },
   pt15: {
     paddingTop: adjust(15),
   },
@@ -568,6 +574,9 @@ export const GlobalStyles = StyleSheet.create({
   pt40: {
     paddingTop: adjust(40),
   },
+  pt50: {
+    paddingTop: adjust(50),
+  },
   pb0: {
     paddingBottom: 0,
   },
@@ -576,6 +585,9 @@ export const GlobalStyles = StyleSheet.create({
   },
   pb10: {
     paddingBottom: adjust(10),
+  },
+  pb12: {
+    paddingBottom: adjust(12),
   },
   pb15: {
     paddingBottom: adjust(15),
@@ -750,6 +762,9 @@ export const GlobalStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  alignStart: {
+    alignItems: 'flex-start',
+  },
   alignCenter: {
     alignItems: 'center',
   },
@@ -792,6 +807,10 @@ export const GlobalStyles = StyleSheet.create({
   iconYourAsk: {
     width: adjust(28),
     height: adjust(27),
+  },
+  iconErrors: {
+    width: adjust(51),
+    height: adjust(51),
   },
   /** =========== End Ask =========== */
 

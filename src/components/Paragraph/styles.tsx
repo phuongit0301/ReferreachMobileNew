@@ -101,6 +101,9 @@ export default StyleSheet.create({
   textBrightGrayColor: {
     color: BASE_COLORS.brightGrayColor,
   },
+  textJetColor: {
+    color: BASE_COLORS.jetColor,
+  },
   textCenter: {
     textAlign: 'center',
   },

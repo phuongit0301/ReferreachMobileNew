@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
@@ -24,11 +24,14 @@ const schema = yup.object().shape({
 
 type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.LOGIN>;
 
-const InviteCodeScreen = ({navigation}: Props) => {
+const InviteCodeScreen = ({route, navigation}: Props) => {
   const {
     register,
     control,
     handleSubmit,
+    setValue,
+    setError,
+    trigger,
     formState: {errors, isValid},
   } = useForm<IInviteCode>({
     resolver: yupResolver(schema),
@@ -37,27 +40,39 @@ const InviteCodeScreen = ({navigation}: Props) => {
 
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const code: string = (route?.params as any)?.code;
+    if (code) {
+      setValue(INVITE_CODE_KEYS.inviteCode, code);
+      handleInvite(code);
+    }
+  }, [route?.params]);
 
   const onInvite: SubmitHandler<IInviteCode> = (credentials: IInviteCode) => {
     if (credentials.invite_code) {
-      dispatch(showLoading());
-      dispatch(
-        invitationRequest(credentials.invite_code, (response: any) => {
-          dispatch(hideLoading());
-          if (response.success) {
-            if (response?.data?.data?.attributes?.status === 'unused') {
-              navigation.navigate(AppRoute.INVITE_CONFIRM, {code: credentials.invite_code});
-            } else {
-              navigation.navigate(AppRoute.INVITE_EXPIRE);
-            }
-          } else {
-            console.log(response);
-            setError(true);
-          }
-        }),
-      );
+      handleInvite(credentials.invite_code);
     }
+  };
+
+  const handleInvite = (code: string) => {
+    dispatch(showLoading());
+    dispatch(
+      invitationRequest(code, async (response: any) => {
+        dispatch(hideLoading());
+        if (response.success) {
+          if (response?.data?.data?.attributes?.status === 'unused') {
+            navigation.navigate(AppRoute.INVITE_CONFIRM, {code});
+          } else {
+            navigation.navigate(AppRoute.INVITE_EXPIRE);
+          }
+        } else {
+          setError(INVITE_CODE_KEYS.inviteCode, response?.message);
+          await trigger();
+        }
+      }),
+    );
   };
 
   const ruleInput = {
@@ -90,7 +105,7 @@ const InviteCodeScreen = ({navigation}: Props) => {
                 register={register}
                 autoFocus={true}
               />
-              {isValid && error && (
+              {isValid && (
                 <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
                   <FastImage
                     source={IMAGES.iconError}

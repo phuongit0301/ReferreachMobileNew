@@ -44,13 +44,13 @@ const TabBar = ({state, descriptors, navigation}: any) => {
           switch (label) {
             case AppRoute.YOUR_ASK:
               iconName = isFocused ? (
-                <FastImage source={IMAGES.iconYourAskActive} resizeMode='cover' style={GlobalStyles.iconYourAsk} />
+                <FastImage source={IMAGES.iconYourAskActive} resizeMode='cover' style={styles.iconYourAsk} />
               ) : (
-                <FastImage source={IMAGES.iconYourAsk} resizeMode='cover' style={GlobalStyles.iconYourAsk} />
+                <FastImage source={IMAGES.iconYourAsk} resizeMode='cover' style={styles.iconYourAsk} />
               );
               title = 'Your Ask';
               break;
-            case AppRoute.AIR_FEED:
+            case AppRoute.AIR_FEED_NAVIGATOR:
               iconName = isFocused ? (
                 <FastImage source={IMAGES.iconAIRFeedActive} resizeMode='cover' style={styles.iconAirFeed} />
               ) : (

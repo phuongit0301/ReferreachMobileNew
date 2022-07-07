@@ -111,35 +111,33 @@ const ModalDialogCommon: React.FC<Props> = ({
   children,
 }) => {
   return (
-    <View style={[styles.container, styleContainer]}>
-      <Modal
-        style={styleModalContainer}
-        isVisible={isVisible}
-        onBackdropPress={onHideModal}
-        animationIn={animationIn}
-        useNativeDriver={true}
-        hideModalContentWhileAnimating={true}
-        animationOut={animationOut}>
-        <View style={[styles.container, styles.modal, styleModal]}>
-          {isDefault ? (
-            <>
-              <Paragraph h4 style={[styles.title, styleTitle]} title={title} />
-              <View style={[styles.contentContainer, styleContentContainer]}>
-                <Paragraph h5 textBlack title={content} style={[styles.styleContent, styleContent]} />
-              </View>
-              <Button
-                title={btnText}
-                onPress={onPositive}
-                containerStyle={{...styles.btnStyle, ...styleBtnText}}
-                textStyle={styles.h3BoldDefault}
-              />
-            </>
-          ) : (
-            children
-          )}
-        </View>
-      </Modal>
-    </View>
+    <Modal
+      style={styleModalContainer}
+      isVisible={isVisible}
+      onBackdropPress={onHideModal}
+      animationIn={animationIn}
+      useNativeDriver={true}
+      hideModalContentWhileAnimating={true}
+      animationOut={animationOut}>
+      <View style={[styles.container, styles.modal, styleModal]}>
+        {isDefault ? (
+          <>
+            <Paragraph h4 style={[styles.title, styleTitle]} title={title} />
+            <View style={[styles.contentContainer, styleContentContainer]}>
+              <Paragraph h5 textBlack title={content} style={[styles.styleContent, styleContent]} />
+            </View>
+            <Button
+              title={btnText}
+              onPress={onPositive}
+              containerStyle={{...styles.btnStyle, ...styleBtnText}}
+              textStyle={styles.h3BoldDefault}
+            />
+          </>
+        ) : (
+          children
+        )}
+      </View>
+    </Modal>
   );
 };
 

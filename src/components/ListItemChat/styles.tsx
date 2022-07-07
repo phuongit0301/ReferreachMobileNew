@@ -5,14 +5,11 @@ import {adjust} from '~Root/utils';
 
 export default StyleSheet.create({
   contain: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    width: '100%',
-    flexWrap: 'wrap',
     backgroundColor: BASE_COLORS.whiteColor,
+    borderRadius: adjust(10),
+    width: '100%',
   },
   contentContainer: {
-    ...GlobalStyles.pv20,
     flex: 1,
   },
   contentArea: {
@@ -60,5 +57,23 @@ export default StyleSheet.create({
     backgroundColor: BASE_COLORS.oxleyColor,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  borderContainer: {
+    width: adjust(35),
+  },
+  border: {
+    borderWidth: 0.5,
+    borderColor: BASE_COLORS.darkGray,
+    flex: 1,
+  },
+  avatar: {
+    width: adjust(35),
+    height: adjust(35),
+    borderRadius: adjust(70),
+  },
+  introduction: {
+    fontSize: adjust(10),
+    width: '80%',
   },
 });

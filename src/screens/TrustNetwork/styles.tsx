@@ -46,6 +46,16 @@ export default StyleSheet.create({
     borderBottomRightRadius: adjust(12),
     backgroundColor: BASE_COLORS.forestGreenColor,
   },
+  buttonConfirmContainerStyle: {
+    ...GlobalStyles.ph15,
+    ...GlobalStyles.pv8,
+    borderTopLeftRadius: adjust(32),
+    borderTopRightRadius: adjust(32),
+    borderBottomLeftRadius: adjust(32),
+    borderBottomRightRadius: adjust(32),
+    backgroundColor: BASE_COLORS.forestGreenColor,
+    alignSelf: 'flex-end',
+  },
   avatarContainer: {
     width: adjust(50),
     height: adjust(50),
@@ -176,5 +186,20 @@ export default StyleSheet.create({
   },
   styleModal: {
     flex: 0.5,
+  },
+  styleModalRemove: {
+    flex: 0.4,
+  },
+  groupButton: {
+    width: '80%',
+  },
+  textNormal: {
+    fontFamily: BASE_FONTS.regular,
+    fontSize: adjust(BASE_STYLES.p),
+    lineHeight: adjust(18),
+  },
+  textBold: {
+    fontFamily: BASE_FONTS.semiBold,
+    fontSize: adjust(BASE_STYLES.p),
   },
 });

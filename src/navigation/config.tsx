@@ -22,6 +22,7 @@ export type RootNavigatorParamsList = {
   [AppRoute.VERIFY_EMAIL]: undefined;
   [AppRoute.VERIFIED_EMAIL]: undefined;
   [AppRoute.FORGOT_PASSWORD]: undefined;
+  [AppRoute.CHECK_YOUR_MAIL]: undefined;
   [AppRoute.RECOVER_PASSWORD]: undefined;
   [AppRoute.PROFILE]: undefined;
   [AppRoute.PROFILE_SECOND]: undefined;
@@ -54,7 +55,7 @@ export type RootNavigatorParamsList = {
 
 export type BottomTabParams = {
   [AppRoute.YOUR_ASK]: undefined;
-  [AppRoute.AIR_FEED]: undefined;
+  [AppRoute.AIR_FEED_NAVIGATOR]: undefined;
   [AppRoute.MAIN_NAVIGATOR]: undefined;
   [AppRoute.TRUST_NETWORK]: undefined;
   [AppRoute.CHAT]: undefined;
@@ -105,6 +106,13 @@ export type MainNavigatorParamsList = {
   [AppRoute.JOINT_MESSAGE_MODAL]: undefined;
   [AppRoute.CHAT_INTERNAL]: undefined;
   [AppRoute.ASK]: undefined;
+  [AppRoute.PROFILE_OTHER]: undefined;
+};
+
+export type AirFeedNavigatorParamsList = {
+  [AppRoute.AIR_FEED]: undefined;
+  [AppRoute.INDIVIDUAL_MESSAGE_MODAL]: undefined;
+  [AppRoute.JOINT_MESSAGE_MODAL]: undefined;
 };
 
 export type AskNavigatorParamsList = {

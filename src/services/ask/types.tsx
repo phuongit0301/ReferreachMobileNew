@@ -348,4 +348,7 @@ export type IActionsCreateAsk =
   | IActionSetDataCreateAskStep2
   | IActionSetDataCreateAskStep3
   | IActionSetLocation
-  | IActionSetVisibleMenu;
+  | IActionSetVisibleMenu
+  | IActionUpdateAskRequest
+  | IActionUpdateAskSuccess
+  | IActionUpdateAskFailure;

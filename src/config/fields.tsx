@@ -90,14 +90,14 @@ export enum PROFILE_KEYS {
   first_name = 'first_name',
   last_name = 'last_name',
   title = 'title',
-  introductions = 'introductions',
+  pitch = 'pitch',
 }
 
 export const PROFILE_FIELDS = {
   first_name: 'first_name',
   last_name: 'last_name',
   title: 'title',
-  introductions: 'introductions',
+  pitch: 'pitch',
 };
 
 export const TABS = {
@@ -111,9 +111,14 @@ export const FEED_BACK_FIELDS = {
 };
 
 export const MESSAGE_FIELDS = {
-  individualMessage: 'individualMessage',
-  individualJoint: 'individualJoint',
+  individualMessage: 'message_for_asker',
+  individualJoint: 'message_for_introducee',
 };
+
+export enum MESSAGE_KEYS {
+  individualMessage = 'message_for_asker',
+  individualJoint = 'message_for_introducee',
+}
 
 export const REPORT_FIELDS = {
   report: 'report',

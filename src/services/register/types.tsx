@@ -56,7 +56,7 @@ export interface IIncluded {
     title: string;
     first_name: string;
     last_name: string;
-    introductions: string;
+    pitch: string;
     avatar: string;
   };
 }

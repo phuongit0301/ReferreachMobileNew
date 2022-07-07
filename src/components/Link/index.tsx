@@ -25,6 +25,7 @@ interface Props {
   textForestGreenColor?: boolean;
   textDarkGrayColor?: boolean;
   textSpanishGrayColor?: boolean;
+  textGray3Color?: boolean;
   textCenter?: boolean;
   textDecoration?: boolean;
   onPress?: any;
@@ -52,6 +53,7 @@ const Link: React.FC<Props> = ({
   textForestGreenColor,
   textDarkGrayColor,
   textSpanishGrayColor,
+  textGray3Color,
   textCenter,
   textDecoration,
   onPress,
@@ -80,6 +82,7 @@ const Link: React.FC<Props> = ({
           textForestGreenColor && styles.textForestGreenColor,
           textDarkGrayColor && styles.textDarkGrayColor,
           textSpanishGrayColor && styles.textSpanishGrayColor,
+          textGray3Color && styles.textGray3Color,
           textCenter && styles.textCenter,
           textDecoration && styles.underline,
           styles.default,

@@ -1,4 +1,11 @@
-import {LOGIN_REQUESTED, LOGIN_SUCCESS, LOGIN_FAILURE} from './constants';
+import {
+  LOGIN_REQUESTED,
+  LOGIN_SUCCESS,
+  LOGIN_FAILURE,
+  FORGOT_PASSWORD_FAILURE,
+  FORGOT_PASSWORD_REQUESTED,
+  FORGOT_PASSWORD_SUCCESS,
+} from './constants';
 
 export interface ILoginState {
   message: string;
@@ -27,7 +34,7 @@ export interface IActionLoginSuccess {
       title?: string;
       first_name?: string;
       last_name?: string;
-      introductions?: string;
+      pitch?: string;
       confirmed_at?: string | null;
       token: string;
     };
@@ -48,4 +55,30 @@ export interface IActionLoginFailure {
   callback?: () => void;
 }
 
-export type IActionsLogin = IActionLoginRequested | IActionLoginSuccess | IActionLoginFailure;
+export interface IActionForgotPasswordRequested {
+  type: typeof FORGOT_PASSWORD_REQUESTED;
+  payload: string;
+  callback?: (response: any) => void;
+}
+export interface IActionForgotPasswordSuccess {
+  type: typeof FORGOT_PASSWORD_SUCCESS;
+  payload: {
+    data: null;
+    message: string;
+    success: boolean;
+  };
+  callback?: () => void;
+}
+export interface IActionForgotPasswordFailure {
+  type: typeof FORGOT_PASSWORD_FAILURE;
+  payload: any;
+  callback?: () => void;
+}
+
+export type IActionsLogin =
+  | IActionLoginRequested
+  | IActionLoginSuccess
+  | IActionLoginFailure
+  | IActionForgotPasswordRequested
+  | IActionForgotPasswordSuccess
+  | IActionForgotPasswordFailure;

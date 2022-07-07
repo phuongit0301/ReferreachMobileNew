@@ -111,5 +111,21 @@
     "start_chat": "Start chat",
     "name": "Name",
     "send_invite": "Send invite",
-    "to": "to"
+    "to": "to",
+    "remove_trust_network": "Remove From Trust Network",
+    "invite_trust_network": "Invite to Trust Network",
+    "forgot_password_description": "We all do! Just fill in your email and we'll send you a link to reset your password",
+    "sent": "Sent",
+    "check_your_mail": "Check Your Mail",
+    "check_your_mail_description": "We sent a reset password instruction to your mailbox.",
+    "check_your_mail_button": "Open Email App",
+    "check_your_mail_link": "Skip, I'll confirm later",
+    "message_individual": "Send separate, private messages to one or both users.",
+    "feed_message": "<normal>Tell <blueHighlight>{{name1}}</blueHighlight> why you think <greenHighlight>{{name2}}</greenHighlight> would make a good connection</normal>",
+    "send_joint_message": "Send Joint Message",
+    "submit": "Submit",
+    "ask_warning": "Are you sure you want to exit this \nAsk creation and lose all your \nprogress?",
+    "exit": "Exit",
+    "trust_network_warning": "<normal>This action only removes this person \nfrom Trust Network on your end. \nAre you sure you want to remove </normal><bold>{{name}}</bold>",
+    "remove": "Remove"
 }

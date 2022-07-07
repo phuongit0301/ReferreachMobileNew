@@ -26,6 +26,6 @@ export interface IChatState {
   loading: boolean;
   success: boolean;
   listMatches: IListMatches[];
-  peopleToAsks: IPeopleToAsk[];
+  peopleToAsks: any[];
   callback?: any;
 }

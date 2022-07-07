@@ -21,6 +21,7 @@ import IntroScreen from '~Root/screens/Intro';
 import ProfileScreen from '~Root/screens/Profile';
 import ProfileSecondScreen from '~Root/screens/ProfileSecond';
 import ProfileCompleteScreen from '~Root/screens/ProfileComplete';
+import ProfileOther from '~Root/screens/ProfileOther';
 import YourAskScreen from '~Root/screens/YourAsk';
 import AIRFeedScreen from '~Root/screens/AIRFeed';
 import AskScreen from '~Root/screens/Ask';
@@ -35,6 +36,10 @@ import ChatScreen from '~Root/screens/Chat';
 import AppCheckScreen from '~Root/screens/AppCheck';
 import TipsScreen from '~Root/screens/Tips';
 import TipsTwoScreen from '~Root/screens/TipsTwo';
+import ForgotPasswordScreen from '~Root/screens/ForgotPassword';
+import CheckYourEmailScreen from '~Root/screens/CheckYourEmail';
+import IndividualJointModalScreen from '~Root/screens/IndividualJointModal';
+import IndividualMessageModalScreen from '~Root/screens/IndividualMessageModal';
 
 import {BASE_SETTINGS} from '~Root/config';
 import {AppState} from '~Root/reducers';
@@ -43,12 +48,19 @@ import * as AuthActions from '~Root/services/auth/actions';
 import TabBar from './TabBar';
 import Drawer from './Drawer';
 import {AppRoute} from './AppRoute';
-import {BottomTabParams, MainNavigatorParamsList, RootNavigatorParamsList, AskNavigatorParamsList} from './config';
+import {
+  BottomTabParams,
+  MainNavigatorParamsList,
+  RootNavigatorParamsList,
+  AskNavigatorParamsList,
+  AirFeedNavigatorParamsList,
+} from './config';
 
 enableScreens();
 
 const RootStack = createNativeStackNavigator<RootNavigatorParamsList>();
 const MainStack = createNativeStackNavigator<MainNavigatorParamsList>();
+const AirFeedStack = createNativeStackNavigator<AirFeedNavigatorParamsList>();
 const AskStack = createNativeStackNavigator<AskNavigatorParamsList>();
 const DrawerStack = createDrawerNavigator();
 const BottomTab = createBottomTabNavigator<BottomTabParams>();
@@ -89,7 +101,23 @@ const MainNavigator = (props: any) => {
       <MainStack.Screen name={AppRoute.PROFILE} component={ProfileScreen} />
       <MainStack.Screen name={AppRoute.PROFILE_SECOND} component={ProfileSecondScreen} />
       <MainStack.Screen name={AppRoute.PROFILE_COMPLETE} component={ProfileCompleteScreen} />
+      <MainStack.Screen name={AppRoute.PROFILE_OTHER} component={ProfileOther} />
     </MainStack.Navigator>
+  );
+};
+
+const AirFeedNavigator = (props: any) => {
+  return (
+    <AirFeedStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+      initialRouteName={AppRoute.AIR_FEED}
+      {...props}>
+      <AirFeedStack.Screen name={AppRoute.AIR_FEED} component={AIRFeedScreen} />
+      <AirFeedStack.Screen name={AppRoute.INDIVIDUAL_MESSAGE_MODAL} component={IndividualMessageModalScreen} />
+      <AirFeedStack.Screen name={AppRoute.JOINT_MESSAGE_MODAL} component={IndividualJointModalScreen} />
+    </AirFeedStack.Navigator>
   );
 };
 
@@ -102,7 +130,7 @@ const AppBottomTab = () => {
       })}
       tabBar={props => <TabBar {...props} />}>
       <BottomTab.Screen name={AppRoute.YOUR_ASK} component={YourAskScreen} />
-      <BottomTab.Screen name={AppRoute.AIR_FEED} component={AIRFeedScreen} />
+      <BottomTab.Screen name={AppRoute.AIR_FEED_NAVIGATOR} component={AirFeedNavigator} />
       <BottomTab.Screen name={AppRoute.MAIN_NAVIGATOR} component={MainNavigator} />
       <BottomTab.Screen name={AppRoute.TRUST_NETWORK} component={TrustNetworkScreen} />
       <BottomTab.Screen name={AppRoute.CHAT} component={ChatScreen} />
@@ -203,6 +231,8 @@ const AppNavigator = (props: any) => {
           <RootStack.Screen name={AppRoute.INVITE_CONFIRM} component={InviteConfirmScreen} />
           <RootStack.Screen name={AppRoute.VERIFY_EMAIL} component={VerifyEmailScreen} />
           <RootStack.Screen name={AppRoute.INVITE_EXPIRE} component={InviteExpireScreen} />
+          <RootStack.Screen name={AppRoute.FORGOT_PASSWORD} component={ForgotPasswordScreen} />
+          <RootStack.Screen name={AppRoute.CHECK_YOUR_MAIL} component={CheckYourEmailScreen} />
         </>
       )}
     </RootStack.Navigator>

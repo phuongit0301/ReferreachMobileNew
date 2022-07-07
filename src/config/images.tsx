@@ -43,7 +43,9 @@ export const IMAGES = {
   iconSetting: require('~Root/assets/images/icon_setting.png'),
   iconLogout: require('~Root/assets/images/icon_logout.png'),
   iconError: require('~Root/assets/images/icon_error.png'),
+  iconErrorGray: require('~Root/assets/images/icon_error_gray.png'),
   iconSearch: require('~Root/assets/images/icon_search.png'),
+  iconSearchBlack: require('~Root/assets/images/icon_search_black.png'),
   iconThreeDot: require('~Root/assets/images/icon_three_dot.png'),
   iconThreeDotWhite: require('~Root/assets/images/icon_three_dot_white.png'),
   iconCalendar: require('~Root/assets/images/icon_calendar.png'),
@@ -94,4 +96,6 @@ export const IMAGES = {
   iconShare: require('~Root/assets/images/icon_share.png'),
   iconShareThis: require('~Root/assets/images/icon_share_this.png'),
   iconStartChat: require('~Root/assets/images/icon_start_chat.png'),
+  iconQuestion: require('~Root/assets/images/icon_question.png'),
+  iconDoubleArrow: require('~Root/assets/images/icon_double_arrow.png'),
 };

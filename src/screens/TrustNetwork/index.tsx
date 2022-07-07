@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, RefreshControl, TextInput, View, TouchableOpacity} from 'react-native';
+import {Animated, RefreshControl, TextInput, View, TouchableOpacity, Text} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useTranslation} from 'react-i18next';
+import {Trans, useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import FastImage from 'react-native-fast-image';
@@ -17,6 +17,7 @@ import {
   Button,
   HeaderSmallTransparent,
   InputValidateControl,
+  Link,
   Loading,
   LoadingSecondary,
   ModalDialogCommon,
@@ -25,13 +26,12 @@ import {
 import {IActionRemoveNetworkConnectionSuccess, IIncluded} from '~Root/services/network/types';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES, INVITE_CONTACT_FIELDS, INVITE_CONTACT_KEYS} from '~Root/config';
+import {inviteUserContact} from '~Root/services/contact/actions';
+import {IActionInviteUserContactSuccess} from '~Root/services/contact/types';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
-import { inviteUserContact } from '~Root/services/contact/actions';
-import { IActionInviteUserContactSuccess } from '~Root/services/contact/types';
-import { IPaginationAndSearch } from '~Root/services/ask/types';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -67,6 +67,11 @@ const AirFeedScreen = ({navigation}: Props) => {
   const [loading, setLoading] = useState(false);
   const [initPage, setInitPage] = useState(false);
   const [textSearch, setTextSearch] = useState('');
+  const [dataConfirm, setDataConfirm] = useState({
+    visibleModal: false,
+    item: null,
+    itemIncluded: null,
+  });
 
   useEffect(() => {
     initData();
@@ -107,21 +112,43 @@ const AirFeedScreen = ({navigation}: Props) => {
     }, 1000);
   };
 
-  const onRemove = (id: string) => {
+  const onShowConfirm = (item: any, itemIncluded: any) => {
+    setDataConfirm({
+      visibleModal: true,
+      item,
+      itemIncluded,
+    });
+  };
+
+  const onHideConfirm = () => {
+    setDataConfirm({
+      visibleModal: false,
+      item: null,
+      itemIncluded: null,
+    });
+  };
+
+  const onRemove = () => {
+    if (!dataConfirm?.item) {
+      return null;
+    }
+
     setLoading(true);
     dispatch(
-      removeNetworkConnect(id, (response: IActionRemoveNetworkConnectionSuccess['payload']) => {
-        console.log('return data=======>', response);
-        if (response.success) {
-          dispatch(
-            getNetworkConnectList('', () => {
-              setLoading(false);
-            }),
-          );
-        } else {
-          setLoading(false);
-        }
-      }),
+      removeNetworkConnect(
+        (dataConfirm?.item as any)?.id,
+        (response: IActionRemoveNetworkConnectionSuccess['payload']) => {
+          if (response.success) {
+            dispatch(
+              getNetworkConnectList('', () => {
+                setLoading(false);
+              }),
+            );
+          } else {
+            setLoading(false);
+          }
+        },
+      ),
     );
   };
 
@@ -260,7 +287,7 @@ const AirFeedScreen = ({navigation}: Props) => {
                     {visibleEdit ? (
                       <TouchableOpacity
                         style={[GlobalStyles.ph10, GlobalStyles.pv5]}
-                        onPress={() => onRemove(item?.id)}>
+                        onPress={() => onShowConfirm(item, itemIncluded)}>
                         <FastImage source={IMAGES.iconDelete} resizeMode='contain' style={styles.iconMessage} />
                       </TouchableOpacity>
                     ) : !itemIncluded?.attributes?.status ? (
@@ -332,6 +359,54 @@ const AirFeedScreen = ({navigation}: Props) => {
               textStyle={styles.h3BoldDefault}
               disabled={!isValid}
             />
+          </View>
+        </ModalDialogCommon>
+      )}
+      {dataConfirm?.visibleModal && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={true}
+          onHideModal={onHideConfirm}
+          styleModal={styles.styleModalRemove}>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter]}>
+            <FastImage source={IMAGES.iconErrorGray} style={[GlobalStyles.mb15, GlobalStyles.iconErrors]} />
+            <Trans
+              i18nKey='trust_network_warning'
+              parent={Text}
+              values={{
+                name: `${dataConfirm?.itemIncluded?.attributes?.first_name} ${dataConfirm?.itemIncluded?.attributes?.last_name}`,
+              }}
+              components={{
+                normal: <Text style={[styles.textNormal, GlobalStyles.textCenter]} />,
+                bold: <Text style={[styles.textBold, GlobalStyles.textCenter]} />,
+              }}
+              style={GlobalStyles.mb15}
+            />
+            <View
+              style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.justifyBetween, styles.groupButton]}>
+              <Link
+                h5
+                textGray3Color
+                textDecoration
+                title={t('cancel')}
+                onPress={onHideConfirm}
+                style={GlobalStyles.ph15}
+              />
+
+              <View style={GlobalStyles.container}>
+                <Button
+                  title={t('remove')}
+                  h4
+                  textCenter
+                  onPress={onRemove}
+                  containerStyle={{
+                    ...GlobalStyles.buttonContainerStyle,
+                    ...styles.buttonConfirmContainerStyle,
+                  }}
+                  textStyle={styles.h3BoldDefault}
+                />
+              </View>
+            </View>
           </View>
         </ModalDialogCommon>
       )}

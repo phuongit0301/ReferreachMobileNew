@@ -1,70 +1,78 @@
 import React from 'react';
-import {View, TouchableOpacity, GestureResponderEvent, ViewStyle, TextStyle, Text} from 'react-native';
+import {View, GestureResponderEvent, ViewStyle, TextStyle, Text} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import moment from 'moment';
 
-import {Icon, Image, Paragraph} from '~Root/components';
-import {BASE_COLORS, GlobalStyles} from '~Root/config';
-import {adjust} from '~Root/utils';
+import {Paragraph} from '~Root/components';
+import {GlobalStyles} from '~Root/config';
 import styles from './styles';
-import {IPeopleToAsk} from '~Root/services/chat/types';
 
-interface Props extends IPeopleToAsk {
+interface Props {
   style?: ViewStyle & TextStyle;
   styleRow?: ViewStyle & TextStyle;
   tagStyleContainer?: ViewStyle;
   tagStyle?: TextStyle;
   onPress?: (event: GestureResponderEvent) => void;
-  name: string;
-  title: string;
-  status: string;
-  description?: string;
-  image: string;
-  count: number;
-  hour: string;
+  items: any;
+  isAsker: boolean;
+  data: any[];
+  index: number;
 }
 
 const ListItemChat: React.FC<Props> = ({
   style = {},
   tagStyle = {},
   onPress = () => {},
-  name = '',
-  title = '',
-  status = '',
-  description,
-  image,
-  count = 0,
-  hour = '',
+  items,
+  isAsker = false,
+  data = [],
+  index,
 }: Props) => {
   return (
-    <TouchableOpacity style={[styles.contain, style]} onPress={onPress}>
-      <View style={[GlobalStyles.flexRow, styles.itemContainer]}>
-        <View style={styles.imageContainer}>
-          <Image source={{uri: image}} style={GlobalStyles.avatar2} />
+    <View style={[GlobalStyles.flexColumn, GlobalStyles.alignStart, style]}>
+      <View style={[GlobalStyles.flexRow, GlobalStyles.fullWidth]}>
+        <View style={[GlobalStyles.alignCenter, styles.borderContainer]}>
+          {isAsker && <View style={styles.border} />}
         </View>
-        <View style={[GlobalStyles.flexColumn, styles.contentContainer]}>
-          <View style={[styles.rightContainer, GlobalStyles.flexRow]}>
-            <Paragraph textWhite bold title={status} style={[styles.textRight, GlobalStyles.mr5]} />
-            <Icon name='arrow-right' size={adjust(8)} color={BASE_COLORS.whiteColor} />
+        <View style={[GlobalStyles.flexColumn, GlobalStyles.p10, styles.contain]}>
+          <View style={[GlobalStyles.flexRow, GlobalStyles.alignStart]}>
+            <View style={[GlobalStyles.mr10, styles.imageContainer]}>
+              <FastImage source={{uri: items?.avatar_url}} style={styles.avatar} />
+            </View>
+            <View style={[GlobalStyles.flexColumn, styles.contentContainer]}>
+              <View style={[GlobalStyles.flexRow, GlobalStyles.mb5]}>
+                <Paragraph
+                  bold
+                  title={`${items?.first_name} ${items?.last_name}`}
+                  style={[styles.textRight, GlobalStyles.mr5]}
+                />
+              </View>
+              <Paragraph
+                numberOfLines={2}
+                ellipsizeMode='tail'
+                p
+                title={items?.introduction}
+                style={[GlobalStyles.mb10, styles.introduction]}
+              />
+            </View>
           </View>
           <View style={GlobalStyles.flexRow}>
-            <View style={styles.contentArea}>
-              <Paragraph
-                p
-                title={name}
-                style={[GlobalStyles.tagStyle, GlobalStyles.mb10, GlobalStyles.textUppercase, tagStyle]}
-              />
-              <Paragraph p bold textEerieBlackColor title={title} numberOfLines={1} style={styles.title} />
-              <Paragraph p title={description} numberOfLines={1} />
-            </View>
-            <View style={[GlobalStyles.flexColumn, GlobalStyles.itemCenter, GlobalStyles.mr10]}>
-              <Paragraph p textOxleyColor title={hour} numberOfLines={1} style={GlobalStyles.mb5} />
-              <View style={styles.countContainer}>
-                <Paragraph p textWhite title={`${count}`} numberOfLines={1} />
-              </View>
-            </View>
+            <Paragraph title={moment(items?.created_at).format('DD-MMYYYY HH:mm:ss')} />
+            <Paragraph title='notify' />
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+      {isAsker ? (
+        <View style={GlobalStyles.flexRow}>
+          <View style={[GlobalStyles.alignCenter, styles.borderContainer]}>
+            <View style={styles.border} />
+          </View>
+          <View style={GlobalStyles.mb15} />
+        </View>
+      ) : (
+        <View style={GlobalStyles.mb15} />
+      )}
+    </View>
   );
 };
 
