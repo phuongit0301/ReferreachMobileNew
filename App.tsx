@@ -41,18 +41,18 @@ const App: React.FC<{initialURL?: string}> = ({initialURL}) => {
   }, [initialURL]);
 
   return (
-          <DeepLinkProvider>
     <Provider store={store}>
       <PubNubProvider client={pubnub}>
         <PersistGate loading={<ActivityIndicator />} onBeforeLift={onBeforeLift} persistor={persistor}>
+          <DeepLinkProvider>
             <SafeAreaProvider>
               <AppNavigator />
               <Toast />
             </SafeAreaProvider>
+          </DeepLinkProvider>
         </PersistGate>
       </PubNubProvider>
     </Provider>
-          </DeepLinkProvider>
   );
 };
 

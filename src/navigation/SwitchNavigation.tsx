@@ -164,7 +164,7 @@ const SwitchNavigation = (props: any) => {
   const dispatch = useDispatch();
   const authState = useSelector((state: AppState) => state.authState);
   const link = useURL();
-console.log('link3333=======>', link);
+
   useEffect(() => {
     // AsyncStorage.removeItem('token');
     const initLanguage = async () => {
