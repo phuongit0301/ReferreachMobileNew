@@ -195,3 +195,7 @@ export const calculateExpiredTime = (createdAt: Date = new Date()) => {
     .duration(moment(createdAtPlus, 'DD/MM/YYYY HH:mm').diff(moment(experiedTime, 'DD/MM/YYYY HH:mm')))
     .asMinutes();
 };
+
+export const uid = () => {
+  return ('000000000' + Math.random().toString(36).substr(2, 9)).slice(-9);
+};

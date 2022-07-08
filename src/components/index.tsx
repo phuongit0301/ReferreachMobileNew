@@ -64,6 +64,7 @@ import AirFeedItem from './AirFeedItem';
 import AskGreeting from './AskGreeting';
 import Location from './Location';
 import ToggleSwitch from './ToggleSwitch';
+import {DeepLinkProvider, DeepLinkContext} from './DeepLinkProvider';
 /** Define Template */
 
 import HomeTemplateScreen from './HomeTemplate';
@@ -140,4 +141,6 @@ export {
   AskGreeting,
   Location,
   ToggleSwitch,
+  DeepLinkProvider,
+  DeepLinkContext,
 };

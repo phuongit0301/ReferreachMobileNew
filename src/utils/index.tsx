@@ -16,6 +16,7 @@ import {
   heightByRatio,
   headerTop,
   calculateExpiredTime,
+  uid,
 } from './functions';
 
 export {
@@ -38,4 +39,5 @@ export {
   sideBarRoutes,
   PURPOSE_OF_ASK,
   PURPOSE_OF_ASK_ENUM,
+  uid,
 };

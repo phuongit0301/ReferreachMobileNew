@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
-import {View, Animated, RefreshControl, ActivityIndicator, Touchable} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Animated, ActivityIndicator, TouchableOpacity, Button} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {CompositeScreenProps} from '@react-navigation/native';
-import {t} from 'i18next';
 import FastImage from 'react-native-fast-image';
+import {usePubNub} from 'pubnub-react';
+import {t} from 'i18next';
 
 import {MainNavigatorParamsList, TabNavigatorParamsList} from '~Root/navigation/config';
-import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
+import {GlobalStyles, IMAGES} from '~Root/config';
 import {HeaderChatBlue, ListItemsChat, Paragraph} from '~Root/components';
-import styles from './styles';
-
+import {IListMatches} from '~Root/services/chat/types';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {IGlobalState} from '~Root/types';
-import { IListMatches } from '~Root/services/chat/types';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import styles from './styles';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<MainNavigatorParamsList, AppRoute.CHAT>,
@@ -24,8 +22,25 @@ type Props = CompositeScreenProps<
 >;
 
 const ChatScreen = ({navigation}: Props) => {
+  const pubnub = usePubNub();
+
+  const [channels] = useState(['Channel-m0587v8b7']);
+  const [messages, addMessage] = useState<string[]>([]);
   const chatState = useSelector((state: IGlobalState) => state.chatState);
 
+  useEffect(() => {
+    pubnub.addListener({message: handleMessage});
+    pubnub.subscribe({channels});
+  }, [pubnub, channels]);
+
+  const handleMessage = (event: any) => {
+    const message = event.message;
+    // eslint-disable-next-line no-prototype-builtins
+    if (typeof message === 'string' || message.hasOwnProperty('text')) {
+      const text = message.text || message;
+      addMessage(prev => [...prev, text]);
+    }
+  };
 
   const scrollAnim = new Animated.Value(0);
 
@@ -35,6 +50,11 @@ const ChatScreen = ({navigation}: Props) => {
 
   const onItemClick = () => {
     navigation.navigate(AppRoute.CHAT);
+  };
+
+  const sendMessage = () => {
+    const message = 'Hello World';
+    pubnub.publish({channel: channels[0], message}).then(() => console.log('send message'));
   };
 
   return (
@@ -85,6 +105,7 @@ const ChatScreen = ({navigation}: Props) => {
       <View style={[GlobalStyles.flexColumn, GlobalStyles.container, GlobalStyles.pt30, styles.container]}>
         <ListItemsChat data={chatState?.peopleToAsks} onItemClick={onItemClick} />
       </View>
+      <Button onPress={sendMessage} title='Send Message' />
     </View>
   );
 };

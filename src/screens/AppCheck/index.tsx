@@ -15,7 +15,7 @@ import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 
 type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.APP_CHECK>;
 
-const AppCheckScreen: React.FC<Props> = ({navigation}) => {
+const AppCheckScreen: React.FC<Props> = ({route, navigation}) => {
   const dispatch = useDispatch();
   const authState = useSelector((state: IGlobalState) => state.authState);
 

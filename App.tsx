@@ -1,15 +1,18 @@
-import React from 'react';
-import {ActivityIndicator, Linking} from 'react-native';
+import React, {useEffect} from 'react';
+import {ActivityIndicator} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {NavigationContainer} from '@react-navigation/native';
 import 'react-native-gesture-handler';
 import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
 import Toast from 'react-native-toast-message';
+import PubNub from 'pubnub';
+import {PubNubProvider} from 'pubnub-react';
 
 import AppNavigator from '~Root/navigation';
 import rootStore from '~Root/store';
-import {AppRoute} from '~Root/navigation/AppRoute';
+import {DeepLinkProvider} from '~Root/components';
+import {PUBNUB} from '~Root/private/constants';
+import {uid} from '~Root/utils';
 
 console.disableYellowBox = true;
 
@@ -20,50 +23,36 @@ const {persistor, store} = rootStore();
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 persistor.purge();
 
-export const config = {
-  screens: {
-    [AppRoute.INVITE_CODE]: 'invite/:code',
-    [AppRoute.ASK_DETAILS]: 'a/:id',
-  },
-};
+const pubnub = new PubNub({
+  subscribeKey: PUBNUB.SUBSCRIBE_KEY,
+  publishKey: PUBNUB.PUBLISH_KEY,
+  uuid: uid(),
+});
 
-const linking = {
-  prefixes: ['referreach://', 'https://referreach.com', 'https://*.referreach.com'],
-  config,
-  async getInitialURL() {
-    const url = await Linking.getInitialURL();
-    if (url != null) {
-      return url;
+const App: React.FC<{initialURL?: string}> = ({initialURL}) => {
+  console.log('props========>', initialURL);
+
+  useEffect(() => {
+    if (!initialURL) {
+      return;
     }
-  },
-  subscribe(listener: any) {
-    const onReceiveURL = ({url}: {url: string}) => {
-      console.log('listener=======>', url);
-      listener(url);
-    };
 
-    // Listen to incoming links from deep linking
-    const linkingSubscription = Linking.addEventListener('url', onReceiveURL);
+    console.log('initialURL======?', initialURL);
+  }, [initialURL]);
 
-    return () => {
-      // Clean up the event listeners
-      linkingSubscription.remove();
-    };
-  },
-};
-
-const App = () => {
   return (
+          <DeepLinkProvider>
     <Provider store={store}>
-      <PersistGate loading={<ActivityIndicator />} onBeforeLift={onBeforeLift} persistor={persistor}>
-        <SafeAreaProvider>
-          <NavigationContainer linking={linking} fallback={<ActivityIndicator />}>
-            <AppNavigator />
-            <Toast />
-          </NavigationContainer>
-        </SafeAreaProvider>
-      </PersistGate>
+      <PubNubProvider client={pubnub}>
+        <PersistGate loading={<ActivityIndicator />} onBeforeLift={onBeforeLift} persistor={persistor}>
+            <SafeAreaProvider>
+              <AppNavigator />
+              <Toast />
+            </SafeAreaProvider>
+        </PersistGate>
+      </PubNubProvider>
     </Provider>
+          </DeepLinkProvider>
   );
 };
 
