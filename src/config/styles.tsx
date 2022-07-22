@@ -204,6 +204,16 @@ export const GlobalStyles = StyleSheet.create({
     height: adjust(60),
     borderRadius: adjust(120),
   },
+  avatar3: {
+    width: adjust(35),
+    height: adjust(35),
+    borderRadius: adjust(70),
+  },
+  avatar4: {
+    width: adjust(21),
+    height: adjust(21),
+    borderRadius: adjust(42),
+  },
   tagStyleContainer: {
     borderRadius: adjust(10),
     backgroundColor: BASE_COLORS.primary,
@@ -247,13 +257,36 @@ export const GlobalStyles = StyleSheet.create({
   },
   textDarkGray: {
     fontFamily: BASE_FONTS.regular,
-    fontSize: adjust(BASE_STYLES.h5),
+    fontSize: adjust(BASE_STYLES.p),
     color: BASE_COLORS.darkGrayColor,
   },
   textBold: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
     fontSize: adjust(BASE_STYLES.h5),
+  },
+  textRegularNormal: {
+    fontFamily: BASE_FONTS.regular,
+    fontWeight: '500',
+  },
+  textBoldNormal: {
+    fontFamily: BASE_FONTS.semiBold,
+    fontWeight: '600',
+  },
+  bold400: {
+    fontFamily: BASE_FONTS.regular,
+    fontWeight: '400',
+  },
+  bold500: {
+    fontFamily: BASE_FONTS.regular,
+    fontWeight: '500',
+  },
+  bold600: {
+    fontFamily: BASE_FONTS.semiBold,
+  },
+  bold700: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '700',
   },
   keyboard: {
     flex: 1,
@@ -454,6 +487,10 @@ export const GlobalStyles = StyleSheet.create({
     paddingLeft: adjust(6),
     paddingRight: adjust(6),
   },
+  ph8: {
+    paddingLeft: adjust(8),
+    paddingRight: adjust(8),
+  },
   ph10: {
     paddingLeft: adjust(10),
     paddingRight: adjust(10),
@@ -619,6 +656,21 @@ export const GlobalStyles = StyleSheet.create({
   pl5: {
     paddingLeft: adjust(5),
   },
+  pr5: {
+    paddingRight: 5,
+  },
+  pr10: {
+    paddingRight: 10,
+  },
+  pr15: {
+    paddingRight: 15,
+  },
+  pr60: {
+    paddingRight: 60,
+  },
+  pr100: {
+    paddingRight: 100,
+  },
   iconBackContainer: {
     alignSelf: 'flex-start',
   },
@@ -767,6 +819,9 @@ export const GlobalStyles = StyleSheet.create({
   },
   alignCenter: {
     alignItems: 'center',
+  },
+  alignEnd: {
+    alignItems: 'flex-end',
   },
   justifyBetween: {
     justifyContent: 'space-between',

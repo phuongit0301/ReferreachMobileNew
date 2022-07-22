@@ -18,7 +18,6 @@ import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 import {getAsk, setVisibleMenu} from '~Root/services/ask/actions';
 import {calculateExpiredTime, dateToHours} from '~Root/utils';
-import {DEEP_LINK_URL} from '~Root/private/api';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
 
@@ -45,7 +44,7 @@ const YourAskScreen = ({navigation}: Props) => {
       initData();
     });
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, userState?.userInfo?.in_app_status]);
 
   const initData = () => {
     const params = {

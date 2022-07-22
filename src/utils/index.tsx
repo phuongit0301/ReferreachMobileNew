@@ -1,5 +1,5 @@
 import adjust from './adjust';
-import {PURPOSE_OF_ASK, PURPOSE_OF_ASK_ENUM, sideBarRoutes} from './common';
+import {PURPOSE_OF_ASK, PURPOSE_OF_ASK_ENUM, CHAT_BOX_TYPE_ENUM, sideBarRoutes} from './common';
 import {
   dateWithMonthsDelay,
   dateFormat,
@@ -39,5 +39,6 @@ export {
   sideBarRoutes,
   PURPOSE_OF_ASK,
   PURPOSE_OF_ASK_ENUM,
+  CHAT_BOX_TYPE_ENUM,
   uid,
 };

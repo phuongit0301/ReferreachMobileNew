@@ -8,13 +8,16 @@ import FastImage from 'react-native-fast-image';
 import {useForm, SubmitHandler} from 'react-hook-form';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
+import Toast from 'react-native-toast-message';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
 import {getNetworkConnectList, removeNetworkConnect} from '~Root/services/network/actions';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {
   Avatar,
+  AvatarGradient,
   Button,
+  ButtonSecond,
   HeaderSmallTransparent,
   InputValidateControl,
   Link,
@@ -32,6 +35,8 @@ import {CompositeScreenProps} from '@react-navigation/native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
+import {invitationRequest} from '~Root/services/register/actions';
+import {IActionInvitationSuccess} from '~Root/services/register/types';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -43,7 +48,7 @@ const schema = yup.object().shape({
   email: yup.string().required().email('Invalid email format'),
 });
 
-const AirFeedScreen = ({navigation}: Props) => {
+const AirFeedScreen = ({route, navigation}: Props) => {
   const {
     register,
     control,
@@ -61,6 +66,8 @@ const AirFeedScreen = ({navigation}: Props) => {
   const dispatch = useDispatch();
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
   const networkState = useSelector((state: IGlobalState) => state.networkState);
+  const {dataInvite} = useSelector((state: IGlobalState) => state.registerState);
+
   const [refreshing, setRefreshing] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [visibleInviteModal, setVisibleInviteModal] = useState(false);
@@ -72,17 +79,38 @@ const AirFeedScreen = ({navigation}: Props) => {
     item: null,
     itemIncluded: null,
   });
+  const [visibleInvite, setVisibleInvite] = useState(false);
 
   useEffect(() => {
-    initData();
-  }, [navigation]);
+    initData((route?.params as any)?.inviteCode);
+  }, [route, navigation]);
 
-  const initData = () => {
+  const initData = (inviteCode = null) => {
     dispatch(showLoading());
     dispatch(
       getNetworkConnectList('', () => {
         setInitPage(true);
-        dispatch(hideLoading());
+        if (inviteCode) {
+          dispatch(
+            invitationRequest(inviteCode, (response: IActionInvitationSuccess['payload']) => {
+              console.log(JSON.stringify(response));
+              if (response.success) {
+                setVisibleInvite(true);
+              } else {
+                Toast.show({
+                  position: 'bottom',
+                  type: 'error',
+                  text1: (response?.message as any)?.detail ?? t('invitation_not_found'),
+                  visibilityTime: 2000,
+                  autoHide: true,
+                });
+              }
+              dispatch(hideLoading());
+            }),
+          );
+        } else {
+          dispatch(hideLoading());
+        }
       }),
     );
   };
@@ -141,6 +169,7 @@ const AirFeedScreen = ({navigation}: Props) => {
           if (response.success) {
             dispatch(
               getNetworkConnectList('', () => {
+                onHideConfirm();
                 setLoading(false);
               }),
             );
@@ -168,6 +197,11 @@ const AirFeedScreen = ({navigation}: Props) => {
 
   const onVisibleInviteModal = () => {
     setVisibleInviteModal(!visibleInviteModal);
+  };
+
+  const onOk = () => {
+    navigation.setParams({inviteCode: null});
+    setVisibleInvite(false);
   };
 
   if (loadingState?.loading) {
@@ -279,7 +313,7 @@ const AirFeedScreen = ({navigation}: Props) => {
                       textDarkGrayColor
                       numberOfLines={1}
                       ellipsizeMode='tail'
-                      title={`${itemIncluded?.attributes?.title}`}
+                      title={`${itemIncluded?.attributes?.title ?? ''}`}
                       style={styles.textSmall}
                     />
                   </View>
@@ -330,6 +364,7 @@ const AirFeedScreen = ({navigation}: Props) => {
               control={control}
               name={INVITE_CONTACT_FIELDS.name}
               register={register}
+              autoFocus={true}
               onSubmitEditing={onSubmitEditing}
             />
             <InputValidateControl
@@ -343,7 +378,6 @@ const AirFeedScreen = ({navigation}: Props) => {
               control={control}
               name={INVITE_CONTACT_FIELDS.email}
               register={register}
-              autoFocus={true}
               keyboardType='email-address'
             />
             <Button
@@ -406,6 +440,50 @@ const AirFeedScreen = ({navigation}: Props) => {
                   textStyle={styles.h3BoldDefault}
                 />
               </View>
+            </View>
+          </View>
+        </ModalDialogCommon>
+      )}
+      {visibleInvite && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={true}
+          onHideModal={onHideConfirm}
+          styleModal={styles.styleModal}>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.container, GlobalStyles.alignCenter]}>
+            <View style={GlobalStyles.alignCenter}>
+              <Paragraph h5 textCenter bold600 title={t('accepted_invite')} style={GlobalStyles.mb15} />
+              {dataInvite?.included &&
+                dataInvite?.included?.length > 0 &&
+                dataInvite?.included[0]?.attributes?.avatar_metadata && (
+                  <Avatar
+                    userInfo={{
+                      ...dataInvite?.included[0]?.attributes?.avatar_metadata,
+                      first_name: dataInvite?.included[0]?.attributes?.first_name,
+                      last_name: dataInvite?.included[0]?.attributes?.last_name,
+                    }}
+                    styleAvatar={{...GlobalStyles.mr5, ...GlobalStyles.avatar}}
+                    styleContainerGradient={{...GlobalStyles.alignCenter, ...GlobalStyles.mb10, ...GlobalStyles.avatar}}
+                  />
+                )}
+              {dataInvite?.included && dataInvite?.included?.length > 0 && (
+                <Paragraph
+                  h4
+                  bold
+                  textSteelBlueColor
+                  title={`${dataInvite?.included[0]?.attributes?.first_name ?? ''} ${
+                    dataInvite?.included[0]?.attributes?.last_name ?? ''
+                  }`}
+                  style={GlobalStyles.mb20}
+                />
+              )}
+              <ButtonSecond
+                title={t('ok')}
+                buttonContainerStyle={styles.btnDone}
+                titleStyle={styles.titleStyle}
+                onPress={onOk}
+                showIcon={false}
+              />
             </View>
           </View>
         </ModalDialogCommon>

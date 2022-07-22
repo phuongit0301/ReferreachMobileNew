@@ -18,6 +18,7 @@ export enum AppRoute {
   PROFILE_SECOND = 'ProfileSecond',
   PROFILE_COMPLETE = 'ProfileComplete',
   PROFILE_OTHER = 'ProfileOther',
+  CHAT_NAVIGATOR = 'ChatNavigator',
   CHAT = 'Chat',
   CHAT_INTERNAL = 'ChatInternal',
   CHAT_CONTEXT_SWITCH = 'ChatContextSwitch',

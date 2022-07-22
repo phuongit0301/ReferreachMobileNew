@@ -7,6 +7,7 @@ import HeaderXSSmallBlue from './HeaderXSSmallBlue';
 import HeaderSmallBlue from './HeaderSmallBlue';
 import HeaderNormalBlue from './HeaderNormalBlue';
 import HeaderChatBlue from './HeaderChatBlue';
+import HeaderChatContextBlue from './HeaderChatContextBlue';
 import HeaderProfileBlue from './HeaderProfileBlue';
 import HeaderSmallBlueWithBG from './HeaderSmallBlueWithBG';
 import Input from './Input';
@@ -60,6 +61,7 @@ import ProfileBlock from './ProfileBlock';
 import Otp from './Otp';
 import Intro from './Widgets/Slider';
 import AskItem from './AskItem';
+import ChatItem from './ChatItem';
 import AirFeedItem from './AirFeedItem';
 import AskGreeting from './AskGreeting';
 import Location from './Location';
@@ -81,6 +83,7 @@ export {
   HeaderSmallBlue,
   HeaderNormalBlue,
   HeaderChatBlue,
+  HeaderChatContextBlue,
   HeaderProfileBlue,
   HeaderSmallBlueWithBG,
   Input,
@@ -137,6 +140,7 @@ export {
   Otp,
   Intro,
   AskItem,
+  ChatItem,
   AirFeedItem,
   AskGreeting,
   Location,

@@ -42,4 +42,31 @@ export default StyleSheet.create({
     width: '50%',
     flexWrap: 'wrap',
   },
+  tabs: {
+    ...GlobalStyles.pt10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: BASE_COLORS.brightGrayColor,
+  },
+  tab: {
+    ...GlobalStyles.pb10,
+    width: '30%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomWidth: 0,
+  },
+  tabActive: {
+    borderBottomColor: BASE_COLORS.darkGray,
+    borderBottomWidth: 2,
+  },
+  tabIcon: {
+    color: BASE_COLORS.jetColor,
+  },
+  tabIconActive: {
+    color: BASE_COLORS.darkGrayColor,
+  },
+  tabScrollContainer: {
+    flex: 1,
+  },
 });

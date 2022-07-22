@@ -23,6 +23,9 @@ import {
   UPDATE_ASK_REQUESTED,
   UPDATE_ASK_SUCCESS,
   SET_VISIBLE_MENU,
+  ON_UPDATE_EXTEND_DEADLINE_SUCCESS,
+  ON_UPDATE_EXTEND_DEADLINE_FAILURE,
+  ON_UPDATE_EXTEND_DEADLINE_REQUESTED,
 } from './constants';
 
 export interface IPaginationAndSearch {
@@ -328,6 +331,35 @@ export interface IActionSetLocation {
   payload: any;
 }
 
+export interface IExtendDeadlineInterface {
+  askId: string;
+  deadline: string;
+}
+
+export interface IActionOnUpdateExtendDeadlineRequest {
+  type: typeof ON_UPDATE_EXTEND_DEADLINE_REQUESTED;
+  payload: IExtendDeadlineInterface;
+  callback: (response: IActionOnUpdateExtendDeadlineSuccess['payload']) => void;
+}
+export interface IActionOnUpdateExtendDeadlineSuccess {
+  type: typeof ON_UPDATE_EXTEND_DEADLINE_SUCCESS;
+  payload: {
+    data?: any;
+    message: string;
+    success: boolean;
+  };
+  callback: () => void;
+}
+
+export interface IActionOnUpdateExtendDeadlineFailure {
+  type: typeof ON_UPDATE_EXTEND_DEADLINE_FAILURE;
+  payload: {
+    data: null;
+    message: string;
+    success: boolean;
+  };
+}
+
 export type IActionsCreateAsk =
   | IActionGetAskRequest
   | IActionGetAskSuccess
@@ -351,4 +383,7 @@ export type IActionsCreateAsk =
   | IActionSetVisibleMenu
   | IActionUpdateAskRequest
   | IActionUpdateAskSuccess
-  | IActionUpdateAskFailure;
+  | IActionUpdateAskFailure
+  | IActionOnUpdateExtendDeadlineRequest
+  | IActionOnUpdateExtendDeadlineSuccess
+  | IActionOnUpdateExtendDeadlineFailure;

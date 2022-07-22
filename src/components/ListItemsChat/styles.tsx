@@ -29,4 +29,18 @@ export default StyleSheet.create({
     borderColor: BASE_COLORS.darkGray,
     flex: 0.9,
   },
+  titleWidth: {
+    width: '82%',
+    overflow: 'hidden',
+  },
+  iconPin: {
+    width: adjust(16),
+    height: adjust(16),
+  },
+  textHighlight: {
+    color: BASE_COLORS.steelBlue2Color,
+  },
+  textNormal: {
+    color: BASE_COLORS.darkGrayColor,
+  },
 });

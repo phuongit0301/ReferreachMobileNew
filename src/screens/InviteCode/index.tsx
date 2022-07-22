@@ -44,9 +44,14 @@ const InviteCodeScreen = ({route, navigation}: Props) => {
 
   useEffect(() => {
     const code: string = (route?.params as any)?.code;
+    const resetForm: string = (route?.params as any)?.resetForm;
     if (code) {
-      setValue(INVITE_CODE_KEYS.inviteCode, code);
+      setValue('invite_code', code);
       handleInvite(code);
+    }
+
+    if (resetForm) {
+      setValue('invite_code', '');
     }
   }, [route?.params]);
 
@@ -75,10 +80,6 @@ const InviteCodeScreen = ({route, navigation}: Props) => {
     );
   };
 
-  const ruleInput = {
-    required: {value: true, message: t('invite_code_required')},
-  };
-
   return (
     <View style={[GlobalStyles.container, styles.container]}>
       <AuthHeader showLeft={true} onPressLeft={() => navigation.goBack()} />
@@ -101,20 +102,9 @@ const InviteCodeScreen = ({route, navigation}: Props) => {
                 errors={errors}
                 control={control}
                 name={INVITE_CODE_FIELDS.inviteCode}
-                rules={ruleInput}
                 register={register}
                 autoFocus={true}
               />
-              {isValid && (
-                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
-                  <FastImage
-                    source={IMAGES.iconError}
-                    resizeMode='cover'
-                    style={[GlobalStyles.mr5, styles.iconError]}
-                  />
-                  <Paragraph textDesireColor title={t('invitiation_code')} />
-                </View>
-              )}
               <View style={GlobalStyles.mt30}>
                 <Button
                   title={t('next')}

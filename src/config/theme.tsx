@@ -12,7 +12,9 @@ export const BASE_COLORS = {
   gray90Color: '#E5E5E5',
   grayX11Color: '#BCBCBC',
   lighGray: '#EEEEEE',
+  lighGray1: '#D4D4D4',
   greyColor: '#C4C4C4',
+  flowkitGreyColor: '#C2C3CC',
   darkGray: '#A9A9A9',
   redColor: '#FF5555',
   persianRedColor: '#D32F2F',
@@ -59,6 +61,8 @@ export const BASE_COLORS = {
   desireColor: '#EF4056',
   graniteGrayColor: '#646464',
   taupeGrayColor: '#888888',
+  lightPeriwinkleColor: '#CDD2DE',
+  superiorityBlueColor: '#8199BC',
 };
 
 export const BASE_FONTS = {
@@ -73,6 +77,7 @@ export const BASE_STYLES = {
   h3: 18,
   h4: 16,
   h5: 14,
+  h6: 10,
   p: 12,
 };
 

@@ -12,9 +12,15 @@ import {
   LOGIN_REQUESTED,
   LOGIN_SUCCESS,
 } from './constants';
+import {GET_CREDENTIAL_REQUESTED} from '~Root/services/pubnub/constants';
 import {USER_INFO_SUCCESS} from '~Root/services/user/constants';
 import LoginAPI from './apis';
-import {IActionForgotPasswordRequested, IActionForgotPasswordSuccess, IActionLoginRequested, IActionLoginSuccess} from './types';
+import {
+  IActionForgotPasswordRequested,
+  IActionForgotPasswordSuccess,
+  IActionLoginRequested,
+  IActionLoginSuccess,
+} from './types';
 
 function* handleLogin(payload: IActionLoginRequested) {
   try {
@@ -27,6 +33,7 @@ function* handleLogin(payload: IActionLoginRequested) {
         yield put({type: USER_INFO_SUCCESS, payload: response});
       }
       yield put({type: LOGIN_SUCCESS, payload: response?.data});
+      yield put({type: GET_CREDENTIAL_REQUESTED});
 
       yield put(initAuthSuccess());
       payload?.callback &&

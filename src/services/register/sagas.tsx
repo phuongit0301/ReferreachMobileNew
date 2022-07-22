@@ -17,8 +17,13 @@ import {
   INVITATION_REQUESTED,
   INVITATION_SUCCESS,
   INVITATION_FAILURE,
+  INVITATION_REJECT_FAILURE,
+  INVITATION_REJECT_REQUESTED,
+  INVITATION_REJECT_SUCCESS,
 } from './constants';
 import {
+  IActionInvitationRejectRequested,
+  IActionInvitationRejectSuccess,
   IActionInvitationRequested,
   IActionInvitationSuccess,
   IActionRegisterRequested,
@@ -114,6 +119,24 @@ function* handleInvitation(payload: IActionInvitationRequested) {
   }
 }
 
+function* handleInvitationReject(payload: IActionInvitationRejectRequested) {
+  try {
+    const response: IActionInvitationRejectSuccess['payload'] = yield call(
+      RegisterAPI.invitationReject,
+      payload?.payload,
+    );
+    if (response?.success) {
+      yield put({type: INVITATION_REJECT_SUCCESS, payload: response});
+      payload?.callback && payload?.callback(response);
+    } else {
+      yield put({type: INVITATION_REJECT_FAILURE, payload: {error: response.message}});
+      payload?.callback && payload?.callback(response);
+    }
+  } catch (error) {
+    yield put({type: INVITATION_REJECT_FAILURE, payload: {error: error}});
+  }
+}
+
 function* watchRegister() {
   yield takeEvery(REGISTER_REQUESTED, handleRegister);
 }
@@ -130,7 +153,17 @@ function* watchInvitation() {
   yield takeEvery(INVITATION_REQUESTED, handleInvitation);
 }
 
+function* watchInvitationReject() {
+  yield takeEvery(INVITATION_REJECT_REQUESTED, handleInvitationReject);
+}
+
 export default function* registerWatchers() {
-  yield all([watchRegister(), watchVerifyAccount(), watchRenewVerificationCode(), watchInvitation()]);
+  yield all([
+    watchRegister(),
+    watchVerifyAccount(),
+    watchRenewVerificationCode(),
+    watchInvitation(),
+    watchInvitationReject(),
+  ]);
   // yield all([sagaAsyncCallGenerator(ASYNC_REGISTER, RegisterAPI.handleRegister)]);
 }

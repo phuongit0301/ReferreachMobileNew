@@ -9,6 +9,8 @@ export const ROOT_API_URL = 'https://dev-api-ls.referreach.com/api/v1';
 export const LOGIN_URL = `${ROOT_URL}/auth/sign_in`;
 export const INVITATION_URL = (invitationId: string) => `${ROOT_API_URL}/invitations/code/${invitationId}/details`;
 export const GET_INVITATION_URL = `${ROOT_API_URL}/invitations`;
+export const REJECT_INVITATION_URL = (invitationCode: string) =>
+  `${ROOT_API_URL}/invitations/process_reject?invitation_code=${invitationCode}`;
 export const REGISTER_URL = `${ROOT_URL}/auth/`;
 export const VERIFY_ACCOUNT_URL = `${ROOT_API_URL}/users/verify_email`;
 export const RENEW_VERIFICATION_CODE_URL = `${ROOT_API_URL}/users/send_confirmation_token`;
@@ -32,6 +34,14 @@ export const SET_FEED_ITEM_READ_URL = (id: number) => `${ROOT_API_URL}/feed_item
 export const GET_PUBLIC_PROFILE_URL = (id: number) => `${ROOT_API_URL}/users/${id}/details`;
 export const FORGOT_PASSWORD_URL = `${ROOT_API_URL}/reset_passwords/send_request`;
 export const CREATE_INTRODUCTION_URL = `${ROOT_API_URL}/introductions`;
+export const CHAT_CONTEXT_URL = (contextId: string) => `${ROOT_API_URL}/chat_contexts/${contextId}`;
+export const CHAT_FEED_URL = `${ROOT_API_URL}/chat_feeds/ask_list`;
+export const USER_CHAT_LIST_URL = `${ROOT_API_URL}/chat_feeds/suggest_users_chat_list`;
+export const GET_CRENDENTIAL_URL = `${ROOT_API_URL}/pubnubs/credentials`;
+export const ON_PIN_URL = (askId: string) => `${ROOT_API_URL}/chat_feeds/${askId}/pin`;
+export const ON_UN_PIN_URL = (askId: string) => `${ROOT_API_URL}/chat_feeds/${askId}/unpin`;
+export const ON_UPDATE_EXTEND_DEADLINE_URL = (askId: string, dateTime: string) =>
+  `${ROOT_API_URL}/ask/${askId}/extend_deadline?new_deadline=${dateTime}`;
 
 export const ASK_TEMPLATE_URL = `${ROOT_API_URL}/ask-template`;
 export const CREATE_ASK_TEMPLATE_URL = (id: string) => `${ROOT_API_URL}/ask-template/${id}/submissions`;

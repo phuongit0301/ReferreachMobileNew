@@ -5,8 +5,11 @@ import {
   INVITATION_REQUESTED,
   SET_DATA_INVITATION,
   SET_TEMP_TOKEN,
+  INVITATION_REJECT_REQUESTED,
 } from './constants';
 import {
+  IActionInvitationRejectRequested,
+  IActionInvitationRejectSuccess,
   IActionInvitationRequested,
   IActionInvitationSuccess,
   IActionRegisterRequested,
@@ -36,10 +39,21 @@ export const verifyAccountRequest = (
 
 export const invitationRequest = (
   payload: IActionInvitationRequested['payload'],
-  callback: (response: IActionInvitationSuccess['payload']['data']) => void,
+  callback: (response: IActionInvitationSuccess['payload']) => void,
 ) => {
   return {
     type: INVITATION_REQUESTED,
+    payload,
+    callback,
+  };
+};
+
+export const invitationRejectRequest = (
+  payload: IActionInvitationRejectRequested['payload'],
+  callback: (response: IActionInvitationRejectSuccess['payload']) => void,
+) => {
+  return {
+    type: INVITATION_REJECT_REQUESTED,
     payload,
     callback,
   };

@@ -72,7 +72,7 @@ const TabBar = ({state, descriptors, navigation}: any) => {
               );
               title = 'Trust';
               break;
-            case AppRoute.CHAT:
+            case AppRoute.CHAT_NAVIGATOR:
               iconName = isFocused ? (
                 <FastImage source={IMAGES.iconChatActive} resizeMode='cover' style={styles.iconChat} />
               ) : (

@@ -317,10 +317,16 @@ const AirFeedScreen = ({navigation}: Props) => {
                         <FastImage
                           source={IMAGES.iconPdf}
                           resizeMode='cover'
+                          key={`air-feed-file-${index}`}
                           style={[GlobalStyles.mr10, styles.icon]}
                         />
                       ) : (
-                        <FastImage source={IMAGES.iconXls} resizeMode='cover' style={styles.icon} />
+                        <FastImage
+                          source={IMAGES.iconXls}
+                          resizeMode='cover'
+                          style={styles.icon}
+                          key={`air-feed-file-${index}`}
+                        />
                       ),
                     )}
                   </View>

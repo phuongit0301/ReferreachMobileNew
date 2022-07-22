@@ -32,7 +32,10 @@ const ProfileCompleteScreen = ({navigation, route}: any) => {
 
   const onNext = () => {
     // Check if user have status onboard_completed then navigate to another screen
-    if (userState?.userInfo?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED) {
+    if (
+      userState?.userInfo?.in_app_status === IN_APP_STATUS_ENUM.ONBOARD_COMPLETED ||
+      userState?.userInfo?.in_app_status === IN_APP_STATUS_ENUM.SIGNUP_GUIDE_TIPS
+    ) {
       navigation.navigate(AppRoute.BOTTOM_TAB);
       return false;
     }

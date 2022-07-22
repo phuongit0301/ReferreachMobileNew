@@ -20,6 +20,9 @@ import {
   UPDATE_ASK_FAILURE,
   UPDATE_ASK_SUCCESS,
   UPDATE_ASK_REQUESTED,
+  ON_UPDATE_EXTEND_DEADLINE_SUCCESS,
+  ON_UPDATE_EXTEND_DEADLINE_FAILURE,
+  ON_UPDATE_EXTEND_DEADLINE_REQUESTED,
 } from './constants';
 import {
   IActionCreateAskRequest,
@@ -32,6 +35,8 @@ import {
   IActionGetJobSuccess,
   IActionGetLocationRequest,
   IActionGetLocationSuccess,
+  IActionOnUpdateExtendDeadlineRequest,
+  IActionOnUpdateExtendDeadlineSuccess,
   IActionUpdateAskRequest,
   IActionUpdateAskSuccess,
 } from './types';
@@ -246,6 +251,40 @@ function* getLocations(payload: IActionGetLocationRequest) {
   }
 }
 
+function* updateExtendDeadline(payload: IActionOnUpdateExtendDeadlineRequest) {
+  try {
+    const response: IActionOnUpdateExtendDeadlineSuccess['payload'] = yield call(
+      AskAPI.updateExtendDeadline,
+      payload?.payload,
+    );
+    if (response?.success) {
+      yield put({type: ON_UPDATE_EXTEND_DEADLINE_SUCCESS, payload: response?.data});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: '',
+          data: response?.data,
+        });
+    } else {
+      yield put({type: ON_UPDATE_EXTEND_DEADLINE_FAILURE, payload: {error: response?.message}});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: response?.message,
+          data: response?.data,
+        });
+    }
+  } catch (error) {
+    yield put({type: ON_UPDATE_EXTEND_DEADLINE_FAILURE, payload: {error: error}});
+    payload?.callback &&
+      payload?.callback({
+        success: false,
+        message: error as string,
+        data: null,
+      });
+  }
+}
+
 function* watchGetAsk() {
   yield takeLatest(GET_ASK_REQUESTED, getAsks);
 }
@@ -270,6 +309,10 @@ function* watchGetLocation() {
   yield takeLatest(GET_LOCATION_REQUESTED, getLocations);
 }
 
+function* watchUpdateExtendDeadline() {
+  yield takeLatest(ON_UPDATE_EXTEND_DEADLINE_REQUESTED, updateExtendDeadline);
+}
+
 export default function* askWatchers() {
   yield all([
     watchGetAsk(),
@@ -278,5 +321,6 @@ export default function* askWatchers() {
     watchGetLocation(),
     watchCreateAsk(),
     watchUpdateAsk(),
+    watchUpdateExtendDeadline(),
   ]);
 }

@@ -33,6 +33,11 @@ export enum IN_APP_STATUS_ENUM {
   SIGNUP_GUIDE_TIPS = 'signup_guide_tips',
 }
 
+export enum CHAT_BOX_TYPE_ENUM {
+  RESPONDED = 'asker_introducer',
+  INTRODUCED = 'introducer_introducee',
+}
+
 export const sideBarRoutes = [
   {
     name: AppRoute.MY_ACCOUNT,

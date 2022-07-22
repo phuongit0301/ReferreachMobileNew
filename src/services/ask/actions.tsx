@@ -10,11 +10,14 @@ import {
   GET_ASK_EDIT_REQUESTED,
   UPDATE_ASK_REQUESTED,
   SET_VISIBLE_MENU,
+  ON_UPDATE_EXTEND_DEADLINE_REQUESTED,
 } from './constants';
 import {
   IActionGetAskDetailsFailure,
   IActionGetAskDetailsSuccess,
+  IActionOnUpdateExtendDeadlineSuccess,
   IActionUpdateAskSuccess,
+  IExtendDeadlineInterface,
   IPaginationAndSearch,
 } from './types';
 
@@ -73,6 +76,17 @@ export const setLocation = (payload: string | null) => {
   return {
     type: SET_LOCATION,
     payload,
+  };
+};
+
+export const onExtendDeadlineRequest = (
+  payload: IExtendDeadlineInterface,
+  callback: (response: IActionOnUpdateExtendDeadlineSuccess['payload']) => void,
+) => {
+  return {
+    type: ON_UPDATE_EXTEND_DEADLINE_REQUESTED,
+    payload,
+    callback,
   };
 };
 

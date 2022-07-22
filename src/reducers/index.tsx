@@ -14,6 +14,7 @@ import askDetailsReducer from '~Root/services/askDetails/reducer';
 import networkReducer from '~Root/services/network/reducer';
 import chatReducer from '~Root/services/chat/reducer';
 import feedReducer from '~Root/services/feed/reducer';
+import pubnubReducer from '~Root/services/pubnub/reducer';
 import {IGlobalState} from '~Root/types';
 import {ASYNC_INITIALIZE_AUTH, LOGOUT} from '~Root/services/auth/constants';
 
@@ -41,6 +42,7 @@ const appReducer = combineReducers<IGlobalState>({
   networkState: networkReducer,
   chatState: chatReducer,
   feedState: feedReducer,
+  pubnubState: pubnubReducer,
 });
 
 export const rootReducer = (state: IGlobalState | undefined, action: any) => {

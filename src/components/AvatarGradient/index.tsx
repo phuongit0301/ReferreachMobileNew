@@ -1,5 +1,5 @@
 import React from 'react';
-import {ViewStyle} from 'react-native';
+import {TextStyle, ViewStyle} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import {BASE_COLORS} from '~Root/config';
@@ -11,6 +11,7 @@ interface Props {
   color1?: string;
   color2?: string;
   stylesContainer?: ViewStyle;
+  textStyle?: TextStyle;
 }
 
 const AvatarGradient: React.FC<Props> = ({
@@ -18,10 +19,11 @@ const AvatarGradient: React.FC<Props> = ({
   color1 = BASE_COLORS.greyColor,
   color2 = BASE_COLORS.approxIndigoColor,
   stylesContainer = {},
+  textStyle = {},
 }) => {
   return (
     <LinearGradient colors={[color1, color2]} style={[styles.imageContainer, styles.circleGradient, stylesContainer]}>
-      <Paragraph h2 textWhite bold title={title.toUpperCase()} />
+      <Paragraph h2 textWhite bold title={title.toUpperCase()} style={textStyle} />
     </LinearGradient>
   );
 };

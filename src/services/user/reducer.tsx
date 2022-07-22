@@ -28,7 +28,7 @@ export const initialState: IUserState = {
     pitch: '',
     onboard_completed: false,
     confirmed_at: '',
-    in_app_status: IN_APP_STATUS_ENUM.SIGNIN_COMPLETED,
+    in_app_status: IN_APP_STATUS_ENUM.INVITATION_SENT,
     self_industries: [],
     partner_industries: [],
     sell_industries: [],

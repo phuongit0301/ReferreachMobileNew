@@ -36,7 +36,7 @@ const schema = yup.object().shape({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
       'Password must be at least 8 characters, contain numbers, upper and lower case letters, and special characters',
     ),
-  confirm_password: yup
+  password_confirmation: yup
     .string()
     .min(
       8,
@@ -89,6 +89,7 @@ const RegisterScreen = ({navigation}: Props) => {
             user: {
               email: credentials.email,
               password: credentials.password,
+              password_confirmation: credentials.password_confirmation,
               first_name: credentials.first_name,
               last_name: credentials.last_name,
             },
@@ -223,7 +224,7 @@ const RegisterScreen = ({navigation}: Props) => {
                   styleContainer={GlobalStyles.mb5}
                   imageStyle={styles.iconEye}
                   onIconClick={onIconClick}
-                  onSubmitEditing={() => onSubmitEditing(REGISTER_KEYS.confirm_password)}
+                  onSubmitEditing={() => onSubmitEditing(REGISTER_KEYS.password_confirmation)}
                 />
                 <Paragraph textGray2Color title={t('register_password_condition')} style={styles.textCondition} />
               </View>
@@ -237,7 +238,7 @@ const RegisterScreen = ({navigation}: Props) => {
                 placeholderTextColor={BASE_COLORS.blackColor}
                 errors={errors}
                 control={control}
-                name={REGISTER_FIELDS.confirm_password}
+                name={REGISTER_FIELDS.password_confirmation}
                 register={register}
                 showIcon={true}
                 isIconImage={true}

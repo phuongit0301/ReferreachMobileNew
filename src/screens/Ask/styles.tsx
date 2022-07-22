@@ -309,7 +309,7 @@ export default StyleSheet.create({
     borderRadius: adjust(20),
   },
   styleModalRemove: {
-    flex: 0.35,
+    height: adjust(200),
   },
   h3BoldDefault: {
     fontFamily: BASE_FONTS.semiBold,
