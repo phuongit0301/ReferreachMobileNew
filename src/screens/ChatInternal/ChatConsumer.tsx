@@ -392,7 +392,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                   <Paragraph title={t('extend_deadline')} />
                 </TouchableOpacity>
               ) : (
-                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
+                <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
                   <View
                     style={[
                       GlobalStyles.alignCenter,
@@ -407,7 +407,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                     />
                   </View>
                   <Paragraph textDarkGrayColor title={t('extend_deadline')} />
-                </View>
+                </TouchableOpacity>
               )}
               <View style={[GlobalStyles.justifyCenter, styles.border]} />
               <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
@@ -437,7 +437,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                   <Paragraph title={t('end_this_ask')} />
                 </TouchableOpacity>
               ) : (
-                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
+                <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
                   <View
                     style={[
                       GlobalStyles.alignCenter,
@@ -448,7 +448,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                     <FastImage source={IMAGES.iconEndAskGray} resizeMode='cover' style={styles.iconEndAsk} />
                   </View>
                   <Paragraph textDarkGrayColor title={t('end_this_ask')} />
-                </View>
+                </TouchableOpacity>
               )}
               <View style={[GlobalStyles.justifyCenter, styles.border]} />
               <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>

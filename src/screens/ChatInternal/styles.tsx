@@ -77,6 +77,7 @@ export default StyleSheet.create({
     top: 0,
     right: 0,
     width: '60%',
+    zIndex: 208,
   },
   border: {
     borderWidth: 0.3,

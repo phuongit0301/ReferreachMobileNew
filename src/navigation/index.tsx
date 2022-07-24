@@ -6,6 +6,8 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {useSelector, useDispatch} from 'react-redux';
 import i18n from 'i18next';
 import {initReactI18next} from 'react-i18next';
+import PubNub from 'pubnub';
+import {PubNubProvider} from 'pubnub-react';
 
 import LoginScreen from '~Root/screens/Login';
 import RegisterScreen from '~Root/screens/Register';
@@ -182,6 +184,13 @@ const AppNavigator = (props: any) => {
   const dispatch = useDispatch();
   const authState = useSelector((state: AppState) => state.authState);
   const pubnubState = useSelector((state: AppState) => state.pubnubState);
+
+  // const pubnub = new PubNub({
+  //   subscribeKey: pubnubState?.data?.subscribe_key ?? '',
+  //   publishKey: pubnubState?.data?.publish_key ?? '',
+  //   uuid: pubnubState?.data?.uuid ?? new Date().getTime(),
+  //   authKey: pubnubState?.data?.token ?? '',
+  // });
 
   useEffect(() => {
     const initLanguage = async () => {

@@ -258,25 +258,21 @@ export default StyleSheet.create({
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
     color: BASE_COLORS.whiteColor,
-    lineHeight: adjust(12),
   },
   placeholderTextInputActiveStyle: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
     color: BASE_COLORS.steelBlue2Color,
-    lineHeight: adjust(12),
   },
   placeholderTextAreaStyle: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
     color: BASE_COLORS.whiteColor,
-    lineHeight: adjust(20),
   },
   placeholderTextAreaActiveStyle: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
     color: BASE_COLORS.steelBlue2Color,
-    lineHeight: adjust(20),
   },
   borderTop: {
     borderTopWidth: 1,

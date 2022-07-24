@@ -5,6 +5,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {useTranslation} from 'react-i18next';
 import {useDispatch} from 'react-redux';
 import Toast from 'react-native-toast-message';
+import {usePubNub} from 'pubnub-react';
 
 import {
   Button,
@@ -12,11 +13,7 @@ import {
   IndividualMessageBlockItem,
   IndividualMessageBlockItem2,
 } from '~Root/components';
-import {
-  IActionCreateIntroductionRequested,
-  IActionCreateIntroductionSuccess,
-  IFeedItemsState,
-} from '~Root/services/feed/types';
+import {IActionCreateIntroductionRequested, IFeedItemsState} from '~Root/services/feed/types';
 import {GlobalStyles} from '~Root/config';
 import {MESSAGE_FIELDS, MESSAGE_KEYS} from '~Root/config/fields';
 import {createIntroduction} from '~Root/services/feed/actions';
@@ -37,6 +34,7 @@ interface ICredentials {
 
 const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}) => {
   const {t} = useTranslation();
+  const pubnub = usePubNub();
   const {
     register,
     control,
@@ -63,19 +61,70 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
 
     dispatch(showLoading());
     dispatch(
-      createIntroduction(payload, (response: IActionCreateIntroductionSuccess['payload']) => {
+      createIntroduction(payload, (response: any) => {
         console.log('response===>', response);
-        dispatch(hideLoading());
-        Toast.show({
-          position: 'bottom',
-          type: response.success ? 'success' : 'info',
-          text1: 'Successfully',
-          visibilityTime: 3000,
-          autoHide: true,
-        });
-        setTimeout(() => {
-          navigation.goBack();
-        }, 3100);
+        if (response.included?.length > 0) {
+          const chatContexts = response.included.find((x: any) => x.name === 'chat_contexts');
+          // chatContexts
+          if (
+            (feedState?.dataFeed.data && !feedState?.dataFeed.data[0]?.attributes?.user?.id) ||
+            (feedState?.dataProfileRefer?.included && !feedState?.dataProfileRefer?.included[0]?.id)
+          ) {
+            dispatch(hideLoading());
+            Toast.show({
+              position: 'bottom',
+              type: response.success ? 'success' : 'info',
+              text1: 'Successfully',
+              visibilityTime: 3000,
+              autoHide: true,
+            });
+            setTimeout(() => {
+              navigation.goBack();
+            }, 3100);
+            return;
+          }
+
+          const pubnubMessages = [
+            {
+              text: payload?.message_for_asker,
+              userId: feedState?.dataFeed.data[0]?.attributes?.user?.id,
+            },
+            {
+              text: payload?.message_for_introducee,
+              userId: feedState?.dataProfileRefer?.included[0]?.id,
+            },
+          ];
+
+          const promises = [];
+
+          for (const item of pubnubMessages) {
+            promises.push(
+              pubnub
+                .publish({
+                  channel: chatContexts.attributes?.chat_uuid,
+                  message: {
+                    text: item?.text,
+                    userId: item?.userId,
+                  },
+                })
+                .catch(error => console.log(JSON.stringify(error))),
+            );
+          }
+
+          return Promise.all(promises).then(() => {
+            dispatch(hideLoading());
+            Toast.show({
+              position: 'bottom',
+              type: response.success ? 'success' : 'info',
+              text1: 'Successfully',
+              visibilityTime: 3000,
+              autoHide: true,
+            });
+            setTimeout(() => {
+              navigation.goBack();
+            }, 3100);
+          });
+        }
       }),
     );
   };
