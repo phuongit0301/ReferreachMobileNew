@@ -35,13 +35,17 @@ export const GET_PUBLIC_PROFILE_URL = (id: number) => `${ROOT_API_URL}/users/${i
 export const FORGOT_PASSWORD_URL = `${ROOT_API_URL}/reset_passwords/send_request`;
 export const CREATE_INTRODUCTION_URL = `${ROOT_API_URL}/introductions`;
 export const CHAT_CONTEXT_URL = (contextId: string) => `${ROOT_API_URL}/chat_contexts/${contextId}`;
+export const CHAT_PERSONAL_URL = `${ROOT_API_URL}/chat_feeds/personal_list`;
 export const CHAT_FEED_URL = `${ROOT_API_URL}/chat_feeds/ask_list`;
 export const USER_CHAT_LIST_URL = `${ROOT_API_URL}/chat_feeds/suggest_users_chat_list`;
 export const GET_CRENDENTIAL_URL = `${ROOT_API_URL}/pubnubs/credentials`;
 export const ON_PIN_URL = (askId: string) => `${ROOT_API_URL}/chat_feeds/${askId}/pin`;
 export const ON_UN_PIN_URL = (askId: string) => `${ROOT_API_URL}/chat_feeds/${askId}/unpin`;
 export const ON_UPDATE_EXTEND_DEADLINE_URL = (askId: string, dateTime: string) =>
-  `${ROOT_API_URL}/ask/${askId}/extend_deadline?new_deadline=${dateTime}`;
+  `${ROOT_API_URL}/asks/${askId}/extend_deadline?new_deadline=${dateTime}`;
+export const ON_CHAT_ONE_ON_ONE_URL = `${ROOT_API_URL}/chat_contexts/ooo`;
+export const ON_UPDATE_CHAT_CONTEXT_URL = (chatContextId: string) => `${ROOT_API_URL}/chat_contexts/${chatContextId}`;
+export const ON_END_ASK_URL = (askId: string) => `${ROOT_API_URL}/asks/${askId}/close_ask`;
 
 export const ASK_TEMPLATE_URL = `${ROOT_API_URL}/ask-template`;
 export const CREATE_ASK_TEMPLATE_URL = (id: string) => `${ROOT_API_URL}/ask-template/${id}/submissions`;

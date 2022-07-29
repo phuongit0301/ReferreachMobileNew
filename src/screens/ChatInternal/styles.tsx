@@ -33,6 +33,7 @@ export default StyleSheet.create({
     width: adjust(11),
     height: adjust(13),
     marginLeft: adjust(-8),
+    left: adjust(-5),
   },
   textNormal: {
     fontFamily: BASE_FONTS.regular,
@@ -128,6 +129,8 @@ export default StyleSheet.create({
     shadowOpacity: adjust(0.1),
     shadowRadius: adjust(4),
     elevation: adjust(4),
+    width: adjust(30),
+    height: adjust(30),
   },
   iconPlus: {
     width: adjust(14),

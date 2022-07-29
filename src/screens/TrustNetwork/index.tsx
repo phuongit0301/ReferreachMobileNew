@@ -15,7 +15,6 @@ import {getNetworkConnectList, removeNetworkConnect} from '~Root/services/networ
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {
   Avatar,
-  AvatarGradient,
   Button,
   ButtonSecond,
   HeaderSmallTransparent,
@@ -37,6 +36,7 @@ import {IGlobalState} from '~Root/types';
 import styles from './styles';
 import {invitationRequest} from '~Root/services/register/actions';
 import {IActionInvitationSuccess} from '~Root/services/register/types';
+import {TRUST_NETWORK_STATUS_ENUM} from '~Root/utils';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -93,7 +93,6 @@ const AirFeedScreen = ({route, navigation}: Props) => {
         if (inviteCode) {
           dispatch(
             invitationRequest(inviteCode, (response: IActionInvitationSuccess['payload']) => {
-              console.log(JSON.stringify(response));
               if (response.success) {
                 setVisibleInvite(true);
               } else {
@@ -135,9 +134,13 @@ const AirFeedScreen = ({route, navigation}: Props) => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
+    if (initPage) {
+      dispatch(
+        getNetworkConnectList(textSearch, (response: any) => {
+          setRefreshing(false);
+        }),
+      );
+    }
   };
 
   const onShowConfirm = (item: any, itemIncluded: any) => {
@@ -202,6 +205,10 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   const onOk = () => {
     navigation.setParams({inviteCode: null});
     setVisibleInvite(false);
+  };
+
+  const onChatPersonal = (item: any) => {
+    // navigation.navigate(AppRoute.CHAT_PERSONAL, {contextId: item?.id});
   };
 
   if (loadingState?.loading) {
@@ -324,8 +331,10 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                         onPress={() => onShowConfirm(item, itemIncluded)}>
                         <FastImage source={IMAGES.iconDelete} resizeMode='contain' style={styles.iconMessage} />
                       </TouchableOpacity>
-                    ) : !itemIncluded?.attributes?.status ? (
-                      <TouchableOpacity style={[GlobalStyles.ph10, GlobalStyles.pv5, styles.iconMessageContainer]}>
+                    ) : item?.attributes?.status === TRUST_NETWORK_STATUS_ENUM.ACCEPTED ? (
+                      <TouchableOpacity
+                        style={[GlobalStyles.ph10, GlobalStyles.pv5, styles.iconMessageContainer]}
+                        onPress={() => onChatPersonal(item)}>
                         <FastImage source={IMAGES.iconMessage} resizeMode='contain' style={styles.iconMessage} />
                       </TouchableOpacity>
                     ) : (

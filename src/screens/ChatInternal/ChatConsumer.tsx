@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Animated, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Trans, useTranslation} from 'react-i18next';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -13,11 +13,11 @@ import {usePubNub} from 'pubnub-react';
 import {HistoryMessage} from 'pubnub';
 
 import {ChatNavigatorParamsList, TabNavigatorParamsList} from '~Root/navigation/config';
-import {getChatContextRequest, setVisibleMenu} from '~Root/services/chat/actions';
+import {getChatAskContextRequest, onUpdateChatContextRequest, setVisibleMenu} from '~Root/services/chat/actions';
 import {IIncluded} from '~Root/services/chat/types';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
-import {Paragraph, HeaderChatContextBlue, Loading, ChatItem, LoadingSecondary} from '~Root/components';
-import {dateFormat3, dateToHours, dateWithMonthsDelay} from '~Root/utils';
+import {Paragraph, HeaderChatContextBlue, Loading, ChatItem, LoadingSecondary, Avatar} from '~Root/components';
+import {calculateExpiredTime, dateFormat3, dateWithMonthsDelay} from '~Root/utils';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {GlobalStyles, IMAGES} from '~Root/config';
 import {IGlobalState} from '~Root/types';
@@ -41,7 +41,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   const chatState = useSelector((state: IGlobalState) => state.chatState);
   const userState = useSelector((state: IGlobalState) => state.userState);
 
-  const [channels, setChannels] = useState([chatState?.dataChat?.data?.attributes?.chat_uuid]);
+  const [channels, setChannels] = useState<any>();
   const [messages, addMessage] = useState<HistoryMessage[]>([]);
   const [chatText, setChatText] = useState('');
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
@@ -51,7 +51,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
     if ((route.params as any)?.contextId) {
       dispatch(showLoading());
       dispatch(
-        getChatContextRequest(route.params?.contextId, () => {
+        getChatAskContextRequest(route.params?.contextId, () => {
           dispatch(hideLoading());
         }),
       );
@@ -59,11 +59,12 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   }, [route]);
 
   useEffect(() => {
-    if (chatState?.dataChat?.data?.attributes?.chat_uuid) {
+    if (pubnub && chatState?.dataChat?.data?.attributes?.chat_uuid) {
       pubnub.history(
         {
           channel: chatState?.dataChat?.data?.attributes?.chat_uuid,
           count: 100, // 100 is the default
+          includeMeta: true,
         },
         (status, response) => {
           if (response?.messages?.length > 0) {
@@ -73,10 +74,10 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
       );
       setChannels([chatState?.dataChat?.data?.attributes?.chat_uuid]);
     }
-  }, [chatState?.dataChat]);
+  }, [pubnub, chatState?.dataChat]);
 
   useEffect(() => {
-    if (pubnub) {
+    if (pubnub && channels) {
       // using the `setMessages` function.
       const listener = {
         message: (envelope: any) => {
@@ -87,6 +88,11 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                 id: envelope?.message?.id ?? new Date().getTime(),
                 userId: envelope?.message?.userId,
                 text: envelope?.message?.text,
+                fullName1:
+                  envelope?.message?.fullName1 ??
+                  `${userState?.userInfo?.first_name} ${userState?.userInfo?.last_name}`,
+                fullName2: '',
+                createdAt: envelope?.message?.createdAt,
               },
               timetoken: envelope.timetoken,
             },
@@ -100,16 +106,38 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
       return () => {
         pubnub.removeListener(listener);
         pubnub.unsubscribeAll();
+        addMessage([]);
+        setChannels('');
+        setChatText('');
       };
     }
   }, [pubnub, channels]);
 
-  const sendMessage = () => {
+  const sendMessage = useCallback(() => {
     pubnub
       .publish({channel: channels[0], message: {text: chatText, userId: userState?.userInfo?.id}})
-      .then(() => setChatText(''))
-      .catch(error => console.log(JSON.stringify(error)));
-  };
+      .then(() => {
+        const payload = {
+          contextId: route.params?.contextId as string,
+          lastMessage: {
+            last_message_metadata: {
+              message: chatText,
+              sender_id: userState?.userInfo?.id,
+              read_by_user_id: userState?.userInfo?.id,
+            },
+          },
+        };
+        dispatch(
+          onUpdateChatContextRequest(payload, () => {
+            setChatText('');
+          }),
+        );
+      })
+      .catch(error => {
+        setChatText('');
+        console.log(JSON.stringify(error));
+      });
+  }, [channels, chatText]);
 
   const onChangeText = (text: string) => {
     setChatText(text);
@@ -191,6 +219,12 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
     }
   };
 
+  const handleSubmit = () => {
+    if (chatText.trim() !== '') {
+      sendMessage();
+    }
+  };
+
   if (loadingState.loading) {
     return <Loading />;
   }
@@ -213,6 +247,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
 
   return (
     <View style={[GlobalStyles.container, GlobalStyles.flexColumn]}>
+      <FastImage source={IMAGES.chatBg} style={GlobalStyles.bgContainer} resizeMode='contain' />
       <SafeAreaView style={GlobalStyles.container} edges={['bottom']}>
         <View style={styles.headerContainer}>
           <HeaderChatContextBlue
@@ -235,10 +270,16 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                   styles.headerIntroduced,
                 ]}>
                 <View style={[GlobalStyles.flexRow, GlobalStyles.alignEnd, GlobalStyles.mr5]}>
-                  <FastImage
-                    source={{uri: introducer?.attributes?.avatar_metadata?.avatar_url}}
-                    resizeMode='cover'
-                    style={GlobalStyles.avatar3}
+                  <Avatar
+                    styleAvatar={GlobalStyles.avatar3}
+                    styleContainerGradient={GlobalStyles.avatar3}
+                    userInfo={{
+                      avatar_url: introducer?.attributes?.avatar_metadata?.avatar_url,
+                      avatar_lat: introducer?.attributes?.avatar_metadata?.avatar_lat,
+                      avatar_lng: introducer?.attributes?.avatar_metadata?.avatar_lng,
+                      first_name: introducer?.attributes?.first_name,
+                      last_name: introducer?.attributes?.last_name,
+                    }}
                   />
                   <FastImage source={IMAGES.iconProtect} resizeMode='cover' style={styles.iconProtect} />
                 </View>
@@ -271,7 +312,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
             <Animated.FlatList
               horizontal={false}
               style={GlobalStyles.container}
-              contentContainerStyle={[GlobalStyles.justifyEnd, GlobalStyles.container]}
+              contentContainerStyle={[GlobalStyles.justifyEnd, GlobalStyles.scrollViewFullScreen]}
               nestedScrollEnabled={true}
               scrollEventThrottle={1}
               onScroll={Animated.event(
@@ -329,8 +370,6 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
           <View style={[GlobalStyles.p15, GlobalStyles.flexRow]}>
             <TouchableOpacity
               style={[
-                GlobalStyles.pv8,
-                GlobalStyles.ph10,
                 GlobalStyles.mr10,
                 GlobalStyles.alignCenter,
                 GlobalStyles.justifyCenter,
@@ -342,6 +381,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
             <TextInput
               style={[GlobalStyles.container, GlobalStyles.ph10, GlobalStyles.pv8, styles.input]}
               onChangeText={onChangeText}
+              onSubmitEditing={handleSubmit}
               value={chatText}
             />
           </View>
@@ -372,7 +412,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                 <Paragraph title={t('chat_with_responder')} />
               </TouchableOpacity>
               <View style={[GlobalStyles.justifyCenter, styles.border]} />
-              {+dateToHours(new Date(dataChatContext?.attributes?.deadline)) <= 65 ? (
+              {parseInt(`${calculateExpiredTime(dataChatContext?.attributes?.created_at)}`, 10) > 0 ? (
                 <TouchableOpacity
                   style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}
                   onPress={onExtendDeadline}>
@@ -423,7 +463,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                 <Paragraph title={t('archive_this_ask')} />
               </TouchableOpacity>
               <View style={[GlobalStyles.justifyCenter, styles.border]} />
-              {+dateToHours(new Date(dataChatContext?.attributes?.deadline)) <= 65 ? (
+              {parseInt(`${calculateExpiredTime(dataChatContext?.attributes?.created_at)}`, 10) > 0 ? (
                 <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
                   <View
                     style={[

@@ -33,13 +33,16 @@ const AskScreen = ({navigation}: Props & Params) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(showLoading());
-    dispatch(
-      getChatFeedRequest(() => {
-        dispatch(hideLoading());
-      }),
-    );
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      dispatch(showLoading());
+      dispatch(
+        getChatFeedRequest(() => {
+          dispatch(hideLoading());
+        }),
+      );
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const onItemClick = (item: any) => {
     navigation.navigate(AppRoute.CHAT_INTERNAL, {contextId: item?.id});

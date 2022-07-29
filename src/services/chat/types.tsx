@@ -3,21 +3,33 @@ import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 import {IIndustry} from '~Root/services/industry/types';
 import {IAvatarMetaData} from '~Root/services/user/types';
 import {
+  GET_CHAT_ASK_CONTEXT_FAILURE,
+  GET_CHAT_ASK_CONTEXT_REQUESTED,
+  GET_CHAT_ASK_CONTEXT_SUCCESS,
   GET_CHAT_CONTEXT_FAILURE,
   GET_CHAT_CONTEXT_REQUESTED,
   GET_CHAT_CONTEXT_SUCCESS,
   GET_CHAT_FEED_FAILURE,
   GET_CHAT_FEED_REQUESTED,
   GET_CHAT_FEED_SUCCESS,
+  GET_CHAT_PERSONAL_FAILURE,
+  GET_CHAT_PERSONAL_REQUESTED,
+  GET_CHAT_PERSONAL_SUCCESS,
   GET_USER_CHAT_LIST_FAILURE,
   GET_USER_CHAT_LIST_REQUESTED,
   GET_USER_CHAT_LIST_SUCCESS,
+  ON_CHAT_ONE_ON_ONE_FAILURE,
+  ON_CHAT_ONE_ON_ONE_REQUESTED,
+  ON_CHAT_ONE_ON_ONE_SUCCESS,
   ON_PIN_FAILURE,
   ON_PIN_REQUESTED,
   ON_PIN_SUCCESS,
   ON_UN_PIN_FAILURE,
   ON_UN_PIN_REQUESTED,
   ON_UN_PIN_SUCCESS,
+  ON_UPDATE_CHAT_CONTEXT_FAILURE,
+  ON_UPDATE_CHAT_CONTEXT_REQUESTED,
+  ON_UPDATE_CHAT_CONTEXT_SUCCESS,
   SET_CHAT_VISIBLE_MENU,
 } from './constants';
 
@@ -150,6 +162,12 @@ export interface IData {
 export interface IDataChat {
   data: IData;
   included: IIncluded[];
+  userReceive?: IIncluded;
+}
+
+export interface IDataChatPersonal {
+  data: IData[];
+  included: IIncluded[];
 }
 
 export interface IDataChatFeed {
@@ -161,6 +179,8 @@ export interface IChatState {
   loading: boolean;
   success: boolean;
   dataFeed: IDataChatFeed;
+  dataChatPersonal: IDataChatPersonal;
+  dataChatPersonalSelected: any;
   listMatches: IUserChatList[];
   dataChat: any | null;
   callback?: any;
@@ -184,6 +204,111 @@ export interface IActionChatContextSuccess {
 
 export interface IActionChatContextFailure {
   type: typeof GET_CHAT_CONTEXT_FAILURE;
+  payload: {
+    message: string;
+  };
+  callback?: any;
+}
+export interface IActionChatAskContextRequested {
+  type: typeof GET_CHAT_ASK_CONTEXT_REQUESTED;
+  payload: string;
+  callback?: any;
+}
+
+export interface IActionChatAskContextSuccess {
+  type: typeof GET_CHAT_ASK_CONTEXT_SUCCESS;
+  payload: {
+    data: IDataChat;
+    message: string;
+    success: boolean;
+  };
+  callback?: any;
+}
+
+export interface IActionChatAskContextFailure {
+  type: typeof GET_CHAT_ASK_CONTEXT_FAILURE;
+  payload: {
+    message: string;
+  };
+  callback?: any;
+}
+
+export interface IActionChatOneOnOneRequested {
+  type: typeof ON_CHAT_ONE_ON_ONE_REQUESTED;
+  payload: {
+    member_id: string;
+  };
+  callback?: any;
+}
+
+export interface IActionChatOneOnOneSuccess {
+  type: typeof ON_CHAT_ONE_ON_ONE_SUCCESS;
+  payload: {
+    data: IDataChat;
+    message: string;
+    success: boolean;
+  };
+  callback?: any;
+}
+
+export interface IActionChatOneOnOneFailure {
+  type: typeof ON_CHAT_ONE_ON_ONE_FAILURE;
+  payload: {
+    message: string;
+  };
+  callback?: any;
+}
+export interface IActionChatPersonalRequested {
+  type: typeof GET_CHAT_PERSONAL_REQUESTED;
+  payload: string;
+  callback?: any;
+}
+
+export interface IActionChatPersonalSuccess {
+  type: typeof GET_CHAT_PERSONAL_SUCCESS;
+  payload: {
+    data: IDataChatPersonal;
+    message: string;
+    success: boolean;
+  };
+  callback?: any;
+}
+
+export interface IActionChatPersonalFailure {
+  type: typeof GET_CHAT_PERSONAL_FAILURE;
+  payload: {
+    message: string;
+  };
+  callback?: any;
+}
+
+export interface IActionOnUpdateChatContextRequested {
+  type: typeof ON_UPDATE_CHAT_CONTEXT_REQUESTED;
+  payload: {
+    contextId: string;
+    lastMessage: {
+      last_message_metadata: {
+        message: string;
+        sender_id?: number;
+        read_by_user_id?: number;
+      };
+    };
+  };
+  callback?: any;
+}
+
+export interface IActionOnUpdateChatContextSuccess {
+  type: typeof ON_UPDATE_CHAT_CONTEXT_SUCCESS;
+  payload: {
+    data: any;
+    message: string;
+    success: boolean;
+  };
+  callback?: any;
+}
+
+export interface IActionOnUpdateChatContextFailure {
+  type: typeof ON_UPDATE_CHAT_CONTEXT_FAILURE;
   payload: {
     message: string;
   };
@@ -298,6 +423,12 @@ export type IActionsChat =
   | IActionChatContextRequested
   | IActionChatContextSuccess
   | IActionChatContextFailure
+  | IActionChatAskContextRequested
+  | IActionChatAskContextSuccess
+  | IActionChatAskContextFailure
+  | IActionChatPersonalRequested
+  | IActionChatPersonalSuccess
+  | IActionChatPersonalFailure
   | IActionChatFeedRequested
   | IActionChatFeedSuccess
   | IActionChatFeedFailure
@@ -310,4 +441,10 @@ export type IActionsChat =
   | IActionGetUserChatListSuccess
   | IActionGetUserChatListSuccess
   | IActionGetUserChatListFailure
-  | IActionSetFeedVisibleMenu;
+  | IActionSetFeedVisibleMenu
+  | IActionChatOneOnOneRequested
+  | IActionChatOneOnOneSuccess
+  | IActionChatOneOnOneFailure
+  | IActionOnUpdateChatContextRequested
+  | IActionOnUpdateChatContextSuccess
+  | IActionOnUpdateChatContextFailure;

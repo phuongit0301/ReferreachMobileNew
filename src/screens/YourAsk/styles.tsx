@@ -66,6 +66,7 @@ export default StyleSheet.create({
     top: 0,
     right: 0,
     width: '55%',
+    zIndex: 108,
   },
   iconEditAsk: {
     width: adjust(24),
@@ -92,7 +93,7 @@ export default StyleSheet.create({
     height: adjust(18),
   },
   border: {
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: BASE_COLORS.gainsboroColor,
     width: '100%',
   },

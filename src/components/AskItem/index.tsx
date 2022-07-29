@@ -4,11 +4,12 @@ import {View, TouchableOpacity, Text} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import moment from 'moment';
 import {Trans} from 'react-i18next';
+import {t} from 'i18next';
 
 import {IAskInside, ICriteriumDataState} from '~Root/services/ask/types';
 import {GlobalStyles, IMAGES} from '~Root/config';
 import {Category, Paragraph} from '~Root/components';
-import {dateToHours} from '~Root/utils';
+import {ASK_STATUS_ENUM, calculateExpiredTime, dateToDays, dateToHours} from '~Root/utils';
 import styles from './styles';
 
 interface Props {
@@ -17,17 +18,48 @@ interface Props {
 }
 
 const AskItem: React.FC<Props> = ({item, onMenu = () => {}}) => {
+  const time = parseInt(`${calculateExpiredTime(item?.attributes.created_at)}`, 10);
+  const hours = +dateToHours(new Date(item?.attributes?.deadline));
+
+  let strLeft = t('time_to_left', {time: hours});
+
+  let styleTag = styles.styleTag;
+
+  if (item?.attributes?.status === ASK_STATUS_ENUM.PUBLISHED || item?.attributes?.status === ASK_STATUS_ENUM.SUCCEED) {
+    if (+hours > 24) {
+      strLeft = t('day_to_left', {time: dateToDays(new Date(item?.attributes?.deadline))});
+    }
+
+    if (
+      moment(item?.attributes?.deadline).format('MM-DD-YYYY HH:mm:ss') >= moment().format('MM-DD-YYYY HH:mm:ss') &&
+      +hours < 24
+    ) {
+      strLeft = t('time_to_left', {time: hours});
+    }
+    if (time > 0) {
+      styleTag = styles.styleTagPurple;
+    }
+  } else if (item?.attributes?.status === ASK_STATUS_ENUM.EXPIRED) {
+    strLeft = t('ask_expired');
+    styleTag = styles.styleTagCarminePink;
+  } else if (item?.attributes?.status === ASK_STATUS_ENUM.EXPIRED) {
+    strLeft = t('ask_end');
+    styleTag = styles.styleTagForestGreen;
+  } else {
+    if (moment(item?.attributes?.deadline).format('MM-DD-YYYY HH:mm:ss') >= moment().format('MM-DD-YYYY HH:mm:ss')) {
+      strLeft = t('time_to_left', {time: hours});
+    }
+  }
+
   return (
     <View style={[GlobalStyles.flexColumn, GlobalStyles.mb15, GlobalStyles.p15, styles.cardContainer]}>
       <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
         <View style={GlobalStyles.container}>
           {item?.attributes?.deadline && (
             <Category
-              styleTag={
-                +dateToHours(new Date(item?.attributes?.deadline)) > 7 ? styles.styleTagPurple : styles.styleTag
-              }
+              styleTag={styleTag}
               itemKey={item?.id}
-              name={`${dateToHours(new Date(item?.attributes?.deadline))} hours left`}
+              name={`${strLeft}`}
               showButton={false}
               tagText={styles.tagText}
             />

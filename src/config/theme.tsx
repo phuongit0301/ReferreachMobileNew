@@ -63,6 +63,7 @@ export const BASE_COLORS = {
   taupeGrayColor: '#888888',
   lightPeriwinkleColor: '#CDD2DE',
   superiorityBlueColor: '#8199BC',
+  carminePinkColor: '#F05344',
 };
 
 export const BASE_FONTS = {

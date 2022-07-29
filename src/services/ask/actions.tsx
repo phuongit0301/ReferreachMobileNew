@@ -11,6 +11,7 @@ import {
   UPDATE_ASK_REQUESTED,
   SET_VISIBLE_MENU,
   ON_UPDATE_EXTEND_DEADLINE_REQUESTED,
+  ON_END_ASK_REQUESTED,
 } from './constants';
 import {
   IActionGetAskDetailsFailure,
@@ -85,6 +86,17 @@ export const onExtendDeadlineRequest = (
 ) => {
   return {
     type: ON_UPDATE_EXTEND_DEADLINE_REQUESTED,
+    payload,
+    callback,
+  };
+};
+
+export const onEndAskRequest = (
+  payload: string,
+  callback: (response: IActionOnUpdateExtendDeadlineSuccess['payload']) => void,
+) => {
+  return {
+    type: ON_END_ASK_REQUESTED,
     payload,
     callback,
   };

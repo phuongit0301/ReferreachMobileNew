@@ -1,7 +1,9 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 
 import {BASE_COLORS, BASE_FONTS, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
+
+const {width} = Dimensions.get('window');
 
 export default StyleSheet.create({
   contain: {
@@ -11,6 +13,10 @@ export default StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+  },
+  headerContainer: {
+    flexWrap: 'wrap',
+    width: width - adjust(80),
   },
   contentArea: {
     flexDirection: 'column',
@@ -95,8 +101,14 @@ export default StyleSheet.create({
   iconProtect: {
     width: adjust(11),
     height: adjust(13),
-    marginLeft: adjust(-8),
-    marginTop: adjust(-10),
+    left: adjust(0),
+    marginTop: adjust(-15),
+  },
+  iconProtect1: {
+    width: adjust(11),
+    height: adjust(13),
+    left: adjust(-5),
+    marginTop: adjust(-15),
   },
   borderCurve: {
     height: adjust(25),
@@ -104,5 +116,8 @@ export default StyleSheet.create({
     borderLeftWidth: 1,
     borderBottomWidth: 1,
     borderBottomLeftRadius: adjust(3),
+  },
+  itemWidth: {
+    width: width - adjust(35),
   },
 });

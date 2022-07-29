@@ -61,12 +61,23 @@ export default StyleSheet.create({
     borderBottomWidth: 2,
   },
   tabIcon: {
-    color: BASE_COLORS.jetColor,
+    color: BASE_COLORS.darkGrayColor,
   },
   tabIconActive: {
-    color: BASE_COLORS.darkGrayColor,
+    color: BASE_COLORS.jetColor,
   },
   tabScrollContainer: {
     flex: 1,
   },
+
+  /** Personal */
+  contentContainer: {
+    paddingBottom: adjust(350),
+    flexGrow: 1,
+  },
+  cardContainer: {
+    backgroundColor: BASE_COLORS.steelBlue2Color,
+    borderRadius: adjust(12),
+  },
+  /** END Personal */
 });

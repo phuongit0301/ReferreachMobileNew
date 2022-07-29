@@ -106,4 +106,7 @@ export const IMAGES = {
   iconPlus: require('~Root/assets/images/icon_plus.png'),
   iconPin: require('~Root/assets/images/icon_pin.png'),
   iconPinActive: require('~Root/assets/images/icon_pin_active.png'),
+  chatBg: require('~Root/assets/images/chat_bg.png'),
+  handRate: require('~Root/assets/images/hand_rate.png'),
+  kudosHandBg: require('~Root/assets/images/kudos_hand_bg.png'),
 };

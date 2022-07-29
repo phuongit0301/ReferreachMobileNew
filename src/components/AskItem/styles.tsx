@@ -19,6 +19,22 @@ export default StyleSheet.create({
     backgroundColor: BASE_COLORS.begoniaColor,
     borderWidth: 0,
   },
+  styleTagCarminePink: {
+    borderTopLeftRadius: adjust(16),
+    borderTopRightRadius: adjust(16),
+    borderBottomLeftRadius: adjust(16),
+    borderBottomRightRadius: adjust(16),
+    backgroundColor: BASE_COLORS.carminePinkColor,
+    borderWidth: 0,
+  },
+  styleTagForestGreen: {
+    borderTopLeftRadius: adjust(16),
+    borderTopRightRadius: adjust(16),
+    borderBottomLeftRadius: adjust(16),
+    borderBottomRightRadius: adjust(16),
+    backgroundColor: BASE_COLORS.forestGreenColor,
+    borderWidth: 0,
+  },
   tagContainer: {
     flexWrap: 'wrap',
   },

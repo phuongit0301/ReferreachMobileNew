@@ -213,164 +213,170 @@ const AirFeedScreen = ({navigation}: Props) => {
       <SafeAreaView style={GlobalStyles.container} edges={['top', 'right', 'left']}>
         <HeaderSmallTransparent title={t('air_feed')} isRightButton={true} onRightPress={onToggleDrawer} />
         <View style={[GlobalStyles.container, styles.container]}>
-          <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30]}>
-            <LinearGradient
-              colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
-              style={[GlobalStyles.p15, GlobalStyles.pb60, GlobalStyles.flexColumn, styles.profileGradient]}>
-              <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
-                <View style={[GlobalStyles.flexRow, GlobalStyles.mr10]}>
-                  <Avatar
-                    styleAvatar={GlobalStyles.avatar2}
-                    userInfo={{
-                      avatar_url: feedItemData?.attributes?.user?.avatar_metadata?.avatar_url,
-                      avatar_lat: feedItemData?.attributes?.user?.avatar_metadata?.avatar_lat,
-                      avatar_lng: feedItemData?.attributes?.user?.avatar_metadata?.avatar_lng,
-                      first_name: feedItemData?.attributes?.user?.first_name,
-                      last_name: feedItemData?.attributes?.user?.last_name,
-                    }}
-                    onProfile={onProfile}
-                  />
-                </View>
-                <View style={[GlobalStyles.flexColumn, GlobalStyles.container]}>
-                  <Paragraph
-                    textWhite
-                    bold600
-                    title={`${feedItemData?.attributes?.user?.first_name ?? ''} ${
-                      feedItemData?.attributes?.user?.last_name ?? ''
-                    }`}
-                  />
-                  {feedItemData?.attributes?.user?.title && (
-                    <Paragraph textWhite title={`${feedItemData?.attributes?.user?.title}`} />
-                  )}
-                </View>
-                <TouchableOpacity style={styles.iconThreeDotContainer} onPress={onMenu}>
-                  <FastImage source={IMAGES.iconThreeDotWhite} resizeMode='cover' style={styles.iconThreeDot} />
-                </TouchableOpacity>
-              </View>
-              <View style={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.mv15]}>
-                <Trans
-                  i18nKey='air_feed_content'
-                  values={{
-                    greeting: feedItemAttributes?.attributes?.greeting,
-                    demographic: feedItemAttributes?.attributes?.demographic,
-                    role: feedItemAttributes?.attributes?.business_requirement,
-                    description: feedItemAttributes?.attributes?.additional_detail,
-                    businessDetail: feedItemAttributes?.attributes?.business_detail,
-                  }}
-                  parent={Text}
-                  components={{
-                    normal: <Text style={styles.contentNormal} />,
-                    highlight: <Text style={styles.contentBold} />,
-                  }}
-                />
-              </View>
-              <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb15]}>
-                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mr20]}>
-                  <FastImage
-                    source={IMAGES.iconCalendarWhite}
-                    resizeMode='cover'
-                    style={[GlobalStyles.mr10, styles.iconCalendar]}
-                  />
-                  <Paragraph
-                    textWhite
-                    title={moment(feedItemAttributes?.attributes?.deadline).format('MMM DD, YYYY')}
-                  />
-                </View>
-                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, styles.globeContainer]}>
-                  <FastImage
-                    source={IMAGES.iconGlobeWhite}
-                    resizeMode='cover'
-                    style={[GlobalStyles.mr10, styles.iconGlobe]}
-                  />
-                  <Paragraph
-                    textWhite
-                    numberOfLines={1}
-                    ellipsizeMode={'tail'}
-                    title={feedItemAttributes?.attributes?.ask_location?.text}
-                  />
-                </View>
-              </View>
-              <Animated.View
-                style={[
-                  GlobalStyles.flexColumn,
-                  {opacity: visibleAnim, display: animation?.expanded ? 'flex' : 'none'},
-                ]}>
-                {feedItemAttributes?.attributes?.criterium && feedItemAttributes?.attributes?.criterium?.length > 0 && (
-                  <View style={[GlobalStyles.flexColumn, GlobalStyles.mb15]}>
-                    <Paragraph textWhite bold600 title='Criteria' style={GlobalStyles.mb10} />
-                    {feedItemAttributes?.attributes?.criterium.map((item, index) => (
-                      <View style={[GlobalStyles.flexRow, GlobalStyles.mb10]} key={`feed-criterium-${index}`}>
-                        <FastImage
-                          source={IMAGES.iconCircleCheckWhite}
-                          resizeMode='cover'
-                          style={[GlobalStyles.mr10, styles.iconCircle]}
-                        />
-                        <Paragraph textWhite title={item?.text} />
-                      </View>
-                    ))}
+          {feedState?.dataNetwork?.data.length > 0 && (
+            <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30]}>
+              <LinearGradient
+                colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
+                style={[GlobalStyles.p15, GlobalStyles.pb60, GlobalStyles.flexColumn, styles.profileGradient]}>
+                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
+                  <View style={[GlobalStyles.flexRow, GlobalStyles.mr10]}>
+                    <Avatar
+                      styleAvatar={GlobalStyles.avatar2}
+                      userInfo={{
+                        avatar_url: feedItemData?.attributes?.user?.avatar_metadata?.avatar_url,
+                        avatar_lat: feedItemData?.attributes?.user?.avatar_metadata?.avatar_lat,
+                        avatar_lng: feedItemData?.attributes?.user?.avatar_metadata?.avatar_lng,
+                        first_name: feedItemData?.attributes?.user?.first_name,
+                        last_name: feedItemData?.attributes?.user?.last_name,
+                      }}
+                      onProfile={onProfile}
+                    />
                   </View>
-                )}
-                {feedItemAttributes?.attributes?.documents && feedItemAttributes?.attributes?.documents.length > 0 && (
-                  <View style={[GlobalStyles.flexRow, GlobalStyles.mb15]}>
-                    {feedItemAttributes?.attributes?.documents.map((item, index) =>
-                      item?.content_type?.includes('pdf') ? (
-                        <FastImage
-                          source={IMAGES.iconPdf}
-                          resizeMode='cover'
-                          key={`air-feed-file-${index}`}
-                          style={[GlobalStyles.mr10, styles.icon]}
-                        />
-                      ) : (
-                        <FastImage
-                          source={IMAGES.iconXls}
-                          resizeMode='cover'
-                          style={styles.icon}
-                          key={`air-feed-file-${index}`}
-                        />
-                      ),
+                  <View style={[GlobalStyles.flexColumn, GlobalStyles.container]}>
+                    <Paragraph
+                      textWhite
+                      bold600
+                      title={`${feedItemData?.attributes?.user?.first_name ?? ''} ${
+                        feedItemData?.attributes?.user?.last_name ?? ''
+                      }`}
+                    />
+                    {feedItemData?.attributes?.user?.title && (
+                      <Paragraph textWhite title={`${feedItemData?.attributes?.user?.title}`} />
                     )}
                   </View>
-                )}
-              </Animated.View>
-              <View style={GlobalStyles.flexRow}>
-                {animation?.expanded ? (
-                  <TouchableOpacity style={GlobalStyles.container} onPress={onToggle}>
-                    <Paragraph textWhite bold600 title={`${t('read_less')}...`} style={styles.textUnderline} />
+                  <TouchableOpacity style={styles.iconThreeDotContainer} onPress={onMenu}>
+                    <FastImage source={IMAGES.iconThreeDotWhite} resizeMode='cover' style={styles.iconThreeDot} />
                   </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity style={GlobalStyles.container} onPress={onToggle}>
-                    <Paragraph textWhite bold600 title={`${t('read_more')}...`} style={styles.textUnderline} />
-                  </TouchableOpacity>
-                )}
-                {feedItemAttributes?.attributes?.edited && <Paragraph textBrightGrayColor title='edited' />}
-              </View>
-              {loading && (
-                <View style={GlobalStyles.waitingContainer}>
-                  <ActivityIndicator animating={true} size='large' color={`${BASE_COLORS.forestGreenColor}`} />
                 </View>
-              )}
-            </LinearGradient>
-            <View style={[GlobalStyles.flexRow, GlobalStyles.justifyCenter, styles.btnGroup]}>
-              <TouchableOpacity style={[GlobalStyles.mr20, styles.btnCircle]} onPress={onPrev} disabled={loading}>
-                <Paragraph
-                  textCenter
-                  textForestGreenColor
-                  bold600
-                  title={t('prev_ask').toUpperCase()}
-                  style={styles.btnText}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.btnCircle} onPress={() => onNext(feedItemAttributes)} disabled={loading}>
-                <Paragraph
-                  textCenter
-                  textForestGreenColor
-                  bold600
-                  title={t('next_ask').toUpperCase()}
-                  style={styles.btnText2}
-                />
-              </TouchableOpacity>
+                <View style={[GlobalStyles.flexRow, GlobalStyles.flexWrap, GlobalStyles.mv15]}>
+                  <Trans
+                    i18nKey='air_feed_content'
+                    values={{
+                      greeting: feedItemAttributes?.attributes?.greeting,
+                      demographic: feedItemAttributes?.attributes?.demographic,
+                      role: feedItemAttributes?.attributes?.business_requirement,
+                      description: feedItemAttributes?.attributes?.additional_detail,
+                      businessDetail: feedItemAttributes?.attributes?.business_detail,
+                    }}
+                    parent={Text}
+                    components={{
+                      normal: <Text style={styles.contentNormal} />,
+                      highlight: <Text style={styles.contentBold} />,
+                    }}
+                  />
+                </View>
+                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mb15]}>
+                  <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mr20]}>
+                    <FastImage
+                      source={IMAGES.iconCalendarWhite}
+                      resizeMode='cover'
+                      style={[GlobalStyles.mr10, styles.iconCalendar]}
+                    />
+                    <Paragraph
+                      textWhite
+                      title={moment(feedItemAttributes?.attributes?.deadline).format('MMM DD, YYYY')}
+                    />
+                  </View>
+                  <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, styles.globeContainer]}>
+                    <FastImage
+                      source={IMAGES.iconGlobeWhite}
+                      resizeMode='cover'
+                      style={[GlobalStyles.mr10, styles.iconGlobe]}
+                    />
+                    <Paragraph
+                      textWhite
+                      numberOfLines={1}
+                      ellipsizeMode={'tail'}
+                      title={feedItemAttributes?.attributes?.ask_location?.text}
+                    />
+                  </View>
+                </View>
+                <Animated.View
+                  style={[
+                    GlobalStyles.flexColumn,
+                    {opacity: visibleAnim, display: animation?.expanded ? 'flex' : 'none'},
+                  ]}>
+                  {feedItemAttributes?.attributes?.criterium && feedItemAttributes?.attributes?.criterium?.length > 0 && (
+                    <View style={[GlobalStyles.flexColumn, GlobalStyles.mb15]}>
+                      <Paragraph textWhite bold600 title='Criteria' style={GlobalStyles.mb10} />
+                      {feedItemAttributes?.attributes?.criterium.map((item, index) => (
+                        <View style={[GlobalStyles.flexRow, GlobalStyles.mb10]} key={`feed-criterium-${index}`}>
+                          <FastImage
+                            source={IMAGES.iconCircleCheckWhite}
+                            resizeMode='cover'
+                            style={[GlobalStyles.mr10, styles.iconCircle]}
+                          />
+                          <Paragraph textWhite title={item?.text} />
+                        </View>
+                      ))}
+                    </View>
+                  )}
+                  {feedItemAttributes?.attributes?.documents &&
+                    feedItemAttributes?.attributes?.documents.length > 0 && (
+                      <View style={[GlobalStyles.flexRow, GlobalStyles.mb15]}>
+                        {feedItemAttributes?.attributes?.documents.map((item, index) =>
+                          item?.content_type?.includes('pdf') ? (
+                            <FastImage
+                              source={IMAGES.iconPdf}
+                              resizeMode='cover'
+                              key={`air-feed-file-${index}`}
+                              style={[GlobalStyles.mr10, styles.icon]}
+                            />
+                          ) : (
+                            <FastImage
+                              source={IMAGES.iconXls}
+                              resizeMode='cover'
+                              style={styles.icon}
+                              key={`air-feed-file-${index}`}
+                            />
+                          ),
+                        )}
+                      </View>
+                    )}
+                </Animated.View>
+                <View style={GlobalStyles.flexRow}>
+                  {animation?.expanded ? (
+                    <TouchableOpacity style={GlobalStyles.container} onPress={onToggle}>
+                      <Paragraph textWhite bold600 title={`${t('read_less')}...`} style={styles.textUnderline} />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity style={GlobalStyles.container} onPress={onToggle}>
+                      <Paragraph textWhite bold600 title={`${t('read_more')}...`} style={styles.textUnderline} />
+                    </TouchableOpacity>
+                  )}
+                  {feedItemAttributes?.attributes?.edited && <Paragraph textBrightGrayColor title='edited' />}
+                </View>
+                {loading && (
+                  <View style={GlobalStyles.waitingContainer}>
+                    <ActivityIndicator animating={true} size='large' color={`${BASE_COLORS.forestGreenColor}`} />
+                  </View>
+                )}
+              </LinearGradient>
+              <View style={[GlobalStyles.flexRow, GlobalStyles.justifyCenter, styles.btnGroup]}>
+                <TouchableOpacity style={[GlobalStyles.mr20, styles.btnCircle]} onPress={onPrev} disabled={loading}>
+                  <Paragraph
+                    textCenter
+                    textForestGreenColor
+                    bold600
+                    title={t('prev_ask').toUpperCase()}
+                    style={styles.btnText}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnCircle}
+                  onPress={() => onNext(feedItemAttributes)}
+                  disabled={loading}>
+                  <Paragraph
+                    textCenter
+                    textForestGreenColor
+                    bold600
+                    title={t('next_ask').toUpperCase()}
+                    style={styles.btnText2}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          )}
           <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
             <View style={styles.inputContainer}>
               <TextInput
@@ -479,7 +485,7 @@ const AirFeedScreen = ({navigation}: Props) => {
                 ]}>
                 <FastImage source={IMAGES.iconShareThis} resizeMode='contain' style={styles.iconEditAsk} />
               </View>
-              <Paragraph textDarkGrayColor title={t('share_this')} />
+              <Paragraph title={t('share_this')} />
             </TouchableOpacity>
             <View style={[GlobalStyles.justifyCenter, styles.border]} />
             <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>

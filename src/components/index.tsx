@@ -26,6 +26,7 @@ import LoadingSecondary from './LoadingSecondary';
 import ListItems from './ListItems';
 import ListItem from './ListItem';
 import ListItemsChat from './ListItemsChat';
+import ListItemChatHeader from './ListItemChatHeader';
 import ListItemChat from './ListItemChat';
 import InviteContactItems from './InviteContactItems';
 import InviteContactItem from './InviteContactItem';
@@ -102,6 +103,7 @@ export {
   ListItems,
   ListItem,
   ListItemsChat,
+  ListItemChatHeader,
   ListItemChat,
   InviteContactItems,
   InviteContactItem,

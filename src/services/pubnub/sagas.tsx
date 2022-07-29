@@ -13,7 +13,7 @@ function* getCredential(payload: IActionGetCredentialRequest) {
         payload?.callback({
           success: response?.success,
           message: '',
-          data: response?.data?.reverse(),
+          data: response?.data,
         });
     } else {
       yield put({type: GET_CREDENTIAL_FAILURE, payload: {error: response?.message}});

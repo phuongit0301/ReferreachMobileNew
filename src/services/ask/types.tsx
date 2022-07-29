@@ -26,6 +26,9 @@ import {
   ON_UPDATE_EXTEND_DEADLINE_SUCCESS,
   ON_UPDATE_EXTEND_DEADLINE_FAILURE,
   ON_UPDATE_EXTEND_DEADLINE_REQUESTED,
+  ON_END_ASK_FAILURE,
+  ON_END_ASK_REQUESTED,
+  ON_END_ASK_SUCCESS,
 } from './constants';
 
 export interface IPaginationAndSearch {
@@ -360,6 +363,30 @@ export interface IActionOnUpdateExtendDeadlineFailure {
   };
 }
 
+export interface IActionOnEndAskRequest {
+  type: typeof ON_END_ASK_REQUESTED;
+  payload: string;
+  callback: (response: IActionOnEndAskSuccess['payload']) => void;
+}
+export interface IActionOnEndAskSuccess {
+  type: typeof ON_END_ASK_SUCCESS;
+  payload: {
+    data?: any;
+    message: string;
+    success: boolean;
+  };
+  callback: () => void;
+}
+
+export interface IActionOnEndAskFailure {
+  type: typeof ON_END_ASK_FAILURE;
+  payload: {
+    data: null;
+    message: string;
+    success: boolean;
+  };
+}
+
 export type IActionsCreateAsk =
   | IActionGetAskRequest
   | IActionGetAskSuccess
@@ -386,4 +413,7 @@ export type IActionsCreateAsk =
   | IActionUpdateAskFailure
   | IActionOnUpdateExtendDeadlineRequest
   | IActionOnUpdateExtendDeadlineSuccess
-  | IActionOnUpdateExtendDeadlineFailure;
+  | IActionOnUpdateExtendDeadlineFailure
+  | IActionOnEndAskRequest
+  | IActionOnEndAskSuccess
+  | IActionOnEndAskFailure;

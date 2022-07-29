@@ -19,6 +19,7 @@ import {MESSAGE_FIELDS, MESSAGE_KEYS} from '~Root/config/fields';
 import {createIntroduction} from '~Root/services/feed/actions';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import styles from './styles';
+import { AppRoute } from '~Root/navigation/AppRoute';
 
 interface Props {
   feedState: IFeedItemsState;
@@ -62,13 +63,20 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
     dispatch(showLoading());
     dispatch(
       createIntroduction(payload, (response: any) => {
-        console.log('response===>', response);
-        if (response.included?.length > 0) {
-          const chatContexts = response.included.find((x: any) => x.name === 'chat_contexts');
+        if (!response) {
+          dispatch(hideLoading());
+          return;
+        }
+        if (response?.included?.length > 0) {
+          const chatContexts = response.included.find((x: any) => x.type === 'chat_contexts');
+          console.log('feedState?.dataFeed=======>', feedState?.dataFeed);
           // chatContexts
           if (
-            (feedState?.dataFeed.data && !feedState?.dataFeed.data[0]?.attributes?.user?.id) ||
-            (feedState?.dataProfileRefer?.included && !feedState?.dataProfileRefer?.included[0]?.id)
+            // eslint-disable-next-line prettier/prettier
+            (feedState?.dataFeed.data?.length > 0 && feedState?.dataFeed.data[0]?.attributes?.user?.id) &&
+            (feedState?.dataProfileRefer?.included &&
+            feedState?.dataProfileRefer?.included?.length > 0 &&
+            feedState?.dataProfileRefer?.included[0]?.id)
           ) {
             dispatch(hideLoading());
             Toast.show({
@@ -78,52 +86,45 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
               visibilityTime: 3000,
               autoHide: true,
             });
-            setTimeout(() => {
-              navigation.goBack();
-            }, 3100);
-            return;
-          }
+            const pubnubMessages = [
+              {
+                text: payload?.message_for_asker,
+                userId: feedState?.dataFeed.data[0]?.attributes?.user?.id,
+              },
+              {
+                text: payload?.message_for_introducee,
+                userId: feedState?.dataProfileRefer?.included[0]?.id,
+              },
+            ];
+            const promises = [];
+            for (const item of pubnubMessages) {
+              promises.push(
+                pubnub
+                  .publish({
+                    channel: chatContexts.attributes?.chat_uuid,
+                    message: {
+                      text: item?.text,
+                      userId: item?.userId,
+                    },
+                  })
+                  .catch(error => console.log(JSON.stringify(error))),
+              );
+            }
 
-          const pubnubMessages = [
-            {
-              text: payload?.message_for_asker,
-              userId: feedState?.dataFeed.data[0]?.attributes?.user?.id,
-            },
-            {
-              text: payload?.message_for_introducee,
-              userId: feedState?.dataProfileRefer?.included[0]?.id,
-            },
-          ];
-
-          const promises = [];
-
-          for (const item of pubnubMessages) {
-            promises.push(
-              pubnub
-                .publish({
-                  channel: chatContexts.attributes?.chat_uuid,
-                  message: {
-                    text: item?.text,
-                    userId: item?.userId,
-                  },
-                })
-                .catch(error => console.log(JSON.stringify(error))),
-            );
-          }
-
-          return Promise.all(promises).then(() => {
-            dispatch(hideLoading());
-            Toast.show({
-              position: 'bottom',
-              type: response.success ? 'success' : 'info',
-              text1: 'Successfully',
-              visibilityTime: 3000,
-              autoHide: true,
+            return Promise.all(promises).then(() => {
+              dispatch(hideLoading());
+              Toast.show({
+                position: 'bottom',
+                type: response.success ? 'success' : 'info',
+                text1: 'Successfully',
+                visibilityTime: 3000,
+                autoHide: true,
+              });
+              setTimeout(() => {
+                navigation.navigate(AppRoute.CHAT_INTERNAL, {contextId: chatContexts?.id});
+              }, 3100);
             });
-            setTimeout(() => {
-              navigation.goBack();
-            }, 3100);
-          });
+          }
         }
       }),
     );
@@ -179,7 +180,6 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
           styleGroupImage={{
             ...GlobalStyles.fullWidth,
             ...GlobalStyles.justifyBetween,
-            ...GlobalStyles.ph20,
             ...GlobalStyles.alignCenter,
           }}
         />
@@ -197,7 +197,6 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
           styleGroupImage={{
             ...GlobalStyles.fullWidth,
             ...GlobalStyles.justifyBetween,
-            ...GlobalStyles.ph20,
             ...GlobalStyles.alignCenter,
           }}
         />

@@ -656,6 +656,9 @@ export const GlobalStyles = StyleSheet.create({
   pl5: {
     paddingLeft: adjust(5),
   },
+  pl35: {
+    paddingLeft: adjust(35),
+  },
   pr5: {
     paddingRight: 5,
   },
@@ -664,6 +667,9 @@ export const GlobalStyles = StyleSheet.create({
   },
   pr15: {
     paddingRight: 15,
+  },
+  pr30: {
+    paddingRight: 30,
   },
   pr60: {
     paddingRight: 60,
@@ -885,5 +891,8 @@ export const GlobalStyles = StyleSheet.create({
     borderRadius: adjust(50),
     paddingVertical: Platform.OS === 'ios' ? adjust(8) : 0,
     alignItems: 'center',
+  },
+  bgContainer: {
+    ...StyleSheet.absoluteFill,
   },
 });

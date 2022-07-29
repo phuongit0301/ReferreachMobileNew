@@ -127,6 +127,8 @@ export type AskNavigatorParamsList = {
 export type ChatNavigatorParamsList = {
   [AppRoute.CHAT]: undefined;
   [AppRoute.CHAT_INTERNAL]: undefined;
+  [AppRoute.CHAT_KUDOS]: undefined;
+  [AppRoute.CHAT_KUDOS_SUCCESS]: undefined;
 };
 
 // interface AuthNavigatorParamsList {

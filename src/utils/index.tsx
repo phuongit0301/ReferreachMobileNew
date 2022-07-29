@@ -1,11 +1,19 @@
 import adjust from './adjust';
-import {PURPOSE_OF_ASK, PURPOSE_OF_ASK_ENUM, CHAT_BOX_TYPE_ENUM, sideBarRoutes} from './common';
+import {
+  PURPOSE_OF_ASK,
+  PURPOSE_OF_ASK_ENUM,
+  CHAT_BOX_TYPE_ENUM,
+  ASK_STATUS_ENUM,
+  TRUST_NETWORK_STATUS_ENUM,
+  sideBarRoutes,
+} from './common';
 import {
   dateWithMonthsDelay,
   dateFormat,
   dateFormat2,
   dateFormat3,
   dateToHours,
+  dateToDays,
   transformCapitalize,
   headerByRatio,
   buttonPositionByRatio,
@@ -26,6 +34,7 @@ export {
   dateFormat2,
   dateFormat3,
   dateToHours,
+  dateToDays,
   transformCapitalize,
   headerByRatio,
   buttonPositionByRatio,
@@ -40,5 +49,7 @@ export {
   PURPOSE_OF_ASK,
   PURPOSE_OF_ASK_ENUM,
   CHAT_BOX_TYPE_ENUM,
+  ASK_STATUS_ENUM,
+  TRUST_NETWORK_STATUS_ENUM,
   uid,
 };

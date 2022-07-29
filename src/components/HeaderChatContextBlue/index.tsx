@@ -19,6 +19,7 @@ interface Props {
   isRightButton?: boolean;
   onRightPress?: () => void;
   iconRightUrl?: number;
+  styleContainer?: ViewStyle;
   iconRightStyle?: ImageStyle;
 }
 
@@ -34,6 +35,7 @@ const HeaderChatContextBlue: React.FC<Props> = ({
   onRightPress = () => {},
   iconRightStyle = {},
   iconRightUrl = IMAGES.iconBurgerMenuWhite,
+  styleContainer = {},
   children,
 }) => {
   const {t} = useTranslation();
@@ -41,7 +43,7 @@ const HeaderChatContextBlue: React.FC<Props> = ({
   return (
     <LinearGradient
       colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
-      style={[GlobalStyles.flexRow, styles.container]}>
+      style={[GlobalStyles.flexRow, styles.container, styleContainer]}>
       <View style={GlobalStyles.flexColumn}>
         <View
           style={[

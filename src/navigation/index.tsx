@@ -6,8 +6,6 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {useSelector, useDispatch} from 'react-redux';
 import i18n from 'i18next';
 import {initReactI18next} from 'react-i18next';
-import PubNub from 'pubnub';
-import {PubNubProvider} from 'pubnub-react';
 
 import LoginScreen from '~Root/screens/Login';
 import RegisterScreen from '~Root/screens/Register';
@@ -59,7 +57,9 @@ import {
   ChatNavigatorParamsList,
 } from './config';
 import ChatInternalScreen from '~Root/screens/ChatInternal';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import ChatPersonalScreen from '~Root/screens/ChatPersonal';
+import ChatKudosScreen from '~Root/screens/ChatKudos';
+import ChatKudosSuccessScreen from '~Root/screens/ChatKudosSuccess';
 
 enableScreens();
 
@@ -158,6 +158,8 @@ const AppBottomTab = () => {
   );
 };
 
+
+
 const AppDrawer = (props: any) => {
   return (
     <DrawerStack.Navigator
@@ -176,6 +178,7 @@ const AppDrawer = (props: any) => {
       <DrawerStack.Screen name={AppRoute.ASK_NAVIGATOR} component={AskNavigator} />
       <DrawerStack.Screen name={AppRoute.MAIN_NAVIGATOR} component={MainNavigator} />
       <DrawerStack.Screen name={AppRoute.CHAT_INTERNAL} component={ChatInternalScreen} />
+      <DrawerStack.Screen name={AppRoute.CHAT_PERSONAL} component={ChatPersonalScreen} />
     </DrawerStack.Navigator>
   );
 };
@@ -183,14 +186,6 @@ const AppDrawer = (props: any) => {
 const AppNavigator = (props: any) => {
   const dispatch = useDispatch();
   const authState = useSelector((state: AppState) => state.authState);
-  const pubnubState = useSelector((state: AppState) => state.pubnubState);
-
-  // const pubnub = new PubNub({
-  //   subscribeKey: pubnubState?.data?.subscribe_key ?? '',
-  //   publishKey: pubnubState?.data?.publish_key ?? '',
-  //   uuid: pubnubState?.data?.uuid ?? new Date().getTime(),
-  //   authKey: pubnubState?.data?.token ?? '',
-  // });
 
   useEffect(() => {
     const initLanguage = async () => {
@@ -249,6 +244,8 @@ const AppNavigator = (props: any) => {
           <RootStack.Group>
             <RootStack.Screen name={AppRoute.ASK_DETAILS} component={AskDetailsScreen} />
           </RootStack.Group>
+          <ChatStack.Screen name={AppRoute.CHAT_KUDOS} component={ChatKudosScreen} />
+          <ChatStack.Screen name={AppRoute.CHAT_KUDOS_SUCCESS} component={ChatKudosSuccessScreen} />
           {/* <RootStack.Screen name={AppRoute.ASK_NAVIGATOR} component={AskNavigator} /> */}
         </>
       ) : (

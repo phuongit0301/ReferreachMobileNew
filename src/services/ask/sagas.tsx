@@ -23,6 +23,9 @@ import {
   ON_UPDATE_EXTEND_DEADLINE_SUCCESS,
   ON_UPDATE_EXTEND_DEADLINE_FAILURE,
   ON_UPDATE_EXTEND_DEADLINE_REQUESTED,
+  ON_END_ASK_SUCCESS,
+  ON_END_ASK_FAILURE,
+  ON_END_ASK_REQUESTED,
 } from './constants';
 import {
   IActionCreateAskRequest,
@@ -35,6 +38,8 @@ import {
   IActionGetJobSuccess,
   IActionGetLocationRequest,
   IActionGetLocationSuccess,
+  IActionOnEndAskRequest,
+  IActionOnEndAskSuccess,
   IActionOnUpdateExtendDeadlineRequest,
   IActionOnUpdateExtendDeadlineSuccess,
   IActionUpdateAskRequest,
@@ -285,6 +290,37 @@ function* updateExtendDeadline(payload: IActionOnUpdateExtendDeadlineRequest) {
   }
 }
 
+function* endAsk(payload: IActionOnEndAskRequest) {
+  try {
+    const response: IActionOnEndAskSuccess['payload'] = yield call(AskAPI.endAsk, payload?.payload);
+    if (response?.success) {
+      yield put({type: ON_END_ASK_SUCCESS, payload: response?.data});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: '',
+          data: response?.data,
+        });
+    } else {
+      yield put({type: ON_END_ASK_FAILURE, payload: {error: response?.message}});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: response?.message,
+          data: response?.data,
+        });
+    }
+  } catch (error) {
+    yield put({type: ON_END_ASK_FAILURE, payload: {error: error}});
+    payload?.callback &&
+      payload?.callback({
+        success: false,
+        message: error as string,
+        data: null,
+      });
+  }
+}
+
 function* watchGetAsk() {
   yield takeLatest(GET_ASK_REQUESTED, getAsks);
 }
@@ -313,6 +349,10 @@ function* watchUpdateExtendDeadline() {
   yield takeLatest(ON_UPDATE_EXTEND_DEADLINE_REQUESTED, updateExtendDeadline);
 }
 
+function* watchEndAsk() {
+  yield takeLatest(ON_END_ASK_REQUESTED, endAsk);
+}
+
 export default function* askWatchers() {
   yield all([
     watchGetAsk(),
@@ -322,5 +362,6 @@ export default function* askWatchers() {
     watchCreateAsk(),
     watchUpdateAsk(),
     watchUpdateExtendDeadline(),
+    watchEndAsk(),
   ]);
 }

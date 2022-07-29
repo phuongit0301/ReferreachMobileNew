@@ -21,7 +21,7 @@ interface Props {
   onPress?: (item: any) => void;
   items: IIncluded;
   isAsker: boolean;
-  data: IUserChatList[];
+  dataUser: IUserChatList;
   index: number;
 }
 
@@ -31,10 +31,9 @@ const ListItemChat: React.FC<Props> = ({
   onPress = () => {},
   items,
   isAsker = false,
-  data = [],
+  dataUser,
   index,
 }: Props) => {
-  const dataUser = data.length > 0 ? data[0] : null;
   const userState = useSelector((state: IGlobalState) => state.userState);
 
   if (items?.attributes?.related_chat_contexts?.length > 0) {
@@ -70,7 +69,7 @@ const ListItemChat: React.FC<Props> = ({
                     <FastImage source={IMAGES.iconProtect} resizeMode='cover' style={styles.iconProtect} />
                   </View>
                   <View style={[GlobalStyles.flexColumn, styles.contentContainer]}>
-                    <View style={[GlobalStyles.flexRow, GlobalStyles.mb5]}>
+                    <View style={[GlobalStyles.flexRow, GlobalStyles.pr30, GlobalStyles.mb5, styles.headerContainer]}>
                       <Paragraph bold600 textBlack title={`${user1?.full_name} `} />
                       <Paragraph bold600 textSteelBlue2Color title={t('responded')} />
                     </View>
@@ -98,9 +97,11 @@ const ListItemChat: React.FC<Props> = ({
               </View>
             </View>
             <View style={GlobalStyles.flexRow}>
-              <View style={[GlobalStyles.alignCenter, styles.borderContainer]}>
-                <View style={styles.border} />
-              </View>
+              {index + 1 < items?.attributes?.related_chat_contexts.length && (
+                <View style={[GlobalStyles.alignCenter, styles.borderContainer]}>
+                  <View style={styles.border} />
+                </View>
+              )}
               <View style={GlobalStyles.mb15} />
             </View>
           </TouchableOpacity>
@@ -132,7 +133,7 @@ const ListItemChat: React.FC<Props> = ({
                         last_name: user1.last_name,
                       }}
                     />
-                    <FastImage source={IMAGES.iconProtect} resizeMode='cover' style={styles.iconProtect} />
+                    <FastImage source={IMAGES.iconProtect} resizeMode='cover' style={styles.iconProtect1} />
                   </View>
                   {user2 && (
                     <View style={[GlobalStyles.flexRow, GlobalStyles.alignEnd, GlobalStyles.ml5]}>
@@ -160,7 +161,7 @@ const ListItemChat: React.FC<Props> = ({
                   )}
                 </View>
                 <View style={[GlobalStyles.flexColumn, styles.contentContainer]}>
-                  <View style={[GlobalStyles.flexRow, GlobalStyles.mb5]}>
+                  <View style={[GlobalStyles.flexRow, GlobalStyles.pr30, GlobalStyles.mb5, styles.headerContainer]}>
                     <Paragraph bold600 title={`${user1?.full_name} `} />
                     <Paragraph bold600 textSteelBlue2Color title={t('introduced')} />
                     <Paragraph bold600 title={` ${user2?.full_name}`} />
@@ -189,9 +190,11 @@ const ListItemChat: React.FC<Props> = ({
             </View>
           </View>
           <View style={GlobalStyles.flexRow}>
-            <View style={[GlobalStyles.alignCenter, styles.borderContainer]}>
-              <View style={styles.border} />
-            </View>
+            {index + 1 < items?.attributes?.related_chat_contexts.length && (
+              <View style={[GlobalStyles.alignCenter, styles.borderContainer]}>
+                <View style={styles.border} />
+              </View>
+            )}
             <View style={GlobalStyles.mb15} />
           </View>
         </TouchableOpacity>

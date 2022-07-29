@@ -48,6 +48,7 @@ const IndividualMessageModalScreen: React.FC<Props> = ({navigation}) => {
   return (
     <PubNubContextProvider>
       <View style={[GlobalStyles.container]}>
+        <FastImage source={IMAGES.chatBg} style={GlobalStyles.bgContainer} resizeMode='contain' />
         <HeaderSmallTransparent
           isBackButton={true}
           onBack={onBack}

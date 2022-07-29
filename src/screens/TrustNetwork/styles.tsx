@@ -148,7 +148,7 @@ export default StyleSheet.create({
     alignItems: 'flex-end',
   },
   nameContainer: {
-    width: '45%',
+    width: '42%',
   },
   textSmall: {
     fontSize: adjust(10),

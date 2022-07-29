@@ -2,6 +2,7 @@
 import axios from '~Root/services/axios';
 
 import * as API from '~Root/private/api';
+import {IActionChatOneOnOneRequested, IActionOnUpdateChatContextRequested, IIncluded} from './types';
 export default class ChatAPI {
   static async getUserChatList() {
     try {
@@ -14,6 +15,89 @@ export default class ChatAPI {
         },
       });
       if (response && response.status === 200) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+    } catch (error) {
+      return {
+        data: null,
+        message: error,
+        success: false,
+      };
+    }
+  }
+
+  static async getChatPersonal() {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: API.CHAT_PERSONAL_URL,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+      if (response && response.status === 200) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+    } catch (error) {
+      return {
+        data: null,
+        message: error,
+        success: false,
+      };
+    }
+  }
+
+  static async onChatOneOnOne(payload: IActionChatOneOnOneRequested['payload']) {
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: API.ON_CHAT_ONE_ON_ONE_URL,
+        params: payload,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+      console.log('response11111=====>', response);
+      if (response && (response.status === 200 || response.status === 201)) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+    } catch (error) {
+      console.log('response11111=====>', error);
+      return {
+        data: null,
+        message: error,
+        success: false,
+      };
+    }
+  }
+
+  static async onUpdateChatContext(payload: IActionOnUpdateChatContextRequested['payload']) {
+    try {
+      console.log('payload=====>', payload);
+      const response = await axios({
+        method: 'PUT',
+        url: API.ON_UPDATE_CHAT_CONTEXT_URL(payload?.contextId),
+        params: JSON.stringify(payload?.lastMessage),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+      if (response && (response.status === 200 || response.status === 201)) {
         return {
           data: response.data,
           message: '',
@@ -140,5 +224,9 @@ export default class ChatAPI {
         success: false,
       };
     }
+  }
+
+  static async handleUserReceive(params: any) {
+    return params?.arrUser.find((x: IIncluded) => +x.id !== +params?.currentUserId);
   }
 }

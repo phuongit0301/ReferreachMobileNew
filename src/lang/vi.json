@@ -137,5 +137,13 @@
     "report": "Report",
     "chat_title": "<bold>{{name}}</bold> <normal>{{demographic}}</normal><highlight> {{businessRequirement}}</highlight>",
     "responded": "responded",
-    "introduced": "introduced"
+    "introduced": "introduced",
+    "time_to_left": "{{time}} hours left",
+    "day_to_left": "{{time}} days left",
+    "ask_expired": "Ask Expired",
+    "ask_end": "Ask Ended",
+    "rating_private": "rating is private to you",
+    "sending_kudos": "You will be sending kudos to \nVicky's introducers too",
+    "send_kudos": "Send kudos",
+    "kudos_success": "Kudos \nSuccessfully Sent!"
 }

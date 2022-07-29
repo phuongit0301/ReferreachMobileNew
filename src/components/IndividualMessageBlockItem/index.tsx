@@ -64,11 +64,14 @@ const IndividualMessageBlockItem: React.FC<Props> = ({
             <Paragraph
               textSteelBlueColor
               bold600
+              textCenter
               title={`${profile?.data[0]?.attributes?.user?.first_name} ${profile?.data[0]?.attributes?.user?.last_name}`}
             />
           </View>
         </View>
-        <FastImage source={IMAGES.iconDoubleArrow} style={[GlobalStyles.mr10, styles.iconDoubleArrow]} />
+        <View style={[GlobalStyles.alignCenter, styles.iconDoubleArrowContainer]}>
+          <FastImage source={IMAGES.iconDoubleArrow} style={[GlobalStyles.mr10, styles.iconDoubleArrow]} />
+        </View>
         <View style={[styles.imageProfileContainer, GlobalStyles.alignCenter]}>
           <Avatar
             styleAvatar={{...GlobalStyles.mb5, ...styles.imageProfile}}
@@ -85,6 +88,7 @@ const IndividualMessageBlockItem: React.FC<Props> = ({
             <Paragraph
               textForestGreenColor
               bold600
+              textCenter
               title={`${profileRefer?.included[0]?.attributes?.first_name} ${profileRefer?.included[0]?.attributes?.last_name}`}
             />
           </View>

@@ -6,6 +6,7 @@ import {useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import FastImage from 'react-native-fast-image';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
@@ -13,13 +14,20 @@ import {AskItem, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import {CompositeScreenProps} from '@react-navigation/native';
-import {IAskInside, IPaginationAndSearch} from '~Root/services/ask/types';
+import {
+  IActionOnEndAskSuccess,
+  IActionOnUpdateExtendDeadlineSuccess,
+  IAskInside,
+  IPaginationAndSearch,
+} from '~Root/services/ask/types';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
-import {getAsk, setVisibleMenu} from '~Root/services/ask/actions';
-import {calculateExpiredTime, dateToHours} from '~Root/utils';
+import {getAsk, onEndAskRequest, onExtendDeadlineRequest, setVisibleMenu} from '~Root/services/ask/actions';
+import {calculateExpiredTime, dateFormat3, dateToHours, dateWithMonthsDelay} from '~Root/utils';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
+import Toast from 'react-native-toast-message';
+import moment from 'moment';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -37,7 +45,9 @@ const YourAskScreen = ({navigation}: Props) => {
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
   const [refreshing, setRefreshing] = useState(false);
   const [initPage, setInitPage] = useState(false);
+  const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [textSearch, setTextSearch] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -98,6 +108,87 @@ const YourAskScreen = ({navigation}: Props) => {
         setRefreshing(false);
       }),
     );
+  };
+
+  const onEndAsk = () => {
+    if (askState?.dataAskSelected?.id) {
+      setLoading(true);
+      dispatch(
+        onEndAskRequest(askState?.dataAskSelected?.id, (response: IActionOnEndAskSuccess['payload']) => {
+          setLoading(false);
+          Toast.show({
+            position: 'bottom',
+            type: response.success ? 'success' : 'error',
+            text1: response.success ? 'Successfully' : response.message,
+            visibilityTime: 3000,
+            autoHide: true,
+          });
+          setTimeout(() => {
+            initData();
+          }, 3005);
+        }),
+      );
+    }
+  };
+
+  const onExtendDeadline = () => {
+    dispatch(
+      setVisibleMenu({
+        visibleMenu: {
+          show: false,
+          coordinate: {
+            top: 0,
+            left: 0,
+          },
+        },
+      }),
+    );
+    setVisibleDatePicker(true);
+  };
+
+  const onShowDatePicker = () => {
+    dispatch(
+      setVisibleMenu({
+        dataAskSelected: null,
+      }),
+    );
+    setVisibleDatePicker(!visibleDatePicker);
+  };
+
+  const onChangeDatePicker = (date: Date) => {
+    let currentDate = date || new Date();
+    currentDate = dateWithMonthsDelay(currentDate, 0);
+
+    if (currentDate && askState?.dataAskSelected?.id) {
+      onShowDatePicker();
+      setLoading(true);
+      dispatch(
+        onExtendDeadlineRequest(
+          {
+            askId: askState?.dataAskSelected?.id,
+            deadline: dateFormat3(currentDate),
+          },
+          (response: IActionOnUpdateExtendDeadlineSuccess['payload']) => {
+            setLoading(false);
+            Toast.show({
+              position: 'bottom',
+              type: response.success ? 'success' : 'error',
+              text1: response.success ? 'Successfully' : response.message,
+              visibilityTime: 3000,
+              autoHide: true,
+            });
+            dispatch(
+              setVisibleMenu({
+                dataAskSelected: null,
+              }),
+            );
+            setTimeout(() => {
+              initData();
+            }, 3005);
+          },
+        ),
+      );
+    }
   };
 
   const onMenu = (item: IAskInside | null, evt?: any) => {
@@ -268,8 +359,8 @@ const YourAskScreen = ({navigation}: Props) => {
               </TouchableOpacity>
             )}
             <View style={[GlobalStyles.justifyCenter, styles.border]} />
-            {+dateToHours(new Date(askState?.dataAskSelected?.attributes?.deadline)) > 0 && (
-              <>
+            {parseInt(`${calculateExpiredTime(askState?.dataAskSelected?.attributes?.created_at)}`, 10) > 0 ? (
+              <TouchableOpacity onPress={onExtendDeadline}>
                 <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
                   <View
                     style={[
@@ -287,23 +378,68 @@ const YourAskScreen = ({navigation}: Props) => {
                   <Paragraph title={t('extend_deadline')} />
                 </View>
                 <View style={[styles.border]} />
-              </>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity>
+                <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
+                  <View
+                    style={[
+                      GlobalStyles.alignCenter,
+                      GlobalStyles.justifyCenter,
+                      GlobalStyles.mr5,
+                      styles.iconExtendDeadlineContainer,
+                    ]}>
+                    <FastImage
+                      source={IMAGES.iconExtendDeadlineGray}
+                      resizeMode='cover'
+                      style={styles.iconExtendDeadline}
+                    />
+                  </View>
+                  <Paragraph textDarkGrayColor title={t('extend_deadline')} />
+                </View>
+                <View style={[styles.border]} />
+              </TouchableOpacity>
             )}
-            <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
-              <View
-                style={[
-                  GlobalStyles.alignCenter,
-                  GlobalStyles.justifyCenter,
-                  GlobalStyles.mr5,
-                  styles.iconEndAskContainer,
-                ]}>
-                <FastImage source={IMAGES.iconEndAsk} resizeMode='cover' style={styles.iconEndAsk} />
-              </View>
-              <Paragraph title={t('end_this_ask')} />
-            </View>
+            {parseInt(`${calculateExpiredTime(askState?.dataAskSelected?.attributes?.created_at)}`, 10) > 0 ? (
+              <TouchableOpacity
+                style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}
+                onPress={onEndAsk}>
+                <View
+                  style={[
+                    GlobalStyles.alignCenter,
+                    GlobalStyles.justifyCenter,
+                    GlobalStyles.mr5,
+                    styles.iconEndAskContainer,
+                  ]}>
+                  <FastImage source={IMAGES.iconEndAsk} resizeMode='cover' style={styles.iconEndAsk} />
+                </View>
+                <Paragraph title={t('end_this_ask')} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
+                <View
+                  style={[
+                    GlobalStyles.alignCenter,
+                    GlobalStyles.justifyCenter,
+                    GlobalStyles.mr5,
+                    styles.iconEndAskContainer,
+                  ]}>
+                  <FastImage source={IMAGES.iconEndAskGray} resizeMode='cover' style={styles.iconEndAsk} />
+                </View>
+                <Paragraph textDarkGrayColor title={t('end_this_ask')} />
+              </TouchableOpacity>
+            )}
           </View>
         </TouchableOpacity>
       )}
+      <DateTimePickerModal
+        key={`your-ask-date`}
+        isVisible={visibleDatePicker}
+        mode='datetime'
+        onConfirm={(date: Date) => onChangeDatePicker(date)}
+        onCancel={onShowDatePicker}
+        date={new Date(askState?.dataAskSelected?.attributes?.deadline)}
+      />
     </View>
   );
 };

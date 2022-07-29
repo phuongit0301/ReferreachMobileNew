@@ -49,32 +49,31 @@ const ChatItem: React.FC<Props> = ({item, onMenu = () => {}}) => {
 
   return (
     <View style={[GlobalStyles.flexColumn, GlobalStyles.p15, styles.cardContainer]}>
-      <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
-        <View style={[GlobalStyles.mr10, styles.description]}>
-          <Trans
-            i18nKey='ask_content'
-            values={{
-              greeting: item?.attributes?.greeting,
-              role: item?.attributes?.demographic,
-              description: item?.attributes?.business_requirement,
-              businessDetail: item?.attributes?.business_detail,
-            }}
-            parent={Text}
-            components={{
-              normal: <Text style={GlobalStyles.textDarkGray} />,
-              highlight: <Text style={GlobalStyles.textSteelBlue2} />,
-            }}
-          />
-        </View>
+      <View style={GlobalStyles.flexColumn}>
+        <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
+          <View style={[GlobalStyles.mr10, styles.description]}>
+            <Trans
+              i18nKey='ask_content'
+              values={{
+                greeting: item?.attributes?.greeting,
+                role: item?.attributes?.demographic,
+                description: item?.attributes?.business_requirement,
+                businessDetail: item?.attributes?.business_detail,
+              }}
+              parent={Text}
+              components={{
+                normal: <Text style={GlobalStyles.textDarkGray} />,
+                highlight: <Text style={GlobalStyles.textSteelBlue2} />,
+              }}
+            />
+          </View>
 
-        <TouchableOpacity
-          onPressIn={event => onMenu(item, event)}
-          style={[GlobalStyles.mt5, styles.iconThreeDotContainer]}>
-          <FastImage source={IMAGES.iconThreeDot} resizeMode='cover' style={styles.iconThreeDot} />
-        </TouchableOpacity>
-      </View>
-      <Animated.View
-        style={[GlobalStyles.flexColumn, {opacity: visibleAnim, display: animation?.expanded ? 'flex' : 'none'}]}>
+          <TouchableOpacity
+            onPressIn={event => onMenu(item, event)}
+            style={[GlobalStyles.mt5, styles.iconThreeDotContainer]}>
+            <FastImage source={IMAGES.iconThreeDot} resizeMode='cover' style={styles.iconThreeDot} />
+          </TouchableOpacity>
+        </View>
         <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mt20]}>
           <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.mr20]}>
             <FastImage
@@ -94,6 +93,9 @@ const ChatItem: React.FC<Props> = ({item, onMenu = () => {}}) => {
             />
           </View>
         </View>
+      </View>
+      <Animated.View
+        style={[GlobalStyles.flexColumn, {opacity: visibleAnim, display: animation?.expanded ? 'flex' : 'none'}]}>
         {item?.attributes?.criterium && item?.attributes?.criterium.length > 0 && (
           <View style={[GlobalStyles.flexColumn, GlobalStyles.mt20]}>
             <Paragraph h5 bold600 textDarkGrayColor title='Criteria' style={GlobalStyles.mb5} />

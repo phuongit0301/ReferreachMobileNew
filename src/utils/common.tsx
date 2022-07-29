@@ -38,6 +38,18 @@ export enum CHAT_BOX_TYPE_ENUM {
   INTRODUCED = 'introducer_introducee',
 }
 
+export enum ASK_STATUS_ENUM {
+  PUBLISHED = 'published',
+  DRAFT = 'draft',
+  SUCCEED = 'succeed',
+  CLOSED = 'closed',
+  EXPIRED = 'expired',
+}
+
+export enum TRUST_NETWORK_STATUS_ENUM {
+  ACCEPTED = 'accepted',
+}
+
 export const sideBarRoutes = [
   {
     name: AppRoute.MY_ACCOUNT,
