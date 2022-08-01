@@ -36,7 +36,7 @@ export const FORGOT_PASSWORD_URL = `${ROOT_API_URL}/reset_passwords/send_request
 export const CREATE_INTRODUCTION_URL = `${ROOT_API_URL}/introductions`;
 export const CHAT_CONTEXT_URL = (contextId: string) => `${ROOT_API_URL}/chat_contexts/${contextId}`;
 export const CHAT_PERSONAL_URL = `${ROOT_API_URL}/chat_feeds/personal_list`;
-export const CHAT_FEED_URL = `${ROOT_API_URL}/chat_feeds/ask_list`;
+export const CHAT_FEED_URL = `${ROOT_API_URL}/chat_feeds/ask_list?per=3page=1`;
 export const USER_CHAT_LIST_URL = `${ROOT_API_URL}/chat_feeds/suggest_users_chat_list`;
 export const GET_CRENDENTIAL_URL = `${ROOT_API_URL}/pubnubs/credentials`;
 export const ON_PIN_URL = (askId: string) => `${ROOT_API_URL}/chat_feeds/${askId}/pin`;

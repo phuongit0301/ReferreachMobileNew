@@ -31,6 +31,11 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   const dispatch = useDispatch();
   const pubnub = usePubNub();
   const scrollAnim = new Animated.Value(0);
+  const scrollRef = React.useRef(null);
+  const offsetKeyboard = Platform.select({
+    ios: 10,
+    android: 40,
+  });
 
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
   const chatState = useSelector((state: IGlobalState) => state.chatState);
@@ -52,6 +57,12 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
       );
     }
   }, [route]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current?.scrollToEnd({animated: true});
+    }
+  }, [scrollRef]);
 
   useEffect(() => {
     if (pubnub && chatState?.dataChatPersonalSelected?.data?.attributes?.chat_uuid) {
@@ -111,6 +122,12 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
     }
   }, [pubnub, channels]);
 
+  const onFocus = () => {
+    if (scrollRef.current) {
+      scrollRef.current?.scrollToEnd({animated: true});
+    }
+  };
+
   const sendMessage = useCallback(() => {
     if (channels && channels?.length > 0) {
       pubnub
@@ -126,6 +143,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
           storeInHistory: true,
         })
         .then(() => {
+          setChatText('');
           const payload = {
             contextId: chatState?.dataChatPersonalSelected?.data?.id,
             lastMessage: {
@@ -173,97 +191,116 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
 
   return (
     <View style={[GlobalStyles.container, GlobalStyles.flexColumn]}>
-      <FastImage source={IMAGES.chatBg} style={GlobalStyles.bgContainer} resizeMode='contain' />
+      <FastImage source={IMAGES.chatBg} style={GlobalStyles.bgContainer} resizeMode='stretch' />
       <SafeAreaView style={GlobalStyles.container} edges={['bottom']}>
-        <View style={styles.headerContainer}>
+        <View style={[styles.headerContainer]}>
           <HeaderChatContextBlue
             isBackButton={true}
             onBack={onBack}
             title={t('chat')}
             isRightButton={true}
             onRightPress={onToggleDrawer}
+            containerHeaderStyle={{...GlobalStyles.alignCenter, ...GlobalStyles.mt0}}
           />
         </View>
-        <View style={GlobalStyles.container}>
-          <View style={[GlobalStyles.p15, GlobalStyles.container]}>
-            <Animated.FlatList
-              style={GlobalStyles.container}
-              contentContainerStyle={[GlobalStyles.justifyEnd, GlobalStyles.scrollViewFullScreen]}
-              scrollEnabled={true}
-              scrollEventThrottle={1}
-              onScroll={Animated.event(
-                [
-                  {
-                    nativeEvent: {
-                      contentOffset: {
-                        y: scrollAnim,
+        <KeyboardAvoidingView
+          style={GlobalStyles.keyboard}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={offsetKeyboard}>
+          <View style={GlobalStyles.container}>
+            <View style={[GlobalStyles.ph15, GlobalStyles.container]}>
+              <Animated.FlatList
+                style={GlobalStyles.container}
+                ref={scrollRef}
+                contentContainerStyle={[GlobalStyles.justifyEnd, GlobalStyles.scrollViewFullScreen]}
+                scrollEnabled={true}
+                scrollEventThrottle={1}
+                onContentSizeChange={() => scrollRef.current?.scrollToEnd({animated: true})}
+                onLayout={() => scrollRef?.current?.scrollToEnd({animated: true})}
+                onScroll={Animated.event(
+                  [
+                    {
+                      nativeEvent: {
+                        contentOffset: {
+                          y: scrollAnim,
+                        },
                       },
                     },
-                  },
-                ],
-                {useNativeDriver: true},
-              )}
-              showsVerticalScrollIndicator={false}
-              data={messages}
-              key={'message-personal'}
-              keyExtractor={(item, index) => `message-personal-${index}`}
-              renderItem={({item}: {item: HistoryMessage}) => {
-                if (item?.entry?.userId !== userState?.userInfo?.id) {
+                  ],
+                  {useNativeDriver: true},
+                )}
+                showsVerticalScrollIndicator={false}
+                data={messages}
+                key={'message-personal'}
+                keyExtractor={(item, index) => `message-personal-${index}`}
+                renderItem={({item}: {item: HistoryMessage}) => {
+                  if (item?.entry?.userId !== userState?.userInfo?.id) {
+                    return (
+                      <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBg]}>
+                        {item.entry?.fullName2 && (
+                          <View style={[GlobalStyles.flexRow, GlobalStyles.mb5, styles.headerName]}>
+                            <Paragraph
+                              textDarkGrayColor
+                              bold600
+                              numberOfLines={1}
+                              ellipsizeMode='tail'
+                              title={item.entry?.fullName2}
+                              style={[GlobalStyles.mr5, styles.fontSmall]}
+                            />
+                          </View>
+                        )}
+                        <Paragraph title={item?.entry?.text} style={styles.chatContentArea} />
+                        {item?.entry?.createdAt && (
+                          <View style={[GlobalStyles.alignEnd, GlobalStyles.mt10]}>
+                            <Paragraph
+                              textJetColor
+                              title={moment(item?.entry?.createdAt).format('HH:mm a')}
+                              style={styles.txtTime}
+                            />
+                          </View>
+                        )}
+                      </View>
+                    );
+                  }
                   return (
-                    <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBg]}>
-                      {item.entry?.fullName2 && (
-                        <View style={[GlobalStyles.flexRow, GlobalStyles.mb5, styles.headerName]}>
+                    <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBgSecond]}>
+                      <Paragraph textJetColor title={item?.entry?.text} style={styles.chatContentArea} />
+                      {item?.entry?.createdAt && (
+                        <View style={[GlobalStyles.alignEnd, GlobalStyles.mt10]}>
                           <Paragraph
-                            textDarkGrayColor
-                            bold600
-                            numberOfLines={1}
-                            ellipsizeMode='tail'
-                            title={item.entry?.fullName2}
-                            style={[GlobalStyles.mr5, styles.fontSmall]}
+                            textJetColor
+                            title={moment(item?.entry?.createdAt).format('HH:mm a')}
+                            style={styles.txtTime}
                           />
                         </View>
                       )}
-                      <Paragraph title={item?.entry?.text} style={styles.chatContentArea} />
                     </View>
                   );
-                }
-                return (
-                  <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBgSecond]}>
-                    <Paragraph textJetColor title={item?.entry?.text} style={styles.chatContentArea} />
-                    {item?.entry?.createdAt && (
-                      <View style={[GlobalStyles.alignEnd, GlobalStyles.mt10]}>
-                        <Paragraph
-                          textJetColor
-                          title={moment(item?.entry?.createdAt).format('HH:mm A')}
-                          style={styles.txtTime}
-                        />
-                      </View>
-                    )}
-                  </View>
-                );
-              }}
-              onEndReachedThreshold={0.5}
-            />
+                }}
+                onEndReachedThreshold={0.5}
+              />
+            </View>
+            <View style={[GlobalStyles.alignCenter, GlobalStyles.p15, GlobalStyles.flexRow]}>
+              <TouchableOpacity
+                style={[
+                  GlobalStyles.mr10,
+                  GlobalStyles.alignCenter,
+                  GlobalStyles.justifyCenter,
+                  styles.iconPlusContainer,
+                ]}
+                onPress={sendMessage}>
+                <FastImage source={IMAGES.iconPlus} resizeMode='contain' style={styles.iconPlus} />
+              </TouchableOpacity>
+              <TextInput
+                style={[GlobalStyles.container, GlobalStyles.ph10, GlobalStyles.pv8, styles.input]}
+                onChangeText={onChangeText}
+                onSubmitEditing={handleSubmit}
+                value={chatText}
+                onFocus={onFocus}
+              />
+            </View>
           </View>
-          <View style={[GlobalStyles.p15, GlobalStyles.flexRow]}>
-            <TouchableOpacity
-              style={[
-                GlobalStyles.mr10,
-                GlobalStyles.alignCenter,
-                GlobalStyles.justifyCenter,
-                styles.iconPlusContainer,
-              ]}
-              onPress={sendMessage}>
-              <FastImage source={IMAGES.iconPlus} resizeMode='contain' style={styles.iconPlus} />
-            </TouchableOpacity>
-            <TextInput
-              style={[GlobalStyles.container, GlobalStyles.ph10, GlobalStyles.pv8, styles.input]}
-              onChangeText={onChangeText}
-              onSubmitEditing={handleSubmit}
-              value={chatText}
-            />
-          </View>
-        </View>
+        </KeyboardAvoidingView>
       </SafeAreaView>
       {loading && <LoadingSecondary />}
     </View>

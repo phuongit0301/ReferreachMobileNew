@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Animated, RefreshControl, TextInput, View, TouchableOpacity} from 'react-native';
+import {Animated, RefreshControl, TextInput, View, TouchableOpacity, Alert} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -23,7 +23,7 @@ import {
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 import {getAsk, onEndAskRequest, onExtendDeadlineRequest, setVisibleMenu} from '~Root/services/ask/actions';
-import {calculateExpiredTime, dateFormat3, dateToHours, dateWithMonthsDelay} from '~Root/utils';
+import {ASK_STATUS_ENUM, calculateExpiredTime, dateFormat3, dateWithMonthsDelay} from '~Root/utils';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
 import Toast from 'react-native-toast-message';
@@ -113,21 +113,23 @@ const YourAskScreen = ({navigation}: Props) => {
   const onEndAsk = () => {
     if (askState?.dataAskSelected?.id) {
       setLoading(true);
-      dispatch(
-        onEndAskRequest(askState?.dataAskSelected?.id, (response: IActionOnEndAskSuccess['payload']) => {
-          setLoading(false);
-          Toast.show({
-            position: 'bottom',
-            type: response.success ? 'success' : 'error',
-            text1: response.success ? 'Successfully' : response.message,
-            visibilityTime: 3000,
-            autoHide: true,
-          });
-          setTimeout(() => {
-            initData();
-          }, 3005);
-        }),
-      );
+      // dispatch(
+      //   onEndAskRequest(askState?.dataAskSelected?.id, (response: IActionOnEndAskSuccess['payload']) => {
+      //     setLoading(false);
+      //     Toast.show({
+      //       position: 'bottom',
+      //       type: response.success ? 'success' : 'error',
+      //       text1: response.success ? 'Successfully' : response.message,
+      //       visibilityTime: 3000,
+      //       autoHide: true,
+      //     });
+      //     setTimeout(() => {
+      //       initData();
+      //     }, 3005);
+      //   }),
+      // );
+      onMenuHide();
+      navigation.navigate(AppRoute.CHAT_KUDOS);
     }
   };
 
@@ -157,6 +159,10 @@ const YourAskScreen = ({navigation}: Props) => {
 
   const onChangeDatePicker = (date: Date) => {
     let currentDate = date || new Date();
+    if (moment(currentDate).format('MM-DD-YYYY HH:mm:ss') < moment().format('MM-DD-YYYY HH:mm:ss')) {
+      Alert.alert("You can't select date last");
+      return;
+    }
     currentDate = dateWithMonthsDelay(currentDate, 0);
 
     if (currentDate && askState?.dataAskSelected?.id) {
@@ -359,7 +365,8 @@ const YourAskScreen = ({navigation}: Props) => {
               </TouchableOpacity>
             )}
             <View style={[GlobalStyles.justifyCenter, styles.border]} />
-            {parseInt(`${calculateExpiredTime(askState?.dataAskSelected?.attributes?.created_at)}`, 10) > 0 ? (
+            {(parseInt(`${calculateExpiredTime(askState?.dataAskSelected?.attributes?.created_at)}`, 10) > 0 ||
+            askState?.dataAskSelected?.attributes?.status === ASK_STATUS_ENUM.PUBLISHED) ? (
               <TouchableOpacity onPress={onExtendDeadline}>
                 <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
                   <View

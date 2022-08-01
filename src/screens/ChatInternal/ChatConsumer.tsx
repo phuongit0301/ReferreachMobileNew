@@ -25,6 +25,7 @@ import styles from './styles';
 import {IActionOnUpdateExtendDeadlineSuccess} from '~Root/services/ask/types';
 import {onExtendDeadlineRequest} from '~Root/services/ask/actions';
 import Toast from 'react-native-toast-message';
+import moment from 'moment';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<ChatNavigatorParamsList, AppRoute.CHAT>,
@@ -115,8 +116,18 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
 
   const sendMessage = useCallback(() => {
     pubnub
-      .publish({channel: channels[0], message: {text: chatText, userId: userState?.userInfo?.id}})
+      .publish({
+        channel: channels[0],
+        message: {
+          text: chatText,
+          userId: userState?.userInfo?.id,
+          fullName1: `${userState?.userInfo?.first_name} ${userState?.userInfo?.last_name}`,
+          fullName2: '',
+          createdAt: new Date(),
+        },
+      })
       .then(() => {
+        setChatText('');
         const payload = {
           contextId: route.params?.contextId as string,
           lastMessage: {
@@ -148,7 +159,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   };
 
   const onBack = () => {
-    navigation.goBack();
+    navigation.navigate(AppRoute.CHAT);
   };
 
   const onMenu = (item: any, evt?: any) => {
@@ -245,9 +256,20 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
     dataChatContext = chatState?.dataChat?.included[2];
   }
 
+  if (chatState?.dataChat?.included?.length > 0 && (route.params as any)?.introducerId) {
+    const indexItem = chatState?.dataChat?.included.findIndex(
+      (x: any) => +x?.id === +route.params?.introducerId && x.type === 'users',
+    );
+
+    if (indexItem === 1) {
+      introducer = chatState?.dataChat?.included[1];
+      introducee = chatState?.dataChat?.included[0];
+    }
+  }
+console.log(messages);
   return (
     <View style={[GlobalStyles.container, GlobalStyles.flexColumn]}>
-      <FastImage source={IMAGES.chatBg} style={GlobalStyles.bgContainer} resizeMode='contain' />
+      <FastImage source={IMAGES.chatBg} style={GlobalStyles.bgContainer} resizeMode='stretch' />
       <SafeAreaView style={GlobalStyles.container} edges={['bottom']}>
         <View style={styles.headerContainer}>
           <HeaderChatContextBlue
@@ -297,10 +319,17 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                     }}
                   />
                 </View>
-                <FastImage
-                  source={{uri: introducee?.attributes?.avatar_metadata?.avatar_url}}
-                  resizeMode='cover'
-                  style={[GlobalStyles.mt10, GlobalStyles.avatar4]}
+                <Avatar
+                  styleAvatar={{...GlobalStyles.mt10, ...GlobalStyles.avatar4}}
+                  styleContainerGradient={{...GlobalStyles.mt10, ...GlobalStyles.avatar4}}
+                  textStyle={GlobalStyles.p}
+                  userInfo={{
+                    avatar_url: introducee?.attributes?.avatar_metadata?.avatar_url,
+                    avatar_lat: introducee?.attributes?.avatar_metadata?.avatar_lat,
+                    avatar_lng: introducee?.attributes?.avatar_metadata?.avatar_lng,
+                    first_name: introducee?.attributes?.first_name,
+                    last_name: introducee?.attributes?.last_name,
+                  }}
                 />
               </View>
               <View style={[styles.contentContainer]}>
@@ -332,9 +361,9 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
               key={'tags'}
               keyExtractor={(item, index) => `message-${index}`}
               renderItem={({item}: {item: HistoryMessage}) => {
-                if (item?.entry?.userId === userState?.userInfo?.id) {
+                if (item?.entry?.userId !== userState?.userInfo?.id) {
                   return (
-                    <View style={[GlobalStyles.p10, GlobalStyles.mb10, GlobalStyles.alignSelfStart, styles.chatBg]}>
+                    <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBg]}>
                       <View style={[GlobalStyles.flexRow, GlobalStyles.mb5, styles.headerName]}>
                         <Paragraph
                           textDarkGrayColor
@@ -355,12 +384,30 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                         />
                       </View>
                       <Paragraph title={item?.entry?.text} />
+                      {item?.entry?.createdAt && (
+                        <View style={[GlobalStyles.alignEnd, GlobalStyles.mt10]}>
+                          <Paragraph
+                            textJetColor
+                            title={moment(item?.entry?.createdAt).format('HH:mm a')}
+                            style={styles.txtTime}
+                          />
+                        </View>
+                      )}
                     </View>
                   );
                 }
                 return (
                   <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBgSecond]}>
                     <Paragraph title={item?.entry?.text} />
+                    {item?.entry?.createdAt && (
+                      <View style={[GlobalStyles.alignEnd, GlobalStyles.mt10]}>
+                        <Paragraph
+                          textJetColor
+                          title={moment(item?.entry?.createdAt).format('HH:mm a')}
+                          style={styles.txtTime}
+                        />
+                      </View>
+                    )}
                   </View>
                 );
               }}

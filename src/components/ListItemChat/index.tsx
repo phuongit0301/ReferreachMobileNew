@@ -38,15 +38,27 @@ const ListItemChat: React.FC<Props> = ({
 
   if (items?.attributes?.related_chat_contexts?.length > 0) {
     return items?.attributes?.related_chat_contexts.map((item: any, index: number) => {
-      const user1 = item?.members.length > 0 ? item?.members[0] : null;
-      const user2 = item?.members.length > 1 ? item?.members[1] : null;
+      let user1 = item?.members.length > 0 ? item?.members[0] : null;
+      let user2 = item?.members.length > 1 ? item?.members[1] : null;
+
+      if (item?.members.length > 0) {
+        const indexItem = item.members.findIndex(
+          (x: any) =>
+            item?.chat_contextable?.introduction?.introducer &&
+            +x.id === +item?.chat_contextable?.introduction?.introducer?.id,
+        );
+        if (indexItem === 1) {
+          user1 = item?.members[1];
+          user2 = item?.members[0];
+        }
+      }
 
       if (item?.chat_box_type === CHAT_BOX_TYPE_ENUM.RESPONDED) {
         return (
           <TouchableOpacity
             key={`chat-item-${item?.id}-${index}`}
             style={[GlobalStyles.flexColumn, GlobalStyles.alignStart, style]}
-            onPress={() => onPress(item)}>
+            onPress={() => onPress({contextId: item?.id, introducerId: user1?.id})}>
             <View style={[GlobalStyles.flexRow, GlobalStyles.fullWidth]}>
               <View style={[GlobalStyles.alignCenter, styles.borderContainer]}>
                 <View style={styles.border} />
@@ -112,7 +124,7 @@ const ListItemChat: React.FC<Props> = ({
         <TouchableOpacity
           key={`chat-item-${item?.id}-${index}`}
           style={[GlobalStyles.flexColumn, GlobalStyles.alignStart, style]}
-          onPress={() => onPress(item)}>
+          onPress={() => onPress({contextId: item?.id, introducerId: user1?.id})}>
           <View style={[GlobalStyles.flexRow, GlobalStyles.fullWidth]}>
             <View style={[GlobalStyles.alignCenter, styles.borderContainer]}>
               <View style={styles.border} />

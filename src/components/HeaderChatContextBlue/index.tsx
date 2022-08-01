@@ -44,7 +44,7 @@ const HeaderChatContextBlue: React.FC<Props> = ({
     <LinearGradient
       colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
       style={[GlobalStyles.flexRow, styles.container, styleContainer]}>
-      <View style={GlobalStyles.flexColumn}>
+      <View style={[GlobalStyles.flexColumn]}>
         <View
           style={[
             GlobalStyles.flexRow,

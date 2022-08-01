@@ -169,10 +169,12 @@ export default StyleSheet.create({
   },
   fontSmall: {
     fontSize: adjust(10),
-    width: '45%',
   },
   headerName: {
     width: '95%',
     overflow: 'hidden',
+  },
+  txtTime: {
+    fontSize: adjust(9),
   },
 });

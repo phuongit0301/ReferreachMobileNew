@@ -45,7 +45,7 @@ const AskScreen = ({navigation}: Props & Params) => {
   }, [navigation]);
 
   const onItemClick = (item: any) => {
-    navigation.navigate(AppRoute.CHAT_INTERNAL, {contextId: item?.id});
+    navigation.navigate(AppRoute.CHAT_INTERNAL, {contextId: item?.contextId, introducerId: item?.introducerId});
   };
 
   const onPin = (askId: string, index: number) => {

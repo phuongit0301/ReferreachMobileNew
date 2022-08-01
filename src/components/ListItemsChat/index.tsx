@@ -6,7 +6,7 @@ import {Trans} from 'react-i18next';
 import {useSelector} from 'react-redux';
 
 import {IDataChatFeed} from '~Root/services/chat/types';
-import {Avatar, ListItemChat, ListItemChatHeader} from '~Root/components';
+import {Avatar, ListItemChat, ListItemChatHeader, Paragraph} from '~Root/components';
 import {IGlobalState} from '~Root/types';
 import {GlobalStyles, IMAGES} from '~Root/config';
 import styles from './styles';
@@ -46,6 +46,12 @@ const ListItemsChat: React.FC<Props> = ({
           </View>
         );
       }}
+      ListEmptyComponent={() => (
+        <View
+          style={[GlobalStyles.flexRow, GlobalStyles.center, GlobalStyles.mt15, GlobalStyles.pv15, GlobalStyles.ph10]}>
+          <Paragraph textCenter title='Start an intro with your friend in your Air Feed' />
+        </View>
+      )}
       // renderSectionHeader={({section}) => {
       //   if (section.included?.length === 0 || section.data?.length === 0) {
       //     return null;

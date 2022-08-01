@@ -5,7 +5,7 @@ import {adjust} from '~Root/utils';
 
 export default StyleSheet.create({
   headerContainer: {
-    flex: 0.15,
+    height: adjust(100),
   },
   wrapper: {
     zIndex: 100,
@@ -129,8 +129,8 @@ export default StyleSheet.create({
     shadowOpacity: adjust(0.1),
     shadowRadius: adjust(4),
     elevation: adjust(4),
-    width: adjust(30),
-    height: adjust(30),
+    width: Platform?.OS === 'ios' ? adjust(30) : adjust(40),
+    height: Platform?.OS === 'ios' ? adjust(30) : adjust(40),
   },
   iconPlus: {
     width: adjust(14),

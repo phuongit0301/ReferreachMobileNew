@@ -88,10 +88,14 @@ export default class ChatAPI {
   static async onUpdateChatContext(payload: IActionOnUpdateChatContextRequested['payload']) {
     try {
       console.log('payload=====>', payload);
+      console.log(
+        'payload1=====>',
+        JSON.stringify({last_message_metadata: payload?.lastMessage?.last_message_metadata}),
+      );
       const response = await axios({
         method: 'PUT',
         url: API.ON_UPDATE_CHAT_CONTEXT_URL(payload?.contextId),
-        params: JSON.stringify(payload?.lastMessage),
+        data: JSON.stringify({last_message_metadata: payload?.lastMessage?.last_message_metadata}),
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',

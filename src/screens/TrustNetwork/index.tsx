@@ -37,6 +37,8 @@ import styles from './styles';
 import {invitationRequest} from '~Root/services/register/actions';
 import {IActionInvitationSuccess} from '~Root/services/register/types';
 import {TRUST_NETWORK_STATUS_ENUM} from '~Root/utils';
+import {onChatOneOnOneRequest} from '~Root/services/chat/actions';
+import {getCredential} from '~Root/services/pubnub/actions';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -208,7 +210,26 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   };
 
   const onChatPersonal = (item: any) => {
-    // navigation.navigate(AppRoute.CHAT_PERSONAL, {contextId: item?.id});
+    console.log(item);
+    if (item?.relationships?.connected_user?.data?.id) {
+      const payload = {
+        member_id: item?.relationships?.connected_user?.data?.id,
+      };
+
+      setLoading(true);
+      dispatch(
+        onChatOneOnOneRequest(payload, (response: any) => {
+          dispatch(
+            getCredential(() => {
+              setLoading(false);
+              if (response.success) {
+                navigation.navigate(AppRoute.CHAT_PERSONAL, {contextId: response?.data.id});
+              }
+            }),
+          );
+        }),
+      );
+    }
   };
 
   if (loadingState?.loading) {

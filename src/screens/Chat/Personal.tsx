@@ -107,7 +107,7 @@ const PersonalScreen: React.FC<Props & Params> = ({navigation}) => {
               GlobalStyles.center,
               GlobalStyles.mt15,
               GlobalStyles.pv15,
-              GlobalStyles.ph10,
+              GlobalStyles.ph20,
             ]}>
             <Paragraph textCenter title='Start a personal chat with your friend in your Trust network' />
           </View>

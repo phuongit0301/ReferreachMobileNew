@@ -6,7 +6,7 @@ import {adjust} from '~Root/utils';
 export default StyleSheet.create({
   container: {
     ...GlobalStyles.pt35,
-    flex: 1,
+    height: adjust(100),
   },
   left: {
     height: adjust(14),

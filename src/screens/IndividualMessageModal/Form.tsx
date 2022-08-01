@@ -78,14 +78,14 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
             feedState?.dataProfileRefer?.included?.length > 0 &&
             feedState?.dataProfileRefer?.included[0]?.id)
           ) {
-            dispatch(hideLoading());
-            Toast.show({
-              position: 'bottom',
-              type: response.success ? 'success' : 'info',
-              text1: 'Successfully',
-              visibilityTime: 3000,
-              autoHide: true,
-            });
+            // dispatch(hideLoading());
+            // Toast.show({
+            //   position: 'bottom',
+            //   type: response.success ? 'success' : 'info',
+            //   text1: 'Successfully',
+            //   visibilityTime: 3000,
+            //   autoHide: true,
+            // });
             const pubnubMessages = [
               {
                 text: payload?.message_for_asker,
@@ -96,6 +96,7 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
                 userId: feedState?.dataProfileRefer?.included[0]?.id,
               },
             ];
+            console.log('pubnubMessages=======>', JSON.stringify(pubnubMessages));
             const promises = [];
             for (const item of pubnubMessages) {
               promises.push(
@@ -105,8 +106,12 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
                     message: {
                       text: item?.text,
                       userId: item?.userId,
+                      fullName1: '',
+                      fullName2: '',
+                      createdAt: new Date(),
                     },
                   })
+                  .then(() => console.log('insert pubnub done'))
                   .catch(error => console.log(JSON.stringify(error))),
               );
             }
@@ -117,12 +122,12 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
                 position: 'bottom',
                 type: response.success ? 'success' : 'info',
                 text1: 'Successfully',
-                visibilityTime: 3000,
+                visibilityTime: 2000,
                 autoHide: true,
               });
               setTimeout(() => {
                 navigation.navigate(AppRoute.CHAT_INTERNAL, {contextId: chatContexts?.id});
-              }, 3100);
+              }, 2100);
             });
           }
         }

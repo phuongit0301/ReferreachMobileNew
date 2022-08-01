@@ -35,14 +35,12 @@ const AskItem: React.FC<Props> = ({item, onMenu = () => {}}) => {
       +hours < 24
     ) {
       strLeft = t('time_to_left', {time: hours});
-    }
-    if (time > 0) {
       styleTag = styles.styleTagPurple;
     }
   } else if (item?.attributes?.status === ASK_STATUS_ENUM.EXPIRED) {
     strLeft = t('ask_expired');
     styleTag = styles.styleTagCarminePink;
-  } else if (item?.attributes?.status === ASK_STATUS_ENUM.EXPIRED) {
+  } else if (item?.attributes?.status === ASK_STATUS_ENUM.CLOSED) {
     strLeft = t('ask_end');
     styleTag = styles.styleTagForestGreen;
   } else {
