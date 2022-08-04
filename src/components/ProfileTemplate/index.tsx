@@ -194,7 +194,7 @@ const ProfileTemplateScreen: React.FC<Props> = ({
                 </FastImage>
               ) : (
                 <AvatarGradient
-                  title='AD'
+                  title={`${userState?.userInfo?.first_name?.charAt(0)}${userState?.userInfo?.last_name?.charAt(0)}`}
                   color1={BASE_COLORS.oxleyColor}
                   color2={BASE_COLORS.oxleyColor}
                   stylesContainer={GlobalStyles.mb15}

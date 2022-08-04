@@ -3,7 +3,7 @@ import axios from '~Root/services/axios';
 import xaxios from 'axios';
 
 import * as API from '~Root/private/api';
-import {IActionInvitationRequested, IActionRegisterRequested, IActionVerifyAccountRequested} from './types';
+import {IActionInvitationRejectRequested, IActionInvitationRequested, IActionRegisterRequested, IActionVerifyAccountRequested} from './types';
 
 export default class RegisterAPI {
   static async handleRegister(payload: IActionRegisterRequested['payload']) {
@@ -35,7 +35,6 @@ export default class RegisterAPI {
 
   static async verifyAccount(payload: IActionVerifyAccountRequested['payload']) {
     try {
-      console.log('payload=========>', payload);
       const response = await xaxios({
         method: 'put',
         url: API.VERIFY_ACCOUNT_URL,
@@ -45,7 +44,6 @@ export default class RegisterAPI {
           Accept: 'application/json',
         },
       });
-      console.log('response============>', response);
       if (response?.status === 200) {
         return {
           verified: response.data,
@@ -55,11 +53,10 @@ export default class RegisterAPI {
       }
       return {
         verified: false,
-        message: response.data?.message,
+        message: (response.data as any)?.message,
         success: false,
       };
     } catch (error) {
-      console.log('error=======>', JSON.stringify(error));
       return {
         data: '',
         message: (error as Error)?.message,
@@ -78,7 +75,6 @@ export default class RegisterAPI {
           Accept: 'application/json',
         },
       });
-      console.log('response========>', response);
       if (response?.status === 200) {
         return {
           renew: true,
@@ -88,13 +84,10 @@ export default class RegisterAPI {
       }
       return {
         renew: false,
-        message: response.data?.message,
+        message: (response.data as any)?.message,
         success: false,
       };
     } catch (error) {
-      console.log('error renew=======>', JSON.stringify(error));
-      console.log('error renew=======>', error?.response);
-      console.log('error renew=======>', error?.response?.data);
       return {
         renew: false,
         message: (error as Error)?.message,
@@ -123,6 +116,38 @@ export default class RegisterAPI {
       return {
         data: null,
         message: response.data?.message,
+        success: false,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: (error as any)?.response?.data?.errors ? (error as any)?.response?.data?.errors[0] : '',
+        success: false,
+      };
+    }
+  }
+
+  static async invitationReject(payload: IActionInvitationRejectRequested['payload']) {
+    try {
+      const response = await xaxios({
+        method: 'PUT',
+        url: API.REJECT_INVITATION_URL(payload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('response=======>', response);
+      if (response?.status === 204) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+
+      return {
+        data: null,
+        message: (response.data as any)?.message,
         success: false,
       };
     } catch (error) {

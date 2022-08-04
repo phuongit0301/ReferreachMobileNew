@@ -33,6 +33,23 @@ export enum IN_APP_STATUS_ENUM {
   SIGNUP_GUIDE_TIPS = 'signup_guide_tips',
 }
 
+export enum CHAT_BOX_TYPE_ENUM {
+  RESPONDED = 'asker_introducer',
+  INTRODUCED = 'introducer_introducee',
+}
+
+export enum ASK_STATUS_ENUM {
+  PUBLISHED = 'published',
+  DRAFT = 'draft',
+  SUCCEED = 'succeed',
+  CLOSED = 'closed',
+  EXPIRED = 'expired',
+}
+
+export enum TRUST_NETWORK_STATUS_ENUM {
+  ACCEPTED = 'accepted',
+}
+
 export const sideBarRoutes = [
   {
     name: AppRoute.MY_ACCOUNT,

@@ -148,7 +148,7 @@ export default StyleSheet.create({
     alignItems: 'flex-end',
   },
   nameContainer: {
-    width: '45%',
+    width: '42%',
   },
   textSmall: {
     fontSize: adjust(10),
@@ -185,10 +185,10 @@ export default StyleSheet.create({
     color: BASE_COLORS.whiteColor,
   },
   styleModal: {
-    flex: 0.5,
+    height: adjust(300),
   },
   styleModalRemove: {
-    flex: 0.4,
+    height: adjust(250),
   },
   groupButton: {
     width: '80%',
@@ -201,5 +201,20 @@ export default StyleSheet.create({
   textBold: {
     fontFamily: BASE_FONTS.semiBold,
     fontSize: adjust(BASE_STYLES.p),
+  },
+  btnDone: {
+    ...GlobalStyles.mt15,
+    ...GlobalStyles.ph40,
+    ...GlobalStyles.pv15,
+    backgroundColor: BASE_COLORS.forestGreenColor,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    borderRadius: adjust(100),
+  },
+  titleStyle: {
+    fontFamily: 'Montserrat-SemiBold',
+    lineHeight: adjust(BASE_STYLES.h4),
+    fontWeight: '600',
+    color: BASE_COLORS.whiteColor,
   },
 });

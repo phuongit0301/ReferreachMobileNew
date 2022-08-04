@@ -23,6 +23,7 @@ export default class UserAPI {
         };
       }
     } catch (error) {
+      console.log('JSONERRO=======>', error);
       return {
         data: null,
         message: error,

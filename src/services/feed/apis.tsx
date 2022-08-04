@@ -16,14 +16,11 @@ export default class FeedItemsAPI {
         },
       });
       if (response && response.status === 200) {
-        if (response.data?.included?.length > 0) {
-          response.data.included[0].attributes.edited = true;
-          return {
-            data: response.data,
-            message: '',
-            success: true,
-          };
-        }
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
       }
     } catch (error) {
       return {
@@ -123,6 +120,7 @@ export default class FeedItemsAPI {
         },
         data: payload,
       });
+      console.log('response========>', JSON.stringify(response));
       if (response && (response.status === 200 || response.status === 201)) {
         return {
           data: response.data,
@@ -131,6 +129,7 @@ export default class FeedItemsAPI {
         };
       }
     } catch (error) {
+      console.log('error======>', JSON.stringify(error));
       return {
         data: null,
         message: error,

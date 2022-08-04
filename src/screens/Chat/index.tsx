@@ -1,31 +1,37 @@
-import React, { useState } from 'react';
-import {View, Animated, RefreshControl, ActivityIndicator, Touchable} from 'react-native';
+import React, {useState} from 'react';
+import {Animated, TouchableOpacity, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useSelector} from 'react-redux';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {CompositeScreenProps} from '@react-navigation/native';
-import {t} from 'i18next';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 import FastImage from 'react-native-fast-image';
+import {useTranslation} from 'react-i18next';
+import {useDispatch, useSelector} from 'react-redux';
 
-import {MainNavigatorParamsList, TabNavigatorParamsList} from '~Root/navigation/config';
-import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
-import {HeaderChatBlue, ListItemsChat, Paragraph} from '~Root/components';
+import {ChatNavigatorParamsList, TabNavigatorParamsList} from '~Root/navigation/config';
+import {IUserChatList} from '~Root/services/chat/types';
+import {GlobalStyles, IMAGES} from '~Root/config';
+import {AppRoute} from '~Root/navigation/AppRoute';
+import {onChatOneOnOneRequest} from '~Root/services/chat/actions';
+import {getCredential} from '~Root/services/pubnub/actions';
+import {Avatar, HeaderChatBlue, Paragraph} from '~Root/components';
+import {IGlobalState} from '~Root/types';
+import TabBar from './TabBar';
+import AskScreen from './Asks';
+import PersonalScreen from './Personal';
 import styles from './styles';
 
-import {AppRoute} from '~Root/navigation/AppRoute';
-import {IGlobalState} from '~Root/types';
-import { IListMatches } from '~Root/services/chat/types';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-
 type Props = CompositeScreenProps<
-  NativeStackScreenProps<MainNavigatorParamsList, AppRoute.CHAT>,
+  NativeStackScreenProps<ChatNavigatorParamsList, AppRoute.CHAT>,
   DrawerScreenProps<TabNavigatorParamsList>
 >;
 
-const ChatScreen = ({navigation}: Props) => {
+const ChatScreen = ({navigation, route}: Props) => {
+  const {t} = useTranslation();
   const chatState = useSelector((state: IGlobalState) => state.chatState);
+  const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(false);
 
   const scrollAnim = new Animated.Value(0);
 
@@ -33,8 +39,30 @@ const ChatScreen = ({navigation}: Props) => {
     navigation.toggleDrawer();
   };
 
-  const onItemClick = () => {
-    navigation.navigate(AppRoute.CHAT);
+  const onSearch = () => {
+    navigation.navigate(AppRoute.CHAT_KUDOS);
+  };
+
+  const onChatOneOnOne = (userId: string) => {
+    if (userId) {
+      const payload = {
+        member_id: userId,
+      };
+
+      setLoading(true);
+      dispatch(
+        onChatOneOnOneRequest(payload, (response: any) => {
+          dispatch(
+            getCredential(() => {
+              setLoading(false);
+              if (response.success) {
+                navigation.navigate(AppRoute.CHAT_PERSONAL, {contextId: response?.data.id});
+              }
+            }),
+          );
+        }),
+      );
+    }
   };
 
   return (
@@ -61,30 +89,43 @@ const ChatScreen = ({navigation}: Props) => {
           key={'chat-matched-list'}
           keyExtractor={(item, index) => `chat-matched-${item.id}-${index}`}
           ListHeaderComponent={() => (
-            <TouchableOpacity style={[GlobalStyles.p10, GlobalStyles.ml10, styles.iconSearchContainer]}>
+            <TouchableOpacity
+              style={[GlobalStyles.p10, GlobalStyles.ml10, styles.iconSearchContainer]}
+              onPress={onSearch}>
               <FastImage source={IMAGES.iconSearchBlack} resizeMode='cover' style={styles.iconSearch} />
             </TouchableOpacity>
           )}
-          renderItem={({item}: {item: IListMatches}) => (
-            <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.ml10, styles.itemContainer]}>
-              <FastImage
-                source={{
-                  uri: item?.image,
+          renderItem={({item}: {item: IUserChatList}) => (
+            <TouchableOpacity
+              style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.ml10, styles.itemContainer]}
+              onPress={() => onChatOneOnOne(item?.id)}>
+              <Avatar
+                styleAvatar={{...GlobalStyles.mr3, ...styles.avatar}}
+                styleContainerGradient={{...GlobalStyles.mr3, ...styles.avatar}}
+                textStyle={{...GlobalStyles.p, ...GlobalStyles.textBoldNormal}}
+                userInfo={{
+                  avatar_url: item?.attributes?.avatar_metadata?.avatar_url,
+                  avatar_lat: item?.attributes?.avatar_metadata?.avatar_lat,
+                  avatar_lng: item?.attributes?.avatar_metadata?.avatar_lng,
+                  first_name: item?.attributes?.first_name,
+                  last_name: item?.attributes?.last_name,
                 }}
-                resizeMode='cover'
-                onProgress={() => <ActivityIndicator />}
-                style={[GlobalStyles.mr3, styles.avatar]}
               />
-              <Paragraph textCenter numberOfLines={2} ellipsizeMode='tail' title={item?.name} style={styles.name} />
-            </View>
+              <Paragraph
+                textCenter
+                numberOfLines={2}
+                ellipsizeMode='tail'
+                title={`${item?.attributes?.first_name} ${item?.attributes?.last_name}`}
+                style={styles.name}
+              />
+            </TouchableOpacity>
           )}
-          // onEndReached={onPageChanged}
-          // onEndReachedThreshold={0.5}
         />
       </HeaderChatBlue>
-      <View style={[GlobalStyles.flexColumn, GlobalStyles.container, GlobalStyles.pt30, styles.container]}>
-        <ListItemsChat data={chatState?.peopleToAsks} onItemClick={onItemClick} />
-      </View>
+      <ScrollableTabView initialPage={0} renderTabBar={() => <TabBar />}>
+        <AskScreen tabLabel='Asks' navigation={navigation} route={route} />
+        <PersonalScreen tabLabel='Personal' navigation={navigation} route={route} />
+      </ScrollableTabView>
     </View>
   );
 };

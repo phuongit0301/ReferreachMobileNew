@@ -6,15 +6,16 @@ import {IVerifyToken} from './types';
 export default class AuthAPI {
   static async verifyToken(): Promise<IVerifyToken> {
     const token = await getToken();
-    let isExpired = true;
+    // let isExpired = true;
 
-    if (token) {
-      const spl = token.split('.')[1];
-      const decode = base64.decode(spl);
-      isExpired = +decode.exp * 1000 > new Date().getTime();
-    }
+    // if (token) {
+    //   const spl = token.split('.')[1];
+    //   const decode = base64.decode(spl);
+    //   isExpired = +decode.exp * 1000 > new Date().getTime();
+    // }
     return {
-      success: (isExpired && !token) ? false : true,
+      // success: (isExpired && !token) ? false : true,
+      success: true,
       payload: token,
     };
   }

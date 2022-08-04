@@ -1,7 +1,9 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 
 import {BASE_COLORS, BASE_FONTS, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
+
+const {width} = Dimensions.get('window');
 
 export default StyleSheet.create({
   contain: {
@@ -11,6 +13,10 @@ export default StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+  },
+  headerContainer: {
+    flexWrap: 'wrap',
+    width: width - adjust(80),
   },
   contentArea: {
     flexDirection: 'column',
@@ -42,10 +48,6 @@ export default StyleSheet.create({
   imageContainer: {
     justifyContent: 'center',
   },
-  textRight: {
-    fontFamily: BASE_FONTS.regular,
-    fontSize: adjust(10),
-  },
   title: {
     fontFamily: BASE_FONTS.regular,
     fontSize: adjust(10),
@@ -58,13 +60,12 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   borderContainer: {
     width: adjust(35),
   },
   border: {
     borderWidth: 0.5,
-    borderColor: BASE_COLORS.darkGray,
+    borderColor: BASE_COLORS.darkGrayColor,
     flex: 1,
   },
   avatar: {
@@ -72,8 +73,51 @@ export default StyleSheet.create({
     height: adjust(35),
     borderRadius: adjust(70),
   },
+  avatarGroup: {
+    marginBottom: adjust(-10),
+  },
+  avatarSmall: {
+    width: adjust(21),
+    height: adjust(21),
+    borderRadius: adjust(42),
+  },
+  avatarCount: {
+    width: adjust(21),
+    height: adjust(21),
+    borderRadius: adjust(42),
+    backgroundColor: BASE_COLORS.darkGrayColor,
+    marginLeft: adjust(-5),
+  },
   introduction: {
     fontSize: adjust(10),
     width: '80%',
+  },
+  redCircle: {
+    width: adjust(10),
+    height: adjust(10),
+    backgroundColor: BASE_COLORS.desireColor,
+    borderRadius: adjust(20),
+  },
+  iconProtect: {
+    width: adjust(11),
+    height: adjust(13),
+    left: adjust(0),
+    marginTop: adjust(-15),
+  },
+  iconProtect1: {
+    width: adjust(11),
+    height: adjust(13),
+    left: adjust(-5),
+    marginTop: adjust(-15),
+  },
+  borderCurve: {
+    height: adjust(25),
+    width: adjust(5),
+    borderLeftWidth: 1,
+    borderBottomWidth: 1,
+    borderBottomLeftRadius: adjust(3),
+  },
+  itemWidth: {
+    width: width - adjust(35),
   },
 });

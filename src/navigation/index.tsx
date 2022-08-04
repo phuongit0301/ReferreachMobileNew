@@ -54,7 +54,12 @@ import {
   RootNavigatorParamsList,
   AskNavigatorParamsList,
   AirFeedNavigatorParamsList,
+  ChatNavigatorParamsList,
 } from './config';
+import ChatInternalScreen from '~Root/screens/ChatInternal';
+import ChatPersonalScreen from '~Root/screens/ChatPersonal';
+import ChatKudosScreen from '~Root/screens/ChatKudos';
+import ChatKudosSuccessScreen from '~Root/screens/ChatKudosSuccess';
 
 enableScreens();
 
@@ -62,6 +67,7 @@ const RootStack = createNativeStackNavigator<RootNavigatorParamsList>();
 const MainStack = createNativeStackNavigator<MainNavigatorParamsList>();
 const AirFeedStack = createNativeStackNavigator<AirFeedNavigatorParamsList>();
 const AskStack = createNativeStackNavigator<AskNavigatorParamsList>();
+const ChatStack = createNativeStackNavigator<ChatNavigatorParamsList>();
 const DrawerStack = createDrawerNavigator();
 const BottomTab = createBottomTabNavigator<BottomTabParams>();
 
@@ -121,6 +127,20 @@ const AirFeedNavigator = (props: any) => {
   );
 };
 
+const ChatNavigator = (props: any) => {
+  return (
+    <ChatStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+      initialRouteName={AppRoute.CHAT}
+      {...props}>
+      <ChatStack.Screen name={AppRoute.CHAT} component={ChatScreen} />
+      {/* <ChatStack.Screen name={AppRoute.CHAT_INTERNAL} component={ChatInternalScreen} /> */}
+    </ChatStack.Navigator>
+  );
+};
+
 const AppBottomTab = () => {
   return (
     <BottomTab.Navigator
@@ -133,10 +153,12 @@ const AppBottomTab = () => {
       <BottomTab.Screen name={AppRoute.AIR_FEED_NAVIGATOR} component={AirFeedNavigator} />
       <BottomTab.Screen name={AppRoute.MAIN_NAVIGATOR} component={MainNavigator} />
       <BottomTab.Screen name={AppRoute.TRUST_NETWORK} component={TrustNetworkScreen} />
-      <BottomTab.Screen name={AppRoute.CHAT} component={ChatScreen} />
+      <BottomTab.Screen name={AppRoute.CHAT_NAVIGATOR} component={ChatNavigator} />
     </BottomTab.Navigator>
   );
 };
+
+
 
 const AppDrawer = (props: any) => {
   return (
@@ -155,6 +177,8 @@ const AppDrawer = (props: any) => {
       <DrawerStack.Screen name={AppRoute.PROFILE_SECOND} component={ProfileSecondScreen} />
       <DrawerStack.Screen name={AppRoute.ASK_NAVIGATOR} component={AskNavigator} />
       <DrawerStack.Screen name={AppRoute.MAIN_NAVIGATOR} component={MainNavigator} />
+      <DrawerStack.Screen name={AppRoute.CHAT_INTERNAL} component={ChatInternalScreen} />
+      <DrawerStack.Screen name={AppRoute.CHAT_PERSONAL} component={ChatPersonalScreen} />
     </DrawerStack.Navigator>
   );
 };
@@ -164,7 +188,6 @@ const AppNavigator = (props: any) => {
   const authState = useSelector((state: AppState) => state.authState);
 
   useEffect(() => {
-    // AsyncStorage.removeItem('token');
     const initLanguage = async () => {
       await i18n.use(initReactI18next).init({
         compatibilityJSON: 'v3',
@@ -221,6 +244,8 @@ const AppNavigator = (props: any) => {
           <RootStack.Group>
             <RootStack.Screen name={AppRoute.ASK_DETAILS} component={AskDetailsScreen} />
           </RootStack.Group>
+          <ChatStack.Screen name={AppRoute.CHAT_KUDOS} component={ChatKudosScreen} />
+          <ChatStack.Screen name={AppRoute.CHAT_KUDOS_SUCCESS} component={ChatKudosSuccessScreen} />
           {/* <RootStack.Screen name={AppRoute.ASK_NAVIGATOR} component={AskNavigator} /> */}
         </>
       ) : (

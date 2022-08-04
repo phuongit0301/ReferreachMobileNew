@@ -9,9 +9,13 @@ interface Props {
   h3?: boolean;
   h4?: boolean;
   h5?: boolean;
+  h6?: boolean;
   p?: boolean;
   bold?: boolean;
+  bold400?: boolean;
+  bold500?: boolean;
   bold600?: boolean;
+  bold700?: boolean;
   italic?: boolean;
   textPrimary?: boolean;
   textWhite?: boolean;
@@ -51,9 +55,13 @@ const Paragraph: React.FC<Props> = ({
   h3,
   h4,
   h5,
+  h6,
   p,
   bold,
+  bold400,
+  bold500,
   bold600,
+  bold700,
   italic,
   textPrimary,
   textWhite,
@@ -98,9 +106,13 @@ const Paragraph: React.FC<Props> = ({
         h3 && styles.h3,
         h4 && styles.h4,
         h5 && styles.h5,
+        h6 && styles.h6,
         p && styles.p,
         bold && styles.bold,
+        bold400 && styles.bold400,
+        bold500 && styles.bold500,
         bold600 && styles.bold600,
+        bold700 && styles.bold700,
         italic && styles.italic,
         textPrimary && styles.textPrimary,
         textWhite && styles.textWhite,

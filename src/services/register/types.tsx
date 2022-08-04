@@ -13,6 +13,9 @@ import {
   RENEW_VERIFICATION_CODE_FAILURE,
   SET_DATA_INVITATION,
   SET_TEMP_TOKEN,
+  INVITATION_REJECT_FAILURE,
+  INVITATION_REJECT_REQUESTED,
+  INVITATION_REJECT_SUCCESS,
 } from './constants';
 
 export type IInvitationType = 'invitations';
@@ -57,7 +60,11 @@ export interface IIncluded {
     first_name: string;
     last_name: string;
     pitch: string;
-    avatar: string;
+    avatar_metadata: {
+      avatar_url: string;
+      avatar_lat: string;
+      avatar_lng: string;
+    };
   };
 }
 export interface IInvitationCodeDetails {
@@ -96,6 +103,7 @@ export interface IActionRegisterRequested {
       last_name: string;
       email: string;
       password: string;
+      password_confirmation: string;
     };
     code?: string;
   };
@@ -163,6 +171,26 @@ export interface IActionInvitationFailure {
     error: string;
   };
 }
+
+export interface IActionInvitationRejectRequested {
+  type: typeof INVITATION_REJECT_REQUESTED;
+  payload: string;
+  callback: (response: IActionInvitationSuccess['payload']) => void;
+}
+export interface IActionInvitationRejectSuccess {
+  type: typeof INVITATION_REJECT_SUCCESS;
+  payload: {
+    data: IInvitationCodeDetails;
+    success: boolean;
+    message: string;
+  };
+}
+export interface IActionInvitationRejectFailure {
+  type: typeof INVITATION_REJECT_FAILURE;
+  payload: {
+    error: string;
+  };
+}
 export interface IActionRenewVerificationCodeRequested {
   type: typeof RENEW_VERIFICATION_CODE_REQUESTED;
   callback?: (payload: IActionRenewVerificationCodeSuccess['payload']) => void;
@@ -206,4 +234,7 @@ export type IActionsRegister =
   | IActionRenewVerificationCodeSuccess
   | IActionRenewVerificationCodeFailure
   | IActionSetDataInvitation
-  | IActionSetTempToken;
+  | IActionSetTempToken
+  | IActionInvitationRejectRequested
+  | IActionInvitationRejectSuccess
+  | IActionInvitationRejectFailure;

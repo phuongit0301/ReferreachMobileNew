@@ -638,7 +638,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
                           />
                           <Paragraph
                             textSpanishGray2Color
-                            title='(pdf, jpg, gif, png, 2 MB max)'
+                            title='(pdf, jpg, png, xls, xlsx 2 MB max)'
                             style={[GlobalStyles.mb5, styles.fileType]}
                           />
                           <Paragraph

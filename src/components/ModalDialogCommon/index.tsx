@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TextStyle, ViewStyle} from 'react-native';
+import {View, TextStyle, ViewStyle, KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
 import Modal from 'react-native-modal';
 
 import {Button, Paragraph} from '~Root/components';
@@ -119,24 +119,28 @@ const ModalDialogCommon: React.FC<Props> = ({
       useNativeDriver={true}
       hideModalContentWhileAnimating={true}
       animationOut={animationOut}>
-      <View style={[styles.container, styles.modal, styleModal]}>
-        {isDefault ? (
-          <>
-            <Paragraph h4 style={[styles.title, styleTitle]} title={title} />
-            <View style={[styles.contentContainer, styleContentContainer]}>
-              <Paragraph h5 textBlack title={content} style={[styles.styleContent, styleContent]} />
-            </View>
-            <Button
-              title={btnText}
-              onPress={onPositive}
-              containerStyle={{...styles.btnStyle, ...styleBtnText}}
-              textStyle={styles.h3BoldDefault}
-            />
-          </>
-        ) : (
-          children
-        )}
-      </View>
+      <KeyboardAvoidingView enabled behavior={Platform.OS === 'android' ? undefined : 'position'}>
+        <ScrollView scrollEnabled={false} keyboardShouldPersistTaps='handled'>
+          <View style={[styles.container, styles.modal, styleModal]}>
+            {isDefault ? (
+              <>
+                <Paragraph h4 style={[styles.title, styleTitle]} title={title} />
+                <View style={[styles.contentContainer, styleContentContainer]}>
+                  <Paragraph h5 textBlack title={content} style={[styles.styleContent, styleContent]} />
+                </View>
+                <Button
+                  title={btnText}
+                  onPress={onPositive}
+                  containerStyle={{...styles.btnStyle, ...styleBtnText}}
+                  textStyle={styles.h3BoldDefault}
+                />
+              </>
+            ) : (
+              children
+            )}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };

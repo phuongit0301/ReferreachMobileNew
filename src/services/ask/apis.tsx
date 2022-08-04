@@ -3,7 +3,7 @@
 import axios from '~Root/services/axios';
 
 import * as API from '~Root/private/api';
-import {IPaginationAndSearch} from './types';
+import {IActionOnEndAskRequest, IActionOnUpdateExtendDeadlineRequest, IPaginationAndSearch} from './types';
 export default class AskAPI {
   static async getAsks(payload: IPaginationAndSearch): Promise<any> {
     try {
@@ -187,6 +187,73 @@ export default class AskAPI {
       }
     } catch (error) {
       console.log('error get data job=====>', JSON.stringify(error));
+      return {
+        data: null,
+        message: error,
+        success: false,
+      };
+    }
+  }
+
+  static async updateExtendDeadline(payload: IActionOnUpdateExtendDeadlineRequest['payload']) {
+    try {
+      const response = await axios({
+        method: 'PUT',
+        url: `${API.ON_UPDATE_EXTEND_DEADLINE_URL(payload?.askId, payload?.deadline)}`,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+      console.log('response=====>', response);
+      if (response && (response?.status === 200 || response?.status === 204)) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+    } catch (error: any) {
+      if (error.response?.data) {
+        return {
+          data: null,
+          message: error.response?.data.error,
+          success: false,
+        };
+      }
+      return {
+        data: null,
+        message: error,
+        success: false,
+      };
+    }
+  }
+
+  static async endAsk(payload: IActionOnEndAskRequest['payload']) {
+    try {
+      const response = await axios({
+        method: 'PUT',
+        url: `${API.ON_END_ASK_URL(payload)}`,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+      if (response && (response?.status === 200 || response?.status === 204)) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+    } catch (error: any) {
+      if (error.response?.data) {
+        return {
+          data: null,
+          message: error.response?.data.error,
+          success: false,
+        };
+      }
       return {
         data: null,
         message: error,

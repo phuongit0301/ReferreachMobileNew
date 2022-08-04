@@ -16,6 +16,7 @@ import {IActionInitializeAuthRequested, IAuthState, IVerifyToken} from './types'
 import {IGlobalState} from '~Root/types';
 import {onSetProgress} from './actions';
 import AuthAPI from './apis';
+import {GET_CREDENTIAL_REQUESTED} from '~Root/services/pubnub/constants';
 
 const getAuthState = (state: IGlobalState) => state.authState;
 let iv: any;
@@ -47,6 +48,7 @@ function* initializeAuth(payload: IActionInitializeAuthRequested['payload']) {
       yield put({type: INITIALIZE_AUTH_FAILURE, payload: {error: 'Error: The token expired'}});
     } else {
       yield put({type: INITIALIZE_AUTH_SUCCESS, payload: response?.payload});
+      yield put({type: GET_CREDENTIAL_REQUESTED});
     }
   } catch (error) {
     yield put({type: INITIALIZE_AUTH_FAILURE, payload: error});

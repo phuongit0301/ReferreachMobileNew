@@ -50,7 +50,7 @@ export default StyleSheet.create({
     ...GlobalStyles.pv12,
     borderColor: BASE_COLORS.grayColor,
     borderWidth: 1,
-    color: BASE_COLORS.whiteColor,
+    color: BASE_COLORS.davyGreyColor,
     fontSize: adjust(10),
     width: '100%',
     height: adjust(80),

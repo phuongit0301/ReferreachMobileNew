@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React from 'react';
-import {ActivityIndicator, TouchableOpacity, View, ViewStyle} from 'react-native';
+import {ActivityIndicator, TextStyle, TouchableOpacity, View, ViewStyle} from 'react-native';
 import FastImage, {ImageStyle} from 'react-native-fast-image';
 
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
@@ -11,6 +11,7 @@ interface Props {
   styleContainer?: ViewStyle;
   styleAvatar?: ImageStyle;
   styleContainerGradient?: ViewStyle;
+  textStyle?: TextStyle;
   characters?: string;
   onProfile?: () => void;
 }
@@ -22,6 +23,7 @@ const Avatar: React.FC<Props> = ({
   onProfile = () => {},
   styleContainer = {},
   styleContainerGradient = {},
+  textStyle = {},
 }) => {
   characters = `${userInfo?.first_name?.charAt(0)}${userInfo?.last_name?.charAt(0)}`;
 
@@ -54,6 +56,7 @@ const Avatar: React.FC<Props> = ({
           color1={BASE_COLORS.oxleyColor}
           color2={BASE_COLORS.oxleyColor}
           stylesContainer={styleContainerGradient}
+          textStyle={textStyle}
         />
       )}
     </TouchableOpacity>

@@ -60,7 +60,7 @@ const sortAndGroupData = (payload: IActionSetContact['payload']) => {
         id: item.recordID,
         name: `${item.givenName} ${item.familyName}`,
         phone: item.phoneNumbers.length ?? item.phoneNumbers[0]?.number,
-        email: item.emailAddresses.length ?? item.emailAddresses[0].email,
+        email: item.emailAddresses.length ? item.emailAddresses[0].email : '',
       });
     }
   });

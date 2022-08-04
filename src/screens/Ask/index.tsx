@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, {useEffect, useState} from 'react';
 import {View, ScrollView, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useTranslation} from 'react-i18next';
 import SelectDropdown from 'react-native-select-dropdown';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,30 +8,23 @@ import Svg, {Path} from 'react-native-svg';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {BottomTabParams} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {
   AskGreeting,
   Button,
-  Category,
-  Category2,
   HeaderSmallBlueWithBG,
-  InputIconValidate,
   InputIconValidateNew,
   Link,
   ModalDialogCommon,
   Paragraph,
 } from '~Root/components';
-import {BASE_COLORS, CREATE_ASK_FIELDS, CREATE_ASK_KEYS, GlobalStyles, IMAGES} from '~Root/config';
+import {BASE_COLORS, CREATE_ASK_FIELDS, GlobalStyles, IMAGES} from '~Root/config';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
 import {getJob, setDataCreateAsk1} from '~Root/services/ask/actions';
-
-type Props = NativeStackScreenProps<BottomTabParams, AppRoute.AIR_FEED>;
 
 const PAGINATION = [1, 2, 3];
 const DEFAULT_FORM_STATE = {
@@ -305,7 +297,6 @@ const AskScreen = ({navigation}: any) => {
   const onNext = (credentials: any) => {
     credentials.demographic = textDemographic;
     credentials.business_detail = `${t('to')} ${credentials.business_detail}`;
-    console.log('credentials==========>', credentials);
     dispatch(setDataCreateAsk1(credentials));
     navigation.navigate(AppRoute.ASK_TWO);
   };
@@ -534,7 +525,7 @@ const AskScreen = ({navigation}: any) => {
                 />
               </View>
             )}
-          <View>
+          <View style={{position: 'relative'}}>
             {showTooltip && (
               <View style={styles.tooltipContentStyle}>
                 <View style={GlobalStyles.flexColumn}>

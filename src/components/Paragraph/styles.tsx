@@ -1,7 +1,7 @@
 import {adjust} from '~Root/utils';
 
 import {StyleSheet} from 'react-native';
-import {BASE_COLORS, BASE_FONTS, BASE_STYLES} from '~Root/config';
+import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
 
 export default StyleSheet.create({
   h1: {
@@ -19,6 +19,9 @@ export default StyleSheet.create({
   h5: {
     fontSize: adjust(BASE_STYLES.h5),
   },
+  h6: {
+    fontSize: adjust(BASE_STYLES.h6),
+  },
   p: {
     fontSize: adjust(BASE_STYLES.p),
   },
@@ -26,8 +29,17 @@ export default StyleSheet.create({
     fontFamily: BASE_FONTS.bold,
     fontWeight: 'bold',
   },
+  bold400: {
+    ...GlobalStyles.bold400,
+  },
+  bold500: {
+    ...GlobalStyles.bold500,
+  },
   bold600: {
-    fontFamily: BASE_FONTS.semiBold,
+    ...GlobalStyles.bold600,
+  },
+  bold700: {
+    ...GlobalStyles.bold700,
   },
   italic: {
     fontStyle: 'italic',

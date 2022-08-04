@@ -18,8 +18,7 @@ export default StyleSheet.create({
     textTransform: 'uppercase',
   },
   imageProfileContainer: {
-    ...GlobalStyles.mr10,
-    maxWidth: '50%',
+    width: '40%',
   },
   imageProfile: {
     width: adjust(50),
@@ -70,6 +69,9 @@ export default StyleSheet.create({
     backgroundColor: BASE_COLORS.whiteColor,
     opacity: 0.4,
     zIndex: 10,
+  },
+  iconDoubleArrowContainer: {
+    width: '20%',
   },
   iconDoubleArrow: {
     width: adjust(20),

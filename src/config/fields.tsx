@@ -13,7 +13,7 @@ export enum REGISTER_KEYS {
   last_name = 'last_name',
   email = 'email',
   password = 'password',
-  confirm_password = 'confirm_password',
+  password_confirmation = 'password_confirmation',
 }
 
 export const REGISTER_FIELDS = {
@@ -21,7 +21,7 @@ export const REGISTER_FIELDS = {
   last_name: 'last_name',
   email: 'email',
   password: 'password',
-  confirm_password: 'confirm_password',
+  password_confirmation: 'password_confirmation',
 };
 
 export enum RESET_PASSWORD_KEYS {

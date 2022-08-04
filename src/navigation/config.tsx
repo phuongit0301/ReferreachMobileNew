@@ -58,7 +58,7 @@ export type BottomTabParams = {
   [AppRoute.AIR_FEED_NAVIGATOR]: undefined;
   [AppRoute.MAIN_NAVIGATOR]: undefined;
   [AppRoute.TRUST_NETWORK]: undefined;
-  [AppRoute.CHAT]: undefined;
+  [AppRoute.CHAT_NAVIGATOR]: undefined;
 };
 
 // type AIRFeedStackScreenParams = {
@@ -122,6 +122,14 @@ export type AskNavigatorParamsList = {
   [AppRoute.ASK_PREVIEW]: undefined;
   [AppRoute.ASK_PUBLISH]: undefined;
   [AppRoute.ASK_EDIT]: undefined;
+};
+
+export type ChatNavigatorParamsList = {
+  [AppRoute.CHAT]: undefined;
+  [AppRoute.CHAT_INTERNAL]: undefined;
+  [AppRoute.CHAT_PERSONAL]: {contextId: string | undefined} | undefined;
+  [AppRoute.CHAT_KUDOS]: undefined;
+  [AppRoute.CHAT_KUDOS_SUCCESS]: undefined;
 };
 
 // interface AuthNavigatorParamsList {

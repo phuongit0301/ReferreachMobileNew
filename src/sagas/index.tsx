@@ -10,6 +10,8 @@ import askWatchers from '~Root/services/ask/sagas';
 import askDetailsWatchers from '~Root/services/askDetails/sagas';
 import networkWatchers from '~Root/services/network/sagas';
 import feedWatchers from '~Root/services/feed/sagas';
+import chatWatchers from '~Root/services/chat/sagas';
+import pubnubWatchers from '~Root/services/pubnub/sagas';
 
 export default function* rootSaga() {
   yield all([fork(appWatchers)]);
@@ -22,4 +24,6 @@ export default function* rootSaga() {
   yield all([fork(askDetailsWatchers)]);
   yield all([fork(networkWatchers)]);
   yield all([fork(feedWatchers)]);
+  yield all([fork(chatWatchers)]);
+  yield all([fork(pubnubWatchers)]);
 }

@@ -53,7 +53,20 @@ export const dateToHours = (date: Date | string) => {
   if (!date || !isDate(date)) {
     return '';
   }
-  return `${moment(date).diff(moment(), 'hours')}`;
+  if (moment(date).format('MM-DD-YYYY HH:mm:ss') >= moment().format('MM-DD-YYYY HH:mm:ss')) {
+    return `${moment(date).diff(moment(), 'hours')}`;
+  }
+  return `${moment(moment()).diff(date, 'hours')}`;
+};
+
+export const dateToDays = (date: Date | string) => {
+  if (!date || !isDate(date)) {
+    return '';
+  }
+  if (moment(date).format('MM-DD-YYYY HH:mm:ss') >= moment().format('MM-DD-YYYY HH:mm:ss')) {
+    return `${moment(date).diff(moment(), 'days')}`;
+  }
+  return `${moment(moment()).diff(date, 'days')}`;
 };
 
 const isDate = (date: any) => {
@@ -194,4 +207,8 @@ export const calculateExpiredTime = (createdAt: Date = new Date()) => {
   return moment
     .duration(moment(createdAtPlus, 'DD/MM/YYYY HH:mm').diff(moment(experiedTime, 'DD/MM/YYYY HH:mm')))
     .asMinutes();
+};
+
+export const uid = () => {
+  return ('000000000' + Math.random().toString(36).substr(2, 9)).slice(-9);
 };

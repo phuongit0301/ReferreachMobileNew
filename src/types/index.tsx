@@ -13,6 +13,7 @@ import {IAskDetailsState} from '~Root/services/askDetails/types';
 import {INetworkConnectionListState} from '~Root/services/network/types';
 import {IChatState} from '~Root/services/chat/types';
 import {IFeedItemsState} from '~Root/services/feed/types';
+import {IPubNubState} from '~Root/services/pubnub/types';
 
 // Global state
 export interface IGlobalState {
@@ -28,6 +29,7 @@ export interface IGlobalState {
   networkState: INetworkConnectionListState;
   chatState: IChatState;
   feedState: IFeedItemsState;
+  pubnubState: IPubNubState;
 }
 
 // Interface for async call steps
