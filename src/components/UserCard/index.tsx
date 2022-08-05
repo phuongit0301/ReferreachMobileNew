@@ -12,9 +12,10 @@ interface Props {
   data: IIndustry[] | IIndustrySave[];
   showIcon?: boolean;
   styleContainer?: ViewStyle;
+  styleHeaderContainer?: ViewStyle;
   showTitle?: boolean;
   title: string;
-  titleStyle?: ViewStyle;
+  titleStyle?: TextStyle;
   showSubTitle?: boolean;
   subTitle?: string;
   subTitleStyle?: TextStyle;
@@ -45,12 +46,14 @@ interface Props {
   onDelete?: ({index, target}: {index: number; target: string}) => void;
   dataTarget?: string;
   styleTag?: ViewStyle;
+  tagText?: TextStyle;
 }
 
 const UserCard: React.FC<Props> = ({
   data = [],
   showIcon = true,
   styleContainer = {},
+  styleHeaderContainer = {},
   showTitle = true,
   title = 'Unknown',
   titleStyle = {},
@@ -84,12 +87,13 @@ const UserCard: React.FC<Props> = ({
   onDelete = () => {},
   dataTarget = '',
   styleTag = {},
+  tagText = {},
   children,
 }) => {
   return (
     <View style={[GlobalStyles.flexColumn, styles.listContainer, styleContainer]}>
       {showTitle && (
-        <View style={GlobalStyles.flexRow}>
+        <View style={[GlobalStyles.flexRow, styleHeaderContainer]}>
           <Paragraph
             p
             bold600
@@ -132,19 +136,21 @@ const UserCard: React.FC<Props> = ({
             typeof item === 'object' ? (
               <Category
                 styleTag={styleTag}
+                tagText={tagText}
                 key={`selected-target-${dataTarget}-${index}`}
                 itemKey={`${index}`}
                 name={item?.name ?? item?.attributes?.display_value}
-                showButton={true}
+                showButton={showButton}
                 onPress={() => onDelete({index, target: dataTarget})}
               />
             ) : (
               <Category
                 styleTag={styleTag}
+                tagText={tagText}
                 key={`selected-target-${dataTarget}-${index}`}
                 itemKey={`${index}`}
                 name={item}
-                showButton={true}
+                showButton={showButton}
                 onPress={() => onDelete({index, target: dataTarget})}
               />
             ),

@@ -1,5 +1,5 @@
 import {StyleSheet, Dimensions} from 'react-native';
-import {BASE_COLORS, GlobalStyles} from '~Root/config';
+import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
 
 const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
@@ -9,7 +9,7 @@ function wp(percentage: number) {
   return Math.round(value);
 }
 
-const slideHeight = viewportHeight * 0.52;
+const slideHeight = viewportHeight * 0.7;
 const slideWidth = wp(75);
 const itemHorizontalMargin = wp(2);
 
@@ -31,8 +31,6 @@ export default StyleSheet.create({
   slideInnerContainer: {
     width: itemWidth,
     height: slideHeight,
-    paddingHorizontal: itemHorizontalMargin,
-    paddingBottom: 18, // needed for shadow
     backgroundColor: BASE_COLORS.whiteColor,
     borderRadius: adjust(entryBorderRadius),
   },
@@ -109,9 +107,9 @@ export default StyleSheet.create({
     backgroundColor: BASE_COLORS.brightGrayColor,
     borderRadius: adjust(10),
   },
-  handRate: {
-    width: adjust(31),
-    height: adjust(25),
+  starRate: {
+    width: adjust(29),
+    height: adjust(27),
   },
   rateContainer: {
     backgroundColor: BASE_COLORS.forestGreenColor,
@@ -128,14 +126,101 @@ export default StyleSheet.create({
     height: adjust(42),
   },
   userListContainer: {
-    maxWidth: viewportWidth - adjust(90),
-    borderRadius: adjust(31),
-    borderWidth: 1,
-    borderColor: BASE_COLORS.whiteColor,
+    flex: 0.35,
+    borderBottomLeftRadius: entryBorderRadius,
+    borderBottomRightRadius: entryBorderRadius,
+    backgroundColor: BASE_COLORS.brightGrayColor,
   },
   btn: {
-    width: viewportWidth - adjust(130),
+    width: viewportWidth - adjust(70),
     backgroundColor: BASE_COLORS.forestGreenColor,
     borderRadius: adjust(10),
+    shadowColor: BASE_COLORS.blackColor,
+    shadowOffset: {
+      width: 0,
+      height: adjust(4),
+    },
+    shadowOpacity: adjust(0.15),
+    shadowRadius: adjust(1),
+    elevation: adjust(5),
+  },
+  styleTag: {
+    borderTopLeftRadius: adjust(16),
+    borderTopRightRadius: adjust(16),
+    borderBottomLeftRadius: adjust(16),
+    borderBottomRightRadius: adjust(16),
+  },
+  buttonContainer: {
+    ...GlobalStyles.flexRow,
+    ...GlobalStyles.pv5,
+    ...GlobalStyles.ph10,
+    alignSelf: 'center',
+    alignItems: 'center',
+    borderTopLeftRadius: adjust(16),
+    borderTopRightRadius: adjust(16),
+    borderBottomLeftRadius: adjust(16),
+    borderBottomRightRadius: adjust(16),
+    borderWidth: 1,
+    borderColor: BASE_COLORS.darkGrayColor,
+    flex: 0.5,
+  },
+  buttonTextStyle: {
+    ...GlobalStyles.mr10,
+    color: BASE_COLORS.darkGrayColor,
+  },
+  cardItemContainer: {
+    ...GlobalStyles.mb10,
+    alignItems: 'flex-start',
+    flex: 0.5,
+    minHeight: adjust(120),
+  },
+  cardSubTitleContainerStyle: {
+    ...GlobalStyles.mt5,
+  },
+  cardTextRequiredStyle: {
+    ...GlobalStyles.mt30,
+    ...GlobalStyles.mr30,
+    alignSelf: 'flex-end',
+  },
+  subTitleStyle: {
+    ...GlobalStyles.ml10,
+  },
+  titleStyle: {
+    fontSize: BASE_STYLES.p,
+    fontFamily: BASE_FONTS.notoSansBold,
+    fontWeight: '700',
+  },
+  tagText: {
+    fontSize: BASE_STYLES.p,
+    fontFamily: BASE_FONTS.regular,
+    fontWeight: '500',
+  },
+  name: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '700',
+  },
+  position: {
+    fontFamily: BASE_FONTS.notoSansRegular,
+    fontWeight: '400',
+  },
+  text: {
+    fontFamily: BASE_FONTS.notoSansRegular,
+    fontWeight: '400',
+  },
+  text1: {
+    fontSize: adjust(10),
+    fontFamily: BASE_FONTS.notoSansRegular,
+    fontWeight: '400',
+  },
+  text3: {
+    fontFamily: BASE_FONTS.notoSansRegular,
+    fontWeight: '400',
+    fontSize: adjust(9),
+  },
+  iconProtect: {
+    width: adjust(17),
+    height: adjust(20),
+    top: adjust(5),
+    left: adjust(-20),
   },
 });

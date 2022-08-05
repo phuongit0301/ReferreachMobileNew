@@ -84,6 +84,7 @@ export interface IAttributesState {
   updated_at: Date;
   status: string;
   edited: boolean;
+  deadline_change_count: number;
 }
 
 export interface ICriteriumDataState {

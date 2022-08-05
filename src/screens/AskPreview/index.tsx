@@ -39,7 +39,7 @@ const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3
       formData.append(CREATE_ASK_FIELDS.businessDetail, dataStep1.business_detail);
     }
     if (dataStep2.deadline) {
-      formData.append(CREATE_ASK_FIELDS.deadline, moment(dataStep2.deadline).format('DD/MM/YYYY'));
+      formData.append(CREATE_ASK_FIELDS.deadline, moment(dataStep2.deadline).format('DD/MM/YYYY HH:mm:ss'));
     }
     if (dataStep2.location) {
       formData.append('ask_location_attributes[text]', dataStep2.location);

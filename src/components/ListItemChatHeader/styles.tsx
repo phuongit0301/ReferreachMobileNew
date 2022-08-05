@@ -38,9 +38,17 @@ export default StyleSheet.create({
     height: adjust(16),
   },
   textHighlight: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '700',
+    fontSize: adjust(10),
+    lineHeight: adjust(15),
     color: BASE_COLORS.steelBlue2Color,
   },
   textNormal: {
+    fontFamily: BASE_FONTS.regular,
+    fontWeight: '500',
     color: BASE_COLORS.darkGrayColor,
+    fontSize: adjust(10),
+    lineHeight: adjust(15),
   },
 });

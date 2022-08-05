@@ -24,6 +24,7 @@ export const IMAGES = {
   iconBurgerMenu: require('~Root/assets/images/icon_burger_menu.png'),
   iconBurgerMenuWhite: require('~Root/assets/images/icon_burger_menu_white.png'),
   iconCloseWhite: require('~Root/assets/images/icon_close_white.png'),
+  iconCloseBlack: require('~Root/assets/images/icon_close_black.png'),
   iconCloseBlue: require('~Root/assets/images/icon_close_blue.png'),
   iconCloseBlueTransparent: require('~Root/assets/images/icon_close_blue_transparent.png'),
   iconYourAsk: require('~Root/assets/images/icon_your_ask.png'),
@@ -101,6 +102,7 @@ export const IMAGES = {
   iconQuestion: require('~Root/assets/images/icon_question.png'),
   iconDoubleArrow: require('~Root/assets/images/icon_double_arrow.png'),
   iconProtect: require('~Root/assets/images/icon_protect.png'),
+  iconProtect17x20: require('~Root/assets/images/icon_protect_17x20.png'),
   iconChatWith: require('~Root/assets/images/icon_chat_with.png'),
   iconArchive: require('~Root/assets/images/icon_archive.png'),
   iconPlus: require('~Root/assets/images/icon_plus.png'),
@@ -108,5 +110,6 @@ export const IMAGES = {
   iconPinActive: require('~Root/assets/images/icon_pin_active.png'),
   chatBg: require('~Root/assets/images/chat_bg.png'),
   handRate: require('~Root/assets/images/hand_rate.png'),
+  starRate: require('~Root/assets/images/star_rate.png'),
   kudosHandBg: require('~Root/assets/images/kudos_hand_bg.png'),
 };

@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {SubmitHandler, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useTranslation} from 'react-i18next';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Toast from 'react-native-toast-message';
 import {usePubNub} from 'pubnub-react';
 
@@ -18,8 +18,10 @@ import {GlobalStyles} from '~Root/config';
 import {MESSAGE_FIELDS, MESSAGE_KEYS} from '~Root/config/fields';
 import {createIntroduction} from '~Root/services/feed/actions';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
+import {AppRoute} from '~Root/navigation/AppRoute';
 import styles from './styles';
-import { AppRoute } from '~Root/navigation/AppRoute';
+import {IGlobalState} from '~Root/types';
+import {getCredential, setPubnubMessage} from '~Root/services/pubnub/actions';
 
 interface Props {
   feedState: IFeedItemsState;
@@ -47,6 +49,7 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
   });
 
   const dispatch = useDispatch();
+  const userState = useSelector((state: IGlobalState) => state.userState);
 
   const onSubmit: SubmitHandler<IActionCreateIntroductionRequested['payload']> = (credentials: ICredentials) => {
     if (!feedState?.dataFeed?.data || !feedState?.dataProfileRefer?.included) {
@@ -63,74 +66,76 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
     dispatch(showLoading());
     dispatch(
       createIntroduction(payload, (response: any) => {
-        if (!response) {
+        if (!response?.success) {
           dispatch(hideLoading());
+          Toast.show({
+            position: 'bottom',
+            type: 'error',
+            text1: response?.message,
+            visibilityTime: 3000,
+            autoHide: true,
+          });
           return;
         }
-        if (response?.included?.length > 0) {
-          const chatContexts = response.included.find((x: any) => x.type === 'chat_contexts');
-          console.log('feedState?.dataFeed=======>', feedState?.dataFeed);
-          // chatContexts
-          if (
-            // eslint-disable-next-line prettier/prettier
-            (feedState?.dataFeed.data?.length > 0 && feedState?.dataFeed.data[0]?.attributes?.user?.id) &&
-            (feedState?.dataProfileRefer?.included &&
-            feedState?.dataProfileRefer?.included?.length > 0 &&
-            feedState?.dataProfileRefer?.included[0]?.id)
-          ) {
-            // dispatch(hideLoading());
-            // Toast.show({
-            //   position: 'bottom',
-            //   type: response.success ? 'success' : 'info',
-            //   text1: 'Successfully',
-            //   visibilityTime: 3000,
-            //   autoHide: true,
-            // });
-            const pubnubMessages = [
-              {
-                text: payload?.message_for_asker,
-                userId: feedState?.dataFeed.data[0]?.attributes?.user?.id,
-              },
-              {
-                text: payload?.message_for_introducee,
-                userId: feedState?.dataProfileRefer?.included[0]?.id,
-              },
-            ];
-            console.log('pubnubMessages=======>', JSON.stringify(pubnubMessages));
-            const promises = [];
-            for (const item of pubnubMessages) {
-              promises.push(
-                pubnub
-                  .publish({
-                    channel: chatContexts.attributes?.chat_uuid,
-                    message: {
-                      text: item?.text,
-                      userId: item?.userId,
-                      fullName1: '',
-                      fullName2: '',
-                      createdAt: new Date(),
-                    },
-                  })
-                  .then(() => console.log('insert pubnub done'))
-                  .catch(error => console.log(JSON.stringify(error))),
-              );
-            }
 
-            return Promise.all(promises).then(() => {
-              dispatch(hideLoading());
-              Toast.show({
-                position: 'bottom',
-                type: response.success ? 'success' : 'info',
-                text1: 'Successfully',
-                visibilityTime: 2000,
-                autoHide: true,
-              });
-              setTimeout(() => {
-                navigation.navigate(AppRoute.CHAT_INTERNAL, {contextId: chatContexts?.id});
-              }, 2100);
-            });
-          }
-        }
+        dispatch(
+          getCredential(() => {
+            if (response?.data?.included?.length > 0) {
+              const chatContexts = response?.data.included.find((x: any) => x.type === 'chat_contexts');
+              // chatContexts
+              if (
+                // eslint-disable-next-line prettier/prettier
+                (feedState?.dataFeed.data?.length > 0 && feedState?.dataFeed.data[0]?.attributes?.user?.id) &&
+                feedState?.dataProfileRefer?.included &&
+                feedState?.dataProfileRefer?.included?.length > 0 &&
+                feedState?.dataProfileRefer?.included[0]?.id
+              ) {
+                const pubnubMessages = [
+                  {
+                    text: payload?.message_for_asker,
+                    askerId: feedState?.dataFeed?.data[0]?.attributes?.user?.id,
+                    introduceeId: payload?.introducee_id,
+                    introducerId: userState?.userInfo?.id,
+                  },
+                  {
+                    text: payload?.message_for_introducee,
+                    askerId: feedState?.dataFeed?.data[0]?.attributes?.user?.id,
+                    introduceeId: payload?.introducee_id,
+                    introducerId: userState?.userInfo?.id,
+                  },
+                ];
+                console.log('pubnubMessages=======>', JSON.stringify(pubnubMessages));
+                dispatch(setPubnubMessage(pubnubMessages));
+                dispatch(hideLoading());
+                Toast.show({
+                  position: 'bottom',
+                  type: response.success ? 'success' : 'info',
+                  text1: 'Successfully',
+                  visibilityTime: 1500,
+                  autoHide: true,
+                });
+                setTimeout(() => {
+                  navigation.navigate(AppRoute.CHAT_INTERNAL, {contextId: chatContexts?.id});
+                }, 1550);
+                // const promises = [];
+                // for (const item of pubnubMessages) {
+                //   promises.push(
+                //     pubnub
+                //       .publish({
+                //         channel: chatContexts.attributes?.chat_uuid,
+                //         message: {
+                //           ...item,
+                //           createdAt: new Date(),
+                //         },
+                //       })
+                //       .then(() => console.log('insert pubnub done'))
+                //       .catch(error => console.log(JSON.stringify(error))),
+                //   );
+                // }
+              }
+            }
+          }),
+        );
       }),
     );
   };

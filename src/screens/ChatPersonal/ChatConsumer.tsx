@@ -129,7 +129,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   };
 
   const sendMessage = useCallback(() => {
-    if (channels && channels?.length > 0) {
+    if (channels && channels?.length > 0 && chatText?.trim() !== '') {
       pubnub
         .publish({
           channel: channels[0],
@@ -180,9 +180,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   };
 
   const handleSubmit = () => {
-    if (chatText.trim() !== '') {
-      sendMessage();
-    }
+    sendMessage();
   };
 
   if (loadingState.loading || messageLoading) {

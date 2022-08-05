@@ -26,6 +26,16 @@ export default StyleSheet.create({
     zIndex: 1000,
     width: '100%',
   },
+  askEnd: {
+    borderTopLeftRadius: adjust(5),
+    borderTopRightRadius: adjust(5),
+  },
+  lineThroughContainer: {
+    height: 1,
+    backgroundColor: BASE_COLORS.darkGray,
+    flex: 1,
+    zIndex: 1,
+  },
   headerIntroduced: {
     marginTop: adjust(-8),
   },
@@ -38,6 +48,13 @@ export default StyleSheet.create({
   textNormal: {
     fontFamily: BASE_FONTS.regular,
     color: BASE_COLORS.darkGrayColor,
+    fontSize: adjust(10),
+    lineHeight: adjust(15),
+  },
+  textBold: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '700',
+    color: BASE_COLORS.jetColor,
     fontSize: adjust(10),
     lineHeight: adjust(15),
   },

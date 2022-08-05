@@ -120,7 +120,6 @@ export default class FeedItemsAPI {
         },
         data: payload,
       });
-      console.log('response========>', JSON.stringify(response));
       if (response && (response.status === 200 || response.status === 201)) {
         return {
           data: response.data,
@@ -128,13 +127,36 @@ export default class FeedItemsAPI {
           success: true,
         };
       }
-    } catch (error) {
-      console.log('error======>', JSON.stringify(error));
+    } catch (error: any) {
+      if (error?.response?.data?.message) {
+        return {
+          data: null,
+          message: error?.response?.data?.message,
+          success: false,
+        };
+      }
       return {
         data: null,
         message: error,
         success: false,
       };
     }
+  }
+
+  static async filterUserTrustNetwork({dataFeed, dataNetwork}: any) {
+    const data = [];
+    const included = [];
+    if (dataFeed?.data?.length > 0 && dataNetwork.data?.length > 0) {
+      let index = 0;
+      for (const item of dataNetwork.included) {
+        if (+item?.id !== +dataFeed?.data[0]?.attributes?.user?.id) {
+          data.push(dataNetwork?.data[index]);
+          included.push(dataNetwork?.included[index]);
+        }
+        index++;
+      }
+    }
+
+    return {data: data, included: included};
   }
 }

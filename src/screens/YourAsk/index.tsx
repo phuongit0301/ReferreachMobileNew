@@ -365,8 +365,9 @@ const YourAskScreen = ({navigation}: Props) => {
               </TouchableOpacity>
             )}
             <View style={[GlobalStyles.justifyCenter, styles.border]} />
-            {(parseInt(`${calculateExpiredTime(askState?.dataAskSelected?.attributes?.created_at)}`, 10) > 0 ||
-            askState?.dataAskSelected?.attributes?.status === ASK_STATUS_ENUM.PUBLISHED) ? (
+            {+askState?.dataAskSelected?.attributes?.deadline_change_count < 2 &&
+            (askState?.dataAskSelected?.attributes?.status === ASK_STATUS_ENUM.EXPIRED ||
+              askState?.dataAskSelected?.attributes?.status === ASK_STATUS_ENUM.PUBLISHED) ? (
               <TouchableOpacity onPress={onExtendDeadline}>
                 <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
                   <View

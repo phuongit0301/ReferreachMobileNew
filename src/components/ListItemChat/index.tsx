@@ -81,9 +81,9 @@ const ListItemChat: React.FC<Props> = ({
                     <FastImage source={IMAGES.iconProtect} resizeMode='cover' style={styles.iconProtect} />
                   </View>
                   <View style={[GlobalStyles.flexColumn, styles.contentContainer]}>
-                    <View style={[GlobalStyles.flexRow, GlobalStyles.pr30, GlobalStyles.mb5, styles.headerContainer]}>
-                      <Paragraph bold600 textBlack title={`${user1?.full_name} `} />
-                      <Paragraph bold600 textSteelBlue2Color title={t('responded')} />
+                    <View style={[GlobalStyles.flexRow, GlobalStyles.pr30, styles.headerContainer]}>
+                      <Paragraph textBlack title={`${user1?.full_name} `} style={styles.textBold} />
+                      <Paragraph textSteelBlue2Color title={t('responded')} style={styles.textBold} />
                     </View>
                     <Paragraph
                       numberOfLines={2}

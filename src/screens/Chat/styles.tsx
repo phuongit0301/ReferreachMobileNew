@@ -1,4 +1,4 @@
-import {StyleSheet, Platform} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
 
@@ -7,7 +7,7 @@ export default StyleSheet.create({
     backgroundColor: BASE_COLORS.brightGrayColor,
   },
   itemContainer: {
-    maxWidth: adjust(80),
+    width: adjust(80),
     overflow: 'hidden',
     backgroundColor: BASE_COLORS.whiteColor,
     borderRadius: adjust(18),
@@ -21,10 +21,15 @@ export default StyleSheet.create({
   iconSearchContainer: {
     backgroundColor: BASE_COLORS.whiteColor,
     borderRadius: adjust(20),
+    alignSelf: 'flex-start',
   },
   iconSearch: {
     width: adjust(15),
     height: adjust(15),
+  },
+  iconClose: {
+    width: adjust(13),
+    height: adjust(12),
   },
   input: {
     ...GlobalStyles.h5,

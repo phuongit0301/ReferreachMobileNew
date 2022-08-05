@@ -123,7 +123,7 @@ const AirFeedScreen = ({navigation}: Props) => {
   };
 
   const onNext = (item: any) => {
-    if (+feedState?.page <= +feedState?.dataFeed?.meta?.total_pages) {
+    if (+feedState?.page < +feedState?.dataFeed?.meta?.total_pages) {
       setLoading(true);
       dispatch(
         getFeedItemPagination(+feedState?.page + 1, (response: IFeedItemsState['dataFeed']) => {
@@ -213,7 +213,7 @@ const AirFeedScreen = ({navigation}: Props) => {
       <SafeAreaView style={GlobalStyles.container} edges={['top', 'right', 'left']}>
         <HeaderSmallTransparent title={t('air_feed')} isRightButton={true} onRightPress={onToggleDrawer} />
         <View style={[GlobalStyles.container, styles.container]}>
-          {feedState?.dataNetwork?.data.length > 0 && (
+          {feedState?.dataFeed?.data.length > 0 && (
             <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30]}>
               <LinearGradient
                 colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
@@ -253,9 +253,9 @@ const AirFeedScreen = ({navigation}: Props) => {
                     i18nKey='air_feed_content'
                     values={{
                       greeting: feedItemAttributes?.attributes?.greeting,
+                      role: feedItemAttributes?.attributes?.user_role,
                       demographic: feedItemAttributes?.attributes?.demographic,
-                      role: feedItemAttributes?.attributes?.business_requirement,
-                      description: feedItemAttributes?.attributes?.additional_detail,
+                      businessRequirement: feedItemAttributes?.attributes?.business_requirement,
                       businessDetail: feedItemAttributes?.attributes?.business_detail,
                     }}
                     parent={Text}
@@ -378,15 +378,17 @@ const AirFeedScreen = ({navigation}: Props) => {
             </View>
           )}
           <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
-            <View style={styles.inputContainer}>
-              <TextInput
-                placeholder={t('search_for_contacts')}
-                value={textSearch}
-                style={styles.input}
-                onChangeText={onInputChange}
-              />
-              <FastImage source={IMAGES.iconSearch} style={styles.iconSearch} />
-            </View>
+            {feedState?.dataNetwork?.data?.length > 0 && (
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder={t('search_for_contacts')}
+                  value={textSearch}
+                  style={styles.input}
+                  onChangeText={onInputChange}
+                />
+                <FastImage source={IMAGES.iconSearch} style={styles.iconSearch} />
+              </View>
+            )}
             <Animated.FlatList
               contentContainerStyle={styles.contentContainer}
               style={GlobalStyles.mt15}

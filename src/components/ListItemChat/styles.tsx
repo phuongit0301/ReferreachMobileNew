@@ -89,8 +89,11 @@ export default StyleSheet.create({
     marginLeft: adjust(-5),
   },
   introduction: {
+    fontFamily: BASE_FONTS.regular,
+    fontWeight: '400',
     fontSize: adjust(10),
     width: '80%',
+    lineHeight: adjust(15),
   },
   redCircle: {
     width: adjust(10),
@@ -119,5 +122,11 @@ export default StyleSheet.create({
   },
   itemWidth: {
     width: width - adjust(35),
+  },
+  textBold: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '700',
+    fontSize: adjust(10),
+    lineHeight: adjust(15),
   },
 });

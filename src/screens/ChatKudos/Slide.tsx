@@ -5,7 +5,7 @@ import Carousel from 'react-native-snap-carousel';
 import {useSelector} from 'react-redux';
 import {t} from 'i18next';
 
-import {Avatar, Paragraph} from '~Root/components';
+import {Avatar, Paragraph, UserCard} from '~Root/components';
 import {GlobalStyles, IMAGES} from '~Root/config';
 import {IGlobalState} from '~Root/types';
 
@@ -93,58 +93,96 @@ const Slide: React.FC<Props> = ({navigation}) => {
     return (
       <ScrollView style={[GlobalStyles.container, GlobalStyles.scrollViewFullScreen, GlobalStyles.mb30]}>
         <View style={[GlobalStyles.alignCenter, GlobalStyles.flexColumn]}>
-          <View style={[GlobalStyles.ph15, GlobalStyles.alignCenter, GlobalStyles.pv25, styles.slideInnerContainer]}>
-            <View style={styles.shadow} />
-            <View style={[GlobalStyles.mb15, styles.imageContainer]}>
-              <FastImage source={{uri: item?.illustration}} style={styles.image} />
-            </View>
-            <Paragraph bold600 title='Liam Mater' style={GlobalStyles.mb5} />
-            <Paragraph title='Business Developer' style={GlobalStyles.mb10} />
-            <TextInput
-              style={[GlobalStyles.ph10, GlobalStyles.pt5, GlobalStyles.pb5, GlobalStyles.mb30, styles.inputArea]}
-              onChangeText={onChangeText}
-              value={text}
-              multiline
-            />
-            <View style={[GlobalStyles.flexRow, GlobalStyles.p10, GlobalStyles.mb5, styles.rateContainer]}>
-              {[1, 2, 3, 4, 5].map(x => (
-                <TouchableOpacity style={GlobalStyles.mr5}>
-                  <FastImage source={IMAGES.handRate} resizeMode='contain' style={styles.handRate} />
-                </TouchableOpacity>
-              ))}
-            </View>
-            <Paragraph h6 textDarkGrayColor title={t('rating_private')} />
-          </View>
-          <View style={styles.border} />
-          <View style={[GlobalStyles.container, GlobalStyles.p10, GlobalStyles.mb15, styles.userListContainer]}>
-            <ScrollView style={[GlobalStyles.container]} horizontal showsHorizontalScrollIndicator={false}>
-              {chatState?.listMatches.map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    key={`chat-kudos-${item.id}-${index}`}
-                    style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.ml10]}>
-                    <Avatar
-                      styleAvatar={{...GlobalStyles.mr3, ...styles.avatar}}
-                      styleContainerGradient={{...GlobalStyles.mr3, ...styles.avatar}}
-                      textStyle={{...GlobalStyles.p, ...GlobalStyles.textBoldNormal}}
-                      userInfo={{
-                        avatar_url: item?.attributes?.avatar_metadata?.avatar_url,
-                        avatar_lat: item?.attributes?.avatar_metadata?.avatar_lat,
-                        avatar_lng: item?.attributes?.avatar_metadata?.avatar_lng,
-                        first_name: item?.attributes?.first_name,
-                        last_name: item?.attributes?.last_name,
-                      }}
-                    />
+          <View style={[GlobalStyles.pt15, GlobalStyles.mb10, styles.slideInnerContainer]}>
+            <View style={[GlobalStyles.alignCenter, GlobalStyles.ph15, GlobalStyles.container]}>
+              <View style={styles.shadow} />
+              <View style={[GlobalStyles.mb5, GlobalStyles.alignEnd, GlobalStyles.flexRow, styles.imageContainer]}>
+                <FastImage source={{uri: item?.illustration}} style={styles.image} />
+                <FastImage source={IMAGES.iconProtect17x20} resizeMode='cover' style={styles.iconProtect} />
+              </View>
+              <Paragraph h5 title='Liam Mater' style={[GlobalStyles.mb5, styles.name]} />
+              <Paragraph h6 title='Business Developer' style={[GlobalStyles.mb10, styles.position]} />
+              <UserCard
+                data={[
+                  {id: 1, name: 'Utilities'},
+                  {id: 2, name: 'Cyber Securities'},
+                ]}
+                title={'Endorse Liam’s industry domains'}
+                titleStyle={styles.titleStyle}
+                styleHeaderContainer={GlobalStyles.alignCenter}
+                onPress={() => {}}
+                containerStyle={styles.buttonContainer}
+                textStyle={styles.buttonTextStyle}
+                styleContainer={styles.cardItemContainer}
+                showIconSubTitle={true}
+                iconSubName='globe'
+                showTooltip={false}
+                showSubTitle={false}
+                showButton={false}
+                showRequired={false}
+                onTooltipPress={() => {}}
+                tooltipTitle={t('your_industry')}
+                tooltipDescription={t('your_industry_description')}
+                styleTag={styles.styleTag}
+                tagText={styles.tagText}
+              />
+              <Paragraph
+                textCenter
+                h6
+                textJetColor
+                title='Please rate this response to your Ask'
+                style={[GlobalStyles.mb5, styles.text]}
+              />
+              <View
+                style={[
+                  GlobalStyles.flexRow,
+                  GlobalStyles.ph10,
+                  GlobalStyles.pv5,
+                  GlobalStyles.mb5,
+                  styles.rateContainer,
+                ]}>
+                {[1, 2, 3, 4, 5].map(x => (
+                  <TouchableOpacity style={GlobalStyles.mr5}>
+                    <FastImage source={IMAGES.starRate} resizeMode='contain' style={styles.starRate} />
                   </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
+                ))}
+              </View>
+              <Paragraph textDarkGrayColor title={`*${t('rating_private')}`} style={styles.text1} />
+            </View>
+            <View style={[styles.userListContainer]}>
+              <Paragraph h6 bold500 title={t('introducers')} style={[GlobalStyles.ph10, GlobalStyles.pv5]} />
+              <ScrollView style={[GlobalStyles.container]} horizontal showsHorizontalScrollIndicator={false}>
+                {chatState?.listMatches.map((item, index) => {
+                  return (
+                    <TouchableOpacity
+                      key={`chat-kudos-${item.id}-${index}`}
+                      style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter, GlobalStyles.ml10]}>
+                      <Avatar
+                        styleAvatar={{...GlobalStyles.mr3, ...GlobalStyles.mb5, ...styles.avatar}}
+                        styleContainerGradient={{...GlobalStyles.mr3, ...GlobalStyles.mb5, ...styles.avatar}}
+                        textStyle={{...GlobalStyles.p, ...GlobalStyles.textBoldNormal}}
+                        userInfo={{
+                          avatar_url: item?.attributes?.avatar_metadata?.avatar_url,
+                          avatar_lat: item?.attributes?.avatar_metadata?.avatar_lat,
+                          avatar_lng: item?.attributes?.avatar_metadata?.avatar_lng,
+                          first_name: item?.attributes?.first_name,
+                          last_name: item?.attributes?.last_name,
+                        }}
+                      />
+                      <View style={GlobalStyles.flexColumn}>
+                        <Paragraph title='First Name' style={styles.text3} />
+                        <Paragraph title='Last Name' style={styles.text3} />
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
           </View>
-          <Paragraph p textWhite textCenter title={t('sending_kudos')} style={GlobalStyles.mb15} />
-          <TouchableOpacity
-            style={[GlobalStyles.p10, styles.btn]}
-            onPress={() => navigation.navigate(AppRoute.CHAT_KUDOS_SUCCESS)}>
-            <Paragraph h5 bold600 textWhite textCenter title={t('send_kudos')} />
+          <TouchableOpacity style={[GlobalStyles.p5]} onPress={() => navigation.navigate(AppRoute.CHAT_KUDOS_SUCCESS)}>
+            <View style={[GlobalStyles.p10, styles.btn]}>
+              <Paragraph h5 bold600 textWhite textCenter title={t('send_kudos')} />
+            </View>
           </TouchableOpacity>
           {/* <Animated.FlatList
             style={[GlobalStyles.container, {height: 200}]}

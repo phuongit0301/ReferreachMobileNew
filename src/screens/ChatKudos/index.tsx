@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ScrollView, KeyboardAvoidingView, Dimensions, TouchableOpacity} from 'react-native';
+import {View, ScrollView, KeyboardAvoidingView, Dimensions, TouchableOpacity, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -37,12 +37,12 @@ const ChatKudosScreen = ({navigation, route}: Props) => {
               style={[GlobalStyles.container, styles.scrollView]}
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}>
-              <TouchableOpacity onPress={onBack} style={[GlobalStyles.ml15, GlobalStyles.mb15]}>
+              <TouchableOpacity onPress={onBack} style={[GlobalStyles.ml15, GlobalStyles.mb5, Platform.OS === 'android' && GlobalStyles.mt15]}>
                 <FastImage source={IMAGES.iconBackWhite} style={styles.iconBack} />
               </TouchableOpacity>
               <View style={GlobalStyles.alignCenter}>
-                <Paragraph h5 textWhite bold700 title='You are ending your Ask!' style={GlobalStyles.mb15} />
-                <View style={[GlobalStyles.ph50, GlobalStyles.mb20]}>
+                <Paragraph h5 textWhite bold700 title='You are ending your Ask!' style={GlobalStyles.mb5} />
+                <View style={[GlobalStyles.ph50, GlobalStyles.mb10]}>
                   <Paragraph
                     textWhite
                     textCenter

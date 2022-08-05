@@ -32,6 +32,10 @@ export interface IFeedItemsState {
     data: IDataSuggest[];
     included: IIncluded[];
   };
+  dataNetworkOriginal: {
+    data: IDataSuggest[];
+    included: IIncluded[];
+  };
   dataSelected: any;
   dataUser: {
     data: IPublicProfile | null;
