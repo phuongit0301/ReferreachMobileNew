@@ -20,6 +20,7 @@ import {GlobalStyles, IMAGES} from '~Root/config';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
 import moment from 'moment';
+import { adjust } from '~Root/utils';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<ChatNavigatorParamsList, AppRoute.CHAT>,
@@ -211,6 +212,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                 style={GlobalStyles.container}
                 ref={scrollRef}
                 contentContainerStyle={[GlobalStyles.justifyEnd, GlobalStyles.scrollViewFullScreen]}
+                contentInset={{top: adjust(30), left: 0, bottom: 0, right: 0}}
                 scrollEnabled={true}
                 scrollEventThrottle={1}
                 onContentSizeChange={() => scrollRef.current?.scrollToEnd({animated: true})}
@@ -235,21 +237,21 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                   if (item?.entry?.userId !== userState?.userInfo?.id) {
                     return (
                       <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBg]}>
-                        {item.entry?.fullName2 && (
+                        {item.entry?.fullName1 && (
                           <View style={[GlobalStyles.flexRow, GlobalStyles.mb5, styles.headerName]}>
                             <Paragraph
                               textDarkGrayColor
                               bold600
                               numberOfLines={1}
                               ellipsizeMode='tail'
-                              title={item.entry?.fullName2}
+                              title={item.entry?.fullName1}
                               style={[GlobalStyles.mr5, styles.fontSmall]}
                             />
                           </View>
                         )}
                         <Paragraph title={item?.entry?.text} style={styles.chatContentArea} />
                         {item?.entry?.createdAt && (
-                          <View style={[GlobalStyles.alignEnd, GlobalStyles.mt10]}>
+                          <View style={[GlobalStyles.mt10]}>
                             <Paragraph
                               textJetColor
                               title={moment(item?.entry?.createdAt).format('HH:mm a')}

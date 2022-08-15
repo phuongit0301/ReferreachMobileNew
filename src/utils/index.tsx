@@ -9,6 +9,7 @@ import {
 } from './common';
 import {
   dateWithMonthsDelay,
+  convertLocalToUTC,
   dateFormat,
   dateFormat2,
   dateFormat3,
@@ -30,6 +31,7 @@ import {
 export {
   adjust,
   dateWithMonthsDelay,
+  convertLocalToUTC,
   dateFormat,
   dateFormat2,
   dateFormat3,

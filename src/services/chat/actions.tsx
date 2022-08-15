@@ -3,11 +3,14 @@ import {
   GET_CHAT_CONTEXT_REQUESTED,
   GET_CHAT_FEED_REQUESTED,
   GET_CHAT_PERSONAL_REQUESTED,
+  GET_USER_CHAT_LIST_REQUESTED,
   ON_CHAT_ONE_ON_ONE_REQUESTED,
   ON_PIN_REQUESTED,
   ON_UN_PIN_REQUESTED,
   ON_UPDATE_CHAT_CONTEXT_REQUESTED,
+  RESET_DATA_CHAT,
   SET_CHAT_VISIBLE_MENU,
+  SET_USER_CHAT_LIST,
 } from './constants';
 import {
   IActionChatOneOnOneRequested,
@@ -16,11 +19,29 @@ import {
   IActionOnUnPinSuccess,
   IActionOnUpdateChatContextRequested,
   IActionOnUpdateChatContextSuccess,
+  IPaginationAndSearch,
+  IPersonalPaginationAndSearch,
+  PinnableTypeEnum,
 } from './types';
 
-export const getChatFeedRequest = (callback: () => void) => {
+export const getUserChatListRequested = (payload: string, callback: () => void) => {
+  return {
+    type: GET_USER_CHAT_LIST_REQUESTED,
+    payload,
+    callback,
+  };
+};
+
+export const setUserChatList = () => {
+  return {
+    type: SET_USER_CHAT_LIST,
+  };
+};
+
+export const getChatFeedRequest = (payload: IPaginationAndSearch, callback: () => void) => {
   return {
     type: GET_CHAT_FEED_REQUESTED,
+    payload,
     callback,
   };
 };
@@ -41,7 +62,7 @@ export const getChatAskContextRequest = (payload: any, callback: () => void) => 
   };
 };
 
-export const getChatPersonalRequest = (payload: any, callback: () => void) => {
+export const getChatPersonalRequest = (payload: IPersonalPaginationAndSearch, callback: () => void) => {
   return {
     type: GET_CHAT_PERSONAL_REQUESTED,
     payload,
@@ -72,7 +93,7 @@ export const onUpdateChatContextRequest = (
 };
 
 export const onPinRequest = (
-  payload: {askId: string; index: number},
+  payload: {pinnable_id: string; pinnable_type: PinnableTypeEnum; index: number},
   callback: (response: IActionOnPinSuccess['payload']) => void,
 ) => {
   return {
@@ -83,7 +104,7 @@ export const onPinRequest = (
 };
 
 export const onUnPinRequest = (
-  payload: {askId: string; index: number},
+  payload: {pinnable_id: string; pinnable_type: PinnableTypeEnum; index: number},
   callback: (response: IActionOnUnPinSuccess['payload']) => void,
 ) => {
   return {
@@ -98,5 +119,11 @@ export const setVisibleMenu = (payload: any, callback?: () => void) => {
     type: SET_CHAT_VISIBLE_MENU,
     payload,
     callback,
+  };
+};
+
+export const resetDataChat = () => {
+  return {
+    type: RESET_DATA_CHAT,
   };
 };

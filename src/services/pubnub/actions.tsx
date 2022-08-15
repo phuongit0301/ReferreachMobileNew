@@ -1,6 +1,6 @@
 import {GET_CREDENTIAL_REQUESTED, SET_PUBNUB_MESSAGE} from './constants';
 
-export const getCredential = (callback: () => void) => {
+export const getCredential = (callback: (response: any) => void) => {
   return {
     type: GET_CREDENTIAL_REQUESTED,
     callback,

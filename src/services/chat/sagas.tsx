@@ -1,4 +1,4 @@
-import {all, call, put, select, takeLatest} from 'redux-saga/effects';
+import {all, call, delay, put, select, takeLatest} from 'redux-saga/effects';
 import {IGlobalState} from '~Root/types';
 import {IUserState} from '../user/types';
 
@@ -31,6 +31,8 @@ import {
   GET_CHAT_ASK_CONTEXT_REQUESTED,
   GET_CHAT_ASK_CONTEXT_FAILURE,
   GET_CHAT_ASK_CONTEXT_SUCCESS,
+  GET_USER_CHAT_LIST_SEARCH_SUCCESS,
+  GET_USER_CHAT_LIST_SEARCH_FAILURE,
 } from './constants';
 import {
   IActionChatAskContextRequested,
@@ -53,6 +55,7 @@ import {
   IActionOnUpdateChatContextSuccess,
   IChatState,
   IIncluded,
+  PinnableTypeEnum,
 } from './types';
 
 const getChatState = (state: IGlobalState) => state.chatState;
@@ -63,7 +66,7 @@ function* getChatContext(payload: IActionChatContextRequested) {
     const response: IActionChatContextSuccess['payload'] = yield call(ChatAPI.getChatContext, payload?.payload);
     if (response.success) {
       const userState: IUserState = yield select(getUserState);
-      const userReceive: IIncluded = yield call(ChatAPI.handleUserReceive, {
+      const userReceive: IIncluded = yield call(ChatAPI.handleChatPersonalReceive, {
         arrUser: response.data?.included,
         currentUserId: userState?.userInfo?.id,
       });
@@ -98,7 +101,7 @@ function* getChatAskContext(payload: IActionChatAskContextRequested) {
       });
       yield put({
         type: GET_CHAT_ASK_CONTEXT_SUCCESS,
-        payload: {...response.data, userReceive},
+        payload: {...response.data, ...userReceive, chatUuid: response?.data?.data?.attributes?.chat_uuid},
       });
       payload?.callback && payload?.callback(response.data);
     } else {
@@ -118,7 +121,7 @@ function* getChatAskContext(payload: IActionChatAskContextRequested) {
 
 function* getChatPersonal(payload: IActionChatPersonalRequested) {
   try {
-    const response: IActionChatPersonalSuccess['payload'] = yield call(ChatAPI.getChatPersonal);
+    const response: IActionChatPersonalSuccess['payload'] = yield call(ChatAPI.getChatPersonal, payload?.payload);
     if (response.success) {
       yield put({
         type: GET_CHAT_PERSONAL_SUCCESS,
@@ -198,10 +201,11 @@ function* onUpdateChatContext(payload: IActionOnUpdateChatContextRequested) {
 
 function* getChatFeed(payload: IActionChatFeedRequested) {
   try {
+    yield delay(300);
     const [responseFeed, responseUserChatList]: [
       IActionChatFeedSuccess['payload'],
       IActionGetUserChatListSuccess['payload'],
-    ] = yield all([call(ChatAPI.getChatFeed), call(ChatAPI.getUserChatList)]);
+    ] = yield all([call(ChatAPI.getChatFeed, payload?.payload), call(ChatAPI.getUserChatList)]);
 
     // const response: IActionChatFeedSuccess['payload'] = yield call(ChatAPI.getChatFeed);
     if (responseFeed.success && responseUserChatList?.success) {
@@ -231,19 +235,19 @@ function* getChatFeed(payload: IActionChatFeedRequested) {
 
 function* getUserChatList(payload: IActionGetUserChatListRequested) {
   try {
-    const response: IActionGetUserChatListSuccess['payload'] = yield call(ChatAPI.getUserChatList);
+    const response: IActionGetUserChatListSuccess['payload'] = yield call(ChatAPI.getUserChatList, payload?.payload);
     if (response.success) {
       yield put({
-        type: GET_USER_CHAT_LIST_SUCCESS,
-        payload: response,
+        type: GET_USER_CHAT_LIST_SEARCH_SUCCESS,
+        payload: response?.data,
       });
       payload?.callback && payload?.callback(response.data);
     } else {
-      yield put({type: GET_USER_CHAT_LIST_FAILURE, payload: {message: response}});
+      yield put({type: GET_USER_CHAT_LIST_SEARCH_FAILURE, payload: {message: response}});
       payload?.callback && payload?.callback(response?.data);
     }
   } catch (error) {
-    yield put({type: GET_USER_CHAT_LIST_FAILURE, payload: {message: error}});
+    yield put({type: GET_USER_CHAT_LIST_SEARCH_FAILURE, payload: {message: error}});
     payload?.callback &&
       payload?.callback({
         data: null,
@@ -256,13 +260,21 @@ function* getUserChatList(payload: IActionGetUserChatListRequested) {
 function* onPin(payload: IActionOnPinRequested) {
   try {
     const chatState: IChatState = yield select(getChatState);
-    const response: IActionOnPinSuccess['payload'] = yield call(ChatAPI.onPin, payload?.payload?.askId);
+    const response: IActionOnPinSuccess['payload'] = yield call(ChatAPI.onPin, payload?.payload);
     if (response.success) {
-      chatState.dataFeed.data[payload?.payload?.index].attributes.pinned = true;
-      yield put({
-        type: ON_PIN_SUCCESS,
-        payload: chatState.dataFeed,
-      });
+      if (payload?.payload?.pinnable_type === PinnableTypeEnum.ASK) {
+        chatState.dataFeed.data[payload?.payload?.index].attributes.pinned = true;
+        yield put({
+          type: ON_PIN_SUCCESS,
+          payload: {dataFeed: chatState.dataFeed},
+        });
+      } else {
+        chatState.dataChatPersonal.data[payload?.payload?.index].attributes.pinned = true;
+        yield put({
+          type: ON_PIN_SUCCESS,
+          payload: {dataChatPersonal: chatState.dataChatPersonal},
+        });
+      }
       payload?.callback && payload?.callback(response);
     } else {
       yield put({type: ON_PIN_FAILURE, payload: {message: response}});
@@ -282,13 +294,21 @@ function* onPin(payload: IActionOnPinRequested) {
 function* onUnPin(payload: IActionOnUnPinRequested) {
   try {
     const chatState: IChatState = yield select(getChatState);
-    const response: IActionOnUnPinSuccess['payload'] = yield call(ChatAPI.onUnPin, payload?.payload?.askId);
+    const response: IActionOnUnPinSuccess['payload'] = yield call(ChatAPI.onUnPin, payload?.payload);
     if (response.success) {
-      chatState.dataFeed.data[payload?.payload?.index].attributes.pinned = false;
-      yield put({
-        type: ON_UN_PIN_SUCCESS,
-        payload: chatState.dataFeed,
-      });
+      if (payload?.payload?.pinnable_type === PinnableTypeEnum.ASK) {
+        chatState.dataFeed.data[payload?.payload?.index].attributes.pinned = false;
+        yield put({
+          type: ON_UN_PIN_SUCCESS,
+          payload: chatState.dataFeed,
+        });
+      } else {
+        chatState.dataChatPersonal.data[payload?.payload?.index].attributes.pinned = false;
+        yield put({
+          type: ON_UN_PIN_SUCCESS,
+          payload: chatState.dataChatPersonal,
+        });
+      }
       payload?.callback && payload?.callback(response);
     } else {
       yield put({type: ON_UN_PIN_FAILURE, payload: {message: response}});

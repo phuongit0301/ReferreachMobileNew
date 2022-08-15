@@ -66,6 +66,7 @@ export const BASE_COLORS = {
   lightPeriwinkleColor: '#CDD2DE',
   superiorityBlueColor: '#8199BC',
   carminePinkColor: '#F05344',
+  lavenderGrayColor: '#BDC3CB',
 };
 
 export const BASE_FONTS = {

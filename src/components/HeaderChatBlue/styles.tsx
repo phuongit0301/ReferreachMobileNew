@@ -1,11 +1,10 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Platform} from 'react-native';
 
-import {GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
 
 export default StyleSheet.create({
   container: {
-    ...GlobalStyles.pt35,
+    paddingTop: Platform.OS === 'ios' ? adjust(35) : 0,
     borderBottomLeftRadius: adjust(10),
     borderBottomRightRadius: adjust(10),
     flex: 0.3,

@@ -31,11 +31,20 @@ export default class FeedItemsAPI {
     }
   }
 
-  static async getSuggestIntroductionsList() {
+  static async getSuggestIntroductionsList(payload: any) {
     try {
+      let params = '';
+      let url = API.SUGGEST_INTRODUCTIONS_LIST_URL;
+      if (payload) {
+        params = Object.keys(payload)
+          .map((key: string) => `${key}=${payload[key]}`)
+          .join('&');
+        url += `?${params}`;
+      }
+
       const response = await axios({
         method: 'GET',
-        url: API.SUGGEST_INTRODUCTIONS_LIST_URL,
+        url: url,
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',

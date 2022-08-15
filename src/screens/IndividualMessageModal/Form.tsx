@@ -50,6 +50,7 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
 
   const dispatch = useDispatch();
   const userState = useSelector((state: IGlobalState) => state.userState);
+  const pubnubState = useSelector((state: IGlobalState) => state.pubnubState);
 
   const onSubmit: SubmitHandler<IActionCreateIntroductionRequested['payload']> = (credentials: ICredentials) => {
     if (!feedState?.dataFeed?.data || !feedState?.dataProfileRefer?.included) {
@@ -79,9 +80,11 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
         }
 
         dispatch(
-          getCredential(() => {
+          getCredential((res: any) => {
+            if (res?.success) {
+              pubnub.setAuthKey(res?.data?.token);
+            }
             if (response?.data?.included?.length > 0) {
-              const chatContexts = response?.data.included.find((x: any) => x.type === 'chat_contexts');
               // chatContexts
               if (
                 // eslint-disable-next-line prettier/prettier
@@ -90,33 +93,122 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
                 feedState?.dataProfileRefer?.included?.length > 0 &&
                 feedState?.dataProfileRefer?.included[0]?.id
               ) {
-                const pubnubMessages = [
-                  {
-                    text: payload?.message_for_asker,
-                    askerId: feedState?.dataFeed?.data[0]?.attributes?.user?.id,
-                    introduceeId: payload?.introducee_id,
-                    introducerId: userState?.userInfo?.id,
-                  },
-                  {
-                    text: payload?.message_for_introducee,
-                    askerId: feedState?.dataFeed?.data[0]?.attributes?.user?.id,
-                    introduceeId: payload?.introducee_id,
-                    introducerId: userState?.userInfo?.id,
-                  },
-                ];
-                console.log('pubnubMessages=======>', JSON.stringify(pubnubMessages));
-                dispatch(setPubnubMessage(pubnubMessages));
-                dispatch(hideLoading());
-                Toast.show({
-                  position: 'bottom',
-                  type: response.success ? 'success' : 'info',
-                  text1: 'Successfully',
-                  visibilityTime: 1500,
-                  autoHide: true,
+                const pubnubMessages: any = [];
+                const channels: any = [];
+                for (const x of response?.data.included) {
+                  if (x.type === 'chat_contexts') {
+                    if (x.attributes?.chat_box_type === 'asker_introducer') {
+                      pubnubMessages.push({
+                        text: payload?.message_for_asker,
+                        askerId: +feedState?.dataFeed?.data[0]?.attributes?.user?.id,
+                        userReceive: +feedState?.dataFeed?.data[0]?.attributes?.user?.id,
+                        introducerId: +userState?.userInfo?.id,
+                        senderId: userState?.userInfo?.id,
+                        chatUuid: x.attributes?.chat_uuid,
+                      });
+                      channels.push(x.attributes?.chat_uuid);
+                    }
+
+                    if (x.attributes?.chat_box_type === 'introducer_introducee') {
+                      pubnubMessages.push({
+                        text: payload?.message_for_introducee,
+                        introduceeId: +payload?.introducee_id,
+                        userReceive: +payload?.introducee_id,
+                        introducerId: +userState?.userInfo?.id,
+                        senderId: userState?.userInfo?.id,
+                        chatUuid: x.attributes?.chat_uuid,
+                      });
+                      channels.push(x.attributes?.chat_uuid);
+                    }
+                  }
+                }
+                // const pubnubMessages = [
+                //   {
+                //     text: payload?.message_for_asker,
+                //     askerId: feedState?.dataFeed?.data[0]?.attributes?.user?.id,
+                //     introducerId: userState?.userInfo?.id,
+                //   },
+                //   {
+                //     text: payload?.message_for_introducee,
+                //     introduceeId: payload?.introducee_id,
+                //     introducerId: userState?.userInfo?.id,
+                //   },
+                // ];
+                const promises = [];
+
+                if (pubnubMessages?.length > 0 && pubnub) {
+                  console.log('channels========>', channels);
+                  console.log('pubnubMessages========>', pubnubMessages);
+                  pubnub.subscribe({channels});
+                  console.log('pubnub========>', pubnub);
+
+                  for (const item of pubnubMessages) {
+                    if (item?.askerId) {
+                      promises.push(
+                        pubnub
+                          .publish({
+                            channel: item?.chatUuid,
+                            message: {
+                              text: item?.text,
+                              introducerId: item?.introducerId,
+                              userReceive: item?.userReceive,
+                              askerId: item?.askerId,
+                              senderId: item?.senderId,
+                              createdAt: new Date(),
+                            },
+                          })
+                          .then(() => console.log('insert pubnub done'))
+                          .catch(error => console.log(JSON.stringify(error))),
+                      );
+                    }
+
+                    if (item?.introduceeId) {
+                      promises.push(
+                        pubnub
+                          .publish({
+                            channel: item?.chatUuid,
+                            message: {
+                              text: item?.text,
+                              introducerId: item?.introducerId,
+                              userReceive: item?.userReceive,
+                              introduceeId: item?.introduceeId,
+                              senderId: item?.senderId,
+                              createdAt: new Date(),
+                            },
+                          })
+                          .then(() => console.log('insert pubnub done'))
+                          .catch(error => console.log(JSON.stringify(error))),
+                      );
+                    }
+                  }
+                }
+
+                return Promise.all(promises).then(() => {
+                  dispatch(hideLoading());
+                  Toast.show({
+                    position: 'bottom',
+                    type: response.success ? 'success' : 'info',
+                    text1: 'Successfully',
+                    visibilityTime: 2000,
+                    autoHide: true,
+                  });
+                  setTimeout(() => {
+                    navigation.navigate(AppRoute.CHAT_NAVIGATOR);
+                  }, 2100);
                 });
-                setTimeout(() => {
-                  navigation.navigate(AppRoute.CHAT_INTERNAL, {contextId: chatContexts?.id});
-                }, 1550);
+
+                // dispatch(setPubnubMessage(pubnubMessages));
+                // dispatch(hideLoading());
+                // Toast.show({
+                //   position: 'bottom',
+                //   type: response.success ? 'success' : 'info',
+                //   text1: 'Successfully',
+                //   visibilityTime: 1500,
+                //   autoHide: true,
+                // });
+                // setTimeout(() => {
+                //   navigation.navigate(AppRoute.CHAT_NAVIGATOR);
+                // }, 1550);
                 // const promises = [];
                 // for (const item of pubnubMessages) {
                 //   promises.push(

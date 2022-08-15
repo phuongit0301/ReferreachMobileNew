@@ -158,8 +158,6 @@ const AppBottomTab = () => {
   );
 };
 
-
-
 const AppDrawer = (props: any) => {
   return (
     <DrawerStack.Navigator

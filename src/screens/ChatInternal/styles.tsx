@@ -166,14 +166,14 @@ export default StyleSheet.create({
     elevation: adjust(4),
   },
   chatBg: {
-    width: '70%',
+    width: '75%',
     backgroundColor: BASE_COLORS.lightPeriwinkleColor,
     borderTopLeftRadius: adjust(12),
     borderTopRightRadius: adjust(12),
     borderBottomRightRadius: adjust(12),
   },
   chatBgSecond: {
-    width: '70%',
+    width: '75%',
     alignSelf: 'flex-end',
     backgroundColor: BASE_COLORS.superiorityBlueColor,
     borderTopLeftRadius: adjust(12),

@@ -272,6 +272,7 @@ export const GlobalStyles = StyleSheet.create({
   textBoldNormal: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
+    fontSize: adjust(10),
   },
   bold400: {
     fontFamily: BASE_FONTS.regular,
@@ -321,6 +322,9 @@ export const GlobalStyles = StyleSheet.create({
   },
   m15: {
     margin: adjust(15),
+  },
+  mb3: {
+    marginBottom: adjust(3),
   },
   mb5: {
     marginBottom: adjust(5),
@@ -655,6 +659,9 @@ export const GlobalStyles = StyleSheet.create({
   },
   pl5: {
     paddingLeft: adjust(5),
+  },
+  pl10: {
+    paddingLeft: adjust(10),
   },
   pl35: {
     paddingLeft: adjust(35),

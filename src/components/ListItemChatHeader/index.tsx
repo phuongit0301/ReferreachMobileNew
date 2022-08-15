@@ -16,8 +16,8 @@ interface Props {
   dataAsk: IIncluded;
   index: number;
   onItemClick?: (item: any) => void;
-  onPin?: (askId: string, index: number) => void;
-  onUnPin?: (askId: string, index: number) => void;
+  onPin?: (id: string, index: number) => void;
+  onUnPin?: (id: string, index: number) => void;
 }
 
 const ListItemChatHeader: React.FC<Props> = ({

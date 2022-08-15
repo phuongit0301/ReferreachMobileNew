@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 
 import {BASE_COLORS, BASE_FONTS, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
@@ -108,6 +108,18 @@ export default StyleSheet.create({
     marginTop: adjust(-15),
   },
   iconProtect1: {
+    width: adjust(11),
+    height: adjust(13),
+    left: adjust(0),
+    marginTop: adjust(-15),
+  },
+  iconProtect2: {
+    width: adjust(11),
+    height: adjust(13),
+    left: adjust(-5),
+    marginTop: adjust(-15),
+  },
+  iconProtect3: {
     width: adjust(11),
     height: adjust(13),
     left: adjust(-5),

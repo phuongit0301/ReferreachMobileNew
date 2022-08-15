@@ -5,11 +5,10 @@ import FastImage from 'react-native-fast-image';
 import moment from 'moment';
 
 import {IDataChatPersonal, IIncluded} from '~Root/services/chat/types';
+import {IUserState} from '~Root/services/user/types';
 import {Avatar, Paragraph} from '~Root/components';
 import {GlobalStyles, IMAGES} from '~Root/config';
 import styles from './styles';
-import {CHAT_BOX_TYPE_ENUM} from '~Root/utils';
-import {IGlobalState} from '~Root/types';
 
 interface Props {
   style?: ViewStyle & TextStyle;
@@ -17,19 +16,33 @@ interface Props {
   tagStyleContainer?: ViewStyle;
   tagStyle?: TextStyle;
   onPress?: (item: any) => void;
+  onPin?: (id: string, index: number) => void;
+  onUnPin?: (id: string, index: number) => void;
   item: IIncluded;
   dataChatPersonal: IDataChatPersonal;
+  userState: IUserState;
   index: number;
 }
 
 const ListItemChatPersonal: React.FC<Props> = ({
   style = {},
   onPress = () => {},
+  onPin = () => {},
+  onUnPin = () => {},
   item,
   dataChatPersonal,
   index,
+  userState,
 }: Props) => {
-  const user1 = dataChatPersonal?.included.length > 0 ? dataChatPersonal?.included[0] : null;
+  let user1 = null;
+
+  if (item?.relationships?.members?.data?.length > 0) {
+    const userAnother = item?.relationships?.members?.data.find((x: any) => +x.id !== +userState?.userInfo?.id);
+
+    if (dataChatPersonal?.included.length > 0 && userAnother) {
+      user1 = dataChatPersonal?.included.find((x: any) => +x.id === +userAnother?.id);
+    }
+  }
 
   return (
     <TouchableOpacity
@@ -52,7 +65,11 @@ const ListItemChatPersonal: React.FC<Props> = ({
                   last_name: user1?.attributes?.last_name,
                 }}
               />
-              <FastImage source={IMAGES.iconProtect} resizeMode='cover' style={styles.iconProtect} />
+              <FastImage
+                source={IMAGES.iconProtect}
+                resizeMode='cover'
+                style={user1?.attributes?.avatar_metadata?.avatar_url ? styles.iconProtect : styles.iconProtect1}
+              />
             </View>
             <View style={[GlobalStyles.flexColumn, styles.contentContainer]}>
               <View style={[GlobalStyles.flexRow, GlobalStyles.justifyBetween]}>
@@ -63,9 +80,15 @@ const ListItemChatPersonal: React.FC<Props> = ({
                     title={`${user1?.attributes?.first_name} ${user1?.attributes?.last_name}`}
                   />
                 </View>
-                <TouchableOpacity>
-                  <FastImage source={IMAGES.iconPinActive} resizeMode='cover' style={styles.iconPin} />
-                </TouchableOpacity>
+                {item?.attributes?.pinned ? (
+                  <TouchableOpacity onPress={() => onUnPin(item?.id, index)}>
+                    <FastImage source={IMAGES.iconPinActive} resizeMode='cover' style={styles.iconPin} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={() => onPin(item?.id, index)}>
+                    <FastImage source={IMAGES.iconPin} resizeMode='cover' style={styles.iconPin} />
+                  </TouchableOpacity>
+                )}
               </View>
               <Paragraph
                 numberOfLines={2}
@@ -84,7 +107,9 @@ const ListItemChatPersonal: React.FC<Props> = ({
               textDarkGrayColor
               title={moment(item?.attributes?.created_at).format('DD-MM-YYYY HH:mmA')}
             />
-            <View style={styles.redCircle} />
+            {item?.attributes?.last_message_metadata?.sender_id === userState?.userInfo?.id && (
+              <View style={styles.redCircle} />
+            )}
           </View>
         </View>
       </View>

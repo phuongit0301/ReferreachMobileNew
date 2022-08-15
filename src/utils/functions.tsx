@@ -41,6 +41,10 @@ export const dateFormat = (date: Date, separator?: string, format?: string): str
   }
 };
 
+export const convertLocalToUTC = (dt: Date, resFormat = 'YYYY-MM-DD hh:mm:ss', dtFormat?: string) => {
+  return moment(dt, dtFormat).utc().format(resFormat);
+};
+
 export const dateFormat2 = (date: string): string => {
   return moment(date, 'YYYY-MM-DD').format('MMM DD, YYYY');
 };

@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
+import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
 
 export default StyleSheet.create({
@@ -32,6 +32,11 @@ export default StyleSheet.create({
     width: adjust(14),
     height: adjust(15),
   },
+  iconShareInactive: {
+    width: adjust(14),
+    height: adjust(15),
+    tintColor: BASE_COLORS.lavenderGrayColor,
+  },
   buttonContainerStyle: {
     ...GlobalStyles.ph15,
     ...GlobalStyles.pv5,
@@ -40,5 +45,15 @@ export default StyleSheet.create({
     borderBottomLeftRadius: adjust(6),
     borderBottomRightRadius: adjust(12),
     backgroundColor: BASE_COLORS.forestGreenColor,
+  },
+  buttonContainerInactiveStyle: {
+    ...GlobalStyles.ph15,
+    ...GlobalStyles.pv5,
+    borderTopLeftRadius: adjust(6),
+    borderTopRightRadius: adjust(6),
+    borderBottomLeftRadius: adjust(6),
+    borderBottomRightRadius: adjust(12),
+    backgroundColor: BASE_COLORS.brightGrayColor,
+    color: BASE_COLORS.lavenderGrayColor,
   },
 });

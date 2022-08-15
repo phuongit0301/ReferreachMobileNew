@@ -3,6 +3,7 @@ import {
   GET_FEED_ITEMS_LIST_REQUESTED,
   GET_FEED_ITEM_PAGINATION_REQUESTED,
   GET_PUBLIC_PROFILE_REQUESTED,
+  GET_SUGGEST_INTRODUCTION_LIST_REQUESTED,
   SET_FEED_INTRODUCTIONS,
   SET_FEED_ITEM_READ_REQUESTED,
   SET_FEED_VISIBLE_MENU,
@@ -13,15 +14,27 @@ import {
   IActionFeedItemPaginationSuccess,
   IActionFeedItemsListSuccess,
   IActionSetFeedItemReadSuccess,
+  IActionSuggestIntroductionListSuccess,
   IFeedItemsState,
 } from './types';
 
 export const getFeedItemsList = (
-  payload: number,
+  payload: any,
   callback: (response: IActionFeedItemsListSuccess['payload']) => void,
 ) => {
   return {
     type: GET_FEED_ITEMS_LIST_REQUESTED,
+    payload,
+    callback,
+  };
+};
+
+export const getSuggestIntroductionsList = (
+  payload: any,
+  callback: (response: IActionSuggestIntroductionListSuccess['payload']) => void,
+) => {
+  return {
+    type: GET_SUGGEST_INTRODUCTION_LIST_REQUESTED,
     payload,
     callback,
   };

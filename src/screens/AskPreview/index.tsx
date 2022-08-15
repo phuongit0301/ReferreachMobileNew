@@ -12,6 +12,7 @@ import FastImage from 'react-native-fast-image';
 import moment from 'moment';
 import {createAsk} from '~Root/services/ask/actions';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
+import {convertLocalToUTC} from '~Root/utils';
 
 const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3, onSuccess}: any) => {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ const AskPreviewScreen = ({navigation, userInfo, dataStep1, dataStep2, dataStep3
       formData.append(CREATE_ASK_FIELDS.businessDetail, dataStep1.business_detail);
     }
     if (dataStep2.deadline) {
-      formData.append(CREATE_ASK_FIELDS.deadline, moment(dataStep2.deadline).format('DD/MM/YYYY HH:mm:ss'));
+      formData.append(CREATE_ASK_FIELDS.deadline, convertLocalToUTC(dataStep2.deadline));
     }
     if (dataStep2.location) {
       formData.append('ask_location_attributes[text]', dataStep2.location);

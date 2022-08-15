@@ -18,10 +18,12 @@ export default StyleSheet.create({
     borderBottomColor: BASE_COLORS.eerieBlackColor,
     borderBottomWidth: 1,
   },
+  headerContainer: {
+    left: adjust(15),
+  },
   iconSearchContainer: {
-    backgroundColor: BASE_COLORS.whiteColor,
+    backgroundColor: BASE_COLORS.brightGrayColor,
     borderRadius: adjust(20),
-    alignSelf: 'flex-start',
   },
   iconSearch: {
     width: adjust(15),
@@ -41,6 +43,11 @@ export default StyleSheet.create({
     borderRadius: adjust(56),
     width: adjust(28),
     height: adjust(28),
+  },
+  avatar1: {
+    borderRadius: adjust(90),
+    width: adjust(45),
+    height: adjust(45),
   },
   name: {
     fontSize: adjust(9),
@@ -85,4 +92,23 @@ export default StyleSheet.create({
     borderRadius: adjust(12),
   },
   /** END Personal */
+  modal: {
+    margin: 0,
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    height: '76%',
+    backgroundColor: BASE_COLORS.whiteColor,
+    border: 0,
+  },
+  styleContainer: {
+    backgroundColor: BASE_COLORS.whiteColor,
+  },
+  border: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: BASE_COLORS.brightGrayColor,
+  },
+  containerHeaderStyle: {
+    width: '90%',
+  },
 });

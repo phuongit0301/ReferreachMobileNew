@@ -9,8 +9,8 @@ import {GlobalStyles} from '~Root/config';
 interface Props {
   dataFeed: IDataChatFeed;
   onItemClick?: (item: any) => void;
-  onPin?: (askId: string, index: number) => void;
-  onUnPin?: (askId: string, index: number) => void;
+  onPin?: (id: string, index: number) => void;
+  onUnPin?: (id: string, index: number) => void;
 }
 
 const ListItemsChat: React.FC<Props> = ({
@@ -24,7 +24,7 @@ const ListItemsChat: React.FC<Props> = ({
       data={dataFeed.data}
       keyExtractor={(item, index) => `list-item-${new Date().getTime()}-${index}`}
       renderItem={({item, index}) => {
-        const dataIncluded = dataFeed.included[index];
+        const dataIncluded = dataFeed.included.find((x: any) => +x?.id === +item?.relationships?.user?.data?.id);
         return (
           <View style={[GlobalStyles.flexColumn, GlobalStyles.mb15]}>
             <ListItemChatHeader
