@@ -72,6 +72,20 @@ export default StyleSheet.create({
     fontSize: adjust(10),
     lineHeight: adjust(15),
   },
+  kudosTextBold: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '700',
+    color: BASE_COLORS.whiteColor,
+    fontSize: adjust(11),
+    lineHeight: adjust(15),
+  },
+  kudosTextNormal: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '600',
+    color: BASE_COLORS.whiteColor,
+    fontSize: adjust(11),
+    lineHeight: adjust(15),
+  },
   contentContainer: {
     backgroundColor: BASE_COLORS.whiteColor,
     borderRadius: adjust(5),
@@ -193,5 +207,13 @@ export default StyleSheet.create({
   },
   txtTime: {
     fontSize: adjust(9),
+  },
+  bgKudos: {
+    borderRadius: adjust(8),
+    backgroundColor: BASE_COLORS.steelBlue2Color,
+  },
+  iconHand: {
+    width: adjust(25),
+    height: adjust(18),
   },
 });

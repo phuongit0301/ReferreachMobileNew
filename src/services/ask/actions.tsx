@@ -12,10 +12,16 @@ import {
   SET_VISIBLE_MENU,
   ON_UPDATE_EXTEND_DEADLINE_REQUESTED,
   ON_END_ASK_REQUESTED,
+  GET_ASK_RESPONDER_REQUESTED,
+  ON_SEND_KUDOS_REQUESTED,
 } from './constants';
 import {
   IActionGetAskDetailsFailure,
   IActionGetAskDetailsSuccess,
+  IActionGetAskResponderFailure,
+  IActionGetAskResponderSuccess,
+  IActionOnSendKudosRequest,
+  IActionOnSendKudosSuccess,
   IActionOnUpdateExtendDeadlineSuccess,
   IActionUpdateAskSuccess,
   IExtendDeadlineInterface,
@@ -25,6 +31,17 @@ import {
 export const getAsk = (payload: IPaginationAndSearch, callback: () => void) => {
   return {
     type: GET_ASK_REQUESTED,
+    payload,
+    callback,
+  };
+};
+
+export const getAskResponder = (
+  payload: string,
+  callback: (response: IActionGetAskResponderSuccess['payload'] | IActionGetAskResponderFailure['payload']) => void,
+) => {
+  return {
+    type: GET_ASK_RESPONDER_REQUESTED,
     payload,
     callback,
   };
@@ -128,6 +145,17 @@ export const setDataCreateAsk3 = (payload: any, callback?: () => void) => {
 export const setVisibleMenu = (payload: any, callback?: () => void) => {
   return {
     type: SET_VISIBLE_MENU,
+    payload,
+    callback,
+  };
+};
+
+export const onSendKudosRequest = (
+  payload: IActionOnSendKudosRequest['payload'],
+  callback: (response: IActionOnSendKudosSuccess['payload']) => void,
+) => {
+  return {
+    type: ON_SEND_KUDOS_REQUESTED,
     payload,
     callback,
   };

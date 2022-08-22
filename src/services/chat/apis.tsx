@@ -259,10 +259,13 @@ export default class ChatAPI {
     let introducee = null;
     let isIntroducer = false;
     let asker = null;
+    let showKudos = false;
 
     for (const item of params?.arrUser) {
       if (item?.type === 'introductions') {
         introduction = item;
+        showKudos =
+          item?.attributes?.kudos && +params?.currentUserId === +introduction?.relationships?.introducer?.data?.id;
       }
 
       if (item?.type === 'asks') {
@@ -287,7 +290,7 @@ export default class ChatAPI {
       }
     }
 
-    return {introducer, introducee, asker, ask, isIntroducer};
+    return {introducer, introducee, asker, ask, isIntroducer, showKudos};
   }
 
   static async handleChatPersonalReceive(params: any) {

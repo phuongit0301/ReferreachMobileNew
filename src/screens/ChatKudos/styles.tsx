@@ -48,8 +48,6 @@ export default StyleSheet.create({
   },
   imageContainer: {
     backgroundColor: 'white',
-    borderTopLeftRadius: entryBorderRadius,
-    borderTopRightRadius: entryBorderRadius,
   },
   image: {
     borderRadius: adjust(110),
@@ -171,7 +169,7 @@ export default StyleSheet.create({
   cardItemContainer: {
     ...GlobalStyles.mb10,
     alignItems: 'flex-start',
-    flex: 0.5,
+    flex: 1,
     minHeight: adjust(120),
   },
   cardSubTitleContainerStyle: {
@@ -220,7 +218,13 @@ export default StyleSheet.create({
   iconProtect: {
     width: adjust(17),
     height: adjust(20),
-    top: adjust(5),
-    left: adjust(-20),
+    position: 'absolute',
+    bottom: adjust(-5),
+    right: adjust(0),
+  },
+  noDataStyle: {
+    color: BASE_COLORS.darkGray,
+    fontSize: adjust(12),
+    lineHeight: adjust(20),
   },
 });

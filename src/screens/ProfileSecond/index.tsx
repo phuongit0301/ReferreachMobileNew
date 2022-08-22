@@ -40,7 +40,7 @@ const ProfileSecondScreen = ({navigation, route}: any) => {
   useEffect(() => {
     if (textSearch !== '') {
       dispatch(
-        getAllIndustries(textSearch, () => {
+        getAllIndustries({textSearch, target: industryState?.target ?? 1}, () => {
           console.log(12321);
         }),
       );
@@ -153,7 +153,7 @@ const ProfileSecondScreen = ({navigation, route}: any) => {
   const handleModal = ({title = `${t('your_industry')}`, target = 1}) => {
     setLoading(true);
     dispatch(
-      getAllIndustries('', () => {
+      getAllIndustries({textSearch: '', target}, () => {
         setLoading(false);
         dispatch(showModal({title, target}));
       }),

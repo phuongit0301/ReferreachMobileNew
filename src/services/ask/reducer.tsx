@@ -20,6 +20,9 @@ import {
   CREATE_ASK_SUCCESS,
   SET_VISIBLE_MENU,
   UPDATE_ASK_SUCCESS,
+  GET_ASK_RESPONDER_REQUESTED,
+  GET_ASK_RESPONDER_SUCCESS,
+  GET_ASK_RESPONDER_FAILURE,
 } from './constants';
 import {IActionsCreateAsk, IAskInside, IAskState} from './types';
 
@@ -39,6 +42,10 @@ export const initialState: IAskState = {
   dataStep3: null,
   dataDetails: null,
   dataAskSelected: null,
+  dataResponder: {
+    data: [],
+    included: [],
+  },
   page: 1,
   per: 10,
   keyword: '',
@@ -59,9 +66,12 @@ const askReducer = (state: IAskState = initialState, action: IActionsCreateAsk):
     case GET_LOCATION_REQUESTED:
     case CREATE_ASK_REQUESTED:
     case GET_ASK_EDIT_REQUESTED:
+    case GET_ASK_RESPONDER_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
     case GET_ASK_SUCCESS:
       return {...state, loading: false, data: action.payload?.data};
+    case GET_ASK_RESPONDER_SUCCESS:
+      return {...state, loading: false, dataResponder: action.payload?.data};
     case CREATE_ASK_SUCCESS:
       return {
         ...state,
@@ -100,6 +110,8 @@ const askReducer = (state: IAskState = initialState, action: IActionsCreateAsk):
       return {...state, loading: false, message: action.payload.message};
     case GET_ASK_EDIT_FAILURE:
       return {...state, loading: false, dataDetails: null, message: action.payload.message};
+    case GET_ASK_RESPONDER_FAILURE:
+      return {...state, loading: false, dataResponder: initialState?.dataResponder, message: action.payload.message};
     default:
       return state;
   }

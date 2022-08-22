@@ -18,7 +18,7 @@ import {IActionOnUpdateExtendDeadlineSuccess, IAskInside, IPaginationAndSearch} 
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
 import {getAsk, onExtendDeadlineRequest, setVisibleMenu} from '~Root/services/ask/actions';
-import {ASK_STATUS_ENUM, calculateExpiredTime, convertLocalToUTC, dateFormat3, dateWithMonthsDelay} from '~Root/utils';
+import {ASK_STATUS_ENUM, convertLocalToUTC, dateWithMonthsDelay} from '~Root/utils';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
 import Toast from 'react-native-toast-message';
@@ -124,7 +124,7 @@ const YourAskScreen = ({navigation}: Props) => {
       //   }),
       // );
       onMenuHide();
-      navigation.navigate(AppRoute.CHAT_KUDOS);
+      navigation.navigate(AppRoute.CHAT_KUDOS, {askId: askState?.dataAskSelected?.id});
     }
   };
 
@@ -164,12 +164,12 @@ const YourAskScreen = ({navigation}: Props) => {
   const onChangeDatePicker = (date: Date) => {
     let currentDate = date || new Date();
     if (moment(currentDate).format('MM-DD-YYYY HH:mm:ss') < moment().format('MM-DD-YYYY HH:mm:ss')) {
+      onHideDatePicker();
       Alert.alert("You can't select date last");
       return;
     }
     currentDate = dateWithMonthsDelay(currentDate, 0);
     if (currentDate && askState?.dataAskSelected?.id) {
-      // onHideDatePicker();
       setLoading(true);
       dispatch(
         onExtendDeadlineRequest(
@@ -444,6 +444,7 @@ const YourAskScreen = ({navigation}: Props) => {
           </View>
         </TouchableOpacity>
       )}
+
       <DateTimePickerModal
         key={`your-ask-date`}
         isVisible={visibleDatePicker}

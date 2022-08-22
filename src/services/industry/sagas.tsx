@@ -1,4 +1,6 @@
-import {all, put, takeEvery, call} from 'redux-saga/effects';
+import {all, put, takeEvery, call, select} from 'redux-saga/effects';
+import {IUserState} from '~Root/services/user/types';
+import {IGlobalState} from '~Root/types';
 
 import IndustryAPI from './apis';
 import {
@@ -15,6 +17,8 @@ import {
   IActionIndustryRequested,
   IActionIndustrySuccess,
 } from './types';
+
+const getUserState = (state: IGlobalState) => state.userState;
 
 function* getIndustry(payload: IActionIndustryRequested) {
   try {
@@ -38,9 +42,21 @@ function* getIndustry(payload: IActionIndustryRequested) {
 
 function* getAllIndustries(payload: IActionAllIndustriesRequested) {
   try {
-    const response: IActionAllIndustriesSuccess['payload'] = yield call(IndustryAPI.getAllIndustries, payload?.payload);
+    const response: IActionAllIndustriesSuccess['payload'] = yield call(
+      IndustryAPI.getAllIndustries,
+      payload?.payload?.textSearch,
+    );
     if (response) {
-      yield put({type: GET_ALL_INDUSTRIES_SUCCESS, payload: response?.data});
+      const userState: IUserState = yield select(getUserState);
+      console.log('userState=======>', userState);
+
+      const industries: IActionAllIndustriesSuccess['payload']['data'] = yield call(IndustryAPI.filterDataIndustry, {
+        target: payload?.payload?.target,
+        industries: response?.data?.data,
+        userInfo: userState.userInfo,
+      });
+
+      yield put({type: GET_ALL_INDUSTRIES_SUCCESS, payload: {...response?.data, data: industries}});
       payload?.callback({
         error: '',
         ...response,

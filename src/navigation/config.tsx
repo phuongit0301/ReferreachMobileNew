@@ -125,10 +125,11 @@ export type AskNavigatorParamsList = {
 };
 
 export type ChatNavigatorParamsList = {
+  [AppRoute.CHAT_NAVIGATOR]: undefined;
   [AppRoute.CHAT]: undefined;
   [AppRoute.CHAT_INTERNAL]: undefined;
   [AppRoute.CHAT_PERSONAL]: {contextId: string | undefined} | undefined;
-  [AppRoute.CHAT_KUDOS]: undefined;
+  [AppRoute.CHAT_KUDOS]: {askId: string | undefined} | undefined;
   [AppRoute.CHAT_KUDOS_SUCCESS]: undefined;
 };
 

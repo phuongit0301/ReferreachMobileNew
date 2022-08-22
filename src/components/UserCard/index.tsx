@@ -17,9 +17,13 @@ interface Props {
   title: string;
   titleStyle?: TextStyle;
   showSubTitle?: boolean;
+  showNoData?: boolean;
   subTitle?: string;
   subTitleStyle?: TextStyle;
   subTitleContainerStyle?: ViewStyle;
+  noDataMessage?: string;
+  noDataStyle?: TextStyle;
+  noDataStyleContainer?: ViewStyle;
   showButton?: boolean;
   showIconSubTitle?: boolean;
   iconSubName?: string;
@@ -58,9 +62,13 @@ const UserCard: React.FC<Props> = ({
   title = 'Unknown',
   titleStyle = {},
   showSubTitle = true,
+  showNoData = false,
   subTitle = 'visible to public',
   subTitleStyle = {},
   subTitleContainerStyle = {},
+  noDataMessage = 'No Data',
+  noDataStyle = {},
+  noDataStyleContainer = {},
   showButton = true,
   showIconSubTitle = true,
   iconSubName = 'home',
@@ -155,6 +163,11 @@ const UserCard: React.FC<Props> = ({
               />
             ),
           )}
+        {showNoData && (
+          <View style={noDataStyleContainer}>
+            <Paragraph p title={noDataMessage} style={noDataStyle} />
+          </View>
+        )}
         {showButton && (
           <Button
             title={buttonTitle}

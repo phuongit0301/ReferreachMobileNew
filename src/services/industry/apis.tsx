@@ -1,9 +1,11 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import axios from '~Root/services/axios';
 import i18n from 'i18next';
 
 import * as API from '~Root/private/api';
-import { IActionAllIndustriesRequested } from './types';
+import {IActionAllIndustriesRequested, IIndustry, IIndustrySave} from './types';
+import {IUserInfoState} from '~Root/services/user/types';
 export default class IndustryAPI {
   static async getIndustry() {
     try {
@@ -32,9 +34,8 @@ export default class IndustryAPI {
     }
   }
 
-  static async getAllIndustries(payload: IActionAllIndustriesRequested['payload']) {
+  static async getAllIndustries(payload: string) {
     try {
-      console.log(`${API.GET_ALL_INDUSTRIES_URL}?search_value=${payload || ''}`);
       const response = await axios({
         method: 'GET',
         url: `${API.GET_ALL_INDUSTRIES_URL}?search_value=${payload || ''}`,
@@ -57,5 +58,54 @@ export default class IndustryAPI {
         success: false,
       };
     }
+  }
+
+  static async filterDataIndustry({
+    target = 1,
+    industries = [],
+    userInfo,
+  }: {
+    target: number;
+    industries: IIndustry[] | IIndustrySave[];
+    userInfo: IUserInfoState;
+  }) {
+    console.log('industries=======>', industries);
+    console.log('userState=======>', userInfo);
+    if (industries?.length > 0 && userInfo) {
+      if (target === 1 && userInfo?.self_industries?.length > 0) {
+        return industries.map((x: IIndustry | IIndustrySave) => {
+          const isExists = userInfo?.self_industries.some(
+            (y: IIndustry | IIndustrySave) => y?.name?.toLowerCase() === x?.name.toLowerCase(),
+          );
+          console.log('isExists=======');
+          if (!isExists) {
+            return x;
+          }
+        });
+      }
+
+      if (target === 2 && userInfo?.sell_industries?.length > 0) {
+        return industries.map((x: IIndustry | IIndustrySave) => {
+          const isExists = userInfo?.sell_industries.some(
+            (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.name.toLowerCase(),
+          );
+          if (!isExists) {
+            return x;
+          }
+        });
+      }
+
+      if (target === 3 && userInfo?.partner_industries?.length > 0) {
+        return industries.map((x: IIndustry | IIndustrySave) => {
+          const isExists = userInfo?.partner_industries.some(
+            (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.name.toLowerCase(),
+          );
+          if (!isExists) {
+            return x;
+          }
+        });
+      }
+    }
+    return industries;
   }
 }

@@ -26,6 +26,12 @@ import {
   ON_END_ASK_SUCCESS,
   ON_END_ASK_FAILURE,
   ON_END_ASK_REQUESTED,
+  GET_ASK_RESPONDER_FAILURE,
+  GET_ASK_RESPONDER_SUCCESS,
+  GET_ASK_RESPONDER_REQUESTED,
+  ON_SEND_KUDOS_REQUESTED,
+  ON_SEND_KUDOS_SUCCESS,
+  ON_SEND_KUDOS_FAILURE,
 } from './constants';
 import {
   IActionCreateAskRequest,
@@ -33,6 +39,8 @@ import {
   IActionGetAskDetailsRequest,
   IActionGetAskDetailsSuccess,
   IActionGetAskRequest,
+  IActionGetAskResponderRequest,
+  IActionGetAskResponderSuccess,
   IActionGetAskSuccess,
   IActionGetJobRequest,
   IActionGetJobSuccess,
@@ -40,10 +48,13 @@ import {
   IActionGetLocationSuccess,
   IActionOnEndAskRequest,
   IActionOnEndAskSuccess,
+  IActionOnSendKudosRequest,
+  IActionOnSendKudosSuccess,
   IActionOnUpdateExtendDeadlineRequest,
   IActionOnUpdateExtendDeadlineSuccess,
   IActionUpdateAskRequest,
   IActionUpdateAskSuccess,
+  IIncluded,
 } from './types';
 
 function* getAsks(payload: IActionGetAskRequest) {
@@ -74,6 +85,42 @@ function* getAsks(payload: IActionGetAskRequest) {
         success: false,
         message: error as string,
         data: [],
+      });
+  }
+}
+
+function* getAskResponder(payload: IActionGetAskResponderRequest) {
+  try {
+    yield delay(300);
+    const response: IActionGetAskResponderSuccess['payload'] = yield call(AskAPI.getAskResponder, payload?.payload);
+    if (response?.success) {
+      const dataFilter: {introducers: IIncluded[]; introducee: IIncluded} = yield call(
+        AskAPI.filterUserRole,
+        response?.data,
+      );
+      yield put({type: GET_ASK_RESPONDER_SUCCESS, payload: {data: dataFilter}});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: '',
+          data: response?.data,
+        });
+    } else {
+      yield put({type: GET_ASK_RESPONDER_FAILURE, payload: {error: response?.message}});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: response?.message,
+          data: response?.data,
+        });
+    }
+  } catch (error) {
+    yield put({type: GET_ASK_RESPONDER_FAILURE, payload: {error: error}});
+    payload?.callback &&
+      payload?.callback({
+        success: false,
+        message: error as string,
+        data: null,
       });
   }
 }
@@ -321,8 +368,43 @@ function* endAsk(payload: IActionOnEndAskRequest) {
   }
 }
 
+function* sendKudos(payload: IActionOnSendKudosRequest) {
+  try {
+    const response: IActionOnSendKudosSuccess['payload'] = yield call(AskAPI.sendKudos, payload?.payload);
+    if (response?.success) {
+      yield put({type: ON_SEND_KUDOS_SUCCESS, payload: response?.data});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: '',
+          data: response?.data,
+        });
+    } else {
+      yield put({type: ON_SEND_KUDOS_FAILURE, payload: {error: response?.message}});
+      payload?.callback &&
+        payload?.callback({
+          success: response?.success,
+          message: response?.message,
+          data: response?.data,
+        });
+    }
+  } catch (error) {
+    yield put({type: ON_SEND_KUDOS_FAILURE, payload: {error: error}});
+    payload?.callback &&
+      payload?.callback({
+        success: false,
+        message: error as string,
+        data: null,
+      });
+  }
+}
+
 function* watchGetAsk() {
   yield takeLatest(GET_ASK_REQUESTED, getAsks);
+}
+
+function* watchGetAskResponder() {
+  yield takeLatest(GET_ASK_RESPONDER_REQUESTED, getAskResponder);
 }
 
 function* watchGetAskDetails() {
@@ -353,9 +435,14 @@ function* watchEndAsk() {
   yield takeLatest(ON_END_ASK_REQUESTED, endAsk);
 }
 
+function* watchSendKudos() {
+  yield takeLatest(ON_SEND_KUDOS_REQUESTED, sendKudos);
+}
+
 export default function* askWatchers() {
   yield all([
     watchGetAsk(),
+    watchGetAskResponder(),
     watchGetAskDetails(),
     watchGetJob(),
     watchGetLocation(),
@@ -363,5 +450,6 @@ export default function* askWatchers() {
     watchUpdateAsk(),
     watchUpdateExtendDeadline(),
     watchEndAsk(),
+    watchSendKudos(),
   ]);
 }

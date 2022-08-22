@@ -111,5 +111,7 @@ export const IMAGES = {
   chatBg: require('~Root/assets/images/chat_bg.png'),
   handRate: require('~Root/assets/images/hand_rate.png'),
   starRate: require('~Root/assets/images/star_rate.png'),
+  starRateFill: require('~Root/assets/images/star_rate_fill.png'),
   kudosHandBg: require('~Root/assets/images/kudos_hand_bg.png'),
+  iconHand: require('~Root/assets/images/icon_hand.png'),
 };

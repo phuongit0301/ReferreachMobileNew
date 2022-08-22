@@ -29,12 +29,59 @@ import {
   ON_END_ASK_FAILURE,
   ON_END_ASK_REQUESTED,
   ON_END_ASK_SUCCESS,
+  GET_ASK_RESPONDER_REQUESTED,
+  GET_ASK_RESPONDER_SUCCESS,
+  GET_ASK_RESPONDER_FAILURE,
+  ON_SEND_KUDOS_FAILURE,
+  ON_SEND_KUDOS_REQUESTED,
+  ON_SEND_KUDOS_SUCCESS,
 } from './constants';
 
 export interface IPaginationAndSearch {
   page?: number;
   per?: number;
   keyword?: string;
+}
+
+export interface IData {
+  id: string;
+  type: string;
+  attributes: {
+    introducer_ids: [number];
+  };
+  relationships: {
+    introducer: {
+      data: {
+        id: string;
+        type: string;
+      };
+    };
+    introducee: {
+      data: {
+        id: string;
+        type: string;
+      };
+    };
+  };
+  introducee: IIncluded | null;
+  introducers: IIncluded[];
+}
+
+export interface IIncluded {
+  id: string;
+  type: string;
+  attributes: {
+    title: string;
+    first_name: string;
+    last_name: string;
+    pitch: string;
+    avatar_metadata: {
+      avatar_url: string;
+      avatar_lat: string;
+      avatar_lng: string;
+    };
+    pubnub_uuid: string;
+  };
 }
 export interface IAskState extends IPaginationAndSearch {
   message: string;
@@ -53,6 +100,10 @@ export interface IAskState extends IPaginationAndSearch {
   dataStep3: any | null;
   dataDetails: IAskInside | null;
   dataAskSelected: IAskInside | null;
+  dataResponder: {
+    data: IData[];
+    included: IIncluded[];
+  };
   visibleMenu: {
     show: boolean;
     coordinate: {
@@ -166,6 +217,30 @@ export interface IActionGetAskSuccess {
 
 export interface IActionGetAskFailure {
   type: typeof GET_ASK_FAILURE;
+  payload: {
+    data: null;
+    message: string;
+    success: boolean;
+  };
+}
+
+export interface IActionGetAskResponderRequest {
+  type: typeof GET_ASK_RESPONDER_REQUESTED;
+  payload: string;
+  callback: (response: IActionGetAskResponderSuccess['payload'] | IActionGetAskResponderFailure['payload']) => void;
+}
+export interface IActionGetAskResponderSuccess {
+  type: typeof GET_ASK_RESPONDER_SUCCESS;
+  payload: {
+    data: IAskState['dataResponder'];
+    message: string;
+    success: boolean;
+  };
+  callback: () => void;
+}
+
+export interface IActionGetAskResponderFailure {
+  type: typeof GET_ASK_RESPONDER_FAILURE;
   payload: {
     data: null;
     message: string;
@@ -388,10 +463,43 @@ export interface IActionOnEndAskFailure {
   };
 }
 
+export interface IActionOnSendKudosRequest {
+  type: typeof ON_SEND_KUDOS_REQUESTED;
+  payload: {
+    askId: string;
+    params: {
+      rating: number;
+      responder_id?: string;
+    };
+  };
+  callback: (response: IActionOnSendKudosSuccess['payload']) => void;
+}
+export interface IActionOnSendKudosSuccess {
+  type: typeof ON_SEND_KUDOS_SUCCESS;
+  payload: {
+    data?: any;
+    message: string;
+    success: boolean;
+  };
+  callback: () => void;
+}
+
+export interface IActionOnSendKudosFailure {
+  type: typeof ON_SEND_KUDOS_FAILURE;
+  payload: {
+    data: null;
+    message: string;
+    success: boolean;
+  };
+}
+
 export type IActionsCreateAsk =
   | IActionGetAskRequest
   | IActionGetAskSuccess
   | IActionGetAskFailure
+  | IActionGetAskResponderRequest
+  | IActionGetAskResponderSuccess
+  | IActionGetAskResponderFailure
   | IActionGetAskDetailsRequest
   | IActionGetAskDetailsSuccess
   | IActionGetAskDetailsFailure
@@ -417,4 +525,7 @@ export type IActionsCreateAsk =
   | IActionOnUpdateExtendDeadlineFailure
   | IActionOnEndAskRequest
   | IActionOnEndAskSuccess
-  | IActionOnEndAskFailure;
+  | IActionOnEndAskFailure
+  | IActionOnSendKudosRequest
+  | IActionOnSendKudosSuccess
+  | IActionOnSendKudosFailure;

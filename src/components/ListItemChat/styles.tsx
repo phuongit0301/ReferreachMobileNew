@@ -110,14 +110,16 @@ export default StyleSheet.create({
   iconProtect1: {
     width: adjust(11),
     height: adjust(13),
-    left: adjust(0),
-    marginTop: adjust(-15),
+    position: 'absolute',
+    right: Platform.OS === 'ios' ? 0 : adjust(5),
+    bottom: adjust(5),
   },
   iconProtect2: {
     width: adjust(11),
     height: adjust(13),
-    left: adjust(-5),
-    marginTop: adjust(-15),
+    position: 'absolute',
+    right: adjust(5),
+    bottom: adjust(5),
   },
   iconProtect3: {
     width: adjust(11),

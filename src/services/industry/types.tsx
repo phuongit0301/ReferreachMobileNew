@@ -73,7 +73,10 @@ export interface IActionIndustryFailure {
 
 export interface IActionAllIndustriesRequested {
   type: typeof GET_ALL_INDUSTRIES_REQUESTED;
-  payload: string;
+  payload: {
+    textSearch: string;
+    target: number;
+  };
   callback?: any;
 }
 export interface IActionAllIndustriesSuccess {

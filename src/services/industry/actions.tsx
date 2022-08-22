@@ -7,7 +7,7 @@ import {
   SET_DATA_INDUSTRY_SELECTED,
   DELETE_DATA_INDUSTRY,
 } from './constants';
-import {IModalState} from './types';
+import {IActionAllIndustriesRequested, IModalState} from './types';
 
 export const addIndustryRequest = (callback: any) => {
   return {
@@ -44,7 +44,7 @@ export const filterIndustry = (payload: string) => {
   };
 };
 
-export const getAllIndustries = (payload: string, callback: () => void) => {
+export const getAllIndustries = (payload: IActionAllIndustriesRequested['payload'], callback: () => void) => {
   return {
     type: GET_ALL_INDUSTRIES_REQUESTED,
     payload,

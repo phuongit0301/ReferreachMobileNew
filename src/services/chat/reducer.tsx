@@ -56,6 +56,7 @@ export const initialState: IChatState = {
     ask: null,
     isIntroducer: false,
     chatUuid: '',
+    showKudos: false,
   },
   dataChatPersonalSelected: null,
   per: 3,
