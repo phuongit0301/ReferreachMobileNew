@@ -618,6 +618,9 @@ export const GlobalStyles = StyleSheet.create({
   pt50: {
     paddingTop: adjust(50),
   },
+  pt100: {
+    paddingTop: adjust(100),
+  },
   pb0: {
     paddingBottom: 0,
   },
@@ -901,5 +904,11 @@ export const GlobalStyles = StyleSheet.create({
   },
   bgContainer: {
     ...StyleSheet.absoluteFill,
+  },
+  opacity: {
+    opacity: 1,
+  },
+  opacity5: {
+    opacity: 0.4,
   },
 });

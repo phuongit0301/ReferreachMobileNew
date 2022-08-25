@@ -193,7 +193,7 @@ const Form: React.FC<Props> = ({feedState, isSwitch = false, schema, navigation}
                     autoHide: true,
                   });
                   setTimeout(() => {
-                    navigation.navigate(AppRoute.CHAT_NAVIGATOR);
+                    navigation.replace(AppRoute.CHAT_NAVIGATOR);
                   }, 2100);
                 });
 

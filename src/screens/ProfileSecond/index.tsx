@@ -19,6 +19,7 @@ import {
 } from '~Root/services/industry/actions';
 import {IUserState} from '~Root/services/user/types';
 import {deleteUserIndustry, setUserIndustry, updateUserProfileRequest} from '~Root/services/user/actions';
+import IndustryAPI from '~Root/services/industry/apis';
 
 // type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.PROFILE>;
 
@@ -50,18 +51,18 @@ const ProfileSecondScreen = ({navigation, route}: any) => {
   const onSubmit = () => {
     const temp = userState?.userInfo?.self_industries
       ? userState?.userInfo?.self_industries.map(item =>
-        typeof item === 'object' ? item?.name ?? item?.attributes?.display_value : item,
-      )
+          typeof item === 'object' ? item?.name ?? item?.attributes?.display_value : item,
+        )
       : [];
     const temp1 = userState?.userInfo?.self_industries
       ? userState?.userInfo?.partner_industries.map(item =>
-        typeof item === 'object' ? item?.name ?? item?.attributes?.display_value : item,
-      )
+          typeof item === 'object' ? item?.name ?? item?.attributes?.display_value : item,
+        )
       : [];
     const temp2 = userState?.userInfo?.self_industries
       ? userState?.userInfo?.sell_industries.map(item =>
-        typeof item === 'object' ? item?.name ?? item?.attributes?.display_value : item,
-      )
+          typeof item === 'object' ? item?.name ?? item?.attributes?.display_value : item,
+        )
       : [];
 
     dispatch(showLoading());
@@ -103,20 +104,26 @@ const ProfileSecondScreen = ({navigation, route}: any) => {
     navigation.goBack();
   };
 
-  const onSave = () => {
-    const items: string[] = [];
-    if (industryState?.industry_selected.length) {
-      industryState?.industry_selected.forEach((x: IIndustry | IIndustrySave) => {
-        items.push(x?.attributes?.display_value?.toLowerCase());
-      });
-    }
+  const onSave = async () => {
+    // const items: string[] = [];
+    // if (industryState?.industry_selected.length) {
+    //   industryState?.industry_selected.forEach((x: IIndustry | IIndustrySave) => {
+    //     items.push(x?.attributes?.display_value?.toLowerCase());
+    //   });
+    // }
+    const items: any = await IndustryAPI.filterDataIndustry({
+      target: industryState?.target ?? 1,
+      industries: industryState?.industry_selected,
+      userInfo: userState?.userInfo,
+    });
 
+    console.log('items========>', items);
     switch (industryState?.target) {
       case 1:
         dispatch(
           setUserIndustry({
             ...userState?.userInfo,
-            self_industries: industryState?.industry_selected,
+            self_industries: [...userState?.userInfo?.self_industries, ...items],
             partner_industries: userState?.userInfo?.partner_industries,
             sell_industries: userState?.userInfo?.sell_industries,
           }),
@@ -128,7 +135,7 @@ const ProfileSecondScreen = ({navigation, route}: any) => {
             ...userState?.userInfo,
             self_industries: userState?.userInfo?.self_industries,
             partner_industries: userState?.userInfo?.partner_industries,
-            sell_industries: industryState?.industry_selected,
+            sell_industries: [...userState?.userInfo?.sell_industries, ...items],
           }),
         );
         break;
@@ -137,7 +144,7 @@ const ProfileSecondScreen = ({navigation, route}: any) => {
           setUserIndustry({
             ...userState?.userInfo,
             self_industries: userState?.userInfo?.self_industries,
-            partner_industries: industryState?.industry_selected,
+            partner_industries: [...userState?.userInfo?.partner_industries, ...items],
             sell_industries: userState?.userInfo?.sell_industries,
           }),
         );
@@ -161,6 +168,7 @@ const ProfileSecondScreen = ({navigation, route}: any) => {
   };
 
   const onHideModal = () => {
+    setTextSearch('');
     dispatch(hideModal({title: ''}));
   };
 

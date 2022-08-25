@@ -10,7 +10,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {AskItem, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root/components';
+import {AskItem, Button, HeaderSmallTransparent, Loading, LoadingSecondary, Paragraph} from '~Root/components';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import {CompositeScreenProps} from '@react-navigation/native';
@@ -162,15 +162,17 @@ const YourAskScreen = ({navigation}: Props) => {
   };
 
   const onChangeDatePicker = (date: Date) => {
+    setLoading(true);
     let currentDate = date || new Date();
     if (moment(currentDate).format('MM-DD-YYYY HH:mm:ss') < moment().format('MM-DD-YYYY HH:mm:ss')) {
       onHideDatePicker();
+      setLoading(false);
       Alert.alert("You can't select date last");
       return;
     }
     currentDate = dateWithMonthsDelay(currentDate, 0);
     if (currentDate && askState?.dataAskSelected?.id) {
-      setLoading(true);
+      setVisibleDatePicker(false);
       dispatch(
         onExtendDeadlineRequest(
           {
@@ -444,19 +446,21 @@ const YourAskScreen = ({navigation}: Props) => {
           </View>
         </TouchableOpacity>
       )}
-
-      <DateTimePickerModal
-        key={`your-ask-date`}
-        isVisible={visibleDatePicker}
-        mode='datetime'
-        onConfirm={(date: Date) => onChangeDatePicker(date)}
-        onCancel={onHideDatePicker}
-        date={
-          askState?.dataAskSelected?.attributes?.deadline
-            ? new Date(askState?.dataAskSelected?.attributes?.deadline)
-            : new Date()
-        }
-      />
+      {visibleDatePicker && (
+        <DateTimePickerModal
+          key={`your-ask-date`}
+          isVisible={visibleDatePicker}
+          mode='datetime'
+          onConfirm={(date: Date) => onChangeDatePicker(date)}
+          onCancel={onHideDatePicker}
+          date={
+            askState?.dataAskSelected?.attributes?.deadline
+              ? new Date(askState?.dataAskSelected?.attributes?.deadline)
+              : new Date()
+          }
+        />
+      )}
+      {loading && <LoadingSecondary />}
     </View>
   );
 };

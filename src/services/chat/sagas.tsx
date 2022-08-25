@@ -69,6 +69,20 @@ function* getChatContext(payload: IActionChatContextRequested) {
         arrUser: response.data?.included,
         currentUserId: userState?.userInfo?.id,
       });
+
+      if (response?.data?.data?.attributes?.last_message_metadata) {
+        const dataUpdate = {
+          contextId: payload?.payload,
+          lastMessage: {
+            last_message_metadata: {
+              ...response?.data?.data?.attributes?.last_message_metadata,
+              read_by_user_id: userState?.userInfo?.id,
+            },
+          },
+        };
+        yield call(ChatAPI.onUpdateChatContext, dataUpdate);
+      }
+
       yield put({
         type: GET_CHAT_CONTEXT_SUCCESS,
         payload: {...response.data, userReceive},
@@ -98,6 +112,20 @@ function* getChatAskContext(payload: IActionChatAskContextRequested) {
         arrUser: response.data?.included,
         currentUserId: userState?.userInfo?.id,
       });
+
+      if (response?.data?.data?.attributes?.last_message_metadata) {
+        const dataUpdate = {
+          contextId: payload?.payload,
+          lastMessage: {
+            last_message_metadata: {
+              ...response?.data?.data?.attributes?.last_message_metadata,
+              read_by_user_id: userState?.userInfo?.id,
+            },
+          },
+        };
+        yield call(ChatAPI.onUpdateChatContext, dataUpdate);
+      }
+
       yield put({
         type: GET_CHAT_ASK_CONTEXT_SUCCESS,
         payload: {...response.data, ...userReceive, chatUuid: response?.data?.data?.attributes?.chat_uuid},

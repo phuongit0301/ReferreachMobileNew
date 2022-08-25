@@ -69,43 +69,41 @@ export default class IndustryAPI {
     industries: IIndustry[] | IIndustrySave[];
     userInfo: IUserInfoState;
   }) {
-    console.log('industries=======>', industries);
-    console.log('userState=======>', userInfo);
+    const items: IIndustry[] | IIndustrySave[] = [];
     if (industries?.length > 0 && userInfo) {
       if (target === 1 && userInfo?.self_industries?.length > 0) {
-        return industries.map((x: IIndustry | IIndustrySave) => {
+        industries.forEach((x: IIndustry | IIndustrySave) => {
           const isExists = userInfo?.self_industries.some(
-            (y: IIndustry | IIndustrySave) => y?.name?.toLowerCase() === x?.name.toLowerCase(),
+            (y: IIndustry | IIndustrySave) => y?.name?.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
           );
-          console.log('isExists=======');
           if (!isExists) {
-            return x;
+            items.push({id: x.id, name: x?.attributes?.search_data});
           }
         });
       }
 
       if (target === 2 && userInfo?.sell_industries?.length > 0) {
-        return industries.map((x: IIndustry | IIndustrySave) => {
+        industries.forEach((x: IIndustry | IIndustrySave) => {
           const isExists = userInfo?.sell_industries.some(
-            (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.name.toLowerCase(),
+            (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
           );
           if (!isExists) {
-            return x;
+            items.push({id: x.id, name: x?.attributes?.search_data});
           }
         });
       }
 
       if (target === 3 && userInfo?.partner_industries?.length > 0) {
-        return industries.map((x: IIndustry | IIndustrySave) => {
+        industries.forEach((x: IIndustry | IIndustrySave) => {
           const isExists = userInfo?.partner_industries.some(
-            (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.name.toLowerCase(),
+            (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
           );
           if (!isExists) {
-            return x;
+            items.push({id: x.id, name: x?.attributes?.search_data});
           }
         });
       }
     }
-    return industries;
+    return items;
   }
 }

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, {useCallback, useEffect, useState} from 'react';
-import {Animated, Dimensions, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, View} from 'react-native';
+import {Animated, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, View} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -10,6 +10,7 @@ import {DrawerScreenProps} from '@react-navigation/drawer';
 import FastImage from 'react-native-fast-image';
 import {usePubNub} from 'pubnub-react';
 import {HistoryMessage} from 'pubnub';
+import moment from 'moment';
 
 import {ChatNavigatorParamsList, TabNavigatorParamsList} from '~Root/navigation/config';
 import {getChatContextRequest, onUpdateChatContextRequest} from '~Root/services/chat/actions';
@@ -18,9 +19,8 @@ import {Paragraph, HeaderChatContextBlue, Loading, LoadingSecondary} from '~Root
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {GlobalStyles, IMAGES} from '~Root/config';
 import {IGlobalState} from '~Root/types';
+import {adjust} from '~Root/utils';
 import styles from './styles';
-import moment from 'moment';
-import { adjust } from '~Root/utils';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<ChatNavigatorParamsList, AppRoute.CHAT>,
@@ -57,6 +57,9 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
         }),
       );
     }
+    return () => {
+      setMesageLoading(true);
+    };
   }, [route]);
 
   useEffect(() => {
@@ -184,7 +187,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
     sendMessage();
   };
 
-  if (loadingState.loading || messageLoading) {
+  if (loadingState.loading && messageLoading) {
     return <Loading />;
   }
 

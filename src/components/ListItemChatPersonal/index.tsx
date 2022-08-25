@@ -44,6 +44,8 @@ const ListItemChatPersonal: React.FC<Props> = ({
     }
   }
 
+  console.log('item?.attributes?.last_message_metadata=======>', item?.attributes?.last_message_metadata);
+
   return (
     <TouchableOpacity
       key={`chat-personal-item-${item?.id}-${index}`}
@@ -107,7 +109,7 @@ const ListItemChatPersonal: React.FC<Props> = ({
               textDarkGrayColor
               title={moment(item?.attributes?.created_at).format('DD-MM-YYYY HH:mmA')}
             />
-            {item?.attributes?.last_message_metadata?.sender_id === userState?.userInfo?.id && (
+            {item?.attributes?.last_message_metadata?.read_by_user_id !== userState?.userInfo?.id && (
               <View style={styles.redCircle} />
             )}
           </View>

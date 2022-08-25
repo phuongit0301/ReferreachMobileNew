@@ -60,7 +60,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   const [chatText, setChatText] = useState('');
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState(true);
   const {isIntroducer, introducer, introducee, ask, asker, data, showKudos} = chatState?.dataChat;
 
   useEffect(() => {
@@ -75,6 +75,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
 
     return () => {
       setChatText('');
+      setLoadingMessage(true);
     };
   }, [route]);
 
@@ -106,7 +107,6 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
       }
       Promise.all(promises)
         .then(() => {
-          setLoadingMessage(false);
           dispatch(setPubnubMessage(null));
           pubnub.history(
             {
@@ -115,6 +115,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
               includeMeta: true,
             },
             (status, response) => {
+              setLoadingMessage(false);
               if (response?.messages?.length > 0) {
                 addMessage(response?.messages);
               }
@@ -336,7 +337,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
     navigation.navigate(AppRoute.CHAT_KUDOS, {askId: ask?.id});
   };
 
-  if (loadingState.loading || loadingMessage) {
+  if (loadingState.loading && loadingMessage) {
     return <Loading />;
   }
 
@@ -461,7 +462,11 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                 horizontal={false}
                 style={[GlobalStyles.container]}
                 ref={scrollRef}
-                contentContainerStyle={[GlobalStyles.justifyEnd, GlobalStyles.scrollViewFullScreen]}
+                contentContainerStyle={[
+                  GlobalStyles.justifyEnd,
+                  GlobalStyles.scrollViewFullScreen,
+                  Platform.OS === 'android' && GlobalStyles.pt100,
+                ]}
                 contentInset={{top: adjust(150), left: 0, bottom: 0, right: 0}}
                 nestedScrollEnabled={true}
                 scrollEventThrottle={1}
