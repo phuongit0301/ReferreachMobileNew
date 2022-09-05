@@ -43,7 +43,7 @@ const ListItemChat: React.FC<Props> = ({
       let introducee = null;
       let introducer = null;
       let isIntroducer = false;
-      let isAsker = false;
+      // let isAsker = false;
       let isIntroducee = false;
       let opacity = styles.opacity;
       let message = '';
@@ -63,7 +63,7 @@ const ListItemChat: React.FC<Props> = ({
           if (item?.current_user_role === 'asker') {
             if (+role.id === +userState?.userInfo?.id) {
               asker = role;
-              isAsker = true;
+              // isAsker = true;
             } else {
               introducer = role;
               if (item?.introductions?.length > 0) {
@@ -86,10 +86,10 @@ const ListItemChat: React.FC<Props> = ({
       }
       if (items?.attributes?.status === ASK_STATUS_ENUM.EXPIRED) {
         opacity = GlobalStyles.opacity5;
-        message = t('ask_has_ended');
+        message = t('ask_has_expired');
       } else if (items?.attributes?.status === ASK_STATUS_ENUM.CLOSED) {
         opacity = GlobalStyles.opacity5;
-        message = t('ask_has_expired');
+        message = t('ask_has_ended');
       }
 
       if (item?.chat_box_type === CHAT_BOX_TYPE_ENUM.RESPONDED) {
@@ -102,11 +102,13 @@ const ListItemChat: React.FC<Props> = ({
           <TouchableOpacity
             key={`chat-item-${item?.id}-${index}`}
             style={[GlobalStyles.flexColumn, GlobalStyles.alignStart, style]}
-            onPress={() => onPress({contextId: item?.id, introducerId: introducer?.id})}>
+            onPress={() => onPress({contextId: item?.id, introducerId: introducer?.id, askerId: dataUser.id})}>
             <View style={[GlobalStyles.flexRow, GlobalStyles.fullWidth]}>
               <View style={[GlobalStyles.alignCenter, styles.borderContainer]}>
                 <View style={styles.border} />
-                {index + 1 === items.attributes?.related_chat_contexts?.length && message !== '' && <View style={styles.circle} />}
+                {index + 1 === items.attributes?.related_chat_contexts?.length && message !== '' && (
+                  <View style={styles.circle} />
+                )}
               </View>
               <View style={[GlobalStyles.flexColumn, GlobalStyles.fullWidth]}>
                 <View style={[GlobalStyles.flexColumn, styles.contain]}>
@@ -236,7 +238,11 @@ const ListItemChat: React.FC<Props> = ({
                           i18nKey='kudos_message'
                           parent={Text}
                           values={{
-                            name: `${dataUser?.attributes?.first_name} ${dataUser?.attributes?.last_name}`,
+                            name: isAsker
+                              ? 'You'
+                              : `${dataUser?.attributes?.first_name} ${dataUser?.attributes?.last_name}`,
+                            name2: `${isAsker ? `${introducer?.first_name} ${introducer?.last_name}` : 'you'}`,
+                            name3: isAsker ? 'kind' : 'your',
                           }}
                           components={{
                             bold: <Text style={[GlobalStyles.p, styles.kudosTextBold]} />,
@@ -276,11 +282,13 @@ const ListItemChat: React.FC<Props> = ({
         <TouchableOpacity
           key={`chat-item-${item?.id}-${index}`}
           style={[GlobalStyles.flexColumn, GlobalStyles.alignStart, style]}
-          onPress={() => onPress({contextId: item?.id, introducerId: introducer?.id})}>
+          onPress={() => onPress({contextId: item?.id, introducerId: introducer?.id, askerId: dataUser.id})}>
           <View style={[GlobalStyles.flexRow, GlobalStyles.fullWidth]}>
             <View style={[GlobalStyles.alignCenter, styles.borderContainer]}>
               <View style={styles.border} />
-              {index + 1 === items.attributes?.related_chat_contexts?.length && message !== '' && <View style={styles.circle} />}
+              {index + 1 === items.attributes?.related_chat_contexts?.length && message !== '' && (
+                <View style={styles.circle} />
+              )}
             </View>
             <View style={[GlobalStyles.flexColumn, GlobalStyles.fullWidth]}>
               <View style={[GlobalStyles.flexColumn, styles.contain]}>
@@ -364,7 +372,15 @@ const ListItemChat: React.FC<Props> = ({
                         i18nKey='kudos_message'
                         parent={Text}
                         values={{
-                          name: `${dataUser?.attributes?.first_name} ${dataUser?.attributes?.last_name}`,
+                          name: `${
+                            isAsker ? 'You' : `${dataUser?.attributes?.first_name} ${dataUser?.attributes?.last_name}`
+                          }`,
+                          name2: `${
+                            isAsker
+                              ? `${introducer?.attributes?.first_name} ${introducer?.attributes?.last_name}`
+                              : 'you'
+                          }`,
+                          name3: isAsker ? 'kind' : 'your',
                         }}
                         components={{
                           bold: <Text style={[GlobalStyles.p, styles.kudosTextBold]} />,

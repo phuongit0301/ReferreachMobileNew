@@ -74,6 +74,7 @@ import HomeTemplateScreen from './HomeTemplate';
 import InviteContactTemplateScreen from './InviteContactTemplate';
 import ProfileTemplateScreen from './ProfileTemplate';
 import KeyboardShift from './KeyboardShift';
+import AuthHeaderNew from './AuthHeaderNew';
 
 export {
   AuthHeader,
@@ -151,4 +152,5 @@ export {
   DeepLinkProvider,
   DeepLinkContext,
   KeyboardShift,
+  AuthHeaderNew,
 };

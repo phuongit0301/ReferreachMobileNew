@@ -69,39 +69,59 @@ export default class IndustryAPI {
     industries: IIndustry[] | IIndustrySave[];
     userInfo: IUserInfoState;
   }) {
-    const items: IIndustry[] | IIndustrySave[] = [];
+    let items: IIndustry[] | IIndustrySave[] = [];
+    console.log('industries======>', industries);
+    console.log('userInfo======>', userInfo);
     if (industries?.length > 0 && userInfo) {
-      if (target === 1 && userInfo?.self_industries?.length > 0) {
-        industries.forEach((x: IIndustry | IIndustrySave) => {
-          const isExists = userInfo?.self_industries.some(
-            (y: IIndustry | IIndustrySave) => y?.name?.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
-          );
-          if (!isExists) {
+      if (target === 1) {
+        if (userInfo?.self_industries?.length > 0) {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
+            const isExists = userInfo?.self_industries.some(
+              (y: IIndustry | IIndustrySave) => y?.name?.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
+            );
+            if (!isExists) {
+              items.push({id: x.id, name: x?.attributes?.search_data});
+            }
+          });
+        } else {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
             items.push({id: x.id, name: x?.attributes?.search_data});
-          }
-        });
+          });
+        }
       }
 
-      if (target === 2 && userInfo?.sell_industries?.length > 0) {
-        industries.forEach((x: IIndustry | IIndustrySave) => {
-          const isExists = userInfo?.sell_industries.some(
-            (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
-          );
-          if (!isExists) {
+      if (target === 2) {
+        if (userInfo?.sell_industries?.length > 0) {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
+            const isExists = userInfo?.sell_industries.some(
+              (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
+            );
+            if (!isExists) {
+              items.push({id: x.id, name: x?.attributes?.search_data});
+            }
+          });
+        } else {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
             items.push({id: x.id, name: x?.attributes?.search_data});
-          }
-        });
+          });
+        }
       }
 
-      if (target === 3 && userInfo?.partner_industries?.length > 0) {
-        industries.forEach((x: IIndustry | IIndustrySave) => {
-          const isExists = userInfo?.partner_industries.some(
-            (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
-          );
-          if (!isExists) {
+      if (target === 3) {
+        if (userInfo?.partner_industries?.length > 0) {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
+            const isExists = userInfo?.partner_industries.some(
+              (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
+            );
+            if (!isExists) {
+              items.push({id: x.id, name: x?.attributes?.search_data});
+            }
+          });
+        } else {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
             items.push({id: x.id, name: x?.attributes?.search_data});
-          }
-        });
+          });
+        }
       }
     }
     return items;

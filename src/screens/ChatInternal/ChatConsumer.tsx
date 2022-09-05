@@ -61,13 +61,13 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(true);
-  const {isIntroducer, introducer, introducee, ask, asker, data, showKudos} = chatState?.dataChat;
+  const {isIntroducer, introducer, introducee, ask, asker, data, showKudos, isAsker} = chatState?.dataChat;
 
   useEffect(() => {
-    if ((route.params as any)?.contextId) {
+    if ((route.params as any)?.contextId && (route.params as any)?.askerId) {
       dispatch(showLoading());
       dispatch(
-        getChatAskContextRequest(route.params?.contextId, () => {
+        getChatAskContextRequest({contextId: route.params?.contextId, askerId: route.params?.askerId}, () => {
           dispatch(hideLoading());
         }),
       );
@@ -609,7 +609,11 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                       i18nKey='kudos_message'
                       parent={Text}
                       values={{
-                        name: `${asker?.attributes?.first_name} ${asker?.attributes?.last_name}`,
+                        name: `${isAsker ? 'You' : `${asker?.attributes?.first_name} ${asker?.attributes?.last_name}`}`,
+                        name2: `${
+                          isAsker ? `${introducer?.attributes?.first_name} ${introducer?.attributes?.last_name}` : 'you'
+                        }`,
+                        name3: isAsker ? 'kind' : 'your',
                       }}
                       components={{
                         bold: <Text style={[GlobalStyles.p, styles.kudosTextBold]} />,

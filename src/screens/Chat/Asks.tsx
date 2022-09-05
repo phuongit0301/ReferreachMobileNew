@@ -75,7 +75,11 @@ const AskScreen = ({navigation, textSearch, visibleModal = false}: Props & Param
     console.log(item);
     dispatch(
       getCredential(() => {
-        navigation.navigate(AppRoute.CHAT_INTERNAL, {contextId: item?.contextId, introducerId: item?.introducerId});
+        navigation.navigate(AppRoute.CHAT_INTERNAL, {
+          contextId: item?.contextId,
+          introducerId: item?.introducerId,
+          askerId: item?.askerId,
+        });
       }),
     );
   };

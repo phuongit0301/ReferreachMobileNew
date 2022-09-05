@@ -252,8 +252,8 @@ export default class ChatAPI {
   }
 
   static async handleUserReceive(params: any) {
-    let introduction = null; //introducer or introducee
-    let ask = null; //asks
+    let introduction = null;
+    let ask = null;
     const users = [];
     let introducer = null;
     let introducee = null;
@@ -290,12 +290,14 @@ export default class ChatAPI {
           if (!isAsker) {
             isAsker = +params?.currentUserId === +item.id;
           }
-          asker = item;
+          if (+params?.askerId === +item.id) {
+            asker = item;
+          }
         }
       }
     }
 
-    return {introducer, introducee, asker, ask, isIntroducer, showKudos: showKudos && isAsker};
+    return {introducer, introducee, asker, ask, isIntroducer, showKudos, isAsker};
   }
 
   static async handleChatPersonalReceive(params: any) {

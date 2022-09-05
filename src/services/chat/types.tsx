@@ -216,6 +216,11 @@ export interface IChatState {
   callback?: any;
 }
 
+export interface IChatAskContext {
+  contextId: string;
+  askerId: string;
+}
+
 export interface IActionChatContextRequested {
   type: typeof GET_CHAT_CONTEXT_REQUESTED;
   payload: string;
@@ -241,7 +246,7 @@ export interface IActionChatContextFailure {
 }
 export interface IActionChatAskContextRequested {
   type: typeof GET_CHAT_ASK_CONTEXT_REQUESTED;
-  payload: string;
+  payload: IChatAskContext;
   callback?: any;
 }
 

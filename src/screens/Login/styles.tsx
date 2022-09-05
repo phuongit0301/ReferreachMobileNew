@@ -26,7 +26,19 @@ export default StyleSheet.create({
     color: BASE_COLORS.steelBlueColor,
   },
   buttonContainerStyle: {
-    backgroundColor: BASE_COLORS.oxleyColor,
+    backgroundColor: BASE_COLORS.forestGreenColor,
+  },
+  buttonSignUpContainerStyle: {
+    backgroundColor: BASE_COLORS.whiteColor,
+    borderColor: BASE_COLORS.oxleyColor,
+    borderWidth: 1,
+  },
+  h3BoldSignUpDefault: {
+    fontFamily: BASE_FONTS.notoSansExtraBold,
+    fontWeight: '600',
+    lineHeight: lineHeightByRatio(adjust(BASE_STYLES.h3)),
+    color: BASE_COLORS.oxleyColor,
+    fontSize: adjust(14),
   },
   h3: {
     ...GlobalStyles.mb38,
@@ -38,10 +50,11 @@ export default StyleSheet.create({
     lineHeight: lineHeightByRatio(adjust(BASE_STYLES.h3)),
   },
   h3BoldDefault: {
-    fontFamily: BASE_FONTS.semiBold,
+    fontFamily: BASE_FONTS.notoSansExtraBold,
     fontWeight: '600',
     lineHeight: lineHeightByRatio(adjust(BASE_STYLES.h3)),
     color: BASE_COLORS.whiteColor,
+    fontSize: adjust(14),
   },
   signUpArea: {
     ...GlobalStyles.mt46,
@@ -59,5 +72,9 @@ export default StyleSheet.create({
   iconEye: {
     width: adjust(19),
     height: adjust(7),
+  },
+  border: {
+    borderBottomColor: BASE_COLORS.oxleyColor,
+    borderBottomWidth: 1,
   },
 });

@@ -46,10 +46,10 @@ export default StyleSheet.create({
   },
   containerCommonStyle: {
     ...GlobalStyles.pv8,
-    borderTopLeftRadius: adjust(12),
-    borderTopRightRadius: adjust(12),
-    borderBottomLeftRadius: adjust(12),
-    borderBottomRightRadius: adjust(24),
+    borderTopLeftRadius: adjust(20),
+    borderTopRightRadius: adjust(20),
+    borderBottomLeftRadius: adjust(20),
+    borderBottomRightRadius: adjust(20),
   },
   border: {
     borderColor: BASE_COLORS.gunmetalColor,

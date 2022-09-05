@@ -105,12 +105,13 @@ function* getChatContext(payload: IActionChatContextRequested) {
 
 function* getChatAskContext(payload: IActionChatAskContextRequested) {
   try {
-    const response: IActionChatAskContextSuccess['payload'] = yield call(ChatAPI.getChatContext, payload?.payload);
+    const response: IActionChatAskContextSuccess['payload'] = yield call(ChatAPI.getChatContext, payload?.payload?.contextId);
     if (response.success) {
       const userState: IUserState = yield select(getUserState);
       const userReceive: IIncluded = yield call(ChatAPI.handleUserReceive, {
         arrUser: response.data?.included,
         currentUserId: userState?.userInfo?.id,
+        askerId: payload?.payload?.askerId,
       });
 
       if (response?.data?.data?.attributes?.last_message_metadata) {

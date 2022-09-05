@@ -19,6 +19,7 @@ import {
   IActionOnUnPinSuccess,
   IActionOnUpdateChatContextRequested,
   IActionOnUpdateChatContextSuccess,
+  IChatAskContext,
   IPaginationAndSearch,
   IPersonalPaginationAndSearch,
   PinnableTypeEnum,
@@ -54,7 +55,7 @@ export const getChatContextRequest = (payload: any, callback: () => void) => {
   };
 };
 
-export const getChatAskContextRequest = (payload: any, callback: () => void) => {
+export const getChatAskContextRequest = (payload: IChatAskContext, callback: () => void) => {
   return {
     type: GET_CHAT_ASK_CONTEXT_REQUESTED,
     payload,

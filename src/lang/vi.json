@@ -5,6 +5,7 @@
     "forgot_password": "Forgot password",
     "login": "Log In",
     "logout": "Logout",
+    "sign_up_instead": "Sign Up Instead",
     "login_successful": "Login Successful",
     "register_successful": "Register Successful",
     "login_error": "Email or password incorrect",
@@ -152,5 +153,7 @@
     "ask_has_expired": "Ask has expired",
     "introducers": "Introducers",
     "introducer": "Introducer",
-    "kudos_message": "<bold>{{name}}</bold> <normal>gave you a kudos for your help!</normal>"
+    "kudos_message": "<bold>{{name}}</bold> <normal>gave <normal>{{name2}}</normal> a kudos for <normal>{{name3}}</normal> help!</normal>",
+    "i_accept": "I accept",
+    "i_decline": "I decline"
 }

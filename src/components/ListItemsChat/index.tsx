@@ -5,6 +5,8 @@ import {View, FlatList} from 'react-native';
 import {IDataChatFeed} from '~Root/services/chat/types';
 import {ListItemChat, ListItemChatHeader, Paragraph} from '~Root/components';
 import {GlobalStyles} from '~Root/config';
+import {useSelector} from 'react-redux';
+import {IGlobalState} from '~Root/types';
 
 interface Props {
   dataFeed: IDataChatFeed;
@@ -19,12 +21,16 @@ const ListItemsChat: React.FC<Props> = ({
   onPin = () => {},
   onUnPin = () => {},
 }: Props) => {
+  const userState = useSelector((state: IGlobalState) => state.userState);
+
   return (
     <FlatList
       data={dataFeed.data}
       keyExtractor={(item, index) => `list-item-${new Date().getTime()}-${index}`}
       renderItem={({item, index}) => {
         const dataIncluded = dataFeed.included.find((x: any) => +x?.id === +item?.relationships?.user?.data?.id);
+        const isAsker = +dataIncluded.id === +userState?.userInfo?.id;
+
         return (
           <View style={[GlobalStyles.flexColumn, GlobalStyles.mb15]}>
             <ListItemChatHeader
@@ -35,7 +41,7 @@ const ListItemsChat: React.FC<Props> = ({
               onPin={onPin}
               onUnPin={onUnPin}
             />
-            <ListItemChat items={item} isAsker={false} dataUser={dataIncluded} index={index} onPress={onItemClick} />
+            <ListItemChat items={item} dataUser={dataIncluded} index={index} onPress={onItemClick} isAsker={isAsker} />
           </View>
         );
       }}
