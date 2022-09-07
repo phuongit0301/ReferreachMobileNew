@@ -98,6 +98,10 @@ const LoginScreen = ({navigation}: Props) => {
     setSecureTextEntry(!secureTextEntry);
   };
 
+  const onSignUp = () => {
+    navigation.navigate(AppRoute.PRIVACY_POLICY);
+  };
+
   return (
     <View style={[GlobalStyles.container, styles.container]}>
       <AuthHeader showLeft={false} />
@@ -150,7 +154,7 @@ const LoginScreen = ({navigation}: Props) => {
                   <CheckBox text={t('remember_me')} isChecked={isChecked} onChange={onCheckboxChange} size={30} />
                   <Link onPress={onForgotPassword} textDarkGrayColor textDecoration bold title={t('forgot_password')} />
                 </View>
-                <View style={GlobalStyles.mt30}>
+                <View style={[GlobalStyles.mt30, GlobalStyles.pb25, styles.border]}>
                   <Button
                     title={t('login')}
                     h3
@@ -159,6 +163,16 @@ const LoginScreen = ({navigation}: Props) => {
                     containerStyle={{...GlobalStyles.buttonContainerStyle, ...styles.buttonContainerStyle}}
                     textStyle={styles.h3BoldDefault}
                     disabled={!isValid}
+                  />
+                </View>
+                <View style={GlobalStyles.mt30}>
+                  <Button
+                    title={t('sign_up_instead')}
+                    h3
+                    textCenter
+                    onPress={onSignUp}
+                    containerStyle={{...GlobalStyles.buttonContainerStyle, ...styles.buttonSignUpContainerStyle}}
+                    textStyle={styles.h3BoldSignUpDefault}
                   />
                 </View>
               </View>

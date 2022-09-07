@@ -98,6 +98,11 @@ export default StyleSheet.create({
   iconProtect: {
     width: adjust(11),
     height: adjust(13),
+    marginTop: adjust(-15),
+  },
+  iconProtect1: {
+    width: adjust(11),
+    height: adjust(13),
     marginRight: adjust(5),
     marginTop: adjust(-15),
   },

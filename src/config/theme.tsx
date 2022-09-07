@@ -23,8 +23,10 @@ export const BASE_COLORS = {
   tealBlueColor: '#38698B',
   steelBlueColor: '#4683AE',
   steelBlue2Color: '#347FAD',
+  steelBlueColor3: '#6ABCEE',
   aeroColor: '#73C6E7',
   oxleyColor: '#679C79',
+  oxleyColor2: '#5F8E6F',
   buffColor: '#F6E186',
   seaSerpentColor: '#56C6D1',
   giantsOrangeColor: '#FF4B26',
@@ -64,12 +66,17 @@ export const BASE_COLORS = {
   lightPeriwinkleColor: '#CDD2DE',
   superiorityBlueColor: '#8199BC',
   carminePinkColor: '#F05344',
+  lavenderGrayColor: '#BDC3CB',
 };
 
 export const BASE_FONTS = {
   bold: 'Montserrat-Bold',
   semiBold: 'Montserrat-SemiBold',
   regular: 'Montserrat-Regular',
+  notoSansRegular: 'NotoSans-Regular',
+  notoSansMedium: 'NotoSans-Medium',
+  notoSansExtraBold: 'NotoSans-ExtraBold',
+  notoSansBold: 'NotoSans-Bold',
 };
 
 export const BASE_STYLES = {

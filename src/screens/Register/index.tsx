@@ -52,7 +52,7 @@ const schema = yup.object().shape({
 
 type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.LOGIN>;
 
-const RegisterScreen = ({navigation}: Props) => {
+const RegisterScreen = ({navigation, route}: Props) => {
   const {
     register,
     control,
@@ -82,46 +82,48 @@ const RegisterScreen = ({navigation}: Props) => {
     credentials: IActionRegisterRequested['payload']['user'],
   ) => {
     if (credentials.email && credentials.password && credentials.first_name && credentials.last_name) {
+      const payload = {
+        user: {
+          email: credentials.email,
+          password: credentials.password,
+          password_confirmation: credentials.password_confirmation,
+          first_name: credentials.first_name,
+          last_name: credentials.last_name,
+        },
+      };
+
+      if (!(route.params as any)?.isWithoutInviteCode) {
+        payload.code = registerState?.invitation_id;
+      }
+
       dispatch(showLoading());
       dispatch(
-        registerRequest(
-          {
-            user: {
-              email: credentials.email,
-              password: credentials.password,
-              password_confirmation: credentials.password_confirmation,
-              first_name: credentials.first_name,
-              last_name: credentials.last_name,
-            },
-            code: registerState?.invitation_id,
-          },
-          (response: IActionRegisterSuccess['payload']) => {
-            if (response.success) {
-              Toast.show({
-                position: 'bottom',
-                type: response.success ? 'success' : 'error',
-                text1: t('register_successful'),
-                visibilityTime: 4000,
-                autoHide: true,
-              });
-              dispatch(
-                loginRequest({email: credentials.email, password: credentials.password}, () => {
-                  dispatch(hideLoading());
-                  navigation.navigate(AppRoute.VERIFY_EMAIL);
-                }),
-              );
-            } else {
-              dispatch(hideLoading());
-              Toast.show({
-                position: 'bottom',
-                type: 'error',
-                text1: response?.message ?? t('register_error'),
-                visibilityTime: 2000,
-                autoHide: true,
-              });
-            }
-          },
-        ),
+        registerRequest(payload, (response: IActionRegisterSuccess['payload']) => {
+          if (response.success) {
+            Toast.show({
+              position: 'bottom',
+              type: response.success ? 'success' : 'error',
+              text1: t('register_successful'),
+              visibilityTime: 4000,
+              autoHide: true,
+            });
+            dispatch(
+              loginRequest({email: credentials.email, password: credentials.password}, () => {
+                dispatch(hideLoading());
+                navigation.navigate(AppRoute.VERIFY_EMAIL);
+              }),
+            );
+          } else {
+            dispatch(hideLoading());
+            Toast.show({
+              position: 'bottom',
+              type: 'error',
+              text1: response?.message ?? t('register_error'),
+              visibilityTime: 2000,
+              autoHide: true,
+            });
+          }
+        }),
       );
     }
   };

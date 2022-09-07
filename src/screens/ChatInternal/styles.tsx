@@ -26,6 +26,16 @@ export default StyleSheet.create({
     zIndex: 1000,
     width: '100%',
   },
+  askEnd: {
+    borderTopLeftRadius: adjust(5),
+    borderTopRightRadius: adjust(5),
+  },
+  lineThroughContainer: {
+    height: 1,
+    backgroundColor: BASE_COLORS.darkGray,
+    flex: 1,
+    zIndex: 1,
+  },
   headerIntroduced: {
     marginTop: adjust(-8),
   },
@@ -41,6 +51,13 @@ export default StyleSheet.create({
     fontSize: adjust(10),
     lineHeight: adjust(15),
   },
+  textBold: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '700',
+    color: BASE_COLORS.jetColor,
+    fontSize: adjust(10),
+    lineHeight: adjust(15),
+  },
   textBlue: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
@@ -53,6 +70,20 @@ export default StyleSheet.create({
     fontWeight: '600',
     color: BASE_COLORS.forestGreenColor,
     fontSize: adjust(10),
+    lineHeight: adjust(15),
+  },
+  kudosTextBold: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '700',
+    color: BASE_COLORS.whiteColor,
+    fontSize: adjust(11),
+    lineHeight: adjust(15),
+  },
+  kudosTextNormal: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '600',
+    color: BASE_COLORS.whiteColor,
+    fontSize: adjust(11),
     lineHeight: adjust(15),
   },
   contentContainer: {
@@ -149,14 +180,14 @@ export default StyleSheet.create({
     elevation: adjust(4),
   },
   chatBg: {
-    width: '70%',
+    width: '75%',
     backgroundColor: BASE_COLORS.lightPeriwinkleColor,
     borderTopLeftRadius: adjust(12),
     borderTopRightRadius: adjust(12),
     borderBottomRightRadius: adjust(12),
   },
   chatBgSecond: {
-    width: '70%',
+    width: '75%',
     alignSelf: 'flex-end',
     backgroundColor: BASE_COLORS.superiorityBlueColor,
     borderTopLeftRadius: adjust(12),
@@ -176,5 +207,13 @@ export default StyleSheet.create({
   },
   txtTime: {
     fontSize: adjust(9),
+  },
+  bgKudos: {
+    borderRadius: adjust(8),
+    backgroundColor: BASE_COLORS.steelBlue2Color,
+  },
+  iconHand: {
+    width: adjust(25),
+    height: adjust(18),
   },
 });

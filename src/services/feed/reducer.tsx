@@ -14,6 +14,8 @@ import {
   SET_FEED_INTRODUCTIONS,
   CREATE_INTRODUCTION_REQUESTED,
   CREATE_INTRODUCTION_FAILURE,
+  GET_SUGGEST_INTRODUCTION_LIST_FAILURE,
+  GET_SUGGEST_INTRODUCTION_LIST_SUCCESS,
 } from './constants';
 import {IFeedItemsState, IActionsUser} from './types';
 
@@ -26,6 +28,10 @@ export const initialState: IFeedItemsState = {
     meta: null,
   },
   dataNetwork: {
+    data: [],
+    included: [],
+  },
+  dataNetworkOriginal: {
     data: [],
     included: [],
   },
@@ -48,6 +54,9 @@ export const initialState: IFeedItemsState = {
       left: 0,
     },
   },
+  networkPer: 10,
+  networkPage: 1,
+  networkTextSearch: '',
   callback: () => {},
 };
 
@@ -73,6 +82,7 @@ const userReducer = (state: IFeedItemsState = initialState, action: IActionsUser
       };
     case GET_FEED_ITEMS_LIST_SUCCESS:
     case GET_FEED_ITEM_PAGINATION_SUCCESS:
+    case GET_SUGGEST_INTRODUCTION_LIST_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -84,6 +94,7 @@ const userReducer = (state: IFeedItemsState = initialState, action: IActionsUser
     case SET_FEED_ITEM_READ_FAILURE:
     case GET_PUBLIC_PROFILE_FAILURE:
     case CREATE_INTRODUCTION_FAILURE:
+    case GET_SUGGEST_INTRODUCTION_LIST_FAILURE:
       return {...state, loading: false, message: action.payload.message};
     case SET_FEED_VISIBLE_MENU:
       return {...state, ...action?.payload};

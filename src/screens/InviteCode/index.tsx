@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {View, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
@@ -13,10 +13,9 @@ import {showLoading, hideLoading} from '~Root/services/loading/actions';
 import {IInviteCode} from '~Root/services/register/types';
 import {RootNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {InputValidateControl, Button, Loading, AuthHeader, Paragraph} from '~Root/components';
-import {INVITE_CODE_FIELDS, GlobalStyles, BASE_COLORS, INVITE_CODE_KEYS, IMAGES} from '~Root/config';
+import {InputValidateControl, Button, Loading, AuthHeader} from '~Root/components';
+import {INVITE_CODE_FIELDS, GlobalStyles, BASE_COLORS, INVITE_CODE_KEYS} from '~Root/config';
 import styles from './styles';
-import FastImage from 'react-native-fast-image';
 
 const schema = yup.object().shape({
   invite_code: yup.string().required('Invite Code is a required'),
@@ -73,8 +72,10 @@ const InviteCodeScreen = ({route, navigation}: Props) => {
             navigation.navigate(AppRoute.INVITE_EXPIRE);
           }
         } else {
-          setError(INVITE_CODE_KEYS.inviteCode, response?.message);
           await trigger();
+          setError(INVITE_CODE_KEYS.inviteCode, {
+            message: response?.message?.detail ? response?.message?.detail : response?.message,
+          });
         }
       }),
     );

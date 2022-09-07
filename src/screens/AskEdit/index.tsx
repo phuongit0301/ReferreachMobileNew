@@ -20,7 +20,7 @@ import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {Button, HeaderSmallTransparent, InputIconValidate, Loading, Location, Paragraph} from '~Root/components';
 import {BASE_COLORS, CREATE_ASK_FIELDS, CREATE_ASK_KEYS, GlobalStyles, IMAGES} from '~Root/config';
-import {calculateExpiredTime, dateFormat3, dateWithMonthsDelay} from '~Root/utils';
+import {calculateExpiredTime, convertLocalToUTC, dateFormat3, dateWithMonthsDelay} from '~Root/utils';
 import {getAskDetails, updateAsk} from '~Root/services/ask/actions';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {
@@ -281,7 +281,7 @@ const AskEditScreen = ({route, navigation}: Props) => {
       formData.append(CREATE_ASK_FIELDS.businessDetail, textBusinessDetail);
     }
     if (credentials.deadline) {
-      formData.append(CREATE_ASK_FIELDS.deadline, moment(credentials.deadline).format('DD/MM/YYYY'));
+      formData.append(CREATE_ASK_FIELDS.deadline, convertLocalToUTC(credentials.deadline));
     }
     if (credentials.location) {
       formData.append('ask_location_attributes[text]', credentials.location);

@@ -8,6 +8,7 @@ export enum AppRoute {
   INVITE_CONFIRM = 'InviteConfirm',
   INVITE_EXPIRE = 'InviteExpire',
   REGISTER = 'Register',
+  PRIVACY_POLICY = 'PrivacyPolicy',
   RESET_PASSWORD = 'ResetPassword',
   FORGOT_PASSWORD = 'ForgotPassword',
   CHECK_YOUR_MAIL = 'CheckYourMail',

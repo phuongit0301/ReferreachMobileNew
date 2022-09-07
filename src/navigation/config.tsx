@@ -10,7 +10,8 @@ export type RootNavigatorParamsList = {
   [AppRoute.INVITE_CODE]: {code?: string} | undefined;
   [AppRoute.INVITE_CONFIRM]: {code?: string} | undefined;
   [AppRoute.INVITE_EXPIRE]: undefined;
-  [AppRoute.REGISTER]: undefined;
+  [AppRoute.REGISTER]: {isWithoutInviteCode: boolean} | undefined;
+  [AppRoute.PRIVACY_POLICY]: undefined;
   [AppRoute.RESET_PASSWORD]: undefined;
   [AppRoute.CREATE_ASK]: undefined;
   [AppRoute.ON_BOARDING_SCREEN]: {item: any};
@@ -36,7 +37,7 @@ export type RootNavigatorParamsList = {
   [AppRoute.FEED_BACK_MODAL]: undefined;
   [AppRoute.INDIVIDUAL_MESSAGE_MODAL]: undefined;
   [AppRoute.JOINT_MESSAGE_MODAL]: undefined;
-  [AppRoute.CHAT_INTERNAL]: undefined;
+  [AppRoute.CHAT_INTERNAL]: {contextId: string; introducerId: string; askerId: string} | undefined;
   [AppRoute.CHAT_CONTEXT_SWITCH]: undefined;
   [AppRoute.CHAT_NOTIFICATION_ASKER]: undefined;
   [AppRoute.VIEW_PARTICIPANT]: undefined;
@@ -125,10 +126,11 @@ export type AskNavigatorParamsList = {
 };
 
 export type ChatNavigatorParamsList = {
+  [AppRoute.CHAT_NAVIGATOR]: undefined;
   [AppRoute.CHAT]: undefined;
   [AppRoute.CHAT_INTERNAL]: undefined;
   [AppRoute.CHAT_PERSONAL]: {contextId: string | undefined} | undefined;
-  [AppRoute.CHAT_KUDOS]: undefined;
+  [AppRoute.CHAT_KUDOS]: {askId: string | undefined} | undefined;
   [AppRoute.CHAT_KUDOS_SUCCESS]: undefined;
 };
 

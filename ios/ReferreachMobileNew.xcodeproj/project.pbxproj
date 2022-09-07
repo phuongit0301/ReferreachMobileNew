@@ -12,11 +12,15 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1DF3065C7698653DBF05605B /* libPods-ReferreachMobileNew.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-ReferreachMobileNew.a */; };
+		200C3EE8B36C4860BF8D6A60 /* NotoSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AFF4405376BD4C668314C8D9 /* NotoSans-Medium.ttf */; };
 		2069442DD39943A5B05E1FFF /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E433C194004D40A388838911 /* Montserrat-Regular.ttf */; };
 		231C4B8774604904B374361B /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4B18141EE08499CAE895A9C /* Montserrat-SemiBold.ttf */; };
 		7699B88040F8A987B510C191 /* libPods-ReferreachMobileNew-ReferreachMobileNewTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-ReferreachMobileNew-ReferreachMobileNewTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		81E94F848B40478F9C189D92 /* NotoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B361E538C77846E69690099B /* NotoSans-Bold.ttf */; };
 		C4DE338BB93C440CA60A9DAA /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9C7ACC2F6B4549C19900346C /* Montserrat-Bold.ttf */; };
+		D6552221C5394F4E8A9F8FAF /* NotoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B1E6FDFDB8704C588C622D4B /* NotoSans-Regular.ttf */; };
+		F3A80998EE964401A78A472A /* NotoSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1143D78CBD5942DEB4AAA9A5 /* NotoSans-ExtraBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +40,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* ReferreachMobileNewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReferreachMobileNewTests.m; sourceTree = "<group>"; };
 		0230D38C16BE451EBB0E73E0 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
+		1143D78CBD5942DEB4AAA9A5 /* NotoSans-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-ExtraBold.ttf"; path = "../src/assets/fonts/NotoSans-ExtraBold.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* ReferreachMobileNew.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReferreachMobileNew.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ReferreachMobileNew/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = ReferreachMobileNew/AppDelegate.mm; sourceTree = "<group>"; };
@@ -63,6 +68,9 @@
 		9C7ACC2F6B4549C19900346C /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Bold.ttf"; path = "../src/assets/fonts/Montserrat-Bold.ttf"; sourceTree = "<group>"; };
 		A05E21B805ED48CCB3784733 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		A4B18141EE08499CAE895A9C /* Montserrat-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-SemiBold.ttf"; path = "../src/assets/fonts/Montserrat-SemiBold.ttf"; sourceTree = "<group>"; };
+		AFF4405376BD4C668314C8D9 /* NotoSans-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Medium.ttf"; path = "../src/assets/fonts/NotoSans-Medium.ttf"; sourceTree = "<group>"; };
+		B1E6FDFDB8704C588C622D4B /* NotoSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Regular.ttf"; path = "../src/assets/fonts/NotoSans-Regular.ttf"; sourceTree = "<group>"; };
+		B361E538C77846E69690099B /* NotoSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Bold.ttf"; path = "../src/assets/fonts/NotoSans-Bold.ttf"; sourceTree = "<group>"; };
 		D99DDEE11917472DA2259A65 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		E433C194004D40A388838911 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Regular.ttf"; path = "../src/assets/fonts/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		EAF35F62EF214504823A5421 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
@@ -195,6 +203,10 @@
 				9C7ACC2F6B4549C19900346C /* Montserrat-Bold.ttf */,
 				E433C194004D40A388838911 /* Montserrat-Regular.ttf */,
 				A4B18141EE08499CAE895A9C /* Montserrat-SemiBold.ttf */,
+				B361E538C77846E69690099B /* NotoSans-Bold.ttf */,
+				1143D78CBD5942DEB4AAA9A5 /* NotoSans-ExtraBold.ttf */,
+				AFF4405376BD4C668314C8D9 /* NotoSans-Medium.ttf */,
+				B1E6FDFDB8704C588C622D4B /* NotoSans-Regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -298,6 +310,10 @@
 				C4DE338BB93C440CA60A9DAA /* Montserrat-Bold.ttf in Resources */,
 				2069442DD39943A5B05E1FFF /* Montserrat-Regular.ttf in Resources */,
 				231C4B8774604904B374361B /* Montserrat-SemiBold.ttf in Resources */,
+				81E94F848B40478F9C189D92 /* NotoSans-Bold.ttf in Resources */,
+				F3A80998EE964401A78A472A /* NotoSans-ExtraBold.ttf in Resources */,
+				200C3EE8B36C4860BF8D6A60 /* NotoSans-Medium.ttf in Resources */,
+				D6552221C5394F4E8A9F8FAF /* NotoSans-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,7 +567,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ReferreachMobileNew/ReferreachMobileNew.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
@@ -582,7 +598,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ReferreachMobileNew/ReferreachMobileNew.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ReferreachMobileNew/Info.plist;

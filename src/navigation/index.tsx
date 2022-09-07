@@ -40,6 +40,11 @@ import ForgotPasswordScreen from '~Root/screens/ForgotPassword';
 import CheckYourEmailScreen from '~Root/screens/CheckYourEmail';
 import IndividualJointModalScreen from '~Root/screens/IndividualJointModal';
 import IndividualMessageModalScreen from '~Root/screens/IndividualMessageModal';
+import ChatInternalScreen from '~Root/screens/ChatInternal';
+import ChatPersonalScreen from '~Root/screens/ChatPersonal';
+import ChatKudosScreen from '~Root/screens/ChatKudos';
+import ChatKudosSuccessScreen from '~Root/screens/ChatKudosSuccess';
+import PrivacyPolicyScreen from '~Root/screens/PrivacyPolicy';
 
 import {BASE_SETTINGS} from '~Root/config';
 import {AppState} from '~Root/reducers';
@@ -56,10 +61,6 @@ import {
   AirFeedNavigatorParamsList,
   ChatNavigatorParamsList,
 } from './config';
-import ChatInternalScreen from '~Root/screens/ChatInternal';
-import ChatPersonalScreen from '~Root/screens/ChatPersonal';
-import ChatKudosScreen from '~Root/screens/ChatKudos';
-import ChatKudosSuccessScreen from '~Root/screens/ChatKudosSuccess';
 
 enableScreens();
 
@@ -158,8 +159,6 @@ const AppBottomTab = () => {
   );
 };
 
-
-
 const AppDrawer = (props: any) => {
   return (
     <DrawerStack.Navigator
@@ -252,6 +251,7 @@ const AppNavigator = (props: any) => {
         <>
           <RootStack.Screen name={AppRoute.LOGIN} component={LoginScreen} />
           <RootStack.Screen name={AppRoute.REGISTER} component={RegisterScreen} />
+          <RootStack.Screen name={AppRoute.PRIVACY_POLICY} component={PrivacyPolicyScreen} />
           <RootStack.Screen name={AppRoute.INVITE_CODE} component={InviteCodeScreen} />
           <RootStack.Screen name={AppRoute.INVITE_CONFIRM} component={InviteConfirmScreen} />
           <RootStack.Screen name={AppRoute.VERIFY_EMAIL} component={VerifyEmailScreen} />

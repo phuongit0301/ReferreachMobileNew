@@ -38,7 +38,10 @@ function* getIndustry(payload: IActionIndustryRequested) {
 
 function* getAllIndustries(payload: IActionAllIndustriesRequested) {
   try {
-    const response: IActionAllIndustriesSuccess['payload'] = yield call(IndustryAPI.getAllIndustries, payload?.payload);
+    const response: IActionAllIndustriesSuccess['payload'] = yield call(
+      IndustryAPI.getAllIndustries,
+      payload?.payload?.textSearch,
+    );
     if (response) {
       yield put({type: GET_ALL_INDUSTRIES_SUCCESS, payload: response?.data});
       payload?.callback({

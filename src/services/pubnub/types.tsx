@@ -1,4 +1,9 @@
-import {GET_CREDENTIAL_FAILURE, GET_CREDENTIAL_REQUESTED, GET_CREDENTIAL_SUCCESS} from './constants';
+import {
+  GET_CREDENTIAL_FAILURE,
+  GET_CREDENTIAL_REQUESTED,
+  GET_CREDENTIAL_SUCCESS,
+  SET_PUBNUB_MESSAGE,
+} from './constants';
 
 export interface IPubNubState {
   loading: boolean;
@@ -9,6 +14,7 @@ export interface IPubNubState {
     subscribe_key: string;
     token: string;
   };
+  dataMessage: any;
   message: string;
   callback: (response: any) => void;
 }
@@ -36,4 +42,13 @@ export interface IActionGetCredentialFailure {
   };
 }
 
-export type IActionsPubnub = IActionGetCredentialRequest | IActionGetCredentialSuccess | IActionGetCredentialFailure;
+export interface IActionSetPubnubMessage {
+  type: typeof SET_PUBNUB_MESSAGE;
+  payload: any;
+}
+
+export type IActionsPubnub =
+  | IActionGetCredentialRequest
+  | IActionGetCredentialSuccess
+  | IActionGetCredentialFailure
+  | IActionSetPubnubMessage;

@@ -1,4 +1,4 @@
-import {all, put, takeEvery, call} from 'redux-saga/effects';
+import {all, put, takeEvery, call, select, takeLatest} from 'redux-saga/effects';
 
 import FeedItemsAPI from './apis';
 import {
@@ -17,6 +17,9 @@ import {
   CREATE_INTRODUCTION_SUCCESS,
   CREATE_INTRODUCTION_FAILURE,
   CREATE_INTRODUCTION_REQUESTED,
+  GET_SUGGEST_INTRODUCTION_LIST_REQUESTED,
+  GET_SUGGEST_INTRODUCTION_LIST_SUCCESS,
+  GET_SUGGEST_INTRODUCTION_LIST_FAILURE,
 } from './constants';
 import {
   IActionCreateIntroductionRequested,
@@ -29,19 +32,38 @@ import {
   IActionGetPublicProfileSuccess,
   IActionSetFeedItemReadRequested,
   IActionSetFeedItemReadSuccess,
+  IActionSuggestIntroductionListRequested,
+  IFeedItemsState,
 } from './types';
 import {IActionNetworkConnectionListSuccess} from '~Root/services/network/types';
+import {IGlobalState} from '~Root/types';
+
+const getFeedState = (state: IGlobalState) => state.feedState;
 
 function* getFeedItemsList(payload: IActionFeedItemsListRequested) {
   try {
     const [responseFeed, responseNetwork]: [
       IActionFeedItemsListSuccess['payload'],
       IActionNetworkConnectionListSuccess['payload'],
-    ] = yield all([call(FeedItemsAPI.getList, payload?.payload), call(FeedItemsAPI.getSuggestIntroductionsList)]);
+    ] = yield all([
+      call(FeedItemsAPI.getList, payload?.payload?.feedPagination),
+      call(FeedItemsAPI.getSuggestIntroductionsList, {
+        page: payload?.payload?.networkPage,
+        per: payload?.payload?.networkPer,
+      }),
+    ]);
     if (responseFeed.success && responseNetwork.success) {
+      const dataNetwork: IActionNetworkConnectionListSuccess['payload'] = yield call(
+        FeedItemsAPI.filterUserTrustNetwork,
+        {
+          dataFeed: responseFeed.data,
+          dataNetwork: responseNetwork.data,
+        },
+      );
+
       yield put({
         type: GET_FEED_ITEMS_LIST_SUCCESS,
-        payload: {dataFeed: responseFeed.data, dataNetwork: responseNetwork.data},
+        payload: {dataFeed: responseFeed.data, dataNetwork, dataNetworkOriginal: responseNetwork.data},
       });
       payload?.callback && payload?.callback(responseFeed.data);
     } else {
@@ -59,13 +81,58 @@ function* getFeedItemsList(payload: IActionFeedItemsListRequested) {
   }
 }
 
+function* getSuggestIntroductionList(payload: IActionSuggestIntroductionListRequested) {
+  try {
+    const response = yield call(FeedItemsAPI.getSuggestIntroductionsList, payload?.payload);
+    if (response.success) {
+      const feedState: IFeedItemsState = yield select(getFeedState);
+
+      const dataNetwork: IActionNetworkConnectionListSuccess['payload'] = yield call(
+        FeedItemsAPI.filterUserTrustNetwork,
+        {
+          dataFeed: feedState.dataFeed,
+          dataNetwork: response.data,
+        },
+      );
+
+      yield put({
+        type: GET_SUGGEST_INTRODUCTION_LIST_SUCCESS,
+        payload: {dataNetwork, dataNetworkOriginal: dataNetwork},
+      });
+      payload?.callback && payload?.callback(dataNetwork);
+    } else {
+      yield put({type: GET_SUGGEST_INTRODUCTION_LIST_FAILURE, payload: {message: response?.message}});
+      payload?.callback && payload?.callback(response);
+    }
+  } catch (error) {
+    yield put({type: GET_SUGGEST_INTRODUCTION_LIST_FAILURE, payload: {message: error}});
+    payload?.callback &&
+      payload?.callback({
+        data: null,
+        success: false,
+        message: error,
+      });
+  }
+}
+
 function* getFeedItemPagination(payload: IActionFeedItemPaginationRequested) {
   try {
     const response: IActionFeedItemPaginationSuccess['payload'] = yield call(FeedItemsAPI.getList, payload?.payload);
+    const feedState: IFeedItemsState = yield select(getFeedState);
+
     if (response.success) {
+      const dataNetwork: IActionNetworkConnectionListSuccess['payload'] = yield call(
+        FeedItemsAPI.filterUserTrustNetwork,
+        {
+          dataFeed: response.data,
+          dataNetwork: feedState.dataNetworkOriginal,
+        },
+      );
+
+      console.log('dataNetwork======>', dataNetwork);
       yield put({
         type: GET_FEED_ITEM_PAGINATION_SUCCESS,
-        payload: {dataFeed: response.data},
+        payload: {dataFeed: response.data, dataNetwork},
       });
       payload?.callback && payload?.callback(response.data);
     } else {
@@ -147,10 +214,10 @@ function* createIntroduction(payload: IActionCreateIntroductionRequested) {
         type: CREATE_INTRODUCTION_SUCCESS,
         payload: response.data,
       });
-      payload?.callback && payload?.callback(response.data);
+      payload?.callback && payload?.callback(response);
     } else {
-      yield put({type: CREATE_INTRODUCTION_FAILURE, payload: {message: response}});
-      payload?.callback && payload?.callback(response?.data);
+      yield put({type: CREATE_INTRODUCTION_FAILURE, payload: response});
+      payload?.callback && payload?.callback(response);
     }
   } catch (error) {
     yield put({type: CREATE_INTRODUCTION_FAILURE, payload: {message: error}});
@@ -167,12 +234,16 @@ function* watchGetFeedItemsList() {
   yield takeEvery(GET_FEED_ITEMS_LIST_REQUESTED, getFeedItemsList);
 }
 
+function* watchGetSuggestIntroductionList() {
+  yield takeEvery(GET_SUGGEST_INTRODUCTION_LIST_REQUESTED, getSuggestIntroductionList);
+}
+
 function* watchGetFeedItemPagination() {
-  yield takeEvery(GET_FEED_ITEM_PAGINATION_REQUESTED, getFeedItemPagination);
+  yield takeLatest(GET_FEED_ITEM_PAGINATION_REQUESTED, getFeedItemPagination);
 }
 
 function* watchSetFeedItemRead() {
-  yield takeEvery(SET_FEED_ITEM_READ_REQUESTED, setFeedItemRead);
+  yield takeLatest(SET_FEED_ITEM_READ_REQUESTED, setFeedItemRead);
 }
 
 function* watchGetPublicProfile() {
@@ -186,6 +257,7 @@ function* watchCreateIntroduction() {
 export default function* feedItemsWatchers() {
   yield all([
     watchGetFeedItemsList(),
+    watchGetSuggestIntroductionList(),
     watchGetFeedItemPagination(),
     watchSetFeedItemRead(),
     watchGetPublicProfile(),

@@ -10,20 +10,15 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
-import {AskItem, Button, HeaderSmallTransparent, Loading, Paragraph} from '~Root/components';
+import {AskItem, Button, HeaderSmallTransparent, Loading, LoadingSecondary, Paragraph} from '~Root/components';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import {CompositeScreenProps} from '@react-navigation/native';
-import {
-  IActionOnEndAskSuccess,
-  IActionOnUpdateExtendDeadlineSuccess,
-  IAskInside,
-  IPaginationAndSearch,
-} from '~Root/services/ask/types';
+import {IActionOnUpdateExtendDeadlineSuccess, IAskInside, IPaginationAndSearch} from '~Root/services/ask/types';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IN_APP_STATUS_ENUM} from '~Root/utils/common';
-import {getAsk, onEndAskRequest, onExtendDeadlineRequest, setVisibleMenu} from '~Root/services/ask/actions';
-import {ASK_STATUS_ENUM, calculateExpiredTime, dateFormat3, dateWithMonthsDelay} from '~Root/utils';
+import {getAsk, onExtendDeadlineRequest, setVisibleMenu} from '~Root/services/ask/actions';
+import {ASK_STATUS_ENUM, convertLocalToUTC, dateWithMonthsDelay} from '~Root/utils';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
 import Toast from 'react-native-toast-message';
@@ -129,7 +124,7 @@ const YourAskScreen = ({navigation}: Props) => {
       //   }),
       // );
       onMenuHide();
-      navigation.navigate(AppRoute.CHAT_KUDOS);
+      navigation.navigate(AppRoute.CHAT_KUDOS, {askId: askState?.dataAskSelected?.id});
     }
   };
 
@@ -157,22 +152,32 @@ const YourAskScreen = ({navigation}: Props) => {
     setVisibleDatePicker(!visibleDatePicker);
   };
 
+  const onHideDatePicker = () => {
+    setVisibleDatePicker(false);
+    dispatch(
+      setVisibleMenu({
+        dataAskSelected: null,
+      }),
+    );
+  };
+
   const onChangeDatePicker = (date: Date) => {
+    setLoading(true);
     let currentDate = date || new Date();
     if (moment(currentDate).format('MM-DD-YYYY HH:mm:ss') < moment().format('MM-DD-YYYY HH:mm:ss')) {
+      onHideDatePicker();
+      setLoading(false);
       Alert.alert("You can't select date last");
       return;
     }
     currentDate = dateWithMonthsDelay(currentDate, 0);
-
     if (currentDate && askState?.dataAskSelected?.id) {
-      onShowDatePicker();
-      setLoading(true);
+      setVisibleDatePicker(false);
       dispatch(
         onExtendDeadlineRequest(
           {
             askId: askState?.dataAskSelected?.id,
-            deadline: dateFormat3(currentDate),
+            deadline: convertLocalToUTC(currentDate),
           },
           (response: IActionOnUpdateExtendDeadlineSuccess['payload']) => {
             setLoading(false);
@@ -307,6 +312,7 @@ const YourAskScreen = ({navigation}: Props) => {
                 <Paragraph textCenter textWhite title={t('sharing_your_network')} style={GlobalStyles.mt10} />
                 <Button
                   title={t('create_ask')}
+                  onPress={() => navigation.navigate(AppRoute.ASK_NAVIGATOR)}
                   h5
                   bold600
                   textCenter
@@ -335,7 +341,7 @@ const YourAskScreen = ({navigation}: Props) => {
               {...askState?.visibleMenu?.coordinate},
             ]}
             ref={inputEl}>
-            {parseInt(`${calculateExpiredTime(askState?.dataAskSelected?.attributes?.created_at)}`, 10) > 0 ? (
+            {askState?.dataAskSelected?.attributes?.status === ASK_STATUS_ENUM.PUBLISHED ? (
               <TouchableOpacity
                 style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}
                 onPress={onEdit}>
@@ -365,8 +371,9 @@ const YourAskScreen = ({navigation}: Props) => {
               </TouchableOpacity>
             )}
             <View style={[GlobalStyles.justifyCenter, styles.border]} />
-            {(parseInt(`${calculateExpiredTime(askState?.dataAskSelected?.attributes?.created_at)}`, 10) > 0 ||
-            askState?.dataAskSelected?.attributes?.status === ASK_STATUS_ENUM.PUBLISHED) ? (
+            {+askState?.dataAskSelected?.attributes?.deadline_change_count < 2 &&
+            (askState?.dataAskSelected?.attributes?.status === ASK_STATUS_ENUM.EXPIRED ||
+              askState?.dataAskSelected?.attributes?.status === ASK_STATUS_ENUM.PUBLISHED) ? (
               <TouchableOpacity onPress={onExtendDeadline}>
                 <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
                   <View
@@ -407,7 +414,7 @@ const YourAskScreen = ({navigation}: Props) => {
                 <View style={[styles.border]} />
               </TouchableOpacity>
             )}
-            {parseInt(`${calculateExpiredTime(askState?.dataAskSelected?.attributes?.created_at)}`, 10) > 0 ? (
+            {askState?.dataAskSelected?.attributes?.status === ASK_STATUS_ENUM.PUBLISHED ? (
               <TouchableOpacity
                 style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}
                 onPress={onEndAsk}>
@@ -439,14 +446,21 @@ const YourAskScreen = ({navigation}: Props) => {
           </View>
         </TouchableOpacity>
       )}
-      <DateTimePickerModal
-        key={`your-ask-date`}
-        isVisible={visibleDatePicker}
-        mode='datetime'
-        onConfirm={(date: Date) => onChangeDatePicker(date)}
-        onCancel={onShowDatePicker}
-        date={new Date(askState?.dataAskSelected?.attributes?.deadline)}
-      />
+      {visibleDatePicker && (
+        <DateTimePickerModal
+          key={`your-ask-date`}
+          isVisible={visibleDatePicker}
+          mode='datetime'
+          onConfirm={(date: Date) => onChangeDatePicker(date)}
+          onCancel={onHideDatePicker}
+          date={
+            askState?.dataAskSelected?.attributes?.deadline
+              ? new Date(askState?.dataAskSelected?.attributes?.deadline)
+              : new Date()
+          }
+        />
+      )}
+      {loading && <LoadingSecondary />}
     </View>
   );
 };

@@ -17,6 +17,7 @@ import {
   GET_CHAT_PERSONAL_SUCCESS,
   GET_USER_CHAT_LIST_FAILURE,
   GET_USER_CHAT_LIST_REQUESTED,
+  GET_USER_CHAT_LIST_SEARCH_SUCCESS,
   GET_USER_CHAT_LIST_SUCCESS,
   ON_CHAT_ONE_ON_ONE_FAILURE,
   ON_CHAT_ONE_ON_ONE_REQUESTED,
@@ -30,9 +31,27 @@ import {
   ON_UPDATE_CHAT_CONTEXT_FAILURE,
   ON_UPDATE_CHAT_CONTEXT_REQUESTED,
   ON_UPDATE_CHAT_CONTEXT_SUCCESS,
+  RESET_DATA_CHAT,
   SET_CHAT_VISIBLE_MENU,
+  SET_USER_CHAT_LIST,
 } from './constants';
 
+export interface IPaginationAndSearch {
+  search_user_id?: string;
+  per: number;
+  page: number;
+}
+
+export interface IPersonalPaginationAndSearch {
+  search_user_id?: string;
+  personalPer: number;
+  personalPage: number;
+}
+
+export enum PinnableTypeEnum {
+  ASK = 'Ask',
+  CHAT_CONTEXT = 'ChatContext',
+}
 export interface IListMatches {
   id: string;
   name: string;
@@ -162,7 +181,12 @@ export interface IData {
 export interface IDataChat {
   data: IData;
   included: IIncluded[];
-  userReceive?: IIncluded;
+  ask: any;
+  asker: any;
+  chatUuid: string;
+  introducee?: any;
+  introducer?: any;
+  isIntroducer?: boolean;
 }
 
 export interface IDataChatPersonal {
@@ -182,8 +206,19 @@ export interface IChatState {
   dataChatPersonal: IDataChatPersonal;
   dataChatPersonalSelected: any;
   listMatches: IUserChatList[];
+  listMatchesSearch: IUserChatList[];
   dataChat: any | null;
+  per: number;
+  page: number;
+  personalPer: number;
+  personalPage: number;
+  search_user_id?: string;
   callback?: any;
+}
+
+export interface IChatAskContext {
+  contextId: string;
+  askerId: string;
 }
 
 export interface IActionChatContextRequested {
@@ -211,7 +246,7 @@ export interface IActionChatContextFailure {
 }
 export interface IActionChatAskContextRequested {
   type: typeof GET_CHAT_ASK_CONTEXT_REQUESTED;
-  payload: string;
+  payload: IChatAskContext;
   callback?: any;
 }
 
@@ -260,7 +295,7 @@ export interface IActionChatOneOnOneFailure {
 }
 export interface IActionChatPersonalRequested {
   type: typeof GET_CHAT_PERSONAL_REQUESTED;
-  payload: string;
+  payload: IPersonalPaginationAndSearch;
   callback?: any;
 }
 
@@ -317,6 +352,7 @@ export interface IActionOnUpdateChatContextFailure {
 
 export interface IActionChatFeedRequested {
   type: typeof GET_CHAT_FEED_REQUESTED;
+  payload: IPaginationAndSearch;
   callback?: any;
 }
 
@@ -341,7 +377,8 @@ export interface IActionChatFeedFailure {
 export interface IActionOnPinRequested {
   type: typeof ON_PIN_REQUESTED;
   payload: {
-    askId: string;
+    pinnable_id: string;
+    pinnable_type: PinnableTypeEnum;
     index: number;
   };
   callback?: any;
@@ -368,7 +405,8 @@ export interface IActionOnPinFailure {
 export interface IActionOnUnPinRequested {
   type: typeof ON_UN_PIN_REQUESTED;
   payload: {
-    askId: string;
+    pinnable_id: string;
+    pinnable_type: PinnableTypeEnum;
     index: number;
   };
   callback?: any;
@@ -393,11 +431,22 @@ export interface IActionOnUnPinFailure {
 }
 export interface IActionGetUserChatListRequested {
   type: typeof GET_USER_CHAT_LIST_REQUESTED;
+  payload?: string;
   callback?: any;
 }
 
 export interface IActionGetUserChatListSuccess {
   type: typeof GET_USER_CHAT_LIST_SUCCESS;
+  payload: {
+    data: IUserChatList[];
+    message: string;
+    success: boolean;
+  };
+  callback?: any;
+}
+
+export interface IActionGetUserChatListSearchSuccess {
+  type: typeof GET_USER_CHAT_LIST_SEARCH_SUCCESS;
   payload: {
     data: IUserChatList[];
     message: string;
@@ -417,6 +466,14 @@ export interface IActionSetFeedVisibleMenu {
   type: typeof SET_CHAT_VISIBLE_MENU;
   payload: any;
   callback: () => void;
+}
+
+export interface IActionSetUserChatList {
+  type: typeof SET_USER_CHAT_LIST;
+}
+
+export interface IActionResetDataChat {
+  type: typeof RESET_DATA_CHAT;
 }
 
 export type IActionsChat =
@@ -440,6 +497,7 @@ export type IActionsChat =
   | IActionOnUnPinFailure
   | IActionGetUserChatListSuccess
   | IActionGetUserChatListSuccess
+  | IActionGetUserChatListSearchSuccess
   | IActionGetUserChatListFailure
   | IActionSetFeedVisibleMenu
   | IActionChatOneOnOneRequested
@@ -447,4 +505,6 @@ export type IActionsChat =
   | IActionChatOneOnOneFailure
   | IActionOnUpdateChatContextRequested
   | IActionOnUpdateChatContextSuccess
-  | IActionOnUpdateChatContextFailure;
+  | IActionOnUpdateChatContextFailure
+  | IActionSetUserChatList
+  | IActionResetDataChat;

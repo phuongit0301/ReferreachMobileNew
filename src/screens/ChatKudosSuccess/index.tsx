@@ -20,7 +20,7 @@ const ChatKudosSuccessScreen = ({navigation}: Props) => {
   const {t} = useTranslation();
 
   const onDone = () => {
-    navigation.navigate(AppRoute.YOUR_ASK);
+    navigation.navigate(AppRoute.CHAT_NAVIGATOR);
   };
 
   return (

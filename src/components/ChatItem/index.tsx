@@ -5,10 +5,9 @@ import FastImage from 'react-native-fast-image';
 import moment from 'moment';
 import {Trans} from 'react-i18next';
 
-import {IAskInside, ICriteriumDataState} from '~Root/services/ask/types';
+import {ICriteriumDataState} from '~Root/services/ask/types';
 import {GlobalStyles, IMAGES} from '~Root/config';
-import {Category, Paragraph} from '~Root/components';
-import {dateToHours} from '~Root/utils';
+import {Paragraph} from '~Root/components';
 import styles from './styles';
 import {IIncluded} from '~Root/services/chat/types';
 
@@ -62,8 +61,8 @@ const ChatItem: React.FC<Props> = ({item, onMenu = () => {}}) => {
               }}
               parent={Text}
               components={{
-                normal: <Text style={GlobalStyles.textDarkGray} />,
-                highlight: <Text style={GlobalStyles.textSteelBlue2} />,
+                normal: <Text style={styles.textNormal} />,
+                highlight: <Text style={styles.textHighlight} />,
               }}
             />
           </View>
@@ -81,7 +80,11 @@ const ChatItem: React.FC<Props> = ({item, onMenu = () => {}}) => {
               resizeMode='cover'
               style={[GlobalStyles.mr5, styles.iconCalendar]}
             />
-            <Paragraph textDarkGrayColor title={moment(item?.attributes?.deadline).format('MMM DD, YYYY')} />
+            <Paragraph
+              textDarkGrayColor
+              title={moment(item?.attributes?.deadline).format('MMM DD, YYYY')}
+              style={styles.textNormal}
+            />
           </View>
           <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, styles.globeContainer]}>
             <FastImage source={IMAGES.iconGlobe} resizeMode='cover' style={[GlobalStyles.mr5, styles.iconGlobe]} />
@@ -90,6 +93,7 @@ const ChatItem: React.FC<Props> = ({item, onMenu = () => {}}) => {
               numberOfLines={1}
               ellipsizeMode={'tail'}
               title={item?.attributes?.ask_location?.text}
+              style={styles.textNormal}
             />
           </View>
         </View>

@@ -5,6 +5,7 @@
     "forgot_password": "Forgot password",
     "login": "Log In",
     "logout": "Logout",
+    "sign_up_instead": "Sign Up Instead",
     "login_successful": "Login Successful",
     "register_successful": "Register Successful",
     "login_error": "Email or password incorrect",
@@ -62,7 +63,7 @@
     "sharing_your_network": "Create an Ask now and start sharing with your network",
     "create_ask": "Create Ask",
     "ask_content": "<normal>{{greeting}}. {{role}} </normal><highlight>{{description}} </highlight><normal>{{businessDetail}}</normal>",
-    "air_feed_content": "<normal>{{greeting}}. {{demographic}}, {{role}} </normal><highlight>{{description}} </highlight><normal>{{businessDetail}}</normal>",
+    "air_feed_content": "<normal>{{greeting}}. {{role}}, {{demographic}} </normal><highlight>{{businessRequirement}} </highlight><normal>{{businessDetail}}</normal>",
     "location": "Location",
     "by_when": "By When",
     "criteria": "Criteria",
@@ -145,5 +146,14 @@
     "rating_private": "rating is private to you",
     "sending_kudos": "You will be sending kudos to \nVicky's introducers too",
     "send_kudos": "Send kudos",
-    "kudos_success": "Kudos \nSuccessfully Sent!"
+    "kudos_success": "Kudos \nSuccessfully Sent!",
+    "ask_ended": "Ask ended",
+    "ask_expired_1": "Ask expired",
+    "ask_has_ended": "Ask has ended",
+    "ask_has_expired": "Ask has expired",
+    "introducers": "Introducers",
+    "introducer": "Introducer",
+    "kudos_message": "<bold>{{name}}</bold> <normal>gave <normal>{{name2}}</normal> a kudos for <normal>{{name3}}</normal> help!</normal>",
+    "i_accept": "I accept",
+    "i_decline": "I decline"
 }

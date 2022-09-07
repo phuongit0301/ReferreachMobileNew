@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 
 import {BASE_COLORS, BASE_FONTS, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
@@ -68,6 +68,12 @@ export default StyleSheet.create({
     borderColor: BASE_COLORS.darkGrayColor,
     flex: 1,
   },
+  circle: {
+    width: adjust(10),
+    height: adjust(10),
+    backgroundColor: BASE_COLORS.darkGrayColor,
+    borderRadius: adjust(20),
+  },
   avatar: {
     width: adjust(35),
     height: adjust(35),
@@ -89,8 +95,11 @@ export default StyleSheet.create({
     marginLeft: adjust(-5),
   },
   introduction: {
+    fontFamily: BASE_FONTS.regular,
+    fontWeight: '400',
     fontSize: adjust(10),
     width: '80%',
+    lineHeight: adjust(15),
   },
   redCircle: {
     width: adjust(10),
@@ -107,6 +116,20 @@ export default StyleSheet.create({
   iconProtect1: {
     width: adjust(11),
     height: adjust(13),
+    position: 'absolute',
+    right: Platform.OS === 'ios' ? 0 : adjust(5),
+    bottom: adjust(5),
+  },
+  iconProtect2: {
+    width: adjust(11),
+    height: adjust(13),
+    position: 'absolute',
+    right: adjust(5),
+    bottom: adjust(5),
+  },
+  iconProtect3: {
+    width: adjust(11),
+    height: adjust(13),
     left: adjust(-5),
     marginTop: adjust(-15),
   },
@@ -119,5 +142,36 @@ export default StyleSheet.create({
   },
   itemWidth: {
     width: width - adjust(35),
+  },
+  textBold: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '700',
+    fontSize: adjust(10),
+    lineHeight: adjust(15),
+  },
+  bgKudos: {
+    borderBottomLeftRadius: adjust(8),
+    backgroundColor: BASE_COLORS.steelBlue2Color,
+  },
+  iconHand: {
+    width: adjust(25),
+    height: adjust(18),
+  },
+  kudosTextBold: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '700',
+    color: BASE_COLORS.whiteColor,
+    fontSize: adjust(11),
+    lineHeight: adjust(15),
+  },
+  kudosTextNormal: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '600',
+    color: BASE_COLORS.whiteColor,
+    fontSize: adjust(11),
+    lineHeight: adjust(15),
+  },
+  kudosMessageContainer: {
+    flex: 0.9,
   },
 });

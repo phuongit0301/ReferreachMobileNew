@@ -2,13 +2,26 @@
 import axios from '~Root/services/axios';
 
 import * as API from '~Root/private/api';
-import {IActionChatOneOnOneRequested, IActionOnUpdateChatContextRequested, IIncluded} from './types';
+import {
+  IActionChatOneOnOneRequested,
+  IActionChatPersonalRequested,
+  IActionOnPinRequested,
+  IActionOnUnPinRequested,
+  IActionOnUpdateChatContextRequested,
+  IIncluded,
+  IPaginationAndSearch,
+} from './types';
 export default class ChatAPI {
-  static async getUserChatList() {
+  static async getUserChatList(payload?: string) {
     try {
+      let url = API.USER_CHAT_LIST_URL;
+      if (payload) {
+        url += `?keyword=${payload}`;
+      }
+
       const response = await axios({
         method: 'GET',
-        url: API.USER_CHAT_LIST_URL,
+        url: url,
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
@@ -30,11 +43,18 @@ export default class ChatAPI {
     }
   }
 
-  static async getChatPersonal() {
+  static async getChatPersonal(payload: IActionChatPersonalRequested['payload']) {
     try {
+      let params = '';
+      if (payload) {
+        params = Object.keys(payload)
+          .map((key: string) => `${key}=${payload[key]}`)
+          .join('&');
+      }
+
       const response = await axios({
         method: 'GET',
-        url: API.CHAT_PERSONAL_URL,
+        url: `${API.CHAT_PERSONAL_URL}?${params}`,
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
@@ -87,11 +107,6 @@ export default class ChatAPI {
 
   static async onUpdateChatContext(payload: IActionOnUpdateChatContextRequested['payload']) {
     try {
-      console.log('payload=====>', payload);
-      console.log(
-        'payload1=====>',
-        JSON.stringify({last_message_metadata: payload?.lastMessage?.last_message_metadata}),
-      );
       const response = await axios({
         method: 'PUT',
         url: API.ON_UPDATE_CHAT_CONTEXT_URL(payload?.contextId),
@@ -117,11 +132,17 @@ export default class ChatAPI {
     }
   }
 
-  static async getChatFeed() {
+  static async getChatFeed(payload: IPaginationAndSearch) {
     try {
+      let params = '';
+      if (payload) {
+        params = Object.keys(payload)
+          .map((key: string) => `${key}=${payload[key]}`)
+          .join('&');
+      }
       const response = await axios({
         method: 'GET',
-        url: API.CHAT_FEED_URL,
+        url: `${API.CHAT_FEED_URL}?${params}`,
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
@@ -169,11 +190,11 @@ export default class ChatAPI {
     }
   }
 
-  static async onPin(payload: string) {
+  static async onPin(payload: IActionOnPinRequested['payload']) {
     try {
       const response = await axios({
         method: 'PUT',
-        url: API.ON_PIN_URL(payload),
+        url: `${API.ON_PIN_URL(payload?.pinnable_id)}?pinnable_type=${payload?.pinnable_type}`,
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
@@ -204,11 +225,11 @@ export default class ChatAPI {
     }
   }
 
-  static async onUnPin(payload: string) {
+  static async onUnPin(payload: IActionOnUnPinRequested['payload']) {
     try {
       const response = await axios({
         method: 'DELETE',
-        url: API.ON_UN_PIN_URL(payload),
+        url: `${API.ON_UN_PIN_URL(payload?.pinnable_id)}?pinnable_type=${payload?.pinnable_type}`,
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
@@ -231,6 +252,55 @@ export default class ChatAPI {
   }
 
   static async handleUserReceive(params: any) {
+    let introduction = null;
+    let ask = null;
+    const users = [];
+    let introducer = null;
+    let introducee = null;
+    let isIntroducer = false;
+    let asker = null;
+    let showKudos = false;
+    let isAsker = false;
+
+    for (const item of params?.arrUser) {
+      if (item?.type === 'introductions') {
+        introduction = item;
+        if (!showKudos) {
+          showKudos = item?.attributes?.kudos;
+        }
+      }
+
+      if (item?.type === 'asks') {
+        ask = item;
+      }
+
+      if (item?.type === 'users') {
+        users.push(item);
+      }
+    }
+
+    if (introduction && users.length > 0) {
+      for (const item of users) {
+        if (item.id === introduction?.relationships?.introducer?.data?.id) {
+          isIntroducer = +params?.currentUserId === +introduction?.relationships?.introducer?.data?.id;
+          introducer = item;
+        } else if (item.id === introduction?.relationships?.introducee?.data?.id) {
+          introducee = item;
+        } else {
+          if (!isAsker) {
+            isAsker = +params?.currentUserId === +item.id;
+          }
+          if (+params?.askerId === +item.id) {
+            asker = item;
+          }
+        }
+      }
+    }
+
+    return {introducer, introducee, asker, ask, isIntroducer, showKudos, isAsker};
+  }
+
+  static async handleChatPersonalReceive(params: any) {
     return params?.arrUser.find((x: IIncluded) => +x.id !== +params?.currentUserId);
   }
 }

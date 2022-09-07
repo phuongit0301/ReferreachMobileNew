@@ -42,7 +42,7 @@ export enum ASK_STATUS_ENUM {
   PUBLISHED = 'published',
   DRAFT = 'draft',
   SUCCEED = 'succeed',
-  CLOSED = 'closed',
+  CLOSED = 'ended',
   EXPIRED = 'expired',
 }
 

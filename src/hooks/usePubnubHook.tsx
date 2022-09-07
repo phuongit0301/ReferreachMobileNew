@@ -25,6 +25,7 @@ export const PubNubContextProvider = (props: any) => {
     publishKey: pubnubState?.data?.publish_key ?? '',
     uuid: pubnubState?.data?.uuid ?? new Date().getTime(),
     authKey: pubnubState?.data?.token ?? '',
+    // logVerbosity: true,
   });
 
   return (

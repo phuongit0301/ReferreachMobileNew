@@ -19,6 +19,7 @@ export const USER_AVATAR_URL = `${ROOT_API_URL}/users/avatar`;
 export const INVITE_USER_CONTACT_URL = `${ROOT_API_URL}/invitations/invite_bulk_users/`;
 export const USER_IN_APP_STATUS_URL = `${ROOT_API_URL}/users/update_in_app_status`;
 export const ASK_LIST_URL = `${ROOT_API_URL}/asks/list`;
+export const ASK_RESPONDER_URL = (id: string) => `${ROOT_API_URL}/asks/${id}/responders`;
 export const ASK_DETAILS_URL = (id: number) => `${ROOT_API_URL}/asks/${id}`;
 export const GET_ALL_INDUSTRIES_URL = `${ROOT_API_URL}/autocomplete/industry`;
 export const GET_ALL_LOCATION = `${ROOT_API_URL}/autocomplete/location`;
@@ -36,16 +37,17 @@ export const FORGOT_PASSWORD_URL = `${ROOT_API_URL}/reset_passwords/send_request
 export const CREATE_INTRODUCTION_URL = `${ROOT_API_URL}/introductions`;
 export const CHAT_CONTEXT_URL = (contextId: string) => `${ROOT_API_URL}/chat_contexts/${contextId}`;
 export const CHAT_PERSONAL_URL = `${ROOT_API_URL}/chat_feeds/personal_list`;
-export const CHAT_FEED_URL = `${ROOT_API_URL}/chat_feeds/ask_list?per=3page=1`;
+export const CHAT_FEED_URL = `${ROOT_API_URL}/chat_feeds/ask_list`;
 export const USER_CHAT_LIST_URL = `${ROOT_API_URL}/chat_feeds/suggest_users_chat_list`;
 export const GET_CRENDENTIAL_URL = `${ROOT_API_URL}/pubnubs/credentials`;
-export const ON_PIN_URL = (askId: string) => `${ROOT_API_URL}/chat_feeds/${askId}/pin`;
-export const ON_UN_PIN_URL = (askId: string) => `${ROOT_API_URL}/chat_feeds/${askId}/unpin`;
+export const ON_PIN_URL = (pinnableId: string) => `${ROOT_API_URL}/chat_feeds/${pinnableId}/pin`;
+export const ON_UN_PIN_URL = (pinnableId: string) => `${ROOT_API_URL}/chat_feeds/${pinnableId}/unpin`;
 export const ON_UPDATE_EXTEND_DEADLINE_URL = (askId: string, dateTime: string) =>
   `${ROOT_API_URL}/asks/${askId}/extend_deadline?new_deadline=${dateTime}`;
 export const ON_CHAT_ONE_ON_ONE_URL = `${ROOT_API_URL}/chat_contexts/ooo`;
 export const ON_UPDATE_CHAT_CONTEXT_URL = (chatContextId: string) => `${ROOT_API_URL}/chat_contexts/${chatContextId}`;
 export const ON_END_ASK_URL = (askId: string) => `${ROOT_API_URL}/asks/${askId}/close_ask`;
+export const ON_SEND_KUDOS_URL = (askId: string) => `${ROOT_API_URL}/asks/${askId}/end_ask`;
 
 export const ASK_TEMPLATE_URL = `${ROOT_API_URL}/ask-template`;
 export const CREATE_ASK_TEMPLATE_URL = (id: string) => `${ROOT_API_URL}/ask-template/${id}/submissions`;

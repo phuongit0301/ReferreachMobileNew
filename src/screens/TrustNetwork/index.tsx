@@ -210,7 +210,6 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   };
 
   const onChatPersonal = (item: any) => {
-    console.log(item);
     if (item?.relationships?.connected_user?.data?.id) {
       const payload = {
         member_id: item?.relationships?.connected_user?.data?.id,

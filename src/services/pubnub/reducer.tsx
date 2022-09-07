@@ -1,4 +1,9 @@
-import {GET_CREDENTIAL_REQUESTED, GET_CREDENTIAL_SUCCESS, GET_CREDENTIAL_FAILURE} from './constants';
+import {
+  GET_CREDENTIAL_REQUESTED,
+  GET_CREDENTIAL_SUCCESS,
+  GET_CREDENTIAL_FAILURE,
+  SET_PUBNUB_MESSAGE,
+} from './constants';
 import {IActionsPubnub, IPubNubState} from './types';
 
 export const initialState: IPubNubState = {
@@ -10,6 +15,7 @@ export const initialState: IPubNubState = {
     subscribe_key: '',
     token: '',
   },
+  dataMessage: null,
   callback: () => {},
   message: '',
 };
@@ -20,6 +26,8 @@ const askReducer = (state: IPubNubState = initialState, action: IActionsPubnub):
       return {...state, callback: action?.callback, loading: true};
     case GET_CREDENTIAL_SUCCESS:
       return {...state, loading: false, data: action.payload?.data};
+    case SET_PUBNUB_MESSAGE:
+      return {...state, dataMessage: action.payload};
     case GET_CREDENTIAL_FAILURE:
       return {...state, loading: false, message: action.payload.message};
     default:

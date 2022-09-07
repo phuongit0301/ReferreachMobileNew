@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, {useCallback, useEffect, useState} from 'react';
-import {Animated, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Animated, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Trans, useTranslation} from 'react-i18next';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -9,23 +9,31 @@ import {CompositeScreenProps} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import FastImage from 'react-native-fast-image';
+import Toast from 'react-native-toast-message';
 import {usePubNub} from 'pubnub-react';
 import {HistoryMessage} from 'pubnub';
+import moment from 'moment';
 
 import {ChatNavigatorParamsList, TabNavigatorParamsList} from '~Root/navigation/config';
-import {getChatAskContextRequest, onUpdateChatContextRequest, setVisibleMenu} from '~Root/services/chat/actions';
-import {IIncluded} from '~Root/services/chat/types';
+import {
+  getChatAskContextRequest,
+  onUpdateChatContextRequest,
+  resetDataChat,
+  setVisibleMenu,
+} from '~Root/services/chat/actions';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {Paragraph, HeaderChatContextBlue, Loading, ChatItem, LoadingSecondary, Avatar} from '~Root/components';
-import {calculateExpiredTime, dateFormat3, dateWithMonthsDelay} from '~Root/utils';
+import {adjust, ASK_STATUS_ENUM, convertLocalToUTC, dateWithMonthsDelay} from '~Root/utils';
+import {IActionOnUpdateExtendDeadlineSuccess} from '~Root/services/ask/types';
+import {onExtendDeadlineRequest} from '~Root/services/ask/actions';
+import {setPubnubMessage} from '~Root/services/pubnub/actions';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {GlobalStyles, IMAGES} from '~Root/config';
 import {IGlobalState} from '~Root/types';
+import Header from './Header';
 import styles from './styles';
-import {IActionOnUpdateExtendDeadlineSuccess} from '~Root/services/ask/types';
-import {onExtendDeadlineRequest} from '~Root/services/ask/actions';
-import Toast from 'react-native-toast-message';
-import moment from 'moment';
+import Footer from './Footer';
+import HeaderMessage from './HeaderMessage';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<ChatNavigatorParamsList, AppRoute.CHAT>,
@@ -37,48 +45,89 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   const dispatch = useDispatch();
   const pubnub = usePubNub();
   const scrollAnim = new Animated.Value(0);
+  const scrollRef = React.useRef(null);
+  const offsetKeyboard = Platform.select({
+    ios: 10,
+    android: 0,
+  });
 
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
   const chatState = useSelector((state: IGlobalState) => state.chatState);
   const userState = useSelector((state: IGlobalState) => state.userState);
+  const pubnubState = useSelector((state: IGlobalState) => state.pubnubState);
 
-  const [channels, setChannels] = useState<any>();
   const [messages, addMessage] = useState<HistoryMessage[]>([]);
   const [chatText, setChatText] = useState('');
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState(true);
+  const {isIntroducer, introducer, introducee, ask, asker, data, showKudos, isAsker} = chatState?.dataChat;
 
   useEffect(() => {
-    if ((route.params as any)?.contextId) {
+    if ((route.params as any)?.contextId && (route.params as any)?.askerId) {
       dispatch(showLoading());
       dispatch(
-        getChatAskContextRequest(route.params?.contextId, () => {
+        getChatAskContextRequest({contextId: route.params?.contextId, askerId: route.params?.askerId}, () => {
           dispatch(hideLoading());
         }),
       );
     }
+
+    return () => {
+      setChatText('');
+      setLoadingMessage(true);
+    };
   }, [route]);
 
   useEffect(() => {
-    if (pubnub && chatState?.dataChat?.data?.attributes?.chat_uuid) {
-      pubnub.history(
-        {
-          channel: chatState?.dataChat?.data?.attributes?.chat_uuid,
-          count: 100, // 100 is the default
-          includeMeta: true,
-        },
-        (status, response) => {
-          if (response?.messages?.length > 0) {
-            addMessage(response?.messages);
-          }
-        },
-      );
-      setChannels([chatState?.dataChat?.data?.attributes?.chat_uuid]);
+    if (scrollRef.current) {
+      scrollRef.current?.scrollToEnd({animated: true});
     }
-  }, [pubnub, chatState?.dataChat]);
+  }, [scrollRef]);
 
   useEffect(() => {
-    if (pubnub && channels) {
+    if (pubnub && chatState?.dataChat?.data?.attributes?.chat_uuid) {
+      const promises = [];
+      setLoadingMessage(true);
+      if (pubnubState?.dataMessage && pubnubState?.dataMessage?.length > 0) {
+        for (const item of pubnubState?.dataMessage) {
+          promises.push(
+            pubnub
+              .publish({
+                channel: chatState?.dataChat?.data?.attributes?.chat_uuid,
+                message: {
+                  ...item,
+                  createdAt: new Date(),
+                },
+              })
+              .then(() => console.log('insert pubnub done'))
+              .catch(error => console.log(JSON.stringify(error))),
+          );
+        }
+      }
+      Promise.all(promises)
+        .then(() => {
+          dispatch(setPubnubMessage(null));
+          pubnub.history(
+            {
+              channel: chatState?.dataChat?.data?.attributes?.chat_uuid,
+              count: 100, // 100 is the default
+              includeMeta: true,
+            },
+            (status, response) => {
+              setLoadingMessage(false);
+              if (response?.messages?.length > 0) {
+                addMessage(response?.messages);
+              }
+            },
+          );
+        })
+        .catch(error => console.log('error===>', error));
+    }
+  }, [chatState?.dataChat?.data?.attributes?.chat_uuid]);
+
+  useEffect(() => {
+    if (pubnub && chatState?.dataChat?.data?.attributes?.chat_uuid) {
       // using the `setMessages` function.
       const listener = {
         message: (envelope: any) => {
@@ -87,12 +136,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
             {
               entry: {
                 id: envelope?.message?.id ?? new Date().getTime(),
-                userId: envelope?.message?.userId,
-                text: envelope?.message?.text,
-                fullName1:
-                  envelope?.message?.fullName1 ??
-                  `${userState?.userInfo?.first_name} ${userState?.userInfo?.last_name}`,
-                fullName2: '',
+                ...envelope?.message,
                 createdAt: envelope?.message?.createdAt,
               },
               timetoken: envelope.timetoken,
@@ -102,53 +146,103 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
       };
 
       pubnub.addListener(listener);
-      pubnub.subscribe({channels});
+      pubnub.subscribe({channels: [chatState?.dataChat?.data?.attributes?.chat_uuid]});
 
       return () => {
         pubnub.removeListener(listener);
         pubnub.unsubscribeAll();
         addMessage([]);
-        setChannels('');
-        setChatText('');
       };
     }
-  }, [pubnub, channels]);
+  }, [pubnub, chatState?.dataChat?.data?.attributes?.chat_uuid]);
+
+  const onFocus = () => {
+    if (scrollRef.current) {
+      scrollRef.current?.scrollToEnd({animated: true});
+    }
+  };
 
   const sendMessage = useCallback(() => {
-    pubnub
-      .publish({
-        channel: channels[0],
-        message: {
-          text: chatText,
-          userId: userState?.userInfo?.id,
-          fullName1: `${userState?.userInfo?.first_name} ${userState?.userInfo?.last_name}`,
-          fullName2: '',
-          createdAt: new Date(),
-        },
-      })
-      .then(() => {
-        setChatText('');
-        const payload = {
-          contextId: route.params?.contextId as string,
-          lastMessage: {
-            last_message_metadata: {
-              message: chatText,
-              sender_id: userState?.userInfo?.id,
-              read_by_user_id: userState?.userInfo?.id,
+    if (pubnub && chatText.trim() !== '') {
+      if (chatState?.dataChat?.data?.attributes?.chat_box_type === 'asker_introducer') {
+        pubnub
+          .publish({
+            channel: chatState?.dataChat?.data?.attributes?.chat_uuid,
+            message: {
+              text: chatText,
+              askerId: +chatState?.dataChat?.asker?.id,
+              userReceive:
+                +chatState?.dataChat?.asker?.id === +userState?.userInfo?.id
+                  ? +chatState?.dataChat?.introducer?.id
+                  : +chatState?.dataChat?.asker?.id,
+              introducerId: +chatState?.dataChat?.introducer?.id,
+              senderId: userState?.userInfo?.id,
+              createdAt: new Date(),
             },
-          },
-        };
-        dispatch(
-          onUpdateChatContextRequest(payload, () => {
+          })
+          .then(() => {
             setChatText('');
-          }),
-        );
-      })
-      .catch(error => {
-        setChatText('');
-        console.log(JSON.stringify(error));
-      });
-  }, [channels, chatText]);
+            const payload = {
+              contextId: route.params?.contextId as string,
+              lastMessage: {
+                last_message_metadata: {
+                  message: chatText,
+                  sender_id: userState?.userInfo?.id,
+                  read_by_user_id: userState?.userInfo?.id,
+                },
+              },
+            };
+            dispatch(
+              onUpdateChatContextRequest(payload, () => {
+                setChatText('');
+              }),
+            );
+          })
+          .catch(error => {
+            setChatText('');
+            console.log(JSON.stringify(error));
+          });
+      } else {
+        pubnub
+          .publish({
+            channel: chatState?.dataChat?.data?.attributes?.chat_uuid,
+            message: {
+              text: chatText,
+              introduceeId: +chatState?.dataChat?.introducee?.id,
+              userReceive:
+                +chatState?.dataChat?.introducee?.id === +userState?.userInfo?.id
+                  ? +chatState?.dataChat?.introducer?.id
+                  : +chatState?.dataChat?.introducee?.id,
+              introducerId: +chatState?.dataChat?.introducer?.id,
+              senderId: +userState?.userInfo?.id,
+              createdAt: new Date(),
+            },
+          })
+          .then(() => {
+            setChatText('');
+            const payload = {
+              contextId: route.params?.contextId as string,
+              lastMessage: {
+                last_message_metadata: {
+                  message: chatText,
+                  sender_id: userState?.userInfo?.id,
+                  read_by_user_id: userState?.userInfo?.id,
+                },
+              },
+            };
+            dispatch(
+              onUpdateChatContextRequest(payload, () => {
+                setChatText('');
+              }),
+            );
+          })
+          .catch(error => {
+            setChatText('');
+            console.log(JSON.stringify(error));
+          });
+      }
+    }
+  }, [chatState?.dataChat?.data?.attributes?.chat_uuid, chatText]);
 
   const onChangeText = (text: string) => {
     setChatText(text);
@@ -159,7 +253,8 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   };
 
   const onBack = () => {
-    navigation.navigate(AppRoute.CHAT);
+    dispatch(resetDataChat());
+    navigation.navigate(AppRoute.CHAT_NAVIGATOR);
   };
 
   const onMenu = (item: any, evt?: any) => {
@@ -212,11 +307,9 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
         onExtendDeadlineRequest(
           {
             askId: chatState?.dataChat?.data?.relationships?.ask?.data?.id,
-            deadline: dateFormat3(currentDate),
+            deadline: convertLocalToUTC(currentDate),
           },
           (response: IActionOnUpdateExtendDeadlineSuccess['payload']) => {
-            setLoading(false);
-
             Toast.show({
               position: 'bottom',
               type: response.success ? 'success' : 'error',
@@ -224,6 +317,11 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
               visibilityTime: 3000,
               autoHide: true,
             });
+            dispatch(
+              getChatAskContextRequest(route.params?.contextId, () => {
+                setLoading(false);
+              }),
+            );
           },
         ),
       );
@@ -231,42 +329,18 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   };
 
   const handleSubmit = () => {
-    if (chatText.trim() !== '') {
-      sendMessage();
-    }
+    sendMessage();
   };
 
-  if (loadingState.loading) {
+  const onEndAsk = () => {
+    onMenuHide();
+    navigation.navigate(AppRoute.CHAT_KUDOS, {askId: ask?.id});
+  };
+
+  if (loadingState.loading && loadingMessage) {
     return <Loading />;
   }
 
-  let introducer: IIncluded | null = null;
-  let introducee: IIncluded | null = null;
-  let dataChatContext: any | null = null;
-
-  if (chatState?.dataChat?.data?.relationships?.members && chatState?.dataChat?.included.length > 0) {
-    introducer = chatState?.dataChat?.included[0];
-  }
-
-  if (chatState?.dataChat?.data?.relationships?.members && chatState?.dataChat?.included.length > 1) {
-    introducee = chatState?.dataChat?.included[1];
-  }
-
-  if (chatState?.dataChat?.data?.relationships?.chat_contextable && chatState?.dataChat?.included.length > 2) {
-    dataChatContext = chatState?.dataChat?.included[2];
-  }
-
-  if (chatState?.dataChat?.included?.length > 0 && (route.params as any)?.introducerId) {
-    const indexItem = chatState?.dataChat?.included.findIndex(
-      (x: any) => +x?.id === +route.params?.introducerId && x.type === 'users',
-    );
-
-    if (indexItem === 1) {
-      introducer = chatState?.dataChat?.included[1];
-      introducee = chatState?.dataChat?.included[0];
-    }
-  }
-console.log(messages);
   return (
     <View style={[GlobalStyles.container, GlobalStyles.flexColumn]}>
       <FastImage source={IMAGES.chatBg} style={GlobalStyles.bgContainer} resizeMode='stretch' />
@@ -280,108 +354,218 @@ console.log(messages);
             onRightPress={onToggleDrawer}
           />
         </View>
-        <View style={GlobalStyles.container}>
-          <View style={[GlobalStyles.mh15, styles.wrapper]}>
-            <View style={[GlobalStyles.flexColumn, styles.userInfoContainer]}>
-              <View
-                style={[
-                  GlobalStyles.ph10,
-                  GlobalStyles.alignCenter,
-                  GlobalStyles.flexRow,
-                  GlobalStyles.mb10,
-                  styles.headerIntroduced,
-                ]}>
-                <View style={[GlobalStyles.flexRow, GlobalStyles.alignEnd, GlobalStyles.mr5]}>
-                  <Avatar
-                    styleAvatar={GlobalStyles.avatar3}
-                    styleContainerGradient={GlobalStyles.avatar3}
-                    userInfo={{
-                      avatar_url: introducer?.attributes?.avatar_metadata?.avatar_url,
-                      avatar_lat: introducer?.attributes?.avatar_metadata?.avatar_lat,
-                      avatar_lng: introducer?.attributes?.avatar_metadata?.avatar_lng,
-                      first_name: introducer?.attributes?.first_name,
-                      last_name: introducer?.attributes?.last_name,
-                    }}
-                  />
-                  <FastImage source={IMAGES.iconProtect} resizeMode='cover' style={styles.iconProtect} />
+        <KeyboardAvoidingView
+          style={GlobalStyles.keyboard}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          keyboardVerticalOffset={offsetKeyboard}>
+          <View style={GlobalStyles.container}>
+            <View style={[GlobalStyles.mh15, styles.wrapper]}>
+              <View style={[GlobalStyles.flexColumn, styles.userInfoContainer]}>
+                <Header chatContext={ask} />
+                <View
+                  style={[
+                    GlobalStyles.ph10,
+                    GlobalStyles.alignCenter,
+                    GlobalStyles.flexRow,
+                    GlobalStyles.mb10,
+                    styles.headerIntroduced,
+                  ]}>
+                  <View style={[GlobalStyles.flexRow, GlobalStyles.alignEnd, GlobalStyles.mr5]}>
+                    <Avatar
+                      styleAvatar={GlobalStyles.avatar3}
+                      styleContainerGradient={GlobalStyles.avatar3}
+                      userInfo={{
+                        avatar_url: introducer?.attributes?.avatar_metadata?.avatar_url,
+                        avatar_lat: introducer?.attributes?.avatar_metadata?.avatar_lat,
+                        avatar_lng: introducer?.attributes?.avatar_metadata?.avatar_lng,
+                        first_name: introducer?.attributes?.first_name,
+                        last_name: introducer?.attributes?.last_name,
+                      }}
+                    />
+                    <FastImage source={IMAGES.iconProtect} resizeMode='cover' style={styles.iconProtect} />
+                  </View>
+                  {data?.attributes?.chat_box_type === 'asker_introducer' ? (
+                    <>
+                      <View style={[GlobalStyles.mt10, GlobalStyles.container, GlobalStyles.mr5]}>
+                        <Trans
+                          i18nKey='chat_introduced'
+                          parent={Text}
+                          values={{
+                            name1: `${
+                              isIntroducer
+                                ? 'You'
+                                : `${introducer?.attributes?.first_name} ${introducer?.attributes?.last_name}`
+                            }`,
+                            name2: `${asker?.attributes?.first_name} ${asker?.attributes?.last_name}`,
+                          }}
+                          components={{
+                            normal: <Text style={[styles.textBold]} />,
+                            highlight: <Text style={[styles.textBlue]} />,
+                          }}
+                        />
+                      </View>
+                      <Avatar
+                        styleAvatar={{...GlobalStyles.mt10, ...GlobalStyles.avatar4}}
+                        styleContainerGradient={{...GlobalStyles.mt10, ...GlobalStyles.avatar4}}
+                        textStyle={GlobalStyles.p}
+                        userInfo={{
+                          avatar_url: asker?.attributes?.avatar_metadata?.avatar_url,
+                          avatar_lat: asker?.attributes?.avatar_metadata?.avatar_lat,
+                          avatar_lng: asker?.attributes?.avatar_metadata?.avatar_lng,
+                          first_name: asker?.attributes?.first_name,
+                          last_name: asker?.attributes?.last_name,
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <View style={[GlobalStyles.mt10, GlobalStyles.container, GlobalStyles.mr5]}>
+                        <Trans
+                          i18nKey='chat_introduced'
+                          parent={Text}
+                          values={{
+                            name1: `${
+                              isIntroducer
+                                ? 'You'
+                                : `${introducer?.attributes?.first_name} ${introducer?.attributes?.last_name}`
+                            }`,
+                            name2: `${introducee?.attributes?.first_name} ${introducee?.attributes?.last_name}`,
+                          }}
+                          components={{
+                            normal: <Text style={[styles.textBold]} />,
+                            highlight: <Text style={[styles.textBlue]} />,
+                          }}
+                        />
+                      </View>
+                      <Avatar
+                        styleAvatar={{...GlobalStyles.mt10, ...GlobalStyles.avatar4}}
+                        styleContainerGradient={{...GlobalStyles.mt10, ...GlobalStyles.avatar4}}
+                        textStyle={GlobalStyles.p}
+                        userInfo={{
+                          avatar_url: introducee?.attributes?.avatar_metadata?.avatar_url,
+                          avatar_lat: introducee?.attributes?.avatar_metadata?.avatar_lat,
+                          avatar_lng: introducee?.attributes?.avatar_metadata?.avatar_lng,
+                          first_name: introducee?.attributes?.first_name,
+                          last_name: introducee?.attributes?.last_name,
+                        }}
+                      />
+                    </>
+                  )}
                 </View>
-                <View style={[GlobalStyles.mt10, GlobalStyles.container, GlobalStyles.mr5]}>
-                  <Trans
-                    i18nKey='chat_introduced'
-                    parent={Text}
-                    values={{
-                      name1: `${introducer?.attributes?.first_name} ${introducer?.attributes?.last_name}`,
-                      name2: `${introducee?.attributes?.first_name} ${introducee?.attributes?.last_name}`,
-                    }}
-                    components={{
-                      normal: <Text style={[styles.textNormal]} />,
-                      highlight: <Text style={[styles.textBlue]} />,
-                    }}
-                  />
+                <View style={[styles.contentContainer]}>
+                  <ChatItem item={ask} onMenu={onMenu} />
                 </View>
-                <Avatar
-                  styleAvatar={{...GlobalStyles.mt10, ...GlobalStyles.avatar4}}
-                  styleContainerGradient={{...GlobalStyles.mt10, ...GlobalStyles.avatar4}}
-                  textStyle={GlobalStyles.p}
-                  userInfo={{
-                    avatar_url: introducee?.attributes?.avatar_metadata?.avatar_url,
-                    avatar_lat: introducee?.attributes?.avatar_metadata?.avatar_lat,
-                    avatar_lng: introducee?.attributes?.avatar_metadata?.avatar_lng,
-                    first_name: introducee?.attributes?.first_name,
-                    last_name: introducee?.attributes?.last_name,
-                  }}
-                />
-              </View>
-              <View style={[styles.contentContainer]}>
-                <ChatItem item={dataChatContext} onMenu={onMenu} />
               </View>
             </View>
-          </View>
-          <View style={[GlobalStyles.p15, GlobalStyles.container]}>
-            <Animated.FlatList
-              horizontal={false}
-              style={GlobalStyles.container}
-              contentContainerStyle={[GlobalStyles.justifyEnd, GlobalStyles.scrollViewFullScreen]}
-              nestedScrollEnabled={true}
-              scrollEventThrottle={1}
-              onScroll={Animated.event(
-                [
-                  {
-                    nativeEvent: {
-                      contentOffset: {
-                        y: scrollAnim,
+            <View style={[GlobalStyles.ph15, GlobalStyles.pt15, GlobalStyles.container]}>
+              <Animated.FlatList
+                horizontal={false}
+                style={[GlobalStyles.container]}
+                ref={scrollRef}
+                contentContainerStyle={[
+                  GlobalStyles.justifyEnd,
+                  GlobalStyles.scrollViewFullScreen,
+                  Platform.OS === 'android' && GlobalStyles.pt100,
+                ]}
+                contentInset={{top: adjust(150), left: 0, bottom: 0, right: 0}}
+                nestedScrollEnabled={true}
+                scrollEventThrottle={1}
+                onContentSizeChange={() => scrollRef.current?.scrollToEnd({animated: true})}
+                onLayout={() => scrollRef?.current?.scrollToEnd({animated: true})}
+                onScroll={Animated.event(
+                  [
+                    {
+                      nativeEvent: {
+                        contentOffset: {
+                          y: scrollAnim,
+                        },
                       },
                     },
-                  },
-                ],
-                {useNativeDriver: true},
-              )}
-              showsVerticalScrollIndicator={false}
-              data={messages}
-              key={'tags'}
-              keyExtractor={(item, index) => `message-${index}`}
-              renderItem={({item}: {item: HistoryMessage}) => {
-                if (item?.entry?.userId !== userState?.userInfo?.id) {
+                  ],
+                  {useNativeDriver: true},
+                )}
+                showsVerticalScrollIndicator={false}
+                data={messages}
+                key={'tags'}
+                keyExtractor={(item, index) => `message-${index}`}
+                renderItem={({item}: {item: HistoryMessage}) => {
+                  if (+item?.entry?.senderId === +userState?.userInfo?.id) {
+                    return (
+                      <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBgSecond]}>
+                        <Paragraph title={item?.entry?.text} />
+                        {item?.entry?.createdAt && (
+                          <View style={[GlobalStyles.alignEnd, GlobalStyles.mt10]}>
+                            <Paragraph
+                              textJetColor
+                              title={moment(item?.entry?.createdAt).format('HH:mm a')}
+                              style={styles.txtTime}
+                            />
+                          </View>
+                        )}
+                      </View>
+                    );
+                  }
+                  if (data?.attributes?.chat_box_type === 'asker_introducer') {
+                    return (
+                      <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBg]}>
+                        <View
+                          style={[GlobalStyles.flexRow, GlobalStyles.mb5, GlobalStyles.flexWrap, styles.headerName]}>
+                          {+item?.entry?.senderId === +asker?.id ? (
+                            <Paragraph
+                              textJetColor
+                              bold600
+                              numberOfLines={1}
+                              ellipsizeMode='tail'
+                              title={`${asker?.attributes?.first_name} ${asker?.attributes?.last_name}`}
+                              style={[GlobalStyles.mr5, styles.fontSmall]}
+                            />
+                          ) : (
+                            <Paragraph
+                              textJetColor
+                              bold600
+                              numberOfLines={1}
+                              ellipsizeMode='tail'
+                              title={`${introducer?.attributes?.first_name} ${introducer?.attributes?.last_name}`}
+                              style={[GlobalStyles.mr5, styles.fontSmall]}
+                            />
+                          )}
+                          <FastImage
+                            source={IMAGES.iconDoubleArrow}
+                            style={[GlobalStyles.mr5, styles.iconDoubleArrow]}
+                          />
+                          <HeaderMessage {...chatState?.dataChat} message={item} />
+                        </View>
+                        <Paragraph title={item?.entry?.text} />
+                        {item?.entry?.createdAt && (
+                          <View style={[GlobalStyles.alignEnd, GlobalStyles.mt10]}>
+                            <Paragraph
+                              textJetColor
+                              title={moment(item?.entry?.createdAt).format('HH:mm a')}
+                              style={styles.txtTime}
+                            />
+                          </View>
+                        )}
+                      </View>
+                    );
+                  }
+
                   return (
                     <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBg]}>
                       <View style={[GlobalStyles.flexRow, GlobalStyles.mb5, styles.headerName]}>
                         <Paragraph
-                          textDarkGrayColor
+                          textJetColor
                           bold600
                           numberOfLines={1}
                           ellipsizeMode='tail'
-                          title={`${introducer?.attributes?.first_name} ${introducer?.attributes?.last_name}`}
+                          title={`${
+                            isIntroducer
+                              ? 'You'
+                              : `${introducer?.attributes?.first_name} ${introducer?.attributes?.last_name}`
+                          }`}
                           style={[GlobalStyles.mr5, styles.fontSmall]}
                         />
                         <FastImage source={IMAGES.iconDoubleArrow} style={[GlobalStyles.mr5, styles.iconDoubleArrow]} />
-                        <Paragraph
-                          textDarkGrayColor
-                          bold600
-                          numberOfLines={1}
-                          ellipsizeMode='tail'
-                          title={`${introducee?.attributes?.first_name} ${introducee?.attributes?.last_name}`}
-                          style={styles.fontSmall}
-                        />
+                        <HeaderMessage {...chatState?.dataChat} message={item} />
                       </View>
                       <Paragraph title={item?.entry?.text} />
                       {item?.entry?.createdAt && (
@@ -395,44 +579,73 @@ console.log(messages);
                       )}
                     </View>
                   );
-                }
-                return (
-                  <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBgSecond]}>
-                    <Paragraph title={item?.entry?.text} />
-                    {item?.entry?.createdAt && (
-                      <View style={[GlobalStyles.alignEnd, GlobalStyles.mt10]}>
-                        <Paragraph
-                          textJetColor
-                          title={moment(item?.entry?.createdAt).format('HH:mm a')}
-                          style={styles.txtTime}
-                        />
-                      </View>
-                    )}
+                }}
+                onEndReachedThreshold={0.5}
+              />
+              {showKudos && (
+                <View
+                  style={[
+                    GlobalStyles.flexRow,
+                    GlobalStyles.p5,
+                    GlobalStyles.justifyCenter,
+                    GlobalStyles.mb15,
+                    GlobalStyles.alignCenter,
+                    GlobalStyles.flexWrap,
+                    styles.bgKudos,
+                  ]}>
+                  <FastImage
+                    source={IMAGES.iconHand}
+                    resizeMode='contain'
+                    style={[GlobalStyles.mr5, styles.iconHand]}
+                  />
+                  <View
+                    style={[
+                      GlobalStyles.flexRow,
+                      GlobalStyles.alignCenter,
+                      GlobalStyles.container,
+                      GlobalStyles.flexWrap,
+                    ]}>
+                    <Trans
+                      i18nKey='kudos_message'
+                      parent={Text}
+                      values={{
+                        name: `${isAsker ? 'You' : `${asker?.attributes?.first_name} ${asker?.attributes?.last_name}`}`,
+                        name2: `${
+                          isAsker ? `${introducer?.attributes?.first_name} ${introducer?.attributes?.last_name}` : 'you'
+                        }`,
+                        name3: isAsker ? 'kind' : 'your',
+                      }}
+                      components={{
+                        bold: <Text style={[GlobalStyles.p, styles.kudosTextBold]} />,
+                        normal: <Text style={[GlobalStyles.p, styles.kudosTextNormal]} />,
+                      }}
+                    />
                   </View>
-                );
-              }}
-              onEndReachedThreshold={0.5}
-            />
+                </View>
+              )}
+              <Footer chatContext={ask} />
+            </View>
+            <View style={[GlobalStyles.p15, GlobalStyles.flexRow]}>
+              <TouchableOpacity
+                style={[
+                  GlobalStyles.mr10,
+                  GlobalStyles.alignCenter,
+                  GlobalStyles.justifyCenter,
+                  styles.iconPlusContainer,
+                ]}
+                onPress={sendMessage}>
+                <FastImage source={IMAGES.iconPlus} resizeMode='contain' style={styles.iconPlus} />
+              </TouchableOpacity>
+              <TextInput
+                style={[GlobalStyles.container, GlobalStyles.ph10, GlobalStyles.pv8, styles.input]}
+                onChangeText={onChangeText}
+                onSubmitEditing={handleSubmit}
+                value={chatText}
+                onFocus={onFocus}
+              />
+            </View>
           </View>
-          <View style={[GlobalStyles.p15, GlobalStyles.flexRow]}>
-            <TouchableOpacity
-              style={[
-                GlobalStyles.mr10,
-                GlobalStyles.alignCenter,
-                GlobalStyles.justifyCenter,
-                styles.iconPlusContainer,
-              ]}
-              onPress={sendMessage}>
-              <FastImage source={IMAGES.iconPlus} resizeMode='contain' style={styles.iconPlus} />
-            </TouchableOpacity>
-            <TextInput
-              style={[GlobalStyles.container, GlobalStyles.ph10, GlobalStyles.pv8, styles.input]}
-              onChangeText={onChangeText}
-              onSubmitEditing={handleSubmit}
-              value={chatText}
-            />
-          </View>
-        </View>
+        </KeyboardAvoidingView>
         {chatState?.visibleMenu?.show && (
           <TouchableOpacity
             activeOpacity={0.7}
@@ -459,7 +672,10 @@ console.log(messages);
                 <Paragraph title={t('chat_with_responder')} />
               </TouchableOpacity>
               <View style={[GlobalStyles.justifyCenter, styles.border]} />
-              {parseInt(`${calculateExpiredTime(dataChatContext?.attributes?.created_at)}`, 10) > 0 ? (
+              {+chatState?.dataChat?.ask?.attributes?.deadline_change_count < 2 &&
+              +chatState?.dataChat?.ask?.relationships?.user?.data?.id === +userState?.userInfo?.id &&
+              (chatState?.dataChat?.ask?.attributes?.status === ASK_STATUS_ENUM.EXPIRED ||
+                chatState?.dataChat?.ask?.attributes?.status === ASK_STATUS_ENUM.PUBLISHED) ? (
                 <TouchableOpacity
                   style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}
                   onPress={onExtendDeadline}>
@@ -510,8 +726,11 @@ console.log(messages);
                 <Paragraph title={t('archive_this_ask')} />
               </TouchableOpacity>
               <View style={[GlobalStyles.justifyCenter, styles.border]} />
-              {parseInt(`${calculateExpiredTime(dataChatContext?.attributes?.created_at)}`, 10) > 0 ? (
-                <TouchableOpacity style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}>
+              {chatState?.dataChat?.ask?.attributes?.status === ASK_STATUS_ENUM.PUBLISHED &&
+              +chatState?.dataChat?.ask?.relationships?.user?.data?.id === +userState?.userInfo?.id ? (
+                <TouchableOpacity
+                  style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.pv8]}
+                  onPress={onEndAsk}>
                   <View
                     style={[
                       GlobalStyles.alignCenter,

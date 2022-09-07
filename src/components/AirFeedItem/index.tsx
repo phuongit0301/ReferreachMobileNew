@@ -8,13 +8,15 @@ import {GlobalStyles, IMAGES} from '~Root/config';
 import {Avatar, Button, Paragraph} from '~Root/components';
 import styles from './styles';
 import FastImage from 'react-native-fast-image';
+import {ASK_STATUS_ENUM} from '~Root/utils';
 
 interface Props {
   item: IIncluded;
   onIntro?: (item: any) => void;
+  onShare?: () => void;
 }
 
-const AirFeedItem: React.FC<Props> = ({item, onIntro = () => {}}) => {
+const AirFeedItem: React.FC<Props> = ({item, onIntro = () => {}, onShare = () => {}}) => {
   const {t} = useTranslation();
 
   return (
@@ -69,21 +71,43 @@ const AirFeedItem: React.FC<Props> = ({item, onIntro = () => {}}) => {
         <Paragraph textDarkGrayColor title={item?.attributes?.pitch} style={GlobalStyles.mb10} />
       )}
       <View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, styles.groupBtn]}>
-        <TouchableOpacity
-          style={[GlobalStyles.alignCenter, GlobalStyles.p5, GlobalStyles.mr5, styles.iconShareContainer]}>
-          <FastImage source={IMAGES.iconShare} style={styles.iconShare} />
-        </TouchableOpacity>
-        <Button
-          title={t('intro')}
-          p
-          bold600
-          textCenter
-          containerStyle={{
-            ...GlobalStyles.buttonContainerStyle,
-            ...styles.buttonContainerStyle,
-          }}
-          onPress={onIntro}
-        />
+        {item?.attributes?.status === ASK_STATUS_ENUM.EXPIRED || item?.attributes?.status === ASK_STATUS_ENUM.CLOSED ? (
+          <>
+            <TouchableOpacity
+              style={[GlobalStyles.alignCenter, GlobalStyles.p5, GlobalStyles.mr5, styles.iconShareContainer]}>
+              <FastImage source={IMAGES.iconShare} style={styles.iconShareInactive} />
+            </TouchableOpacity>
+            <Button
+              title={t('intro')}
+              p
+              bold600
+              textCenter
+              containerStyle={{
+                ...GlobalStyles.buttonContainerStyle,
+                ...styles.buttonContainerInactiveStyle,
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <TouchableOpacity
+              style={[GlobalStyles.alignCenter, GlobalStyles.p5, GlobalStyles.mr5, styles.iconShareContainer]}
+              onPress={onShare}>
+              <FastImage source={IMAGES.iconShare} style={styles.iconShare} />
+            </TouchableOpacity>
+            <Button
+              title={t('intro')}
+              p
+              bold600
+              textCenter
+              containerStyle={{
+                ...GlobalStyles.buttonContainerStyle,
+                ...styles.buttonContainerStyle,
+              }}
+              onPress={onIntro}
+            />
+          </>
+        )}
       </View>
     </View>
   );

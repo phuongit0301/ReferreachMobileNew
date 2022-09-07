@@ -29,7 +29,7 @@ const authReducer = (state: IAuthState = initialState, action: IActionsAuth): IA
     case COUNT_DOWN_REQUESTED:
       return {...state, progress: 240, loading: true};
     case INITIALIZE_AUTH_SUCCESS:
-      return {...state, loading: false, isAppReady: true, isLoggedIn: true};
+      return {...state, loading: false, isAppReady: true, isLoggedIn: true, error: ''};
     case COUNT_DOWN_SUCCESS:
       return {...state, isAppReady: true, loading: false, progress: 0};
     case LOGOUT:

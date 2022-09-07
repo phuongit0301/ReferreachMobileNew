@@ -297,6 +297,7 @@ const AskScreen = ({navigation}: any) => {
   const onNext = (credentials: any) => {
     credentials.demographic = textDemographic;
     credentials.business_detail = `${t('to')} ${credentials.business_detail}`;
+    credentials.user_role = `${t('role')} ${credentials.user_role}`;
     dispatch(setDataCreateAsk1(credentials));
     navigation.navigate(AppRoute.ASK_TWO);
   };

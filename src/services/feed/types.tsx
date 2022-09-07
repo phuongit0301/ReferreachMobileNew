@@ -19,6 +19,9 @@ import {
   CREATE_INTRODUCTION_FAILURE,
   CREATE_INTRODUCTION_REQUESTED,
   CREATE_INTRODUCTION_SUCCESS,
+  GET_SUGGEST_INTRODUCTION_LIST_FAILURE,
+  GET_SUGGEST_INTRODUCTION_LIST_REQUESTED,
+  GET_SUGGEST_INTRODUCTION_LIST_SUCCESS,
 } from './constants';
 export interface IFeedItemsState {
   message: string;
@@ -29,6 +32,10 @@ export interface IFeedItemsState {
     meta: IMeta | null;
   };
   dataNetwork: {
+    data: IDataSuggest[];
+    included: IIncluded[];
+  };
+  dataNetworkOriginal: {
     data: IDataSuggest[];
     included: IIncluded[];
   };
@@ -51,6 +58,9 @@ export interface IFeedItemsState {
       left: number;
     };
   };
+  networkPer: number;
+  networkPage: number;
+  networkTextSearch: string;
   callback: () => void;
 }
 
@@ -143,7 +153,7 @@ export interface IMeta {
 
 export interface IActionFeedItemsListRequested {
   type: typeof GET_FEED_ITEMS_LIST_REQUESTED;
-  payload: number;
+  payload: any;
   callback?: any;
 }
 export interface IActionFeedItemsListSuccess {
@@ -159,6 +169,34 @@ export interface IActionFeedItemsListSuccess {
 }
 export interface IActionFeedItemsListFailure {
   type: typeof GET_FEED_ITEMS_LIST_FAILURE;
+  payload: {
+    data: IData[] | [];
+    included: IAskInside[] | [];
+    IMeta: IMeta | null;
+    success: boolean;
+    message: string;
+  };
+  callback?: () => void;
+}
+
+export interface IActionSuggestIntroductionListRequested {
+  type: typeof GET_SUGGEST_INTRODUCTION_LIST_REQUESTED;
+  payload: any;
+  callback?: any;
+}
+export interface IActionSuggestIntroductionListSuccess {
+  type: typeof GET_SUGGEST_INTRODUCTION_LIST_SUCCESS;
+  payload: {
+    data: IData[];
+    included: IAskInside[];
+    meta: IMeta;
+    success: boolean;
+    message: string;
+  };
+  callback?: () => void;
+}
+export interface IActionSuggestIntroductionListFailure {
+  type: typeof GET_SUGGEST_INTRODUCTION_LIST_FAILURE;
   payload: {
     data: IData[] | [];
     included: IAskInside[] | [];
@@ -297,6 +335,9 @@ export type IActionsUser =
   | IActionFeedItemsListRequested
   | IActionFeedItemsListSuccess
   | IActionFeedItemsListFailure
+  | IActionSuggestIntroductionListRequested
+  | IActionSuggestIntroductionListSuccess
+  | IActionSuggestIntroductionListFailure
   | IActionFeedItemPaginationRequested
   | IActionFeedItemPaginationSuccess
   | IActionFeedItemPaginationFailure

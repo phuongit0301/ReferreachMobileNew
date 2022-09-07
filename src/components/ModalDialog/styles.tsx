@@ -22,7 +22,7 @@ export default StyleSheet.create({
     paddingBottom: adjust(20),
   },
   modal: {
-    ...GlobalStyles.ph15,
+    ...GlobalStyles.ph5,
     ...GlobalStyles.pb30,
     backgroundColor: BASE_COLORS.whiteColor,
     borderRadius: adjust(48),
@@ -74,7 +74,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
-    paddingHorizontal: paddingByRatio(10),
   },
   textBtnAdd: {
     fontFamily: BASE_FONTS.semiBold,

@@ -13,6 +13,7 @@ interface Props {
   title?: string;
   onBack?: () => void;
   containerHeaderStyle?: ViewStyle;
+  styleContainer?: ViewStyle;
   headerTextStyle?: TextStyle;
   iconBackUrl?: number;
   iconStyle?: ImageStyle;
@@ -34,6 +35,7 @@ const HeaderChatBlue: React.FC<Props> = ({
   onRightPress = () => {},
   iconRightStyle = {},
   iconRightUrl = IMAGES.iconBurgerMenuWhite,
+  styleContainer = {},
   children,
 }) => {
   const {t} = useTranslation();
@@ -41,7 +43,7 @@ const HeaderChatBlue: React.FC<Props> = ({
   return (
     <LinearGradient
       colors={[BASE_COLORS.steelBlue2Color, BASE_COLORS.cyanCornflowerBlueColor]}
-      style={[GlobalStyles.flexRow, styles.container]}>
+      style={[GlobalStyles.flexRow, styles.container, styleContainer]}>
       <View style={GlobalStyles.flexColumn}>
         <View
           style={[

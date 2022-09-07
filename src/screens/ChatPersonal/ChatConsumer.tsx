@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, {useCallback, useEffect, useState} from 'react';
-import {Animated, Dimensions, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, View} from 'react-native';
+import {Animated, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, View} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -10,6 +10,7 @@ import {DrawerScreenProps} from '@react-navigation/drawer';
 import FastImage from 'react-native-fast-image';
 import {usePubNub} from 'pubnub-react';
 import {HistoryMessage} from 'pubnub';
+import moment from 'moment';
 
 import {ChatNavigatorParamsList, TabNavigatorParamsList} from '~Root/navigation/config';
 import {getChatContextRequest, onUpdateChatContextRequest} from '~Root/services/chat/actions';
@@ -18,8 +19,8 @@ import {Paragraph, HeaderChatContextBlue, Loading, LoadingSecondary} from '~Root
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {GlobalStyles, IMAGES} from '~Root/config';
 import {IGlobalState} from '~Root/types';
+import {adjust} from '~Root/utils';
 import styles from './styles';
-import moment from 'moment';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<ChatNavigatorParamsList, AppRoute.CHAT>,
@@ -56,6 +57,9 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
         }),
       );
     }
+    return () => {
+      setMesageLoading(true);
+    };
   }, [route]);
 
   useEffect(() => {
@@ -129,7 +133,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   };
 
   const sendMessage = useCallback(() => {
-    if (channels && channels?.length > 0) {
+    if (channels && channels?.length > 0 && chatText?.trim() !== '') {
       pubnub
         .publish({
           channel: channels[0],
@@ -180,12 +184,10 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
   };
 
   const handleSubmit = () => {
-    if (chatText.trim() !== '') {
-      sendMessage();
-    }
+    sendMessage();
   };
 
-  if (loadingState.loading || messageLoading) {
+  if (loadingState.loading && messageLoading) {
     return <Loading />;
   }
 
@@ -213,6 +215,7 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                 style={GlobalStyles.container}
                 ref={scrollRef}
                 contentContainerStyle={[GlobalStyles.justifyEnd, GlobalStyles.scrollViewFullScreen]}
+                contentInset={{top: adjust(30), left: 0, bottom: 0, right: 0}}
                 scrollEnabled={true}
                 scrollEventThrottle={1}
                 onContentSizeChange={() => scrollRef.current?.scrollToEnd({animated: true})}
@@ -237,21 +240,21 @@ const ChatConsumerScreen: React.FC<Props> = ({route, navigation}) => {
                   if (item?.entry?.userId !== userState?.userInfo?.id) {
                     return (
                       <View style={[GlobalStyles.p10, GlobalStyles.mb10, styles.chatBg]}>
-                        {item.entry?.fullName2 && (
+                        {item.entry?.fullName1 && (
                           <View style={[GlobalStyles.flexRow, GlobalStyles.mb5, styles.headerName]}>
                             <Paragraph
                               textDarkGrayColor
                               bold600
                               numberOfLines={1}
                               ellipsizeMode='tail'
-                              title={item.entry?.fullName2}
+                              title={item.entry?.fullName1}
                               style={[GlobalStyles.mr5, styles.fontSmall]}
                             />
                           </View>
                         )}
                         <Paragraph title={item?.entry?.text} style={styles.chatContentArea} />
                         {item?.entry?.createdAt && (
-                          <View style={[GlobalStyles.alignEnd, GlobalStyles.mt10]}>
+                          <View style={[GlobalStyles.mt10]}>
                             <Paragraph
                               textJetColor
                               title={moment(item?.entry?.createdAt).format('HH:mm a')}

@@ -18,7 +18,6 @@ interface Props {
 }
 
 const AskItem: React.FC<Props> = ({item, onMenu = () => {}}) => {
-  const time = parseInt(`${calculateExpiredTime(item?.attributes.created_at)}`, 10);
   const hours = +dateToHours(new Date(item?.attributes?.deadline));
 
   let strLeft = t('time_to_left', {time: hours});

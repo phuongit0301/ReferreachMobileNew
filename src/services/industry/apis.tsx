@@ -1,9 +1,11 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import axios from '~Root/services/axios';
 import i18n from 'i18next';
 
 import * as API from '~Root/private/api';
-import { IActionAllIndustriesRequested } from './types';
+import {IActionAllIndustriesRequested, IIndustry, IIndustrySave} from './types';
+import {IUserInfoState} from '~Root/services/user/types';
 export default class IndustryAPI {
   static async getIndustry() {
     try {
@@ -32,9 +34,8 @@ export default class IndustryAPI {
     }
   }
 
-  static async getAllIndustries(payload: IActionAllIndustriesRequested['payload']) {
+  static async getAllIndustries(payload: string) {
     try {
-      console.log(`${API.GET_ALL_INDUSTRIES_URL}?search_value=${payload || ''}`);
       const response = await axios({
         method: 'GET',
         url: `${API.GET_ALL_INDUSTRIES_URL}?search_value=${payload || ''}`,
@@ -57,5 +58,72 @@ export default class IndustryAPI {
         success: false,
       };
     }
+  }
+
+  static async filterDataIndustry({
+    target = 1,
+    industries = [],
+    userInfo,
+  }: {
+    target: number;
+    industries: IIndustry[] | IIndustrySave[];
+    userInfo: IUserInfoState;
+  }) {
+    let items: IIndustry[] | IIndustrySave[] = [];
+    console.log('industries======>', industries);
+    console.log('userInfo======>', userInfo);
+    if (industries?.length > 0 && userInfo) {
+      if (target === 1) {
+        if (userInfo?.self_industries?.length > 0) {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
+            const isExists = userInfo?.self_industries.some(
+              (y: IIndustry | IIndustrySave) => y?.name?.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
+            );
+            if (!isExists) {
+              items.push({id: x.id, name: x?.attributes?.search_data});
+            }
+          });
+        } else {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
+            items.push({id: x.id, name: x?.attributes?.search_data});
+          });
+        }
+      }
+
+      if (target === 2) {
+        if (userInfo?.sell_industries?.length > 0) {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
+            const isExists = userInfo?.sell_industries.some(
+              (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
+            );
+            if (!isExists) {
+              items.push({id: x.id, name: x?.attributes?.search_data});
+            }
+          });
+        } else {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
+            items.push({id: x.id, name: x?.attributes?.search_data});
+          });
+        }
+      }
+
+      if (target === 3) {
+        if (userInfo?.partner_industries?.length > 0) {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
+            const isExists = userInfo?.partner_industries.some(
+              (y: IIndustry | IIndustrySave) => y?.name.toLowerCase() === x?.attributes?.search_data?.toLowerCase(),
+            );
+            if (!isExists) {
+              items.push({id: x.id, name: x?.attributes?.search_data});
+            }
+          });
+        } else {
+          industries.forEach((x: IIndustry | IIndustrySave) => {
+            items.push({id: x.id, name: x?.attributes?.search_data});
+          });
+        }
+      }
+    }
+    return items;
   }
 }

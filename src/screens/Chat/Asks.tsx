@@ -9,12 +9,18 @@ import {ChatNavigatorParamsList, TabNavigatorParamsList} from '~Root/navigation/
 import {GlobalStyles} from '~Root/config';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {getChatFeedRequest, onPinRequest, onUnPinRequest} from '~Root/services/chat/actions';
-import {ListItemsChat, Loading, LoadingSecondary} from '~Root/components';
-import {IActionOnPinSuccess, IActionOnUnPinSuccess} from '~Root/services/chat/types';
+import {ListItemsChat, Loading, LoadingSecondary, Paragraph} from '~Root/components';
+import {
+  IActionOnPinSuccess,
+  IActionOnUnPinSuccess,
+  IPaginationAndSearch,
+  PinnableTypeEnum,
+} from '~Root/services/chat/types';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
 import Toast from 'react-native-toast-message';
+import {getCredential} from '~Root/services/pubnub/actions';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<ChatNavigatorParamsList, AppRoute.CHAT>,
@@ -23,9 +29,11 @@ type Props = CompositeScreenProps<
 
 interface Params {
   tabLabel?: string;
+  textSearch?: string;
+  visibleModal?: boolean;
 }
 
-const AskScreen = ({navigation}: Props & Params) => {
+const AskScreen = ({navigation, textSearch, visibleModal = false}: Props & Params) => {
   const dispatch = useDispatch();
 
   const chatState = useSelector((state: IGlobalState) => state.chatState);
@@ -34,49 +42,105 @@ const AskScreen = ({navigation}: Props & Params) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(showLoading());
-      dispatch(
-        getChatFeedRequest(() => {
-          dispatch(hideLoading());
-        }),
-      );
+      fetchData();
     });
     return unsubscribe;
   }, [navigation]);
 
-  const onItemClick = (item: any) => {
-    navigation.navigate(AppRoute.CHAT_INTERNAL, {contextId: item?.contextId, introducerId: item?.introducerId});
+  useEffect(() => {
+    if (!visibleModal) {
+      fetchData();
+    }
+  }, [textSearch, visibleModal]);
+
+  const fetchData = () => {
+    const params: IPaginationAndSearch = {
+      page: chatState?.page,
+      per: chatState?.per,
+    };
+
+    if (textSearch) {
+      params.search_user_id = textSearch;
+    }
+
+    dispatch(showLoading());
+    dispatch(
+      getChatFeedRequest(params, () => {
+        dispatch(hideLoading());
+      }),
+    );
   };
 
-  const onPin = (askId: string, index: number) => {
-    setLoading(true);
+  const onItemClick = (item: any) => {
+    console.log(item);
     dispatch(
-      onPinRequest({askId, index}, (response: IActionOnPinSuccess['payload']) => {
-        setLoading(false);
-        Toast.show({
-          position: 'bottom',
-          type: response.success ? 'success' : 'error',
-          text1: response.success ? 'Successfully' : response.message,
-          visibilityTime: 3000,
-          autoHide: true,
+      getCredential(() => {
+        navigation.navigate(AppRoute.CHAT_INTERNAL, {
+          contextId: item?.contextId,
+          introducerId: item?.introducerId,
+          askerId: item?.askerId,
         });
       }),
     );
   };
 
-  const onUnPin = (askId: string, index: number) => {
+  const onPin = (id: string, index: number) => {
     setLoading(true);
     dispatch(
-      onUnPinRequest({askId, index}, (response: IActionOnUnPinSuccess['payload']) => {
-        setLoading(false);
-        Toast.show({
-          position: 'bottom',
-          type: response.success ? 'success' : 'error',
-          text1: response.success ? 'Successfully' : response.message,
-          visibilityTime: 3000,
-          autoHide: true,
-        });
-      }),
+      onPinRequest(
+        {pinnable_id: id, pinnable_type: PinnableTypeEnum.ASK, index},
+        (response: IActionOnPinSuccess['payload']) => {
+          const params: IPaginationAndSearch = {
+            page: chatState?.page,
+            per: chatState?.per,
+          };
+          if (textSearch) {
+            params.search_user_id = textSearch;
+          }
+          dispatch(
+            getChatFeedRequest(params, () => {
+              setLoading(false);
+              Toast.show({
+                position: 'bottom',
+                type: response.success ? 'success' : 'error',
+                text1: response.success ? 'Successfully' : response.message,
+                visibilityTime: 3000,
+                autoHide: true,
+              });
+            }),
+          );
+        },
+      ),
+    );
+  };
+
+  const onUnPin = (id: string, index: number) => {
+    setLoading(true);
+    dispatch(
+      onUnPinRequest(
+        {pinnable_id: id, pinnable_type: PinnableTypeEnum.ASK, index},
+        (response: IActionOnUnPinSuccess['payload']) => {
+          const params: IPaginationAndSearch = {
+            page: chatState?.page,
+            per: chatState?.per,
+          };
+          if (textSearch) {
+            params.search_user_id = textSearch;
+          }
+          dispatch(
+            getChatFeedRequest(params, () => {
+              setLoading(false);
+              Toast.show({
+                position: 'bottom',
+                type: response.success ? 'success' : 'error',
+                text1: response.success ? 'Successfully' : response.message,
+                visibilityTime: 3000,
+                autoHide: true,
+              });
+            }),
+          );
+        },
+      ),
     );
   };
 

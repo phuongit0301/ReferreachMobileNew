@@ -1,22 +1,26 @@
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Animated, RefreshControl, View} from 'react-native';
+import Toast from 'react-native-toast-message';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {Loading, Paragraph} from '~Root/components';
+import {Loading, LoadingSecondary, Paragraph} from '~Root/components';
 import ListItemChatPersonal from '~Root/components/ListItemChatPersonal';
 import {BASE_COLORS, GlobalStyles} from '~Root/config';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {ChatNavigatorParamsList, TabNavigatorParamsList} from '~Root/navigation/config';
-import {getChatPersonalRequest} from '~Root/services/chat/actions';
+import {getChatPersonalRequest, onPinRequest, onUnPinRequest} from '~Root/services/chat/actions';
+import {PinnableTypeEnum, IActionOnPinSuccess, IActionOnUnPinSuccess} from '~Root/services/chat/types';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
 
 interface Params {
   tabLabel?: string;
+  textSearch?: string;
+  visibleModal: boolean;
 }
 
 type Props = CompositeScreenProps<
@@ -24,37 +28,97 @@ type Props = CompositeScreenProps<
   DrawerScreenProps<TabNavigatorParamsList>
 >;
 
-const PersonalScreen: React.FC<Props & Params> = ({navigation}) => {
+const PersonalScreen: React.FC<Props & Params> = ({navigation, textSearch, visibleModal = false}) => {
   const dispatch = useDispatch();
   const scrollAnim = new Animated.Value(0);
 
   const chatState = useSelector((state: IGlobalState) => state.chatState);
+  const userState = useSelector((state: IGlobalState) => state.userState);
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
 
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
       dispatch(showLoading());
       dispatch(
-        getChatPersonalRequest({search_user: '123'}, () => {
-          dispatch(hideLoading());
-        }),
+        getChatPersonalRequest(
+          {search_user_id: textSearch, personalPer: chatState?.personalPer, personalPage: chatState?.personalPage},
+          () => {
+            dispatch(hideLoading());
+          },
+        ),
       );
-    }, [navigation]),
+    }, [navigation, textSearch]),
   );
 
   const onRefresh = () => {
     setRefreshing(true);
     dispatch(
-      getChatPersonalRequest({search_user: '123'}, () => {
-        setRefreshing(false);
-      }),
+      getChatPersonalRequest(
+        {search_user_id: textSearch, personalPer: chatState?.personalPer, personalPage: chatState?.personalPage},
+        () => {
+          setRefreshing(false);
+        },
+      ),
     );
   };
 
   const onItemClick = (item: any) => {
     navigation.navigate(AppRoute.CHAT_PERSONAL, {contextId: item?.id});
+  };
+
+  const onPin = (id: string, index: number) => {
+    setLoading(true);
+    dispatch(
+      onPinRequest(
+        {pinnable_id: id, pinnable_type: PinnableTypeEnum.CHAT_CONTEXT, index},
+        (response: IActionOnPinSuccess['payload']) => {
+          dispatch(
+            getChatPersonalRequest(
+              {search_user_id: textSearch, personalPer: chatState?.personalPer, personalPage: chatState?.personalPage},
+              () => {
+                setLoading(false);
+                Toast.show({
+                  position: 'bottom',
+                  type: response.success ? 'success' : 'error',
+                  text1: response.success ? 'Successfully' : response.message,
+                  visibilityTime: 3000,
+                  autoHide: true,
+                });
+              },
+            ),
+          );
+        },
+      ),
+    );
+  };
+
+  const onUnPin = (id: string, index: number) => {
+    setLoading(true);
+    dispatch(
+      onUnPinRequest(
+        {pinnable_id: id, pinnable_type: PinnableTypeEnum.CHAT_CONTEXT, index},
+        (response: IActionOnUnPinSuccess['payload']) => {
+          dispatch(
+            getChatPersonalRequest(
+              {search_user_id: textSearch, personalPer: chatState?.personalPer, personalPage: chatState?.personalPage},
+              () => {
+                setLoading(false);
+                Toast.show({
+                  position: 'bottom',
+                  type: response.success ? 'success' : 'error',
+                  text1: response.success ? 'Successfully' : response.message,
+                  visibilityTime: 3000,
+                  autoHide: true,
+                });
+              },
+            ),
+          );
+        },
+      ),
+    );
   };
 
   if (loadingState?.loading) {
@@ -98,6 +162,9 @@ const PersonalScreen: React.FC<Props & Params> = ({navigation}) => {
             index={index}
             dataChatPersonal={chatState?.dataChatPersonal}
             onPress={onItemClick}
+            onPin={onPin}
+            onUnPin={onUnPin}
+            userState={userState}
           />
         )}
         ListEmptyComponent={() => (
@@ -113,6 +180,7 @@ const PersonalScreen: React.FC<Props & Params> = ({navigation}) => {
           </View>
         )}
       />
+      {loading && <LoadingSecondary />}
     </View>
   );
 };

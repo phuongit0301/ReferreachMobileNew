@@ -3,7 +3,12 @@ import axios from '~Root/services/axios';
 import xaxios from 'axios';
 
 import * as API from '~Root/private/api';
-import {IActionInvitationRejectRequested, IActionInvitationRequested, IActionRegisterRequested, IActionVerifyAccountRequested} from './types';
+import {
+  IActionInvitationRejectRequested,
+  IActionInvitationRequested,
+  IActionRegisterRequested,
+  IActionVerifyAccountRequested,
+} from './types';
 
 export default class RegisterAPI {
   static async handleRegister(payload: IActionRegisterRequested['payload']) {

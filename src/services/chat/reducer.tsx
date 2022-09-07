@@ -11,19 +11,25 @@ import {
   GET_CHAT_PERSONAL_FAILURE,
   GET_CHAT_PERSONAL_REQUESTED,
   GET_CHAT_PERSONAL_SUCCESS,
+  GET_USER_CHAT_LIST_FAILURE,
+  GET_USER_CHAT_LIST_SEARCH_SUCCESS,
   GET_USER_CHAT_LIST_SUCCESS,
   ON_CHAT_ONE_ON_ONE_FAILURE,
   ON_CHAT_ONE_ON_ONE_REQUESTED,
   ON_CHAT_ONE_ON_ONE_SUCCESS,
+  ON_PIN_ASK_SUCCESS,
   ON_PIN_FAILURE,
   ON_PIN_REQUESTED,
   ON_PIN_SUCCESS,
+  ON_UN_PIN_ASK_SUCCESS,
   ON_UN_PIN_FAILURE,
   ON_UN_PIN_REQUESTED,
   ON_UN_PIN_SUCCESS,
   ON_UPDATE_CHAT_CONTEXT_FAILURE,
   ON_UPDATE_CHAT_CONTEXT_REQUESTED,
+  RESET_DATA_CHAT,
   SET_CHAT_VISIBLE_MENU,
+  SET_USER_CHAT_LIST,
 } from './constants';
 import {IActionsChat, IChatState} from './types';
 
@@ -32,6 +38,7 @@ export const initialState: IChatState = {
   loading: false,
   success: false,
   listMatches: [],
+  listMatchesSearch: [],
   dataChatPersonal: {
     data: [],
     included: [],
@@ -40,8 +47,23 @@ export const initialState: IChatState = {
     data: [],
     included: [],
   },
-  dataChat: null,
+  dataChat: {
+    data: null,
+    included: [],
+    introducer: null,
+    introducee: null,
+    asker: null,
+    ask: null,
+    isIntroducer: false,
+    chatUuid: '',
+    showKudos: false,
+  },
   dataChatPersonalSelected: null,
+  per: 3,
+  page: 1,
+  personalPer: 3,
+  personalPage: 1,
+  search_user_id: '',
   callback: () => {},
 };
 
@@ -60,17 +82,26 @@ const chatReducer = (state: IChatState = initialState, action: IActionsChat): IC
       return {...state, loading: false, dataFeed: action.payload?.data};
     case GET_CHAT_ASK_CONTEXT_SUCCESS:
       return {...state, loading: false, dataChat: action.payload};
+    case RESET_DATA_CHAT:
+      return {...state, loading: false, dataChat: initialState?.dataChat};
     case GET_CHAT_CONTEXT_SUCCESS:
       return {...state, loading: false, dataChatPersonalSelected: action.payload};
     case GET_CHAT_PERSONAL_SUCCESS:
       return {...state, loading: false, dataChatPersonal: action.payload?.data};
     case GET_USER_CHAT_LIST_SUCCESS:
       return {...state, loading: false, listMatches: action.payload?.data};
+    case GET_USER_CHAT_LIST_SEARCH_SUCCESS:
+      return {...state, loading: false, listMatchesSearch: action.payload?.data};
+    case SET_USER_CHAT_LIST:
+      return {...state, loading: false, listMatchesSearch: []};
     case ON_CHAT_ONE_ON_ONE_SUCCESS:
       return {...state, loading: false, dataChatPersonalSelected: action.payload};
     case ON_PIN_SUCCESS:
     case ON_UN_PIN_SUCCESS:
-      return {...state, dataFeed: {...state.dataFeed, data: [...action?.payload?.data]}};
+      return {...state, ...action?.payload?.data};
+    // case ON_PIN_ASK_SUCCESS:
+    // case ON_UN_PIN_ASK_SUCCESS:
+    //   return {...state, dataFeed: {...state.dataFeed, data: [...action?.payload?.data]}};
     case GET_CHAT_CONTEXT_FAILURE:
     case GET_CHAT_ASK_CONTEXT_FAILURE:
     case GET_CHAT_FEED_FAILURE:
@@ -79,6 +110,7 @@ const chatReducer = (state: IChatState = initialState, action: IActionsChat): IC
     case GET_CHAT_PERSONAL_FAILURE:
     case ON_CHAT_ONE_ON_ONE_FAILURE:
     case ON_UPDATE_CHAT_CONTEXT_FAILURE:
+    case GET_USER_CHAT_LIST_FAILURE:
       return {...state, loading: false, message: action.payload.message};
     case SET_CHAT_VISIBLE_MENU:
       return {...state, ...action?.payload};

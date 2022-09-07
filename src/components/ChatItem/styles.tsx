@@ -56,7 +56,7 @@ export default StyleSheet.create({
     color: BASE_COLORS.whiteColor,
   },
   globeContainer: {
-    width: '55%',
+    width: '50%',
   },
   description: {
     flex: 1,
@@ -69,5 +69,20 @@ export default StyleSheet.create({
     borderColor: BASE_COLORS.flowkitGreyColor,
     borderRadius: adjust(10),
     width: adjust(50),
+  },
+  textNormal: {
+    fontFamily: BASE_FONTS.regular,
+    fontWeight: '400',
+    fontStyle: 'normal',
+    color: BASE_COLORS.darkGrayColor,
+    fontSize: adjust(11),
+    lineHeight: adjust(15),
+  },
+  textHighlight: {
+    fontFamily: BASE_FONTS.bold,
+    fontWeight: '700',
+    color: BASE_COLORS.steelBlue2Color,
+    fontSize: adjust(11),
+    lineHeight: adjust(15),
   },
 });
