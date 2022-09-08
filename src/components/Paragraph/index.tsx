@@ -39,6 +39,7 @@ interface Props {
   textSilverChaliceColor?: boolean;
   textGraniteGrayColor?: boolean;
   textBrightGrayColor?: boolean;
+  textLavenderGrayColor?: boolean;
   textJetColor?: boolean;
   textCenter?: boolean;
   textRight?: boolean;
@@ -85,6 +86,7 @@ const Paragraph: React.FC<Props> = ({
   textSilverChaliceColor,
   textGraniteGrayColor,
   textBrightGrayColor,
+  textLavenderGrayColor,
   textJetColor,
   textCenter,
   textRight,
@@ -136,6 +138,7 @@ const Paragraph: React.FC<Props> = ({
         textSilverChaliceColor && styles.textSilverChaliceColor,
         textGraniteGrayColor && styles.textGraniteGrayColor,
         textBrightGrayColor && styles.textBrightGrayColor,
+        textLavenderGrayColor && styles.textLavenderGrayColor,
         textJetColor && styles.textJetColor,
         textCenter && styles.textCenter,
         textRight && styles.textRight,

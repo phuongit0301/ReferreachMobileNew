@@ -114,4 +114,8 @@ export const IMAGES = {
   starRateFill: require('~Root/assets/images/star_rate_fill.png'),
   kudosHandBg: require('~Root/assets/images/kudos_hand_bg.png'),
   iconHand: require('~Root/assets/images/icon_hand.png'),
+  iconUserPlus: require('~Root/assets/images/user_plus.png'),
+  iconUserPlus40x40: require('~Root/assets/images/user_plus40x40.png'),
+  iconUsers: require('~Root/assets/images/users.png'),
+  iconUsers40x40: require('~Root/assets/images/users40x40.png'),
 };

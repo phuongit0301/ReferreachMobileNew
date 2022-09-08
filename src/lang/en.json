@@ -155,5 +155,9 @@
     "introducer": "Introducer",
     "kudos_message": "<bold>{{name}}</bold> <normal>gave <normal>{{name2}}</normal> a kudos for <normal>{{name3}}</normal> help!</normal>",
     "i_accept": "I accept",
-    "i_decline": "I decline"
+    "i_decline": "I decline",
+    "add_from_phone": "Add From Phone",
+    "done": "Done",
+    "invite_more": "Invite More",
+    "generate_qr_code": "Generate QR Code"
 }
