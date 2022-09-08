@@ -9,7 +9,7 @@ import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 
 const HEADER_HEIGHT = 100;
 
-const AnimatedHeader = ({animatedValue, onVisibleInviteModal}: any) => {
+const AnimatedHeader = ({animatedValue, onVisibleInviteModal, onVisibleJoinModal}: any) => {
   const insets = useSafeAreaInsets();
 
   const headerHeight = animatedValue.interpolate({
@@ -98,13 +98,17 @@ const AnimatedHeader = ({animatedValue, onVisibleInviteModal}: any) => {
           <LinearGradient
             colors={[BASE_COLORS.cyanCornflowerBlueColor, BASE_COLORS.steelBlue2Color]}
             style={[GlobalStyles.flexColumn, GlobalStyles.container, GlobalStyles.itemCenter, styles.block]}>
-            <FastImage
-              source={IMAGES.iconUsers40x40}
-              resizeMode='cover'
-              style={[GlobalStyles.mb5, styles.iconPlus40x40]}
-            />
-            <Paragraph h5 bold textWhite title='Join' style={GlobalStyles.mb5} />
-            <Paragraph textWhite title='Trust Network' style={styles.text} />
+            <TouchableOpacity
+              onPress={onVisibleJoinModal}
+              style={[GlobalStyles.flexColumn, GlobalStyles.container, GlobalStyles.itemCenter]}>
+              <FastImage
+                source={IMAGES.iconUsers40x40}
+                resizeMode='cover'
+                style={[GlobalStyles.mb5, styles.iconPlus40x40]}
+              />
+              <Paragraph h5 bold textWhite title='Join' style={GlobalStyles.mb5} />
+              <Paragraph textWhite title='Trust Network' style={styles.text} />
+            </TouchableOpacity>
           </LinearGradient>
         </Animated.View>
         <Animated.View
@@ -148,8 +152,17 @@ const AnimatedHeader = ({animatedValue, onVisibleInviteModal}: any) => {
               GlobalStyles.justifyCenter,
               styles.block2,
             ]}>
-            <FastImage source={IMAGES.iconUsers} resizeMode='cover' style={[GlobalStyles.mr5, styles.iconPlus]} />
-            <Paragraph bold textWhite title='Join' />
+            <TouchableOpacity
+              onPress={onVisibleJoinModal}
+              style={[
+                GlobalStyles.flexRow,
+                GlobalStyles.container,
+                GlobalStyles.itemCenter,
+                GlobalStyles.justifyCenter,
+              ]}>
+              <FastImage source={IMAGES.iconUsers} resizeMode='cover' style={[GlobalStyles.mr5, styles.iconPlus]} />
+              <Paragraph bold textWhite title='Join' />
+            </TouchableOpacity>
           </LinearGradient>
         </Animated.View>
       </View>

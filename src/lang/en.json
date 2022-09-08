@@ -159,5 +159,8 @@
     "add_from_phone": "Add From Phone",
     "done": "Done",
     "invite_more": "Invite More",
-    "generate_qr_code": "Generate QR Code"
+    "generate_qr_code": "Generate QR Code",
+    "cancel_invite": "Cancel Invite",
+    "share_qr": "Share QR",
+    "network_invited": "<normal>Network invited through this link will be given a <bold>{{name}}</bold> tag</normal>"
 }

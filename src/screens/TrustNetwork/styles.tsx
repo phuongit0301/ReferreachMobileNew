@@ -199,14 +199,14 @@ export default StyleSheet.create({
   h3BoldDefault: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
-    lineHeight: adjust(BASE_STYLES.h3),
     color: BASE_COLORS.whiteColor,
+    fontSize: adjust(12),
   },
   h3BoldDefault2: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
-    lineHeight: adjust(BASE_STYLES.h3),
     color: BASE_COLORS.forestGreenColor,
+    fontSize: adjust(12),
   },
   styleModal: {
     paddingLeft: 0,
@@ -224,6 +224,12 @@ export default StyleSheet.create({
     paddingLeft: 0,
     paddingRight: 0,
     height: adjust(300),
+    borderRadius: adjust(8),
+  },
+  styleModal4: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    height: adjust(500),
     borderRadius: adjust(8),
   },
   styleModalRemove: {
@@ -332,5 +338,20 @@ export default StyleSheet.create({
     position: 'absolute',
     right: adjust(10),
     top: '30%',
+  },
+  qrCode: {
+    width: adjust(230),
+    height: adjust(230),
+  },
+  iconCopy: {
+    width: adjust(18),
+    height: adjust(18),
+  },
+  iconShare: {
+    width: adjust(15),
+    height: adjust(15),
+  },
+  textCenter: {
+    textAlign: 'center',
   },
 });

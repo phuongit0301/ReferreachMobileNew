@@ -77,6 +77,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     modal1: false,
     modal2: false,
     modal3: false,
+    modal4: false,
   });
   const [loading, setLoading] = useState(false);
   const [initPage, setInitPage] = useState(false);
@@ -213,6 +214,28 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     });
   };
 
+  const onVisibleJoinModal = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal2: !visibleModal.modal2,
+    });
+  };
+
+  const onVisibleMassModal = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal3: !visibleModal.modal3,
+    });
+  };
+
+  const onVisibleMassQrModal = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal3: false,
+      modal4: !visibleModal.modal4,
+    });
+  };
+
   const onOk = () => {
     navigation.setParams({inviteCode: null});
     setVisibleInvite(false);
@@ -258,7 +281,11 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     <View style={[GlobalStyles.container]}>
       <SafeAreaView style={GlobalStyles.container} edges={['top', 'right', 'left']}>
         <HeaderSmallTransparent title={t('your_trust_network')} isRightButton={true} onRightPress={onToggleDrawer} />
-        <AnimatedHeader animatedValue={offset} onVisibleInviteModal={onVisibleInviteModal} />
+        <AnimatedHeader
+          animatedValue={offset}
+          onVisibleInviteModal={onVisibleInviteModal}
+          onVisibleJoinModal={onVisibleJoinModal}
+        />
         <Animated.View
           style={[GlobalStyles.container, GlobalStyles.ph15, styles.container, {paddingTop: headerHeight}]}>
           <Animated.FlatList
@@ -294,6 +321,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                         textCenter
                         containerStyle={{...GlobalStyles.buttonContainerStyle, ...styles.buttonSignUpContainerStyle}}
                         textStyle={styles.h3BoldSignUpDefault}
+                        onPress={onVisibleMassModal}
                       />
                     </View>
                   </View>
@@ -498,7 +526,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
         <ModalDialogCommon
           isDefault={false}
           isVisible={visibleModal.modal2}
-          onHideModal={onVisibleInviteModal}
+          onHideModal={onVisibleJoinModal}
           styleModal={styles.styleModal2}>
           <View style={[GlobalStyles.mb15, styles.headerContainer]}>
             <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
@@ -511,7 +539,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   title='Individual Invite'
                   style={[GlobalStyles.mb15, GlobalStyles.container]}
                 />
-                <TouchableOpacity onPress={onVisibleInviteModal}>
+                <TouchableOpacity onPress={onVisibleJoinModal}>
                   <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
                 </TouchableOpacity>
               </View>
@@ -565,7 +593,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
         <ModalDialogCommon
           isDefault={false}
           isVisible={visibleModal.modal3}
-          onHideModal={onVisibleInviteModal}
+          onHideModal={onVisibleMassModal}
           styleModal={styles.styleModal3}>
           <View style={[GlobalStyles.mb15, styles.headerContainer1]}>
             <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
@@ -578,7 +606,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   title='Mass Invite'
                   style={[GlobalStyles.mb15, GlobalStyles.container]}
                 />
-                <TouchableOpacity onPress={onVisibleInviteModal}>
+                <TouchableOpacity onPress={onVisibleMassModal}>
                   <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
                 </TouchableOpacity>
               </View>
@@ -627,15 +655,101 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               title={t('generate_qr_code')}
               h5
               textCenter
-              onPress={handleSubmit(onSend)}
+              onPress={onVisibleMassQrModal}
               containerStyle={{
                 ...GlobalStyles.buttonContainerStyle,
                 ...GlobalStyles.mb20,
                 ...styles.buttonContainerStyle,
               }}
               textStyle={styles.h3BoldDefault}
-              disabled={!isValid}
             />
+          </View>
+        </ModalDialogCommon>
+      )}
+      {visibleModal.modal4 && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={visibleModal.modal4}
+          onHideModal={onVisibleMassQrModal}
+          styleModal={styles.styleModal4}>
+          <View style={[GlobalStyles.mb15, styles.headerContainer1]}>
+            <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
+              <View style={[GlobalStyles.flexRow]}>
+                <Paragraph
+                  textSteelBlue2Color
+                  h5
+                  bold600
+                  textCenter
+                  title='Mass Invite QR'
+                  style={[GlobalStyles.mb15, GlobalStyles.container]}
+                />
+                <TouchableOpacity onPress={onVisibleMassQrModal}>
+                  <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15, GlobalStyles.fullWidth]}>
+            <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter, GlobalStyles.mb15]}>
+              <FastImage source={IMAGES.imgQr} resizeMode='contain' style={[GlobalStyles.mb15, styles.qrCode]} />
+              <View style={GlobalStyles.fullWidth}>
+                <TextInput placeholder='spKeaYH1' style={[styles.inputStyle, GlobalStyles.ph10]} />
+                <View style={styles.tagCount}>
+                  <FastImage source={IMAGES.iconCopy} resizeMode='contain' style={styles.iconCopy} />
+                </View>
+              </View>
+            </View>
+            <View style={GlobalStyles.mb15}>
+              <Trans
+                i18nKey='network_invited'
+                parent={Text}
+                values={{
+                  name: `“ReferReach”`,
+                }}
+                components={{
+                  normal: <Text style={[styles.textNormal, styles.textCenter]} />,
+                  bold: <Text style={[styles.textBold]} />,
+                }}
+              />
+            </View>
+            <View style={[GlobalStyles.flexRow]}>
+              <View style={GlobalStyles.container}>
+                <Button
+                  title={t('cancel_invite')}
+                  h5
+                  textCenter
+                  onPress={handleSubmit(onSend)}
+                  containerStyle={{
+                    ...GlobalStyles.buttonContainerStyle,
+                    ...GlobalStyles.mr10,
+                    ...styles.buttonContainer2Style,
+                  }}
+                  textStyle={styles.h3BoldDefault2}
+                />
+              </View>
+              <View style={GlobalStyles.container}>
+                <Button
+                  isIconLeft={true}
+                  title={t('share_qr')}
+                  h5
+                  textCenter
+                  onPress={handleSubmit(onSend)}
+                  containerStyle={{
+                    ...GlobalStyles.buttonContainerStyle,
+                    ...GlobalStyles.flexRow,
+                    ...GlobalStyles.itemCenter,
+                    ...styles.buttonContainerStyle2,
+                  }}
+                  textStyle={styles.h3BoldDefault}
+                  disabled={!isValid}>
+                  <FastImage
+                    source={IMAGES.iconShare2}
+                    resizeMode='cover'
+                    style={[GlobalStyles.mr5, styles.iconShare]}
+                  />
+                </Button>
+              </View>
+            </View>
           </View>
         </ModalDialogCommon>
       )}

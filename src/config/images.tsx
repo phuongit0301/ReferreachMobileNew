@@ -118,4 +118,7 @@ export const IMAGES = {
   iconUserPlus40x40: require('~Root/assets/images/user_plus40x40.png'),
   iconUsers: require('~Root/assets/images/users.png'),
   iconUsers40x40: require('~Root/assets/images/users40x40.png'),
+  imgQr: require('~Root/assets/images/img_qr.png'),
+  iconCopy: require('~Root/assets/images/copy.png'),
+  iconShare2: require('~Root/assets/images/icon_share_2.png'),
 };
