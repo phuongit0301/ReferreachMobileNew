@@ -18,137 +18,6 @@ export const initialState: INetworkConnectionListState = {
   callback: () => {},
 };
 
-const items = [
-  {
-    id: '591',
-    type: 'network_connections',
-    attributes: {
-      status: 'accepted',
-      tag_list: [],
-    },
-    relationships: {
-      connected_user: {
-        data: {
-          id: '129',
-          type: 'users',
-        },
-      },
-    },
-  },
-  {
-    id: '567',
-    type: 'network_connections',
-    attributes: {
-      status: 'accepted',
-      tag_list: [],
-    },
-    relationships: {
-      connected_user: {
-        data: {
-          id: '117',
-          type: 'users',
-        },
-      },
-    },
-  },
-  {
-    id: '560',
-    type: 'network_connections',
-    attributes: {
-      status: 'accepted',
-      tag_list: [],
-    },
-    relationships: {
-      connected_user: {
-        data: {
-          id: '111',
-          type: 'users',
-        },
-      },
-    },
-  },
-  {
-    id: '592',
-    type: 'network_connections',
-    attributes: {
-      status: 'accepted',
-      tag_list: [],
-    },
-    relationships: {
-      connected_user: {
-        data: {
-          id: '129',
-          type: 'users',
-        },
-      },
-    },
-  },
-  {
-    id: '568',
-    type: 'network_connections',
-    attributes: {
-      status: 'accepted',
-      tag_list: [],
-    },
-    relationships: {
-      connected_user: {
-        data: {
-          id: '117',
-          type: 'users',
-        },
-      },
-    },
-  },
-  {
-    id: '561',
-    type: 'network_connections',
-    attributes: {
-      status: 'accepted',
-      tag_list: [],
-    },
-    relationships: {
-      connected_user: {
-        data: {
-          id: '111',
-          type: 'users',
-        },
-      },
-    },
-  },
-  {
-    id: '569',
-    type: 'network_connections',
-    attributes: {
-      status: 'accepted',
-      tag_list: [],
-    },
-    relationships: {
-      connected_user: {
-        data: {
-          id: '117',
-          type: 'users',
-        },
-      },
-    },
-  },
-  {
-    id: '562',
-    type: 'network_connections',
-    attributes: {
-      status: 'accepted',
-      tag_list: [],
-    },
-    relationships: {
-      connected_user: {
-        data: {
-          id: '111',
-          type: 'users',
-        },
-      },
-    },
-  },
-];
-
 const userReducer = (
   state: INetworkConnectionListState = initialState,
   action: IActionsUser,
@@ -161,7 +30,7 @@ const userReducer = (
       return {
         ...state,
         loading: false,
-        data: [...action?.payload?.data, ...items] || [],
+        data: action?.payload?.data || [],
         included: action?.payload?.included || [],
         message: action?.payload?.message,
       };
