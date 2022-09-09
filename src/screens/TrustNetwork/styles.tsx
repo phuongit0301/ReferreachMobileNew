@@ -1,4 +1,4 @@
-import {Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
 
@@ -7,29 +7,30 @@ export default StyleSheet.create({
     backgroundColor: BASE_COLORS.brightGrayColor,
   },
   inputContainer: {
-    ...GlobalStyles.mt15,
     ...GlobalStyles.ph15,
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: BASE_COLORS.whiteColor,
+    backgroundColor: BASE_COLORS.brightGrayColor,
     borderRadius: adjust(50),
-    paddingVertical: Platform.OS === 'ios' ? adjust(8) : 0,
+    paddingVertical: 0,
     alignItems: 'center',
+    height: adjust(30),
   },
   iconSearch: {
     width: adjust(18),
     height: adjust(18),
+    opacity: 0.3,
   },
   input: {
-    ...GlobalStyles.h5,
-    flex: 1,
+    fontFamily: BASE_FONTS.notoSansRegular,
     lineHeight: adjust(17),
     color: BASE_COLORS.gunmetalColor,
     fontSize: adjust(13),
   },
   itemContainer: {
     backgroundColor: BASE_COLORS.whiteColor,
-    borderRadius: adjust(12),
+    borderTopWidth: 1,
+    borderTopColor: BASE_COLORS.brightGrayColor,
   },
   cardContainer: {
     backgroundColor: BASE_COLORS.steelBlue2Color,
@@ -43,8 +44,19 @@ export default StyleSheet.create({
     ...GlobalStyles.mb20,
     ...GlobalStyles.ph15,
     ...GlobalStyles.pv8,
-    borderBottomRightRadius: adjust(12),
     backgroundColor: BASE_COLORS.forestGreenColor,
+  },
+  buttonContainerStyle2: {
+    ...GlobalStyles.ph15,
+    ...GlobalStyles.pv8,
+    backgroundColor: BASE_COLORS.forestGreenColor,
+  },
+  buttonContainer2Style: {
+    ...GlobalStyles.ph15,
+    ...GlobalStyles.pv8,
+    backgroundColor: BASE_COLORS.whiteColor,
+    borderWidth: 1,
+    borderColor: BASE_COLORS.forestGreenColor,
   },
   buttonConfirmContainerStyle: {
     ...GlobalStyles.ph15,
@@ -114,14 +126,20 @@ export default StyleSheet.create({
     lineHeight: adjust(20),
   },
   iconEditBg: {
-    backgroundColor: BASE_COLORS.gray2Color,
+    backgroundColor: BASE_COLORS.brightGrayColor,
     borderRadius: adjust(50),
-    padding: adjust(5),
+    height: adjust(30),
+    width: adjust(30),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   iconEditBgActive: {
     backgroundColor: BASE_COLORS.forestGreenColor,
     borderRadius: adjust(50),
-    padding: adjust(5),
+    height: adjust(30),
+    width: adjust(30),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   iconEdit: {
     width: adjust(13),
@@ -171,7 +189,7 @@ export default StyleSheet.create({
   },
   inputStyle: {
     ...GlobalStyles.inputStyle,
-    borderRadius: adjust(20),
+    borderRadius: adjust(8),
     color: BASE_COLORS.blackColor,
     backgroundColor: BASE_COLORS.brightGrayColor,
   },
@@ -181,11 +199,38 @@ export default StyleSheet.create({
   h3BoldDefault: {
     fontFamily: BASE_FONTS.semiBold,
     fontWeight: '600',
-    lineHeight: adjust(BASE_STYLES.h3),
     color: BASE_COLORS.whiteColor,
+    fontSize: adjust(12),
+  },
+  h3BoldDefault2: {
+    fontFamily: BASE_FONTS.semiBold,
+    fontWeight: '600',
+    color: BASE_COLORS.forestGreenColor,
+    fontSize: adjust(12),
   },
   styleModal: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    height: adjust(400),
+    borderRadius: adjust(8),
+  },
+  styleModal2: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    height: adjust(200),
+    borderRadius: adjust(8),
+  },
+  styleModal3: {
+    paddingLeft: 0,
+    paddingRight: 0,
     height: adjust(300),
+    borderRadius: adjust(8),
+  },
+  styleModal4: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    height: adjust(500),
+    borderRadius: adjust(8),
   },
   styleModalRemove: {
     height: adjust(250),
@@ -216,5 +261,97 @@ export default StyleSheet.create({
     lineHeight: adjust(BASE_STYLES.h4),
     fontWeight: '600',
     color: BASE_COLORS.whiteColor,
+  },
+  blockArea: {
+    backgroundColor: BASE_COLORS.whiteColor,
+    borderRadius: adjust(8),
+  },
+  blockArea1: {
+    backgroundColor: BASE_COLORS.whiteColor,
+    borderTopLeftRadius: adjust(8),
+    borderTopRightRadius: adjust(8),
+  },
+  buttonSignUpContainerStyle: {
+    backgroundColor: BASE_COLORS.whiteColor,
+    borderColor: BASE_COLORS.oxleyColor,
+    borderWidth: 1,
+  },
+  h3BoldSignUpDefault: {
+    fontFamily: BASE_FONTS.notoSansExtraBold,
+    fontWeight: '600',
+    lineHeight: adjust(BASE_STYLES.h3),
+    color: BASE_COLORS.oxleyColor,
+    fontSize: adjust(14),
+  },
+  footerContainer: {
+    height: adjust(5),
+    backgroundColor: BASE_COLORS.whiteColor,
+    borderBottomLeftRadius: adjust(8),
+    borderBottomRightRadius: adjust(8),
+    overflow: 'hidden',
+  },
+  iconClose: {
+    width: adjust(14),
+    height: adjust(14),
+  },
+  headerContainer: {
+    borderBottomColor: BASE_COLORS.lavenderGrayColor,
+    borderBottomWidth: 1,
+    width: '100%',
+  },
+  headerContainer1: {
+    borderBottomColor: BASE_COLORS.lavenderGrayColor,
+    width: '100%',
+  },
+  iconQuestion: {
+    width: adjust(20),
+    height: adjust(20),
+    opacity: 0.5,
+  },
+  highlight: {
+    fontFamily: BASE_FONTS.regular,
+    fontWeight: '500',
+    fontSize: adjust(11),
+    fontStyle: 'italic',
+    color: BASE_COLORS.darkGray,
+  },
+  circle: {
+    width: adjust(50),
+    height: adjust(50),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: BASE_COLORS.steelBlue2Color,
+    borderRadius: adjust(100),
+  },
+  circleActive: {
+    width: adjust(50),
+    height: adjust(50),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: BASE_COLORS.whiteColor,
+    backgroundColor: BASE_COLORS.steelBlue2Color,
+    borderRadius: adjust(100),
+  },
+  tagCount: {
+    position: 'absolute',
+    right: adjust(10),
+    top: '30%',
+  },
+  qrCode: {
+    width: adjust(230),
+    height: adjust(230),
+  },
+  iconCopy: {
+    width: adjust(18),
+    height: adjust(18),
+  },
+  iconShare: {
+    width: adjust(15),
+    height: adjust(15),
+  },
+  textCenter: {
+    textAlign: 'center',
   },
 });

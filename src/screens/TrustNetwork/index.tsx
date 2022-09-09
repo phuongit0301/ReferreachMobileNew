@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {Animated, RefreshControl, TextInput, View, TouchableOpacity, Text} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Animated, RefreshControl, TextInput, View, TouchableOpacity, Text, FlatList} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Trans, useTranslation} from 'react-i18next';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import {useForm, SubmitHandler} from 'react-hook-form';
@@ -39,6 +39,7 @@ import {IActionInvitationSuccess} from '~Root/services/register/types';
 import {TRUST_NETWORK_STATUS_ENUM} from '~Root/utils';
 import {onChatOneOnOneRequest} from '~Root/services/chat/actions';
 import {getCredential} from '~Root/services/pubnub/actions';
+import AnimatedHeader from './AnimatedHeader';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -63,7 +64,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   });
 
   const {t} = useTranslation();
-  const scrollAnim = new Animated.Value(0);
+  const offset = useRef(new Animated.Value(0)).current;
 
   const dispatch = useDispatch();
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
@@ -72,7 +73,12 @@ const AirFeedScreen = ({route, navigation}: Props) => {
 
   const [refreshing, setRefreshing] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
-  const [visibleInviteModal, setVisibleInviteModal] = useState(false);
+  const [visibleModal, setVisibleModal] = useState({
+    modal1: false,
+    modal2: false,
+    modal3: false,
+    modal4: false,
+  });
   const [loading, setLoading] = useState(false);
   const [initPage, setInitPage] = useState(false);
   const [textSearch, setTextSearch] = useState('');
@@ -82,6 +88,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     itemIncluded: null,
   });
   const [visibleInvite, setVisibleInvite] = useState(false);
+  const [userNumber, setUserNumber] = useState(100);
 
   useEffect(() => {
     initData((route?.params as any)?.inviteCode);
@@ -201,7 +208,32 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   };
 
   const onVisibleInviteModal = () => {
-    setVisibleInviteModal(!visibleInviteModal);
+    setVisibleModal({
+      ...visibleModal,
+      modal1: !visibleModal.modal1,
+    });
+  };
+
+  const onVisibleJoinModal = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal2: !visibleModal.modal2,
+    });
+  };
+
+  const onVisibleMassModal = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal3: !visibleModal.modal3,
+    });
+  };
+
+  const onVisibleMassQrModal = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal3: false,
+      modal4: !visibleModal.modal4,
+    });
   };
 
   const onOk = () => {
@@ -231,43 +263,31 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     }
   };
 
+  const onSetUserNumber = (num: number) => {
+    setUserNumber(num);
+  };
+
   if (loadingState?.loading) {
     return <Loading />;
   }
+
+  const headerHeight = offset.interpolate({
+    inputRange: [0, 180],
+    outputRange: [180, 88],
+    extrapolate: 'clamp',
+  });
 
   return (
     <View style={[GlobalStyles.container]}>
       <SafeAreaView style={GlobalStyles.container} edges={['top', 'right', 'left']}>
         <HeaderSmallTransparent title={t('your_trust_network')} isRightButton={true} onRightPress={onToggleDrawer} />
-        <View style={[GlobalStyles.container, GlobalStyles.ph15, styles.container]}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder='Search for contacts'
-              value={textSearch}
-              style={styles.input}
-              onChangeText={onInputChange}
-            />
-            <FastImage source={IMAGES.iconSearch} style={styles.iconSearch} />
-          </View>
-          <TouchableOpacity
-            style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.justifyEnd, GlobalStyles.mv15]}
-            onPress={() => setVisibleEdit(!visibleEdit)}>
-            {visibleEdit ? (
-              <>
-                <Paragraph p textForestGreenColor title={t('cancel_edit')} style={GlobalStyles.mr5} />
-                <View style={styles.iconEditBgActive}>
-                  <FastImage source={IMAGES.iconEdit} resizeMode='contain' style={styles.iconEdit} />
-                </View>
-              </>
-            ) : (
-              <>
-                <Paragraph p textDarkGrayColor title={t('edit')} style={GlobalStyles.mr5} />
-                <View style={styles.iconEditBg}>
-                  <FastImage source={IMAGES.iconEdit} resizeMode='contain' style={styles.iconEdit} />
-                </View>
-              </>
-            )}
-          </TouchableOpacity>
+        <AnimatedHeader
+          animatedValue={offset}
+          onVisibleInviteModal={onVisibleInviteModal}
+          onVisibleJoinModal={onVisibleJoinModal}
+        />
+        <Animated.View
+          style={[GlobalStyles.container, GlobalStyles.ph15, styles.container, {paddingTop: headerHeight}]}>
           <Animated.FlatList
             contentContainerStyle={[GlobalStyles.pb150]}
             nestedScrollEnabled={true}
@@ -280,22 +300,67 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               />
             }
             scrollEventThrottle={1}
-            onScroll={Animated.event(
-              [
-                {
-                  nativeEvent: {
-                    contentOffset: {
-                      y: scrollAnim,
-                    },
-                  },
-                },
-              ],
-              {useNativeDriver: true},
-            )}
+            onScroll={Animated.event([{nativeEvent: {contentOffset: {y: offset}}}], {useNativeDriver: false})}
             showsVerticalScrollIndicator={false}
             data={networkState?.data}
             key={'trust-network'}
             keyExtractor={(item, index) => `trust-network-item-${index}`}
+            ListFooterComponent={() => {
+              return <View style={styles.footerContainer} />;
+            }}
+            ListHeaderComponent={() => {
+              return (
+                <View style={[GlobalStyles.flexColumn]}>
+                  <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30]}>
+                    <Paragraph h5 bold title='Ongoing Mass Invites' style={GlobalStyles.mb10} />
+                    <View style={[GlobalStyles.flexColumn, GlobalStyles.p15, styles.blockArea]}>
+                      <Paragraph p title='There is no ongoing Mass Invites' style={GlobalStyles.mb15} />
+                      <Button
+                        title='Mass Invite via QR code'
+                        h3
+                        textCenter
+                        containerStyle={{...GlobalStyles.buttonContainerStyle, ...styles.buttonSignUpContainerStyle}}
+                        textStyle={styles.h3BoldSignUpDefault}
+                        onPress={onVisibleMassModal}
+                      />
+                    </View>
+                  </View>
+                  <View style={GlobalStyles.flexColumn}>
+                    <Paragraph h5 bold title='Your Trust Network' style={GlobalStyles.mb10} />
+                    <View style={[GlobalStyles.flexColumn, GlobalStyles.p15, styles.blockArea1]}>
+                      <View style={GlobalStyles.flexRow}>
+                        <View style={[GlobalStyles.container, GlobalStyles.mr5, styles.inputContainer]}>
+                          <FastImage source={IMAGES.iconSearchBlack} style={[styles.iconSearch, GlobalStyles.mr10]} />
+                          <TextInput
+                            placeholder='Search for contacts'
+                            value={textSearch}
+                            style={[styles.input]}
+                            onChangeText={onInputChange}
+                          />
+                        </View>
+                        <TouchableOpacity
+                          style={[GlobalStyles.flexRow, GlobalStyles.alignCenter, GlobalStyles.justifyEnd]}
+                          onPress={() => setVisibleEdit(!visibleEdit)}>
+                          {visibleEdit ? (
+                            <>
+                              <View style={styles.iconEditBgActive}>
+                                <FastImage source={IMAGES.iconEdit} resizeMode='contain' style={styles.iconEdit} />
+                              </View>
+                            </>
+                          ) : (
+                            <>
+                              <View style={styles.iconEditBg}>
+                                <FastImage source={IMAGES.iconEdit} resizeMode='contain' style={styles.iconEdit} />
+                              </View>
+                            </>
+                          )}
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              );
+            }}
             renderItem={({item, index}: {item: any; index: number}) => {
               const itemIncluded: IIncluded = networkState?.included[index];
 
@@ -304,7 +369,6 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   style={[
                     GlobalStyles.flexRow,
                     GlobalStyles.p10,
-                    GlobalStyles.mb15,
                     GlobalStyles.alignCenter,
                     GlobalStyles.flexWrap,
                     styles.itemContainer,
@@ -367,21 +431,44 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               );
             }}
           />
-        </View>
-        <TouchableOpacity
-          style={[GlobalStyles.pv5, GlobalStyles.ph15, styles.btnBottom]}
-          onPress={onVisibleInviteModal}>
-          <Paragraph h1 textWhite title='+' />
-        </TouchableOpacity>
+        </Animated.View>
       </SafeAreaView>
-      {visibleInviteModal && (
+      {visibleModal.modal1 && (
         <ModalDialogCommon
           isDefault={false}
-          isVisible={visibleInviteModal}
+          isVisible={visibleModal.modal1}
           onHideModal={onVisibleInviteModal}
           styleModal={styles.styleModal}>
-          <Paragraph textBlack bold600 textLeft title='Send an invite to your friend!' style={GlobalStyles.mb15} />
-          <View style={[GlobalStyles.flexColumn, GlobalStyles.fullWidth]}>
+          <View style={[GlobalStyles.mb15, styles.headerContainer]}>
+            <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
+              <View style={[GlobalStyles.flexRow]}>
+                <Paragraph
+                  textSteelBlue2Color
+                  h5
+                  bold600
+                  textCenter
+                  title='Individual Invite'
+                  style={[GlobalStyles.mb15, GlobalStyles.container]}
+                />
+                <TouchableOpacity onPress={onVisibleInviteModal}>
+                  <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
+                </TouchableOpacity>
+              </View>
+              <Button
+                title={t('add_from_phone')}
+                p
+                textCenter
+                containerStyle={{
+                  ...GlobalStyles.buttonContainerStyle,
+                  ...GlobalStyles.mb20,
+                  ...styles.buttonContainerStyle,
+                }}
+                textStyle={styles.h3BoldDefault}
+                disabled={!isValid}
+              />
+            </View>
+          </View>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15, GlobalStyles.fullWidth]}>
             <InputValidateControl
               label={t('name')}
               inputStyle={styles.inputStyle}
@@ -409,9 +496,19 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               register={register}
               keyboardType='email-address'
             />
+            <View style={[GlobalStyles.flexColumn, GlobalStyles.mb15]}>
+              <View style={GlobalStyles.flexRow}>
+                <View style={[GlobalStyles.flexRow, GlobalStyles.container]}>
+                  <Paragraph title='Tag' style={[GlobalStyles.mr10, styles.labelStyle]} />
+                  <Paragraph title='Optional*' style={styles.highlight} />
+                </View>
+                <FastImage source={IMAGES.iconQuestion} resizeMode='cover' style={styles.iconQuestion} />
+              </View>
+              <TextInput placeholder='eg. bff, supplier. client' style={[styles.inputStyle, GlobalStyles.ph10]} />
+            </View>
             <Button
               title={t('send_invite')}
-              h4
+              h5
               textCenter
               onPress={handleSubmit(onSend)}
               containerStyle={{
@@ -422,6 +519,237 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               textStyle={styles.h3BoldDefault}
               disabled={!isValid}
             />
+          </View>
+        </ModalDialogCommon>
+      )}
+      {visibleModal.modal2 && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={visibleModal.modal2}
+          onHideModal={onVisibleJoinModal}
+          styleModal={styles.styleModal2}>
+          <View style={[GlobalStyles.mb15, styles.headerContainer]}>
+            <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
+              <View style={[GlobalStyles.flexRow]}>
+                <Paragraph
+                  textSteelBlue2Color
+                  h5
+                  bold600
+                  textCenter
+                  title='Individual Invite'
+                  style={[GlobalStyles.mb15, GlobalStyles.container]}
+                />
+                <TouchableOpacity onPress={onVisibleJoinModal}>
+                  <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
+                </TouchableOpacity>
+              </View>
+              <Button
+                title={t('add_from_phone')}
+                p
+                textCenter
+                containerStyle={{
+                  ...GlobalStyles.buttonContainerStyle,
+                  ...GlobalStyles.mb20,
+                  ...styles.buttonContainerStyle,
+                }}
+                textStyle={styles.h3BoldDefault}
+                disabled={!isValid}
+              />
+            </View>
+          </View>
+          <View style={[GlobalStyles.flexRow, GlobalStyles.ph15]}>
+            <View style={GlobalStyles.container}>
+              <Button
+                title={t('done')}
+                h5
+                textCenter
+                onPress={handleSubmit(onSend)}
+                containerStyle={{
+                  ...GlobalStyles.buttonContainerStyle,
+                  ...GlobalStyles.mr10,
+                  ...styles.buttonContainer2Style,
+                }}
+                textStyle={styles.h3BoldDefault2}
+              />
+            </View>
+            <View style={GlobalStyles.container}>
+              <Button
+                title={t('invite_more')}
+                h5
+                textCenter
+                onPress={handleSubmit(onSend)}
+                containerStyle={{
+                  ...GlobalStyles.buttonContainerStyle,
+                  ...styles.buttonContainerStyle2,
+                }}
+                textStyle={styles.h3BoldDefault}
+                disabled={!isValid}
+              />
+            </View>
+          </View>
+        </ModalDialogCommon>
+      )}
+      {visibleModal.modal3 && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={visibleModal.modal3}
+          onHideModal={onVisibleMassModal}
+          styleModal={styles.styleModal3}>
+          <View style={[GlobalStyles.mb15, styles.headerContainer1]}>
+            <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
+              <View style={[GlobalStyles.flexRow]}>
+                <Paragraph
+                  textSteelBlue2Color
+                  h5
+                  bold600
+                  textCenter
+                  title='Mass Invite'
+                  style={[GlobalStyles.mb15, GlobalStyles.container]}
+                />
+                <TouchableOpacity onPress={onVisibleMassModal}>
+                  <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15, GlobalStyles.fullWidth]}>
+            <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter, GlobalStyles.mb15]}>
+              <Paragraph h6 textSteelBlue2Color title='Limit by number of users' style={GlobalStyles.mb10} />
+              <View style={GlobalStyles.flexRow}>
+                <TouchableOpacity
+                  onPress={() => onSetUserNumber(50)}
+                  style={[GlobalStyles.mr10, userNumber === 50 ? styles.circleActive : styles.circle]}>
+                  {userNumber === 50 ? (
+                    <Paragraph textWhite title='50' />
+                  ) : (
+                    <Paragraph textSteelBlue2Color title='50' />
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => onSetUserNumber(100)}
+                  style={userNumber === 100 ? styles.circleActive : styles.circle}>
+                  {userNumber === 100 ? (
+                    <Paragraph textWhite title='100' />
+                  ) : (
+                    <Paragraph textSteelBlue2Color title='100' />
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={[GlobalStyles.flexColumn, GlobalStyles.mb15]}>
+              <View style={GlobalStyles.flexRow}>
+                <View style={[GlobalStyles.flexRow, GlobalStyles.container]}>
+                  <Paragraph title='Tag' style={[GlobalStyles.mr10, styles.labelStyle]} />
+                  <Paragraph title='Optional*' style={styles.highlight} />
+                </View>
+                <FastImage source={IMAGES.iconQuestion} resizeMode='cover' style={styles.iconQuestion} />
+              </View>
+              <View>
+                <TextInput placeholder='eg. bff, supplier. client' style={[styles.inputStyle, GlobalStyles.ph10]} />
+                <View style={styles.tagCount}>
+                  <Paragraph textLavenderGrayColor p title='0 / 12' />
+                </View>
+              </View>
+            </View>
+            <Button
+              title={t('generate_qr_code')}
+              h5
+              textCenter
+              onPress={onVisibleMassQrModal}
+              containerStyle={{
+                ...GlobalStyles.buttonContainerStyle,
+                ...GlobalStyles.mb20,
+                ...styles.buttonContainerStyle,
+              }}
+              textStyle={styles.h3BoldDefault}
+            />
+          </View>
+        </ModalDialogCommon>
+      )}
+      {visibleModal.modal4 && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={visibleModal.modal4}
+          onHideModal={onVisibleMassQrModal}
+          styleModal={styles.styleModal4}>
+          <View style={[GlobalStyles.mb15, styles.headerContainer1]}>
+            <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
+              <View style={[GlobalStyles.flexRow]}>
+                <Paragraph
+                  textSteelBlue2Color
+                  h5
+                  bold600
+                  textCenter
+                  title='Mass Invite QR'
+                  style={[GlobalStyles.mb15, GlobalStyles.container]}
+                />
+                <TouchableOpacity onPress={onVisibleMassQrModal}>
+                  <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15, GlobalStyles.fullWidth]}>
+            <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter, GlobalStyles.mb15]}>
+              <FastImage source={IMAGES.imgQr} resizeMode='contain' style={[GlobalStyles.mb15, styles.qrCode]} />
+              <View style={GlobalStyles.fullWidth}>
+                <TextInput placeholder='spKeaYH1' style={[styles.inputStyle, GlobalStyles.ph10]} />
+                <View style={styles.tagCount}>
+                  <FastImage source={IMAGES.iconCopy} resizeMode='contain' style={styles.iconCopy} />
+                </View>
+              </View>
+            </View>
+            <View style={GlobalStyles.mb15}>
+              <Trans
+                i18nKey='network_invited'
+                parent={Text}
+                values={{
+                  name: `“ReferReach”`,
+                }}
+                components={{
+                  normal: <Text style={[styles.textNormal, styles.textCenter]} />,
+                  bold: <Text style={[styles.textBold]} />,
+                }}
+              />
+            </View>
+            <View style={[GlobalStyles.flexRow]}>
+              <View style={GlobalStyles.container}>
+                <Button
+                  title={t('cancel_invite')}
+                  h5
+                  textCenter
+                  onPress={handleSubmit(onSend)}
+                  containerStyle={{
+                    ...GlobalStyles.buttonContainerStyle,
+                    ...GlobalStyles.mr10,
+                    ...styles.buttonContainer2Style,
+                  }}
+                  textStyle={styles.h3BoldDefault2}
+                />
+              </View>
+              <View style={GlobalStyles.container}>
+                <Button
+                  isIconLeft={true}
+                  title={t('share_qr')}
+                  h5
+                  textCenter
+                  onPress={handleSubmit(onSend)}
+                  containerStyle={{
+                    ...GlobalStyles.buttonContainerStyle,
+                    ...GlobalStyles.flexRow,
+                    ...GlobalStyles.itemCenter,
+                    ...styles.buttonContainerStyle2,
+                  }}
+                  textStyle={styles.h3BoldDefault}
+                  disabled={!isValid}>
+                  <FastImage
+                    source={IMAGES.iconShare2}
+                    resizeMode='cover'
+                    style={[GlobalStyles.mr5, styles.iconShare]}
+                  />
+                </Button>
+              </View>
+            </View>
           </View>
         </ModalDialogCommon>
       )}

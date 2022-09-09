@@ -22,4 +22,22 @@ export default StyleSheet.create({
     width: adjust(138),
     height: adjust(18),
   },
+  iconPlus40x40: {
+    width: adjust(40),
+    height: adjust(40),
+  },
+  iconPlus: {
+    width: adjust(16),
+    height: adjust(15),
+  },
+  block: {
+    borderRadius: adjust(8),
+  },
+  block2: {
+    borderRadius: adjust(20),
+    height: adjust(32),
+  },
+  text: {
+    fontSize: adjust(10),
+  },
 });
