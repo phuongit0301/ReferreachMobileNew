@@ -1,5 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, RefreshControl, TextInput, View, TouchableOpacity, Text, Alert, Share} from 'react-native';
+import {
+  Animated,
+  RefreshControl,
+  TextInput,
+  View,
+  TouchableOpacity,
+  Text,
+  Alert,
+  Share,
+  Dimensions,
+} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Trans, useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -42,14 +52,13 @@ import {CompositeScreenProps} from '@react-navigation/native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
-import {invitationRequest} from '~Root/services/register/actions';
+import {invitationRejectRequest, invitationRequest, setDataInvitation} from '~Root/services/register/actions';
 import {IActionInvitationSuccess} from '~Root/services/register/types';
 import {adjust, TRUST_NETWORK_STATUS_ENUM} from '~Root/utils';
 import {onChatOneOnOneRequest} from '~Root/services/chat/actions';
 import {getCredential} from '~Root/services/pubnub/actions';
 import AnimatedHeader from './AnimatedHeader';
 import {DEEP_LINK_URL} from '~Root/private/api';
-import { TRUST_NETWORK_FIELDS } from '~Root/config/fields';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -61,12 +70,15 @@ const schema = yup.object().shape({
   email: yup.string().required().email('Invalid email format'),
 });
 
+const {width: deviceWidth} = Dimensions.get('screen');
+
 const AirFeedScreen = ({route, navigation}: Props) => {
   const {
     register,
     control,
     handleSubmit,
     setFocus,
+    setValue,
     formState: {errors, isValid},
   } = useForm<any>({
     resolver: yupResolver(schema),
@@ -89,10 +101,15 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     modal3: false,
     modal4: false,
     modal5: false,
+    modal6: false, // modal invite details
+    modal7: false, // modal accept or deny
+    modal8: false, // modal invite error
   });
   const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   const [initPage, setInitPage] = useState(false);
   const [textSearch, setTextSearch] = useState('');
+  const [textInviteCode, setTextInviteCode] = useState('');
   const [tag, setTag] = useState('');
   const [dataConfirm, setDataConfirm] = useState({
     visibleModal: false,
@@ -103,7 +120,14 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   const [userNumber, setUserNumber] = useState(100);
 
   useEffect(() => {
-    initData((route?.params as any)?.inviteCode);
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
+      // Call any action
+      initData((route?.params as any)?.inviteCode);
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
   }, [route, navigation]);
 
   const initData = (inviteCode = null) => {
@@ -217,10 +241,31 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     dispatch(showLoading());
     dispatch(
       inviteUserContact([credentials], (response: IActionInviteUserContactSuccess['payload']) => {
+        setValue('name', '');
+        setValue('email', '');
         dispatch(hideLoading());
-        onVisibleInviteModal();
+        setVisibleModal({
+          ...visibleModal,
+          modal1: false,
+          modal2: true,
+        });
       }),
     );
+  };
+
+  const onInviteMore = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal1: true,
+      modal2: false,
+    });
+  };
+
+  const onDone = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal1: false,
+    });
   };
 
   const onSubmitEditing = () => {
@@ -354,6 +399,90 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   const joinArrayToString = (arr: IMassInvitationListTags[]) => {
     const items = arr.map((x: IMassInvitationListTags) => x.name);
     return items.join('", "');
+  };
+
+  const onAccept = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal7: true,
+    });
+  };
+
+  const onModalOk = () => {
+    dispatch(setDataInvitation(null));
+    setVisibleModal({
+      ...visibleModal,
+      modal6: false,
+      modal7: false,
+    });
+  };
+
+  const onReject = () => {
+    if (textInviteCode) {
+      dispatch(showLoading());
+      dispatch(
+        invitationRejectRequest(textInviteCode, (response: any) => {
+          dispatch(hideLoading());
+          Toast.show({
+            position: 'bottom',
+            type: 'success',
+            text1: t('invitation_rejected'),
+            visibilityTime: 1200,
+            autoHide: true,
+          });
+          setTimeout(() => {
+            setVisibleModal({
+              ...visibleModal,
+              modal6: false,
+              modal7: false,
+            });
+          }, 1250);
+        }),
+      );
+    }
+  };
+
+  const handleInvite = () => {
+    if (textInviteCode !== '') {
+      setModalLoading(true);
+      dispatch(
+        invitationRequest(textInviteCode, async (response: any) => {
+          setModalLoading(false);
+          if (response.success) {
+            if (response?.data?.data?.attributes?.status === 'unused') {
+              setVisibleModal({
+                ...visibleModal,
+                modal5: false,
+                modal6: true,
+              });
+            }
+          } else {
+            setVisibleModal({
+              ...visibleModal,
+              modal5: false,
+              modal8: true,
+            });
+          }
+        }),
+      );
+    }
+  };
+
+  const onVisibleErrorModal = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal6: false,
+      modal8: false,
+    });
+  };
+
+  const onAddFromPhone = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal1: false,
+      modal2: false,
+    });
+    navigation.navigate(AppRoute.LIST_CONTACT, {isBack: true});
   };
 
   if (loadingState?.loading) {
@@ -634,7 +763,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   ...styles.buttonContainerStyle,
                 }}
                 textStyle={styles.h3BoldDefault}
-                disabled={!isValid}
+                onPress={onAddFromPhone}
               />
             </View>
           </View>
@@ -724,7 +853,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   ...styles.buttonContainerStyle,
                 }}
                 textStyle={styles.h3BoldDefault}
-                disabled={!isValid}
+                onPress={onAddFromPhone}
               />
             </View>
           </View>
@@ -734,7 +863,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                 title={t('done')}
                 h5
                 textCenter
-                onPress={handleSubmit(onSend)}
+                onPress={onDone}
                 containerStyle={{
                   ...GlobalStyles.buttonContainerStyle,
                   ...GlobalStyles.mr10,
@@ -748,13 +877,12 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                 title={t('invite_more')}
                 h5
                 textCenter
-                onPress={handleSubmit(onSend)}
+                onPress={onInviteMore}
                 containerStyle={{
                   ...GlobalStyles.buttonContainerStyle,
                   ...styles.buttonContainerStyle2,
                 }}
                 textStyle={styles.h3BoldDefault}
-                disabled={!isValid}
               />
             </View>
           </View>
@@ -888,20 +1016,20 @@ const AirFeedScreen = ({route, navigation}: Props) => {
             </View>
             {networkState?.dataMassInvitation?.attributes?.tags &&
               networkState?.dataMassInvitation?.attributes?.tags?.length > 0 && (
-              <View style={GlobalStyles.mb15}>
-                <Trans
-                  i18nKey='network_invited'
-                  parent={Text}
-                  values={{
-                    name: joinArrayToString(networkState?.dataMassInvitation?.attributes?.tags),
-                  }}
-                  components={{
-                    normal: <Text style={[styles.textNormal, styles.textCenter]} />,
-                    bold: <Text style={[styles.textBold]} />,
-                  }}
-                />
-              </View>
-            )}
+                <View style={GlobalStyles.mb15}>
+                  <Trans
+                    i18nKey='network_invited'
+                    parent={Text}
+                    values={{
+                      name: joinArrayToString(networkState?.dataMassInvitation?.attributes?.tags),
+                    }}
+                    components={{
+                      normal: <Text style={[styles.textNormal, styles.textCenter]} />,
+                      bold: <Text style={[styles.textBold]} />,
+                    }}
+                  />
+                </View>
+              )}
             <View style={[GlobalStyles.flexRow]}>
               <View style={GlobalStyles.container}>
                 <Button
@@ -964,31 +1092,141 @@ const AirFeedScreen = ({route, navigation}: Props) => {
             </View>
           </View>
           <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15, GlobalStyles.fullWidth]}>
-            <InputValidateControl
-              label={''}
-              inputStyle={styles.inputStyle}
-              labelStyle={{...GlobalStyles.mb5, ...styles.labelStyle}}
+            <TextInput
+              value={textInviteCode}
+              onChangeText={(text: string) => setTextInviteCode(text)}
               selectionColor={BASE_COLORS.blackColor}
               placeholderTextColor={BASE_COLORS.blackColor}
-              errors={errors}
-              textErrorStyle={GlobalStyles.mt5}
-              control={control}
-              name={TRUST_NETWORK_FIELDS.inviteCode}
-              register={register}
-              autoFocus={true}
+              style={[GlobalStyles.mb10, GlobalStyles.ph10, styles.inputStyle]}
+              editable={!modalLoading}
             />
             <Button
               title={t('confirm')}
               h5
               textCenter
-              onPress={handleSubmit(onSend)}
+              onPress={handleInvite}
               containerStyle={{
                 ...GlobalStyles.buttonContainerStyle,
                 ...GlobalStyles.mb20,
                 ...styles.buttonContainerStyle,
               }}
               textStyle={styles.h3BoldDefault}
+              disabled={modalLoading && textInviteCode !== ''}
             />
+          </View>
+        </ModalDialogCommon>
+      )}
+      {visibleModal.modal6 && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={visibleModal.modal6}
+          onHideModal={onHideJoinModal}
+          styleModal={styles.styleModal5}>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.container, GlobalStyles.mt30]}>
+            <TouchableOpacity onPress={onHideJoinModal} style={styles.iconCloseInvite}>
+              <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
+            </TouchableOpacity>
+            <View style={GlobalStyles.alignCenter}>
+              <Avatar
+                styleAvatar={{...GlobalStyles.mb5, ...GlobalStyles.avatar2}}
+                styleContainerGradient={{...GlobalStyles.mb5, ...GlobalStyles.avatar2}}
+                userInfo={{
+                  avatar_url: dataInvite?.included[0]?.attributes?.avatar_metadata?.avatar_url,
+                  avatar_lat: dataInvite?.included[0]?.attributes?.avatar_metadata?.avatar_lat,
+                  avatar_lng: dataInvite?.included[0]?.attributes?.avatar_metadata?.avatar_lng,
+                  first_name: dataInvite?.included[0]?.attributes?.first_name,
+                  last_name: dataInvite?.included[0]?.attributes?.last_name,
+                }}
+              />
+              <Paragraph h5 textArsenicColor title={`You are now part of`} style={GlobalStyles.mb5} />
+              {dataInvite?.included && dataInvite?.included?.length > 0 && (
+                <Paragraph
+                  h4
+                  bold
+                  textSteelBlueColor
+                  title={`${dataInvite?.included[0]?.attributes?.first_name ?? ''} ${
+                    dataInvite?.included[0]?.attributes?.last_name ?? ''
+                  }`}
+                  style={GlobalStyles.mb5}
+                />
+              )}
+              {dataInvite?.included && dataInvite?.included?.length > 0 && (
+                <Paragraph textCenter textSteelBlueColor bold600 p title={dataInvite?.included[0]?.attributes.pitch} />
+              )}
+            </View>
+            <View style={[GlobalStyles.container, GlobalStyles.flexRow, GlobalStyles.mt20]}>
+              {visibleModal.modal7 ? (
+                <Button
+                  title={t('ok')}
+                  h4
+                  textCenter
+                  onPress={onModalOk}
+                  containerStyle={{
+                    ...GlobalStyles.buttonContainerStyle,
+                    ...styles.buttonContainerStyle,
+                    width: deviceWidth - 90,
+                  }}
+                  textStyle={styles.textPrimary}
+                />
+              ) : (
+                <View style={[GlobalStyles.flexRow, GlobalStyles.justifyBetween]}>
+                  <Button
+                    title={t('deny')}
+                    h4
+                    textCenter
+                    onPress={onReject}
+                    containerStyle={{
+                      ...GlobalStyles.buttonContainerStyle,
+                      ...GlobalStyles.mr10,
+                      ...styles.buttonSecondContainerStyle,
+                    }}
+                    textStyle={{...styles.textSecondary, ...GlobalStyles.textCenter}}
+                  />
+                  <Button
+                    title={t('accept')}
+                    h4
+                    textCenter
+                    onPress={onAccept}
+                    containerStyle={{
+                      ...GlobalStyles.buttonContainerStyle,
+                      ...styles.buttonContainerStyle,
+                    }}
+                    textStyle={styles.textPrimary}
+                  />
+                </View>
+              )}
+            </View>
+          </View>
+        </ModalDialogCommon>
+      )}
+      {visibleModal.modal8 && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={true}
+          onHideModal={onVisibleErrorModal}
+          styleModal={styles.styleModal2}>
+          <View style={[styles.iconCloseError]}>
+            <TouchableOpacity onPress={onVisibleErrorModal}>
+              <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
+            </TouchableOpacity>
+          </View>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter]}>
+            <FastImage source={IMAGES.iconErrorGray} style={[GlobalStyles.mb15, GlobalStyles.iconErrors]} />
+            <Paragraph p textCenter textJetColor title={t('invite_code_invalid')} style={GlobalStyles.mb15} />
+            <View style={GlobalStyles.container}>
+              <Button
+                title={t('ok')}
+                h4
+                textCenter
+                onPress={onVisibleErrorModal}
+                containerStyle={{
+                  ...GlobalStyles.buttonContainerStyle,
+                  ...styles.buttonContainerStyle,
+                  width: deviceWidth - 90,
+                }}
+                textStyle={styles.h3BoldDefault}
+              />
+            </View>
           </View>
         </ModalDialogCommon>
       )}
@@ -1052,16 +1290,16 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               {dataInvite?.included &&
                 dataInvite?.included?.length > 0 &&
                 dataInvite?.included[0]?.attributes?.avatar_metadata && (
-                <Avatar
-                  userInfo={{
-                    ...dataInvite?.included[0]?.attributes?.avatar_metadata,
-                    first_name: dataInvite?.included[0]?.attributes?.first_name,
-                    last_name: dataInvite?.included[0]?.attributes?.last_name,
-                  }}
-                  styleAvatar={{...GlobalStyles.mr5, ...GlobalStyles.avatar}}
-                  styleContainerGradient={{...GlobalStyles.alignCenter, ...GlobalStyles.mb10, ...GlobalStyles.avatar}}
-                />
-              )}
+                  <Avatar
+                    userInfo={{
+                      ...dataInvite?.included[0]?.attributes?.avatar_metadata,
+                      first_name: dataInvite?.included[0]?.attributes?.first_name,
+                      last_name: dataInvite?.included[0]?.attributes?.last_name,
+                    }}
+                    styleAvatar={{...GlobalStyles.mr5, ...GlobalStyles.avatar}}
+                    styleContainerGradient={{...GlobalStyles.alignCenter, ...GlobalStyles.mb10, ...GlobalStyles.avatar}}
+                  />
+                )}
               {dataInvite?.included && dataInvite?.included?.length > 0 && (
                 <Paragraph
                   h4

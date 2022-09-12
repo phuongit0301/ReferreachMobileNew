@@ -15,7 +15,7 @@ import {
   IActionRegisterRequested,
   IActionRenewVerificationCodeSuccess,
   IActionVerifyAccountRequested,
-  IInvitation,
+  IRegisterState,
 } from './types';
 
 export const registerRequest = (payload: IActionRegisterRequested['payload'], callback: (response: any) => void) => {
@@ -66,7 +66,7 @@ export const renewVerificationCodeRequest = (
   callback,
 });
 
-export const setDataInvitation = (payload: IInvitation) => {
+export const setDataInvitation = (payload: IRegisterState['dataInvite']) => {
   return {
     type: SET_DATA_INVITATION,
     payload,

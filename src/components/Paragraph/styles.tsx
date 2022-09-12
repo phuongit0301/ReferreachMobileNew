@@ -122,6 +122,9 @@ export default StyleSheet.create({
   textJetColor: {
     color: BASE_COLORS.jetColor,
   },
+  textArsenicColor: {
+    color: BASE_COLORS.arsenicColor,
+  },
   textCenter: {
     textAlign: 'center',
   },

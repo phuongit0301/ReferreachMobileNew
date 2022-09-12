@@ -32,7 +32,7 @@ export type RootNavigatorParamsList = {
   [AppRoute.PROFILE_INDUSTRY]: undefined;
   [AppRoute.INVITE_CONTACT]: undefined;
   [AppRoute.INVITE_CONTACT_EDIT]: undefined;
-  [AppRoute.LIST_CONTACT]: undefined;
+  [AppRoute.LIST_CONTACT]: {isBack: boolean} | undefined;
   [AppRoute.SEND_INVITES]: undefined;
   [AppRoute.FEED_BACK_MODAL]: undefined;
   [AppRoute.INDIVIDUAL_MESSAGE_MODAL]: undefined;
@@ -60,6 +60,7 @@ export type BottomTabParams = {
   [AppRoute.MAIN_NAVIGATOR]: undefined;
   [AppRoute.TRUST_NETWORK]: undefined;
   [AppRoute.CHAT_NAVIGATOR]: undefined;
+  [AppRoute.LIST_CONTACT]: {isBack: boolean} | undefined;
 };
 
 // type AIRFeedStackScreenParams = {
@@ -72,6 +73,7 @@ export type AIRFeed1 = {
 
 export type AIRFeedParamsList = {
   [AppRoute.AIR_FEED]: undefined;
+  [AppRoute.LIST_CONTACT]: undefined;
 };
 
 export type TabNavigatorParamsList = {

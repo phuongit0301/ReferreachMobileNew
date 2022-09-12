@@ -17,6 +17,7 @@ import {IGlobalState} from '~Root/types';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
 import {adjust} from '~Root/utils';
 import styles from './styles';
+import Toast from 'react-native-toast-message';
 
 type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.LIST_CONTACT>;
 interface IDataContacts {
@@ -24,7 +25,7 @@ interface IDataContacts {
   data: any[];
 }
 
-const ListContactScreen = ({navigation}: Props) => {
+const ListContactScreen = ({navigation, route}: Props) => {
   const {t} = useTranslation();
   const [loading, setLoading] = useState(false);
   const [dataContacts, setDataContacts] = useState<IDataContacts>({
@@ -104,7 +105,18 @@ const ListContactScreen = ({navigation}: Props) => {
     dispatch(
       inviteUserContact(dataContacts.data, (response: IActionInviteUserContactSuccess['payload']) => {
         dispatch(hideLoading());
-        navigation.navigate(AppRoute.SEND_INVITES);
+        Toast.show({
+          position: 'bottom',
+          type: 'success',
+          text1: t('successfully'),
+          visibilityTime: 2000,
+          autoHide: true,
+        });
+        if (route?.params?.isBack) {
+          navigation.goBack();
+        } else {
+          navigation.navigate(AppRoute.SEND_INVITES);
+        }
       }),
     );
   };

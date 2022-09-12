@@ -41,8 +41,7 @@ const InviteConfirmScreen = ({navigation, route}: Props) => {
     if (route.params?.code) {
       dispatch(showLoading());
       dispatch(
-        invitationRejectRequest(route.params?.code, (response) => {
-          console.log('response=====>', response)
+        invitationRejectRequest(route.params?.code, (response: any) => {
           dispatch(hideLoading());
           Toast.show({
             position: 'bottom',

@@ -163,5 +163,7 @@
     "cancel_invite": "Cancel Invite",
     "share_qr": "Share QR",
     "network_invited": "<normal>Network invited through this link will be given a <bold>{{name}}</bold> tag</normal>",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "invite_code_invalid": "Oops! Did you enter it wrong? \nThe code is invalid.",
+    "successfully": "Successfully"
 }
