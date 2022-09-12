@@ -111,6 +111,7 @@ export interface IAskState extends IPaginationAndSearch {
       left: number;
     };
   };
+  isSkipPagination: boolean;
 }
 
 export interface IAttributesState {
@@ -209,6 +210,7 @@ export interface IActionGetAskSuccess {
   type: typeof GET_ASK_SUCCESS;
   payload: {
     data: IAskInside[];
+    isSkipPagination?: boolean;
     message: string;
     success: boolean;
   };

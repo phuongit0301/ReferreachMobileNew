@@ -52,6 +52,10 @@ export const INVITE_CONTACT_FIELDS = {
   email: 'email',
 };
 
+export const TRUST_NETWORK_FIELDS = {
+  inviteCode: 'invite_code',
+};
+
 export enum CREATE_ASK_KEYS {
   greeting = 'greeting',
   userRole = 'user_role',

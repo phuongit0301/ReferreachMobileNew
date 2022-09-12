@@ -1,5 +1,11 @@
-import {GET_NETWORK_CONNECTION_LIST_REQUESTED, REMOVE_NETWORK_CONNECTION_REQUESTED} from './constants';
-import {IActionRemoveNetworkConnectionSuccess} from './types';
+import {
+  GET_MASS_INVITATION_LIST_REQUESTED,
+  GET_NETWORK_CONNECTION_LIST_REQUESTED,
+  ON_CREATE_MASS_INVITATION_REQUESTED,
+  REMOVE_NETWORK_CONNECTION_REQUESTED,
+  SET_MASS_INVITATION,
+} from './constants';
+import {IActionCreateMassInvitationRequested, IActionRemoveNetworkConnectionSuccess} from './types';
 
 export const getNetworkConnectList = (payload: string, callback: any) => {
   return {
@@ -15,6 +21,31 @@ export const removeNetworkConnect = (
 ) => {
   return {
     type: REMOVE_NETWORK_CONNECTION_REQUESTED,
+    payload,
+    callback,
+  };
+};
+
+export const getMassInvitationListRequest = (callback: any) => {
+  return {
+    type: GET_MASS_INVITATION_LIST_REQUESTED,
+    callback,
+  };
+};
+
+export const setMassInvitation = (payload: any) => {
+  return {
+    type: SET_MASS_INVITATION,
+    payload,
+  };
+};
+
+export const createMassInvitationRequest = (
+  payload: IActionCreateMassInvitationRequested['payload'],
+  callback: any,
+) => {
+  return {
+    type: ON_CREATE_MASS_INVITATION_REQUESTED,
     payload,
     callback,
   };

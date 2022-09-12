@@ -3,7 +3,7 @@ export const MOCK_USER_INFO_URL = `${ROOT_MOCK_URL}/mock/users/current`;
 export const MOCK_LIST_ASK_URL = `${ROOT_MOCK_URL}/mock/users/current`;
 export const MOCK_CREATE_ASK_URL = `${ROOT_MOCK_URL}/asks/currentuser`;
 
-export const DEEP_LINK_URL = 'https://app-dev.referreach.com';
+export const DEEP_LINK_URL = 'https://app.referreach.com';
 export const ROOT_URL = 'https://dev-api-ls.referreach.com/v1';
 export const ROOT_API_URL = 'https://dev-api-ls.referreach.com/api/v1';
 export const LOGIN_URL = `${ROOT_URL}/auth/sign_in`;
@@ -48,6 +48,8 @@ export const ON_CHAT_ONE_ON_ONE_URL = `${ROOT_API_URL}/chat_contexts/ooo`;
 export const ON_UPDATE_CHAT_CONTEXT_URL = (chatContextId: string) => `${ROOT_API_URL}/chat_contexts/${chatContextId}`;
 export const ON_END_ASK_URL = (askId: string) => `${ROOT_API_URL}/asks/${askId}/close_ask`;
 export const ON_SEND_KUDOS_URL = (askId: string) => `${ROOT_API_URL}/asks/${askId}/end_ask`;
+export const GET_MASS_INVITATION_LIST_URL = `${ROOT_API_URL}/mass_invitation_codes/list`;
+export const ON_MASS_INVITATION_URL = `${ROOT_API_URL}/mass_invitation_codes`;
 
 export const ASK_TEMPLATE_URL = `${ROOT_API_URL}/ask-template`;
 export const CREATE_ASK_TEMPLATE_URL = (id: string) => `${ROOT_API_URL}/ask-template/${id}/submissions`;

@@ -48,6 +48,7 @@ export const initialState: IAskState = {
   },
   page: 1,
   per: 10,
+  isSkipPagination: false,
   keyword: '',
   visibleMenu: {
     show: false,
@@ -61,15 +62,21 @@ export const initialState: IAskState = {
 
 const askReducer = (state: IAskState = initialState, action: IActionsCreateAsk): IAskState => {
   switch (action.type) {
-    case GET_ASK_REQUESTED:
     case GET_JOB_REQUESTED:
     case GET_LOCATION_REQUESTED:
     case CREATE_ASK_REQUESTED:
     case GET_ASK_EDIT_REQUESTED:
     case GET_ASK_RESPONDER_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
+    case GET_ASK_REQUESTED:
+      return {...state, callback: action?.callback, ...action?.payload, loading: true};
     case GET_ASK_SUCCESS:
-      return {...state, loading: false, data: action.payload?.data};
+      return {
+        ...state,
+        loading: false,
+        data: [...state.data, ...action.payload?.data],
+        isSkipPagination: !!action.payload?.isSkipPagination,
+      };
     case GET_ASK_RESPONDER_SUCCESS:
       return {...state, loading: false, dataResponder: action.payload?.data};
     case CREATE_ASK_SUCCESS:

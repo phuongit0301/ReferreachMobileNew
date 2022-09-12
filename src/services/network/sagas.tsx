@@ -8,8 +8,18 @@ import {
   REMOVE_NETWORK_CONNECTION_SUCCESS,
   REMOVE_NETWORK_CONNECTION_FAILURE,
   REMOVE_NETWORK_CONNECTION_REQUESTED,
+  ON_CREATE_MASS_INVITATION_SUCCESS,
+  ON_CREATE_MASS_INVITATION_FAILURE,
+  ON_CREATE_MASS_INVITATION_REQUESTED,
+  GET_MASS_INVITATION_LIST_SUCCESS,
+  GET_MASS_INVITATION_LIST_FAILURE,
+  GET_MASS_INVITATION_LIST_REQUESTED,
 } from './constants';
 import {
+  IActionCreateMassInvitationRequested,
+  IActionCreateMassInvitationSuccess,
+  IActionGetMassInvitationListRequested,
+  IActionGetMassInvitationListSuccess,
   IActionNetworkConnectionListRequested,
   IActionNetworkConnectionListSuccess,
   IActionRemoveNetworkConnectionRequested,
@@ -63,6 +73,71 @@ function* removeNetworkConnection(payload: IActionRemoveNetworkConnectionRequest
   }
 }
 
+function* getMassInvitationList(payload: IActionGetMassInvitationListRequested) {
+  try {
+    const response: IActionGetMassInvitationListSuccess['payload'] = yield call(NetworkAPI.getMassInvitationList);
+    if (response.success) {
+      yield put({type: GET_MASS_INVITATION_LIST_SUCCESS, payload: response});
+      payload?.callback &&
+        payload?.callback({
+          success: response.success,
+          message: response.message,
+          data: response?.data,
+        });
+    } else {
+      yield put({type: GET_MASS_INVITATION_LIST_FAILURE, payload: {message: response}});
+      payload?.callback &&
+        payload?.callback({
+          success: response.success,
+          message: response?.message,
+          data: [],
+        });
+    }
+  } catch (error) {
+    yield put({type: GET_MASS_INVITATION_LIST_FAILURE, payload: {message: error}});
+    payload?.callback &&
+      payload?.callback({
+        success: false,
+        message: error as string,
+        data: [],
+      });
+  }
+}
+
+function* createMassInvitation(payload: IActionCreateMassInvitationRequested) {
+  try {
+    const response: IActionCreateMassInvitationSuccess['payload'] = yield call(
+      NetworkAPI.createMassInvitation,
+      payload?.payload,
+    );
+    if (response.success) {
+      yield put({type: ON_CREATE_MASS_INVITATION_SUCCESS, payload: response});
+      payload?.callback &&
+        payload?.callback({
+          success: response.success,
+          message: response.message,
+          data: response?.data,
+        });
+    } else {
+      yield put({type: ON_CREATE_MASS_INVITATION_FAILURE, payload: {message: response}});
+      payload?.callback &&
+        payload?.callback({
+          success: response.success,
+          message: response?.message,
+          data: [],
+        });
+    }
+  } catch (error) {
+    yield put({type: ON_CREATE_MASS_INVITATION_FAILURE, payload: {message: error}});
+    payload?.callback &&
+      payload?.callback({
+        success: false,
+        message: error as string,
+        data: [],
+      });
+  }
+}
+
 function* watchGetNetworkConnectionList() {
   yield takeLatest(GET_NETWORK_CONNECTION_LIST_REQUESTED, getNetworkConnectionList);
 }
@@ -71,6 +146,19 @@ function* watchRemoveNetworkConnection() {
   yield takeEvery(REMOVE_NETWORK_CONNECTION_REQUESTED, removeNetworkConnection);
 }
 
+function* watchGetMassInvitationList() {
+  yield takeEvery(GET_MASS_INVITATION_LIST_REQUESTED, getMassInvitationList);
+}
+
+function* watchCreateMassInvitation() {
+  yield takeEvery(ON_CREATE_MASS_INVITATION_REQUESTED, createMassInvitation);
+}
+
 export default function* networkWatchers() {
-  yield all([watchGetNetworkConnectionList(), watchRemoveNetworkConnection()]);
+  yield all([
+    watchGetNetworkConnectionList(),
+    watchRemoveNetworkConnection(),
+    watchCreateMassInvitation(),
+    watchGetMassInvitationList(),
+  ]);
 }

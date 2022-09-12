@@ -23,6 +23,7 @@ import {IGlobalState} from '~Root/types';
 import styles from './styles';
 import Toast from 'react-native-toast-message';
 import moment from 'moment';
+import { DotIndicator } from 'react-native-indicators';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -43,6 +44,7 @@ const YourAskScreen = ({navigation}: Props) => {
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [textSearch, setTextSearch] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingLazy, setLoadingLazy] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -83,6 +85,28 @@ const YourAskScreen = ({navigation}: Props) => {
       );
     }
   }, [textSearch]);
+
+  const onPageChanged = () => {
+    if (+askState?.isSkipPagination) {
+      return false;
+    }
+
+    setLoadingLazy(true);
+    const params: IPaginationAndSearch = {
+      page: askState?.page ? +askState?.page + 1 : 1,
+      per: askState?.per,
+    };
+
+    if (textSearch) {
+      params.keyword = textSearch;
+    }
+    dispatch(
+      getAsk(params, (response: any) => {
+        setLoadingLazy(false);
+        console.log('search response====>', response);
+      }),
+    );
+  };
 
   const onToggleDrawer = () => {
     navigation.toggleDrawer();
@@ -243,6 +267,17 @@ const YourAskScreen = ({navigation}: Props) => {
     }
   };
 
+  const renderFooter = () => {
+    if (loadingLazy) {
+      return (
+        <View style={[GlobalStyles.alignCenter]}>
+          <DotIndicator animating={true} color={`${BASE_COLORS.steelBlue2Color}`} count={3} size={12} />
+        </View>
+      );
+    }
+    return null;
+  };
+
   if (loadingState?.loading) {
     return <Loading />;
   }
@@ -324,6 +359,9 @@ const YourAskScreen = ({navigation}: Props) => {
                 />
               </View>
             )}
+            onEndReached={onPageChanged}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
           />
         </View>
       </SafeAreaView>

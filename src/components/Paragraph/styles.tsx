@@ -116,6 +116,9 @@ export default StyleSheet.create({
   textLavenderGrayColor: {
     color: BASE_COLORS.lavenderGrayColor,
   },
+  textGray3Color: {
+    color: BASE_COLORS.gray3Color,
+  },
   textJetColor: {
     color: BASE_COLORS.jetColor,
   },

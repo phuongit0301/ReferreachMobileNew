@@ -149,7 +149,7 @@ export default StyleSheet.create({
     elevation: adjust(4),
   },
   chatBg: {
-    width: '70%',
+    maxWidth: '70%',
     backgroundColor: BASE_COLORS.lightPeriwinkleColor,
     borderTopLeftRadius: adjust(12),
     borderTopRightRadius: adjust(12),

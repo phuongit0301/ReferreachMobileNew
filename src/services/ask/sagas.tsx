@@ -62,12 +62,12 @@ function* getAsks(payload: IActionGetAskRequest) {
     yield delay(300);
     const response: IActionGetAskSuccess['payload'] = yield call(AskAPI.getAsks, payload?.payload);
     if (response?.success) {
-      yield put({type: GET_ASK_SUCCESS, payload: response});
+      yield put({type: GET_ASK_SUCCESS, payload: {data: response.data, isSkipPagination: response.data?.length < 10}});
       payload?.callback &&
         payload?.callback({
           success: response?.success,
           message: '',
-          data: response?.data?.reverse(),
+          data: response?.data,
         });
     } else {
       yield put({type: GET_ASK_FAILURE, payload: {error: response?.message}});

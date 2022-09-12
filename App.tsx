@@ -31,7 +31,7 @@ export const config = {
 export const navigationRef = createRef<NavigationContainerRef<any>>();
 
 const linking: LinkingOptions<RootNavigatorParamsList> = {
-  prefixes: ['referreach://', 'https://referreach.com', 'https://*.referreach.com'],
+  prefixes: ['referreach://', 'https://app.referreach.com', 'https://*.app.referreach.com'],
   config,
   async getInitialURL() {
     const url = await Linking.getInitialURL();

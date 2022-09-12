@@ -146,7 +146,7 @@ export default StyleSheet.create({
     height: adjust(12),
   },
   iconMessageContainer: {
-    backgroundColor: BASE_COLORS.oxleyColor,
+    backgroundColor: BASE_COLORS.forestGreenColor,
     borderRadius: adjust(50),
   },
   iconMessage: {
@@ -184,7 +184,12 @@ export default StyleSheet.create({
     backgroundColor: BASE_COLORS.brightGrayColor,
   },
   labelStyle: {
-    ...GlobalStyles.labelStyle,
+    fontFamily: BASE_FONTS.notoSansMedium,
+    color: BASE_COLORS.steelBlueColor,
+    fontSize: adjust(11),
+  },
+  labelStyle1: {
+    fontFamily: BASE_FONTS.notoSansMedium,
     color: BASE_COLORS.steelBlueColor,
   },
   inputStyle: {
@@ -240,12 +245,14 @@ export default StyleSheet.create({
   },
   textNormal: {
     fontFamily: BASE_FONTS.regular,
-    fontSize: adjust(BASE_STYLES.p),
+    fontSize: adjust(11),
     lineHeight: adjust(18),
+    color: BASE_COLORS.gray3Color,
   },
   textBold: {
     fontFamily: BASE_FONTS.semiBold,
-    fontSize: adjust(BASE_STYLES.p),
+    fontSize: adjust(11),
+    color: BASE_COLORS.gray3Color,
   },
   btnDone: {
     ...GlobalStyles.mt15,
@@ -353,5 +360,14 @@ export default StyleSheet.create({
   },
   textCenter: {
     textAlign: 'center',
+  },
+  massInviteNumber: {
+    backgroundColor: BASE_COLORS.steelBlue2Color,
+    borderRadius: adjust(50),
+    alignSelf: 'center',
+  },
+  borderBottom: {
+    borderBottomColor: BASE_COLORS.lavenderGrayColor,
+    borderBottomWidth: 1,
   },
 });
