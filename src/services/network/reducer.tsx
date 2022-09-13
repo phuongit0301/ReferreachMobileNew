@@ -4,6 +4,13 @@ import {
   GET_NETWORK_CONNECTION_LIST_FAILURE,
   REMOVE_NETWORK_CONNECTION_REQUESTED,
   REMOVE_NETWORK_CONNECTION_FAILURE,
+  ON_CREATE_MASS_INVITATION_REQUESTED,
+  ON_CREATE_MASS_INVITATION_SUCCESS,
+  ON_CREATE_MASS_INVITATION_FAILURE,
+  GET_MASS_INVITATION_LIST_REQUESTED,
+  GET_MASS_INVITATION_LIST_SUCCESS,
+  GET_MASS_INVITATION_LIST_FAILURE,
+  SET_MASS_INVITATION,
 } from './constants';
 import {INetworkConnectionListState, IActionsUser} from './types';
 
@@ -15,6 +22,10 @@ export const initialState: INetworkConnectionListState = {
   page: 1,
   per: 10,
   keyword: '',
+  dataMassInvitation: null,
+  listMassInvitation: {
+    data: [],
+  },
   callback: () => {},
 };
 
@@ -25,6 +36,8 @@ const userReducer = (
   switch (action.type) {
     case GET_NETWORK_CONNECTION_LIST_REQUESTED:
     case REMOVE_NETWORK_CONNECTION_REQUESTED:
+    case ON_CREATE_MASS_INVITATION_REQUESTED:
+    case GET_MASS_INVITATION_LIST_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
     case GET_NETWORK_CONNECTION_LIST_SUCCESS:
       return {
@@ -34,8 +47,15 @@ const userReducer = (
         included: action?.payload?.included || [],
         message: action?.payload?.message,
       };
+    case ON_CREATE_MASS_INVITATION_SUCCESS:
+    case SET_MASS_INVITATION:
+      return {...state, dataMassInvitation: action?.payload?.data};
+    case GET_MASS_INVITATION_LIST_SUCCESS:
+      return {...state, listMassInvitation: action?.payload?.data};
     case GET_NETWORK_CONNECTION_LIST_FAILURE:
     case REMOVE_NETWORK_CONNECTION_FAILURE:
+    case ON_CREATE_MASS_INVITATION_FAILURE:
+    case GET_MASS_INVITATION_LIST_FAILURE:
       return {...state, loading: false, message: action.payload.message};
     default:
       return state;

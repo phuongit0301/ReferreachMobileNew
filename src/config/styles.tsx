@@ -707,7 +707,7 @@ export const GlobalStyles = StyleSheet.create({
   },
   labelStyle: {
     fontFamily: BASE_FONTS.semiBold,
-    marginBottom: 8,
+    marginBottom: adjust(8),
   },
   titleContainer: {
     justifyContent: 'center',

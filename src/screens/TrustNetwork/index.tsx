@@ -1,17 +1,35 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, RefreshControl, TextInput, View, TouchableOpacity, Text, FlatList} from 'react-native';
+import {
+  Animated,
+  RefreshControl,
+  TextInput,
+  View,
+  TouchableOpacity,
+  Text,
+  Alert,
+  Share,
+  Dimensions,
+} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Trans, useTranslation} from 'react-i18next';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import {useForm, SubmitHandler} from 'react-hook-form';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import Toast from 'react-native-toast-message';
+import QRCode from 'react-native-qrcode-svg';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import {BottomTabParams, TabNavigatorParamsList} from '~Root/navigation/config';
-import {getNetworkConnectList, removeNetworkConnect} from '~Root/services/network/actions';
+import {
+  createMassInvitationRequest,
+  getMassInvitationListRequest,
+  getNetworkConnectList,
+  removeNetworkConnect,
+  setMassInvitation,
+} from '~Root/services/network/actions';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {
   Avatar,
@@ -25,7 +43,7 @@ import {
   ModalDialogCommon,
   Paragraph,
 } from '~Root/components';
-import {IActionRemoveNetworkConnectionSuccess, IIncluded} from '~Root/services/network/types';
+import {IActionRemoveNetworkConnectionSuccess, IIncluded, IMassInvitationListTags} from '~Root/services/network/types';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
 import {BASE_COLORS, GlobalStyles, IMAGES, INVITE_CONTACT_FIELDS, INVITE_CONTACT_KEYS} from '~Root/config';
 import {inviteUserContact} from '~Root/services/contact/actions';
@@ -34,12 +52,13 @@ import {CompositeScreenProps} from '@react-navigation/native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {IGlobalState} from '~Root/types';
 import styles from './styles';
-import {invitationRequest} from '~Root/services/register/actions';
+import {invitationRejectRequest, invitationRequest, setDataInvitation} from '~Root/services/register/actions';
 import {IActionInvitationSuccess} from '~Root/services/register/types';
-import {TRUST_NETWORK_STATUS_ENUM} from '~Root/utils';
+import {adjust, TRUST_NETWORK_STATUS_ENUM} from '~Root/utils';
 import {onChatOneOnOneRequest} from '~Root/services/chat/actions';
 import {getCredential} from '~Root/services/pubnub/actions';
 import AnimatedHeader from './AnimatedHeader';
+import {DEEP_LINK_URL} from '~Root/private/api';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -51,12 +70,15 @@ const schema = yup.object().shape({
   email: yup.string().required().email('Invalid email format'),
 });
 
+const {width: deviceWidth} = Dimensions.get('screen');
+
 const AirFeedScreen = ({route, navigation}: Props) => {
   const {
     register,
     control,
     handleSubmit,
     setFocus,
+    setValue,
     formState: {errors, isValid},
   } = useForm<any>({
     resolver: yupResolver(schema),
@@ -78,10 +100,17 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     modal2: false,
     modal3: false,
     modal4: false,
+    modal5: false,
+    modal6: false, // modal invite details
+    modal7: false, // modal accept or deny
+    modal8: false, // modal invite error
   });
   const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   const [initPage, setInitPage] = useState(false);
   const [textSearch, setTextSearch] = useState('');
+  const [textInviteCode, setTextInviteCode] = useState('');
+  const [tag, setTag] = useState('');
   const [dataConfirm, setDataConfirm] = useState({
     visibleModal: false,
     item: null,
@@ -91,7 +120,14 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   const [userNumber, setUserNumber] = useState(100);
 
   useEffect(() => {
-    initData((route?.params as any)?.inviteCode);
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
+      // Call any action
+      initData((route?.params as any)?.inviteCode);
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
   }, [route, navigation]);
 
   const initData = (inviteCode = null) => {
@@ -102,22 +138,30 @@ const AirFeedScreen = ({route, navigation}: Props) => {
         if (inviteCode) {
           dispatch(
             invitationRequest(inviteCode, (response: IActionInvitationSuccess['payload']) => {
-              if (response.success) {
-                setVisibleInvite(true);
-              } else {
-                Toast.show({
-                  position: 'bottom',
-                  type: 'error',
-                  text1: (response?.message as any)?.detail ?? t('invitation_not_found'),
-                  visibilityTime: 2000,
-                  autoHide: true,
-                });
-              }
-              dispatch(hideLoading());
+              dispatch(
+                getMassInvitationListRequest(() => {
+                  if (response.success) {
+                    setVisibleInvite(true);
+                  } else {
+                    Toast.show({
+                      position: 'bottom',
+                      type: 'error',
+                      text1: (response?.message as any)?.detail ?? t('invitation_not_found'),
+                      visibilityTime: 2000,
+                      autoHide: true,
+                    });
+                  }
+                  dispatch(hideLoading());
+                }),
+              );
             }),
           );
         } else {
-          dispatch(hideLoading());
+          dispatch(
+            getMassInvitationListRequest(() => {
+              dispatch(hideLoading());
+            }),
+          );
         }
       }),
     );
@@ -197,10 +241,31 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     dispatch(showLoading());
     dispatch(
       inviteUserContact([credentials], (response: IActionInviteUserContactSuccess['payload']) => {
+        setValue('name', '');
+        setValue('email', '');
         dispatch(hideLoading());
-        onVisibleInviteModal();
+        setVisibleModal({
+          ...visibleModal,
+          modal1: false,
+          modal2: true,
+        });
       }),
     );
+  };
+
+  const onInviteMore = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal1: true,
+      modal2: false,
+    });
+  };
+
+  const onDone = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal1: false,
+    });
   };
 
   const onSubmitEditing = () => {
@@ -217,7 +282,14 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   const onVisibleJoinModal = () => {
     setVisibleModal({
       ...visibleModal,
-      modal2: !visibleModal.modal2,
+      modal5: !visibleModal.modal5,
+    });
+  };
+
+  const onHideJoinModal = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal5: false,
     });
   };
 
@@ -228,11 +300,49 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     });
   };
 
-  const onVisibleMassQrModal = () => {
+  const onCreateMassQrModal = () => {
+    const payload: any = {
+      amount: userNumber,
+    };
+
+    if (tag !== '') {
+      payload.tag_list = tag;
+    }
+
+    dispatch(
+      createMassInvitationRequest(payload, (response: IActionInvitationSuccess['payload']) => {
+        if (response.success) {
+          setVisibleModal({
+            ...visibleModal,
+            modal3: false,
+            modal4: true,
+          });
+        } else {
+          Toast.show({
+            position: 'bottom',
+            type: 'error',
+            text1: response?.message,
+            visibilityTime: 2000,
+            autoHide: true,
+          });
+        }
+      }),
+    );
+  };
+
+  const onShowMassQrModal = (item: any) => {
+    dispatch(setMassInvitation({data: item}));
     setVisibleModal({
       ...visibleModal,
       modal3: false,
-      modal4: !visibleModal.modal4,
+      modal4: true,
+    });
+  };
+
+  const onHideMassQrModal = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal4: false,
     });
   };
 
@@ -265,6 +375,114 @@ const AirFeedScreen = ({route, navigation}: Props) => {
 
   const onSetUserNumber = (num: number) => {
     setUserNumber(num);
+  };
+
+  const onShare = async () => {
+    try {
+      if (!networkState.dataMassInvitation?.attributes?.code) {
+        return false;
+      }
+
+      await Share.share({
+        title: `Mass Invite QR`,
+        message: `${DEEP_LINK_URL}/i/${networkState.dataMassInvitation?.attributes?.code}`,
+      });
+    } catch (error) {
+      Alert.alert((error as any).message);
+    }
+  };
+
+  const copyToClipboard = (code: string) => {
+    Clipboard.setString(code);
+  };
+
+  const joinArrayToString = (arr: IMassInvitationListTags[]) => {
+    const items = arr.map((x: IMassInvitationListTags) => x.name);
+    return items.join('", "');
+  };
+
+  const onAccept = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal7: true,
+    });
+  };
+
+  const onModalOk = () => {
+    dispatch(setDataInvitation(null));
+    setVisibleModal({
+      ...visibleModal,
+      modal6: false,
+      modal7: false,
+    });
+  };
+
+  const onReject = () => {
+    if (textInviteCode) {
+      dispatch(showLoading());
+      dispatch(
+        invitationRejectRequest(textInviteCode, (response: any) => {
+          dispatch(hideLoading());
+          Toast.show({
+            position: 'bottom',
+            type: 'success',
+            text1: t('invitation_rejected'),
+            visibilityTime: 1200,
+            autoHide: true,
+          });
+          setTimeout(() => {
+            setVisibleModal({
+              ...visibleModal,
+              modal6: false,
+              modal7: false,
+            });
+          }, 1250);
+        }),
+      );
+    }
+  };
+
+  const handleInvite = () => {
+    if (textInviteCode !== '') {
+      setModalLoading(true);
+      dispatch(
+        invitationRequest(textInviteCode, async (response: any) => {
+          setModalLoading(false);
+          if (response.success) {
+            if (response?.data?.data?.attributes?.status === 'unused') {
+              setVisibleModal({
+                ...visibleModal,
+                modal5: false,
+                modal6: true,
+              });
+            }
+          } else {
+            setVisibleModal({
+              ...visibleModal,
+              modal5: false,
+              modal8: true,
+            });
+          }
+        }),
+      );
+    }
+  };
+
+  const onVisibleErrorModal = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal6: false,
+      modal8: false,
+    });
+  };
+
+  const onAddFromPhone = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal1: false,
+      modal2: false,
+    });
+    navigation.navigate(AppRoute.LIST_CONTACT, {isBack: true});
   };
 
   if (loadingState?.loading) {
@@ -310,23 +528,104 @@ const AirFeedScreen = ({route, navigation}: Props) => {
             }}
             ListHeaderComponent={() => {
               return (
-                <View style={[GlobalStyles.flexColumn]}>
-                  <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30]}>
-                    <Paragraph h5 bold title='Ongoing Mass Invites' style={GlobalStyles.mb10} />
-                    <View style={[GlobalStyles.flexColumn, GlobalStyles.p15, styles.blockArea]}>
-                      <Paragraph p title='There is no ongoing Mass Invites' style={GlobalStyles.mb15} />
-                      <Button
-                        title='Mass Invite via QR code'
-                        h3
-                        textCenter
-                        containerStyle={{...GlobalStyles.buttonContainerStyle, ...styles.buttonSignUpContainerStyle}}
-                        textStyle={styles.h3BoldSignUpDefault}
-                        onPress={onVisibleMassModal}
-                      />
-                    </View>
+                <>
+                  <View style={[GlobalStyles.flexColumn]}>
+                    {networkState?.listMassInvitation?.data?.length > 0 ? (
+                      <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30]}>
+                        <Paragraph p bold title='Ongoing Mass Invites' style={GlobalStyles.mb10} />
+                        <View style={[GlobalStyles.flexColumn, GlobalStyles.pv15, styles.blockArea]}>
+                          <View
+                            style={[
+                              GlobalStyles.flexRow,
+                              GlobalStyles.justifyBetween,
+                              GlobalStyles.itemCenter,
+                              GlobalStyles.mb10,
+                              GlobalStyles.ph15,
+                            ]}>
+                            <View style={GlobalStyles.container}>
+                              <View style={[GlobalStyles.pv5, GlobalStyles.ph15, styles.massInviteNumber]}>
+                                <Paragraph
+                                  h5
+                                  textWhite
+                                  title={`10 / ${networkState?.listMassInvitation?.data[0].attributes?.amount} Left`}
+                                />
+                              </View>
+                            </View>
+                            <TouchableOpacity
+                              onPress={() => onShowMassQrModal(networkState?.listMassInvitation?.data[0])}>
+                              <QRCode
+                                value={networkState?.listMassInvitation?.data[0]?.attributes?.code}
+                                size={adjust(20)}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                          <View
+                            style={[
+                              GlobalStyles.fullWidth,
+                              GlobalStyles.flexRow,
+                              GlobalStyles.itemCenter,
+                              GlobalStyles.ph15,
+                              GlobalStyles.mb10,
+                              GlobalStyles.pb10,
+                              styles.borderBottom,
+                            ]}>
+                            <Paragraph textGray3Color title='Invite Code' style={GlobalStyles.mr10} />
+                            <View style={[GlobalStyles.flexRow, GlobalStyles.container]}>
+                              <TextInput
+                                placeholder={networkState?.listMassInvitation?.data[0].attributes.code ?? ''}
+                                style={[styles.inputStyle, GlobalStyles.ph10, GlobalStyles.container]}
+                                editable={false}
+                              />
+                              <TouchableOpacity
+                                style={styles.tagCount}
+                                onPress={() =>
+                                  copyToClipboard(networkState?.listMassInvitation?.data[0].attributes.code)
+                                }>
+                                <FastImage source={IMAGES.iconCopy} resizeMode='contain' style={styles.iconCopy} />
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                          {networkState?.listMassInvitation?.data[0].attributes?.tags.length > 0 && (
+                            <View style={GlobalStyles.ph15}>
+                              <Trans
+                                i18nKey='network_invited'
+                                parent={Text}
+                                values={{
+                                  name: `${joinArrayToString(
+                                    networkState?.listMassInvitation?.data[0].attributes?.tags,
+                                  )}`,
+                                }}
+                                components={{
+                                  normal: <Text style={[styles.textNormal, styles.textCenter]} />,
+                                  bold: <Text style={[styles.textBold]} />,
+                                }}
+                              />
+                            </View>
+                          )}
+                        </View>
+                      </View>
+                    ) : (
+                      <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30]}>
+                        <Paragraph p bold title='Ongoing Mass Invites' style={GlobalStyles.mb10} />
+                        <View style={[GlobalStyles.flexColumn, GlobalStyles.p15, styles.blockArea]}>
+                          <Paragraph p title='There is no ongoing Mass Invites' style={GlobalStyles.mb15} />
+                          <Button
+                            title='Mass Invite via QR code'
+                            h3
+                            textCenter
+                            containerStyle={{
+                              ...GlobalStyles.buttonContainerStyle,
+                              ...styles.buttonSignUpContainerStyle,
+                            }}
+                            textStyle={styles.h3BoldSignUpDefault}
+                            onPress={onVisibleMassModal}
+                          />
+                        </View>
+                      </View>
+                    )}
                   </View>
                   <View style={GlobalStyles.flexColumn}>
-                    <Paragraph h5 bold title='Your Trust Network' style={GlobalStyles.mb10} />
+                    <Paragraph p bold title='Your Trust Network' style={GlobalStyles.mb10} />
                     <View style={[GlobalStyles.flexColumn, GlobalStyles.p15, styles.blockArea1]}>
                       <View style={GlobalStyles.flexRow}>
                         <View style={[GlobalStyles.container, GlobalStyles.mr5, styles.inputContainer]}>
@@ -358,7 +657,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                       </View>
                     </View>
                   </View>
-                </View>
+                </>
               );
             }}
             renderItem={({item, index}: {item: any; index: number}) => {
@@ -423,7 +722,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                       </TouchableOpacity>
                     ) : (
                       <TouchableOpacity style={[GlobalStyles.ph10, GlobalStyles.pv5, styles.btnText]}>
-                        <Paragraph textWhite title='Pending' />
+                        <Paragraph h6 bold700 textWhite title='Pending' />
                       </TouchableOpacity>
                     )}
                   </View>
@@ -464,7 +763,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   ...styles.buttonContainerStyle,
                 }}
                 textStyle={styles.h3BoldDefault}
-                disabled={!isValid}
+                onPress={onAddFromPhone}
               />
             </View>
           </View>
@@ -472,7 +771,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
             <InputValidateControl
               label={t('name')}
               inputStyle={styles.inputStyle}
-              labelStyle={styles.labelStyle}
+              labelStyle={{...GlobalStyles.mb5, ...styles.labelStyle}}
               selectionColor={BASE_COLORS.blackColor}
               placeholderTextColor={BASE_COLORS.blackColor}
               errors={errors}
@@ -486,7 +785,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
             <InputValidateControl
               label={t('email')}
               inputStyle={styles.inputStyle}
-              labelStyle={styles.labelStyle}
+              labelStyle={{...GlobalStyles.mb5, ...styles.labelStyle}}
               selectionColor={BASE_COLORS.blackColor}
               placeholderTextColor={BASE_COLORS.blackColor}
               errors={errors}
@@ -498,8 +797,9 @@ const AirFeedScreen = ({route, navigation}: Props) => {
             />
             <View style={[GlobalStyles.flexColumn, GlobalStyles.mb15]}>
               <View style={GlobalStyles.flexRow}>
-                <View style={[GlobalStyles.flexRow, GlobalStyles.container]}>
-                  <Paragraph title='Tag' style={[GlobalStyles.mr10, styles.labelStyle]} />
+                <View
+                  style={[GlobalStyles.flexRow, GlobalStyles.container, GlobalStyles.alignCenter, GlobalStyles.mb5]}>
+                  <Paragraph p title='Tag' style={[GlobalStyles.mr10, styles.labelStyle1]} />
                   <Paragraph title='Optional*' style={styles.highlight} />
                 </View>
                 <FastImage source={IMAGES.iconQuestion} resizeMode='cover' style={styles.iconQuestion} />
@@ -553,7 +853,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   ...styles.buttonContainerStyle,
                 }}
                 textStyle={styles.h3BoldDefault}
-                disabled={!isValid}
+                onPress={onAddFromPhone}
               />
             </View>
           </View>
@@ -563,7 +863,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                 title={t('done')}
                 h5
                 textCenter
-                onPress={handleSubmit(onSend)}
+                onPress={onDone}
                 containerStyle={{
                   ...GlobalStyles.buttonContainerStyle,
                   ...GlobalStyles.mr10,
@@ -577,13 +877,12 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                 title={t('invite_more')}
                 h5
                 textCenter
-                onPress={handleSubmit(onSend)}
+                onPress={onInviteMore}
                 containerStyle={{
                   ...GlobalStyles.buttonContainerStyle,
                   ...styles.buttonContainerStyle2,
                 }}
                 textStyle={styles.h3BoldDefault}
-                disabled={!isValid}
               />
             </View>
           </View>
@@ -645,7 +944,12 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                 <FastImage source={IMAGES.iconQuestion} resizeMode='cover' style={styles.iconQuestion} />
               </View>
               <View>
-                <TextInput placeholder='eg. bff, supplier. client' style={[styles.inputStyle, GlobalStyles.ph10]} />
+                <TextInput
+                  placeholder='eg. bff, supplier. client'
+                  style={[styles.inputStyle, GlobalStyles.ph10]}
+                  value={tag}
+                  onChangeText={text => setTag(text)}
+                />
                 <View style={styles.tagCount}>
                   <Paragraph textLavenderGrayColor p title='0 / 12' />
                 </View>
@@ -655,7 +959,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               title={t('generate_qr_code')}
               h5
               textCenter
-              onPress={onVisibleMassQrModal}
+              onPress={onCreateMassQrModal}
               containerStyle={{
                 ...GlobalStyles.buttonContainerStyle,
                 ...GlobalStyles.mb20,
@@ -670,7 +974,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
         <ModalDialogCommon
           isDefault={false}
           isVisible={visibleModal.modal4}
-          onHideModal={onVisibleMassQrModal}
+          onHideModal={onHideMassQrModal}
           styleModal={styles.styleModal4}>
           <View style={[GlobalStyles.mb15, styles.headerContainer1]}>
             <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
@@ -683,7 +987,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   title='Mass Invite QR'
                   style={[GlobalStyles.mb15, GlobalStyles.container]}
                 />
-                <TouchableOpacity onPress={onVisibleMassQrModal}>
+                <TouchableOpacity onPress={onHideMassQrModal}>
                   <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
                 </TouchableOpacity>
               </View>
@@ -691,27 +995,41 @@ const AirFeedScreen = ({route, navigation}: Props) => {
           </View>
           <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15, GlobalStyles.fullWidth]}>
             <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter, GlobalStyles.mb15]}>
-              <FastImage source={IMAGES.imgQr} resizeMode='contain' style={[GlobalStyles.mb15, styles.qrCode]} />
+              <View style={[GlobalStyles.mb15, styles.qrCode]}>
+                <QRCode
+                  value={networkState?.dataMassInvitation?.attributes?.code ?? ''}
+                  size={adjust(230)}
+                  enableLinearGradient={true}
+                  linearGradient={[BASE_COLORS.steelBlue2Color, BASE_COLORS.forestGreenColor]}
+                />
+              </View>
               <View style={GlobalStyles.fullWidth}>
-                <TextInput placeholder='spKeaYH1' style={[styles.inputStyle, GlobalStyles.ph10]} />
+                <TextInput
+                  placeholder={networkState?.dataMassInvitation?.attributes?.code ?? ''}
+                  style={[styles.inputStyle, GlobalStyles.ph10]}
+                  editable={false}
+                />
                 <View style={styles.tagCount}>
                   <FastImage source={IMAGES.iconCopy} resizeMode='contain' style={styles.iconCopy} />
                 </View>
               </View>
             </View>
-            <View style={GlobalStyles.mb15}>
-              <Trans
-                i18nKey='network_invited'
-                parent={Text}
-                values={{
-                  name: `“ReferReach”`,
-                }}
-                components={{
-                  normal: <Text style={[styles.textNormal, styles.textCenter]} />,
-                  bold: <Text style={[styles.textBold]} />,
-                }}
-              />
-            </View>
+            {networkState?.dataMassInvitation?.attributes?.tags &&
+              networkState?.dataMassInvitation?.attributes?.tags?.length > 0 && (
+                <View style={GlobalStyles.mb15}>
+                  <Trans
+                    i18nKey='network_invited'
+                    parent={Text}
+                    values={{
+                      name: joinArrayToString(networkState?.dataMassInvitation?.attributes?.tags),
+                    }}
+                    components={{
+                      normal: <Text style={[styles.textNormal, styles.textCenter]} />,
+                      bold: <Text style={[styles.textBold]} />,
+                    }}
+                  />
+                </View>
+              )}
             <View style={[GlobalStyles.flexRow]}>
               <View style={GlobalStyles.container}>
                 <Button
@@ -733,15 +1051,14 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   title={t('share_qr')}
                   h5
                   textCenter
-                  onPress={handleSubmit(onSend)}
+                  onPress={onShare}
                   containerStyle={{
                     ...GlobalStyles.buttonContainerStyle,
                     ...GlobalStyles.flexRow,
                     ...GlobalStyles.itemCenter,
                     ...styles.buttonContainerStyle2,
                   }}
-                  textStyle={styles.h3BoldDefault}
-                  disabled={!isValid}>
+                  textStyle={styles.h3BoldDefault}>
                   <FastImage
                     source={IMAGES.iconShare2}
                     resizeMode='cover'
@@ -749,6 +1066,166 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   />
                 </Button>
               </View>
+            </View>
+          </View>
+        </ModalDialogCommon>
+      )}
+      {visibleModal.modal5 && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={visibleModal.modal5}
+          onHideModal={onHideJoinModal}
+          styleModal={styles.styleModal2}>
+          <View style={[GlobalStyles.mb15, GlobalStyles.fullWidth]}>
+            <View style={[GlobalStyles.flexRow, GlobalStyles.ph15]}>
+              <Paragraph
+                textSteelBlue2Color
+                h5
+                bold600
+                textCenter
+                title='Input Invite Code'
+                style={[GlobalStyles.mb15, GlobalStyles.container]}
+              />
+              <TouchableOpacity onPress={onHideJoinModal}>
+                <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15, GlobalStyles.fullWidth]}>
+            <TextInput
+              value={textInviteCode}
+              onChangeText={(text: string) => setTextInviteCode(text)}
+              selectionColor={BASE_COLORS.blackColor}
+              placeholderTextColor={BASE_COLORS.blackColor}
+              style={[GlobalStyles.mb10, GlobalStyles.ph10, styles.inputStyle]}
+              editable={!modalLoading}
+            />
+            <Button
+              title={t('confirm')}
+              h5
+              textCenter
+              onPress={handleInvite}
+              containerStyle={{
+                ...GlobalStyles.buttonContainerStyle,
+                ...GlobalStyles.mb20,
+                ...styles.buttonContainerStyle,
+              }}
+              textStyle={styles.h3BoldDefault}
+              disabled={modalLoading && textInviteCode !== ''}
+            />
+          </View>
+        </ModalDialogCommon>
+      )}
+      {visibleModal.modal6 && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={visibleModal.modal6}
+          onHideModal={onHideJoinModal}
+          styleModal={styles.styleModal5}>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.container, GlobalStyles.mt30]}>
+            <TouchableOpacity onPress={onHideJoinModal} style={styles.iconCloseInvite}>
+              <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
+            </TouchableOpacity>
+            <View style={GlobalStyles.alignCenter}>
+              <Avatar
+                styleAvatar={{...GlobalStyles.mb5, ...GlobalStyles.avatar2}}
+                styleContainerGradient={{...GlobalStyles.mb5, ...GlobalStyles.avatar2}}
+                userInfo={{
+                  avatar_url: dataInvite?.included[0]?.attributes?.avatar_metadata?.avatar_url,
+                  avatar_lat: dataInvite?.included[0]?.attributes?.avatar_metadata?.avatar_lat,
+                  avatar_lng: dataInvite?.included[0]?.attributes?.avatar_metadata?.avatar_lng,
+                  first_name: dataInvite?.included[0]?.attributes?.first_name,
+                  last_name: dataInvite?.included[0]?.attributes?.last_name,
+                }}
+              />
+              <Paragraph h5 textArsenicColor title={`You are now part of`} style={GlobalStyles.mb5} />
+              {dataInvite?.included && dataInvite?.included?.length > 0 && (
+                <Paragraph
+                  h4
+                  bold
+                  textSteelBlueColor
+                  title={`${dataInvite?.included[0]?.attributes?.first_name ?? ''} ${
+                    dataInvite?.included[0]?.attributes?.last_name ?? ''
+                  }`}
+                  style={GlobalStyles.mb5}
+                />
+              )}
+              {dataInvite?.included && dataInvite?.included?.length > 0 && (
+                <Paragraph textCenter textSteelBlueColor bold600 p title={dataInvite?.included[0]?.attributes.pitch} />
+              )}
+            </View>
+            <View style={[GlobalStyles.container, GlobalStyles.flexRow, GlobalStyles.mt20]}>
+              {visibleModal.modal7 ? (
+                <Button
+                  title={t('ok')}
+                  h4
+                  textCenter
+                  onPress={onModalOk}
+                  containerStyle={{
+                    ...GlobalStyles.buttonContainerStyle,
+                    ...styles.buttonContainerStyle,
+                    width: deviceWidth - 90,
+                  }}
+                  textStyle={styles.textPrimary}
+                />
+              ) : (
+                <View style={[GlobalStyles.flexRow, GlobalStyles.justifyBetween]}>
+                  <Button
+                    title={t('deny')}
+                    h4
+                    textCenter
+                    onPress={onReject}
+                    containerStyle={{
+                      ...GlobalStyles.buttonContainerStyle,
+                      ...GlobalStyles.mr10,
+                      ...styles.buttonSecondContainerStyle,
+                    }}
+                    textStyle={{...styles.textSecondary, ...GlobalStyles.textCenter}}
+                  />
+                  <Button
+                    title={t('accept')}
+                    h4
+                    textCenter
+                    onPress={onAccept}
+                    containerStyle={{
+                      ...GlobalStyles.buttonContainerStyle,
+                      ...styles.buttonContainerStyle,
+                    }}
+                    textStyle={styles.textPrimary}
+                  />
+                </View>
+              )}
+            </View>
+          </View>
+        </ModalDialogCommon>
+      )}
+      {visibleModal.modal8 && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={true}
+          onHideModal={onVisibleErrorModal}
+          styleModal={styles.styleModal2}>
+          <View style={[styles.iconCloseError]}>
+            <TouchableOpacity onPress={onVisibleErrorModal}>
+              <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
+            </TouchableOpacity>
+          </View>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter]}>
+            <FastImage source={IMAGES.iconErrorGray} style={[GlobalStyles.mb15, GlobalStyles.iconErrors]} />
+            <Paragraph p textCenter textJetColor title={t('invite_code_invalid')} style={GlobalStyles.mb15} />
+            <View style={GlobalStyles.container}>
+              <Button
+                title={t('ok')}
+                h4
+                textCenter
+                onPress={onVisibleErrorModal}
+                containerStyle={{
+                  ...GlobalStyles.buttonContainerStyle,
+                  ...styles.buttonContainerStyle,
+                  width: deviceWidth - 90,
+                }}
+                textStyle={styles.h3BoldDefault}
+              />
             </View>
           </View>
         </ModalDialogCommon>

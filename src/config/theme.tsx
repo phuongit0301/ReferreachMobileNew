@@ -67,6 +67,7 @@ export const BASE_COLORS = {
   superiorityBlueColor: '#8199BC',
   carminePinkColor: '#F05344',
   lavenderGrayColor: '#BDC3CB',
+  arsenicColor: '#3C4146',
 };
 
 export const BASE_FONTS = {
