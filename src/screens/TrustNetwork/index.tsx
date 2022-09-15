@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Animated,
   RefreshControl,
@@ -59,6 +59,8 @@ import {onChatOneOnOneRequest} from '~Root/services/chat/actions';
 import {getCredential} from '~Root/services/pubnub/actions';
 import AnimatedHeader from './AnimatedHeader';
 import {DEEP_LINK_URL} from '~Root/private/api';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import TrustNetworkTag from '~Root/components/TrustNetworkTag';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<BottomTabParams, AppRoute.YOUR_ASK>,
@@ -485,6 +487,17 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     navigation.navigate(AppRoute.LIST_CONTACT, {isBack: true});
   };
 
+  const onProfile = useCallback((id?: number) => {
+    if (!id) return;
+    navigation.navigate(AppRoute.MAIN_NAVIGATOR, {
+      screen: AppRoute.PROFILE_OTHER,
+      params: {
+        id: id,
+      },
+    });
+    return null;
+  }, []);
+
   if (loadingState?.loading) {
     return <Loading />;
   }
@@ -506,9 +519,8 @@ const AirFeedScreen = ({route, navigation}: Props) => {
         />
         <Animated.View
           style={[GlobalStyles.container, GlobalStyles.ph15, styles.container, {paddingTop: headerHeight}]}>
-          <Animated.FlatList
-            contentContainerStyle={[GlobalStyles.pb150]}
-            nestedScrollEnabled={true}
+          <KeyboardAwareScrollView
+            extraHeight={125}
             refreshControl={
               <RefreshControl
                 colors={[BASE_COLORS.primary]}
@@ -518,16 +530,20 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               />
             }
             scrollEventThrottle={1}
-            onScroll={Animated.event([{nativeEvent: {contentOffset: {y: offset}}}], {useNativeDriver: false})}
             showsVerticalScrollIndicator={false}
-            data={networkState?.data}
-            key={'trust-network'}
-            keyExtractor={(item, index) => `trust-network-item-${index}`}
-            ListFooterComponent={() => {
-              return <View style={styles.footerContainer} />;
-            }}
-            ListHeaderComponent={() => {
-              return (
+            nestedScrollEnabled={true}
+            onScroll={Animated.event([{nativeEvent: {contentOffset: {y: offset}}}], {useNativeDriver: false})}
+            keyboardShouldPersistTaps='always'>
+            <Animated.FlatList
+              scrollEnabled={false}
+              contentContainerStyle={[GlobalStyles.pb150]}
+              data={networkState?.data}
+              key={'trust-network'}
+              keyExtractor={(item, index) => `trust-network-item-${index}`}
+              ListFooterComponent={() => {
+                return <View style={styles.footerContainer} />;
+              }}
+              ListHeaderComponent={
                 <>
                   <View style={[GlobalStyles.flexColumn]}>
                     {networkState?.listMassInvitation?.data?.length > 0 ? (
@@ -658,78 +674,81 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                     </View>
                   </View>
                 </>
-              );
-            }}
-            renderItem={({item, index}: {item: any; index: number}) => {
-              const itemIncluded: IIncluded = networkState?.included[index];
+              }
+              renderItem={({item, index}: {item: any; index: number}) => {
+                const itemIncluded: IIncluded = networkState?.included[index];
 
-              return (
-                <View
-                  style={[
-                    GlobalStyles.flexRow,
-                    GlobalStyles.p10,
-                    GlobalStyles.alignCenter,
-                    GlobalStyles.flexWrap,
-                    styles.itemContainer,
-                  ]}>
-                  <Avatar
-                    userInfo={{
-                      ...itemIncluded?.attributes?.avatar_metadata,
-                      first_name: itemIncluded?.attributes?.first_name,
-                      last_name: itemIncluded?.attributes?.last_name,
-                    }}
-                    styleAvatar={{...GlobalStyles.mr5, ...styles.avatar}}
-                    styleContainerGradient={{...GlobalStyles.alignCenter, ...styles.avatarContainer}}
-                  />
-                  <View style={[GlobalStyles.flexColumn, styles.nameContainer]}>
-                    {itemIncluded?.attributes?.first_name && itemIncluded?.attributes?.last_name ? (
-                      <Paragraph
-                        p
-                        numberOfLines={1}
-                        ellipsizeMode='tail'
-                        textDarkGrayColor
-                        title={`${itemIncluded?.attributes?.first_name} ${itemIncluded?.attributes?.last_name}`}
+                return (
+                  <TouchableOpacity onPress={() => onProfile(item?.relationships?.connected_user?.data?.id)}>
+                    <View style={[GlobalStyles.flexRow, GlobalStyles.p10, GlobalStyles.flexWrap, styles.itemContainer]}>
+                      <Avatar
+                        userInfo={{
+                          ...itemIncluded?.attributes?.avatar_metadata,
+                          first_name: itemIncluded?.attributes?.first_name,
+                          last_name: itemIncluded?.attributes?.last_name,
+                        }}
+                        styleAvatar={{...GlobalStyles.mr5, ...styles.avatar}}
+                        styleContainerGradient={{...GlobalStyles.alignCenter, ...styles.avatarContainer}}
                       />
-                    ) : (
-                      <Paragraph
-                        p
-                        numberOfLines={1}
-                        ellipsizeMode='tail'
-                        textDarkGrayColor
-                        title={`${itemIncluded?.attributes.phone ?? ''}`}
-                      />
-                    )}
-                    <Paragraph
-                      textDarkGrayColor
-                      numberOfLines={1}
-                      ellipsizeMode='tail'
-                      title={`${itemIncluded?.attributes?.title ?? ''}`}
-                      style={styles.textSmall}
-                    />
-                  </View>
-                  <View style={[styles.btnContainer]}>
-                    {visibleEdit ? (
-                      <TouchableOpacity
-                        style={[GlobalStyles.ph10, GlobalStyles.pv5]}
-                        onPress={() => onShowConfirm(item, itemIncluded)}>
-                        <FastImage source={IMAGES.iconDelete} resizeMode='contain' style={styles.iconMessage} />
-                      </TouchableOpacity>
-                    ) : item?.attributes?.status === TRUST_NETWORK_STATUS_ENUM.ACCEPTED ? (
-                      <TouchableOpacity
-                        style={[GlobalStyles.ph10, GlobalStyles.pv5, styles.iconMessageContainer]}
-                        onPress={() => onChatPersonal(item)}>
-                        <FastImage source={IMAGES.iconMessage} resizeMode='contain' style={styles.iconMessage} />
-                      </TouchableOpacity>
-                    ) : (
-                      <TouchableOpacity style={[GlobalStyles.ph10, GlobalStyles.pv5, styles.btnText]}>
-                        <Paragraph h6 bold700 textWhite title='Pending' />
-                      </TouchableOpacity>
-                    )}
-                  </View>
-                </View>
-              );
-            }}
-          />
+                      <View style={[GlobalStyles.flexColumn, styles.nameContainer]}>
+                        {itemIncluded?.attributes?.first_name && itemIncluded?.attributes?.last_name ? (
+                          <Paragraph
+                            p
+                            numberOfLines={1}
+                            ellipsizeMode='tail'
+                            bold700
+                            textBlack
+                            title={`${itemIncluded?.attributes?.first_name} ${itemIncluded?.attributes?.last_name}`}
+                          />
+                        ) : (
+                          <Paragraph
+                            p
+                            numberOfLines={1}
+                            ellipsizeMode='tail'
+                            textDarkGrayColor
+                            title={`${itemIncluded?.attributes.phone ?? ''}`}
+                          />
+                        )}
+                        <Paragraph
+                          textDarkGrayColor
+                          numberOfLines={1}
+                          ellipsizeMode='tail'
+                          title={`${itemIncluded?.attributes?.title ?? ''}`}
+                          style={[styles.textSmall, styles.marginTop5]}
+                        />
+                        {item?.attributes?.tag_list?.length > 0 && (
+                          <View style={[GlobalStyles.flexRow, styles.tagContainer]}>
+                            {item?.attributes?.tag_list?.map((tag: string) => (
+                              <TrustNetworkTag tag={tag} />
+                            ))}
+                          </View>
+                        )}
+                      </View>
+                      <View style={[styles.btnContainer]}>
+                        {visibleEdit ? (
+                          <TouchableOpacity
+                            style={[GlobalStyles.ph10, GlobalStyles.pv5]}
+                            onPress={() => onShowConfirm(item, itemIncluded)}>
+                            <FastImage source={IMAGES.iconDelete} resizeMode='contain' style={styles.iconMessage} />
+                          </TouchableOpacity>
+                        ) : item?.attributes?.status === TRUST_NETWORK_STATUS_ENUM.ACCEPTED ? (
+                          <TouchableOpacity
+                            style={[GlobalStyles.ph10, GlobalStyles.pv5, styles.iconMessageContainer]}
+                            onPress={() => onChatPersonal(item)}>
+                            <FastImage source={IMAGES.iconMessage} resizeMode='contain' style={styles.iconMessage} />
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity style={[GlobalStyles.ph10, GlobalStyles.pv5, styles.btnText]}>
+                            <Paragraph h6 bold700 textWhite title='Pending' />
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          </KeyboardAwareScrollView>
         </Animated.View>
       </SafeAreaView>
       {visibleModal.modal1 && (
@@ -1016,20 +1035,20 @@ const AirFeedScreen = ({route, navigation}: Props) => {
             </View>
             {networkState?.dataMassInvitation?.attributes?.tags &&
               networkState?.dataMassInvitation?.attributes?.tags?.length > 0 && (
-                <View style={GlobalStyles.mb15}>
-                  <Trans
-                    i18nKey='network_invited'
-                    parent={Text}
-                    values={{
-                      name: joinArrayToString(networkState?.dataMassInvitation?.attributes?.tags),
-                    }}
-                    components={{
-                      normal: <Text style={[styles.textNormal, styles.textCenter]} />,
-                      bold: <Text style={[styles.textBold]} />,
-                    }}
-                  />
-                </View>
-              )}
+              <View style={GlobalStyles.mb15}>
+                <Trans
+                  i18nKey='network_invited'
+                  parent={Text}
+                  values={{
+                    name: joinArrayToString(networkState?.dataMassInvitation?.attributes?.tags),
+                  }}
+                  components={{
+                    normal: <Text style={[styles.textNormal, styles.textCenter]} />,
+                    bold: <Text style={[styles.textBold]} />,
+                  }}
+                />
+              </View>
+            )}
             <View style={[GlobalStyles.flexRow]}>
               <View style={GlobalStyles.container}>
                 <Button
@@ -1290,16 +1309,16 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               {dataInvite?.included &&
                 dataInvite?.included?.length > 0 &&
                 dataInvite?.included[0]?.attributes?.avatar_metadata && (
-                  <Avatar
-                    userInfo={{
-                      ...dataInvite?.included[0]?.attributes?.avatar_metadata,
-                      first_name: dataInvite?.included[0]?.attributes?.first_name,
-                      last_name: dataInvite?.included[0]?.attributes?.last_name,
-                    }}
-                    styleAvatar={{...GlobalStyles.mr5, ...GlobalStyles.avatar}}
-                    styleContainerGradient={{...GlobalStyles.alignCenter, ...GlobalStyles.mb10, ...GlobalStyles.avatar}}
-                  />
-                )}
+                <Avatar
+                  userInfo={{
+                    ...dataInvite?.included[0]?.attributes?.avatar_metadata,
+                    first_name: dataInvite?.included[0]?.attributes?.first_name,
+                    last_name: dataInvite?.included[0]?.attributes?.last_name,
+                  }}
+                  styleAvatar={{...GlobalStyles.mr5, ...GlobalStyles.avatar}}
+                  styleContainerGradient={{...GlobalStyles.alignCenter, ...GlobalStyles.mb10, ...GlobalStyles.avatar}}
+                />
+              )}
               {dataInvite?.included && dataInvite?.included?.length > 0 && (
                 <Paragraph
                   h4
