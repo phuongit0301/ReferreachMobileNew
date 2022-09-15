@@ -26,6 +26,7 @@ export default StyleSheet.create({
     lineHeight: adjust(17),
     color: BASE_COLORS.gunmetalColor,
     fontSize: adjust(13),
+    flex: 1,
   },
   itemContainer: {
     backgroundColor: BASE_COLORS.whiteColor,
@@ -71,10 +72,14 @@ export default StyleSheet.create({
     height: adjust(50),
     borderRadius: adjust(100),
     overflow: 'hidden',
+    marginLeft: adjust(3),
+    marginRight: adjust(10),
   },
   avatar: {
     width: adjust(50),
     height: adjust(50),
+    marginRight: adjust(10),
+    marginLeft: adjust(3),
   },
   menu: {
     position: 'absolute',
@@ -162,9 +167,18 @@ export default StyleSheet.create({
   btnContainer: {
     width: adjust(80),
     alignItems: 'flex-end',
+    marginLeft: 20,
+    marginTop: 10,
   },
   nameContainer: {
     width: '42%',
+    paddingTop: 10,
+  },
+  tagContainer: {
+    marginTop: 5,
+    flex: 1,
+    width: '180%', // parent is 42%
+    flexWrap: 'wrap',
   },
   textSmall: {
     fontSize: adjust(10),
@@ -397,5 +411,8 @@ export default StyleSheet.create({
     alignSelf: 'flex-end',
     marginTop: adjust(50),
     marginRight: adjust(15),
+  },
+  marginTop5: {
+    marginTop: adjust(5),
   },
 });
