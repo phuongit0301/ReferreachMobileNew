@@ -9,6 +9,8 @@ interface Props {
 
 const TrustNetworkTag = ({tag}: Props) => {
   if (!tag) return null;
+  if (typeof tag !== 'string') return null;
+  if (!tag.length) return null;
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{tag}</Text>

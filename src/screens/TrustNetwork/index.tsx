@@ -487,16 +487,18 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     navigation.navigate(AppRoute.LIST_CONTACT, {isBack: true});
   };
 
-  const onProfile = useCallback((id?: number) => {
-    if (!id) return;
-    navigation.navigate(AppRoute.MAIN_NAVIGATOR, {
-      screen: AppRoute.PROFILE_OTHER,
-      params: {
-        id: id,
-      },
-    });
-    return null;
-  }, []);
+  const onProfile = useCallback(
+    (id?: number) => {
+      if (!id) return;
+      navigation.navigate(AppRoute.MAIN_NAVIGATOR, {
+        screen: AppRoute.PROFILE_OTHER,
+        params: {
+          id: id,
+        },
+      });
+    },
+    [navigation],
+  );
 
   if (loadingState?.loading) {
     return <Loading />;
@@ -1035,20 +1037,20 @@ const AirFeedScreen = ({route, navigation}: Props) => {
             </View>
             {networkState?.dataMassInvitation?.attributes?.tags &&
               networkState?.dataMassInvitation?.attributes?.tags?.length > 0 && (
-              <View style={GlobalStyles.mb15}>
-                <Trans
-                  i18nKey='network_invited'
-                  parent={Text}
-                  values={{
-                    name: joinArrayToString(networkState?.dataMassInvitation?.attributes?.tags),
-                  }}
-                  components={{
-                    normal: <Text style={[styles.textNormal, styles.textCenter]} />,
-                    bold: <Text style={[styles.textBold]} />,
-                  }}
-                />
-              </View>
-            )}
+                <View style={GlobalStyles.mb15}>
+                  <Trans
+                    i18nKey='network_invited'
+                    parent={Text}
+                    values={{
+                      name: joinArrayToString(networkState?.dataMassInvitation?.attributes?.tags),
+                    }}
+                    components={{
+                      normal: <Text style={[styles.textNormal, styles.textCenter]} />,
+                      bold: <Text style={[styles.textBold]} />,
+                    }}
+                  />
+                </View>
+              )}
             <View style={[GlobalStyles.flexRow]}>
               <View style={GlobalStyles.container}>
                 <Button
@@ -1309,16 +1311,16 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               {dataInvite?.included &&
                 dataInvite?.included?.length > 0 &&
                 dataInvite?.included[0]?.attributes?.avatar_metadata && (
-                <Avatar
-                  userInfo={{
-                    ...dataInvite?.included[0]?.attributes?.avatar_metadata,
-                    first_name: dataInvite?.included[0]?.attributes?.first_name,
-                    last_name: dataInvite?.included[0]?.attributes?.last_name,
-                  }}
-                  styleAvatar={{...GlobalStyles.mr5, ...GlobalStyles.avatar}}
-                  styleContainerGradient={{...GlobalStyles.alignCenter, ...GlobalStyles.mb10, ...GlobalStyles.avatar}}
-                />
-              )}
+                  <Avatar
+                    userInfo={{
+                      ...dataInvite?.included[0]?.attributes?.avatar_metadata,
+                      first_name: dataInvite?.included[0]?.attributes?.first_name,
+                      last_name: dataInvite?.included[0]?.attributes?.last_name,
+                    }}
+                    styleAvatar={{...GlobalStyles.mr5, ...GlobalStyles.avatar}}
+                    styleContainerGradient={{...GlobalStyles.alignCenter, ...GlobalStyles.mb10, ...GlobalStyles.avatar}}
+                  />
+                )}
               {dataInvite?.included && dataInvite?.included?.length > 0 && (
                 <Paragraph
                   h4
