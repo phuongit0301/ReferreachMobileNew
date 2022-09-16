@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
 
@@ -25,7 +25,9 @@ export default StyleSheet.create({
     fontFamily: BASE_FONTS.notoSansRegular,
     lineHeight: adjust(17),
     color: BASE_COLORS.gunmetalColor,
-    fontSize: adjust(13),
+    fontSize: adjust(11),
+    height: adjust(30),
+    ...GlobalStyles.pv5,
     flex: 1,
   },
   itemContainer: {
@@ -196,13 +198,16 @@ export default StyleSheet.create({
     backgroundColor: BASE_COLORS.brightGrayColor,
   },
   labelStyle: {
-    fontFamily: BASE_FONTS.notoSansMedium,
+    fontFamily: BASE_FONTS.medium,
+    fontWeight: '500',
     color: BASE_COLORS.steelBlueColor,
     fontSize: adjust(11),
   },
   labelStyle1: {
-    fontFamily: BASE_FONTS.notoSansMedium,
+    fontFamily: BASE_FONTS.medium,
+    fontWeight: '500',
     color: BASE_COLORS.steelBlueColor,
+    fontSize: adjust(11),
   },
   inputStyle: {
     ...GlobalStyles.inputStyle,
@@ -246,7 +251,7 @@ export default StyleSheet.create({
   styleModal4: {
     paddingLeft: 0,
     paddingRight: 0,
-    height: adjust(500),
+    height: adjust(480),
     borderRadius: adjust(8),
     paddingTop: 14,
     paddingBottom: 26,
@@ -255,6 +260,18 @@ export default StyleSheet.create({
     paddingLeft: 0,
     paddingRight: 0,
     height: adjust(250),
+    borderRadius: adjust(8),
+  },
+  styleModal6: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    height: adjust(180),
+    borderRadius: adjust(8),
+  },
+  styleModal7: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    height: Platform.OS === 'ios' ? adjust(390) : adjust(410),
     borderRadius: adjust(8),
   },
   styleModalRemove: {
@@ -304,8 +321,7 @@ export default StyleSheet.create({
     borderWidth: 1,
   },
   h3BoldSignUpDefault: {
-    fontFamily: BASE_FONTS.notoSansExtraBold,
-    fontWeight: '600',
+    fontFamily: BASE_FONTS.notoSansMedium,
     lineHeight: adjust(BASE_STYLES.h3),
     color: BASE_COLORS.oxleyColor,
     fontSize: adjust(14),
@@ -341,9 +357,7 @@ export default StyleSheet.create({
     opacity: 0.5,
   },
   highlight: {
-    fontFamily: BASE_FONTS.regular,
-    fontWeight: '500',
-    fontSize: adjust(11),
+    fontFamily: BASE_FONTS.italic,
     fontStyle: 'italic',
     color: BASE_COLORS.darkGray,
   },
@@ -416,5 +430,12 @@ export default StyleSheet.create({
   },
   marginTop5: {
     marginTop: adjust(5),
+  },
+  waitingContainer: {
+    position: 'absolute',
+    top: '15%',
+    left: '38%',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: adjust(15),
   },
 });

@@ -94,6 +94,7 @@ export const IMAGES = {
   iconEndAskGray: require('~Root/assets/images/icon_end_ask_gray.png'),
   headerSmalBg: require('~Root/assets/images/header_small_bg.png'),
   iconEdit: require('~Root/assets/images/icon_edit.png'),
+  iconEditWhite: require('~Root/assets/images/icon_edit_white.png'),
   iconMessage: require('~Root/assets/images/icon_message.png'),
   iconDelete: require('~Root/assets/images/icon_delete.png'),
   iconShare: require('~Root/assets/images/icon_share.png'),
