@@ -16,6 +16,9 @@ import {
   GET_MASS_INVITATION_LIST_SUCCESS,
   GET_MASS_INVITATION_LIST_FAILURE,
   SET_MASS_INVITATION,
+  REMOVE_MASS_INVITE_FAILURE,
+  REMOVE_MASS_INVITE_REQUESTED,
+  REMOVE_MASS_INVITE_SUCCESS,
 } from './constants';
 
 export interface IMassInvitationAttributes {
@@ -153,6 +156,29 @@ export interface IActionRemoveNetworkConnectionFailure {
   };
   callback?: () => void;
 }
+export interface IActionRemoveMassInviteRequested {
+  type: typeof REMOVE_MASS_INVITE_REQUESTED;
+  payload: string;
+  callback?: (response: IActionRemoveMassInviteSuccess['payload'] | IActionRemoveMassInviteFailure['payload']) => void;
+}
+export interface IActionRemoveMassInviteSuccess {
+  type: typeof REMOVE_MASS_INVITE_SUCCESS;
+  payload: {
+    data: any[] | [];
+    included: IIncluded[] | [];
+    success: boolean;
+    message: string;
+  };
+  callback?: () => void;
+}
+export interface IActionRemoveMassInviteFailure {
+  type: typeof REMOVE_MASS_INVITE_FAILURE;
+  payload: {
+    success: boolean;
+    message: string;
+  };
+  callback?: () => void;
+}
 
 export interface IActionInviteUserRequested {
   type: typeof ON_INVITE_USER_REQUESTED;
@@ -240,6 +266,9 @@ export type IActionsUser =
   | IActionRemoveNetworkConnectionRequested
   | IActionRemoveNetworkConnectionSuccess
   | IActionRemoveNetworkConnectionFailure
+  | IActionRemoveMassInviteRequested
+  | IActionRemoveMassInviteSuccess
+  | IActionRemoveMassInviteFailure
   | IActionInviteUserRequested
   | IActionInviteUserSuccess
   | IActionInviteUserFailure

@@ -130,4 +130,30 @@ export default class NetworkAPI {
       };
     }
   }
+
+  static async removeMassInvite(payload: string) {
+    try {
+      const response = await axios({
+        method: 'DELETE',
+        url: `${API.ON_MASS_INVITATION_URL}/${payload}`,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+      if (response && response.status === 200) {
+        return {
+          data: response.data,
+          message: '',
+          success: true,
+        };
+      }
+    } catch (error) {
+      return {
+        data: null,
+        message: (error as any)?.response?.data?.errors.length > 0 ? (error as any)?.response?.data?.errors[0] : error,
+        success: false,
+      };
+    }
+  }
 }

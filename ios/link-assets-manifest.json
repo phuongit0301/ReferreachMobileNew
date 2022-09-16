@@ -1,0 +1,41 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Montserrat-Bold.ttf",
+      "sha1": "979a6a2ef29b980c496dc845b02c06df603b71c3"
+    },
+    {
+      "path": "src/assets/fonts/Montserrat-Italic.ttf",
+      "sha1": "9352da8ea6e104aa61aebc5ecad6612cbea1b5f6"
+    },
+    {
+      "path": "src/assets/fonts/Montserrat-Medium.ttf",
+      "sha1": "8663feddbd376267524f61d6e196cbb76c24d8f1"
+    },
+    {
+      "path": "src/assets/fonts/Montserrat-Regular.ttf",
+      "sha1": "c45c0139637fb52fe2c597d731b9786b92d52701"
+    },
+    {
+      "path": "src/assets/fonts/Montserrat-SemiBold.ttf",
+      "sha1": "0e3c7ca7a434edf6a1e713f857d1a0be4bf45f30"
+    },
+    {
+      "path": "src/assets/fonts/NotoSans-Bold.ttf",
+      "sha1": "20f80dbd99b857c66796321d3f596400d1334ca7"
+    },
+    {
+      "path": "src/assets/fonts/NotoSans-ExtraBold.ttf",
+      "sha1": "c07b10e56e57fa69daf53c31ec2532ec5d67976c"
+    },
+    {
+      "path": "src/assets/fonts/NotoSans-Medium.ttf",
+      "sha1": "24d2fbcedc876231b51ea8c096f21883d27ece5a"
+    },
+    {
+      "path": "src/assets/fonts/NotoSans-Regular.ttf",
+      "sha1": "6af0b309f2f2af25bfd0f901ed24bd0527c2cbf4"
+    }
+  ]
+}

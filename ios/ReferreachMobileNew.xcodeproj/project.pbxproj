@@ -21,6 +21,8 @@
 		C4DE338BB93C440CA60A9DAA /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9C7ACC2F6B4549C19900346C /* Montserrat-Bold.ttf */; };
 		D6552221C5394F4E8A9F8FAF /* NotoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B1E6FDFDB8704C588C622D4B /* NotoSans-Regular.ttf */; };
 		F3A80998EE964401A78A472A /* NotoSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1143D78CBD5942DEB4AAA9A5 /* NotoSans-ExtraBold.ttf */; };
+		098EFB5D1714490AAC3B61B1 /* Montserrat-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 574584557ECF49E5B069E5CE /* Montserrat-Italic.ttf */; };
+		E1F0887C8FE146CEB9DFDE4D /* Montserrat-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C98775D476144A93A7F1B308 /* Montserrat-Medium.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +77,8 @@
 		E433C194004D40A388838911 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Regular.ttf"; path = "../src/assets/fonts/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		EAF35F62EF214504823A5421 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		574584557ECF49E5B069E5CE /* Montserrat-Italic.ttf */ = {isa = PBXFileReference; name = "Montserrat-Italic.ttf"; path = "../src/assets/fonts/Montserrat-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C98775D476144A93A7F1B308 /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; name = "Montserrat-Medium.ttf"; path = "../src/assets/fonts/Montserrat-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,6 +211,8 @@
 				1143D78CBD5942DEB4AAA9A5 /* NotoSans-ExtraBold.ttf */,
 				AFF4405376BD4C668314C8D9 /* NotoSans-Medium.ttf */,
 				B1E6FDFDB8704C588C622D4B /* NotoSans-Regular.ttf */,
+				574584557ECF49E5B069E5CE /* Montserrat-Italic.ttf */,
+				C98775D476144A93A7F1B308 /* Montserrat-Medium.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -314,6 +320,8 @@
 				F3A80998EE964401A78A472A /* NotoSans-ExtraBold.ttf in Resources */,
 				200C3EE8B36C4860BF8D6A60 /* NotoSans-Medium.ttf in Resources */,
 				D6552221C5394F4E8A9F8FAF /* NotoSans-Regular.ttf in Resources */,
+				098EFB5D1714490AAC3B61B1 /* Montserrat-Italic.ttf in Resources */,
+				E1F0887C8FE146CEB9DFDE4D /* Montserrat-Medium.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

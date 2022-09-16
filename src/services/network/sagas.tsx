@@ -14,6 +14,9 @@ import {
   GET_MASS_INVITATION_LIST_SUCCESS,
   GET_MASS_INVITATION_LIST_FAILURE,
   GET_MASS_INVITATION_LIST_REQUESTED,
+  REMOVE_MASS_INVITE_REQUESTED,
+  REMOVE_MASS_INVITE_SUCCESS,
+  REMOVE_MASS_INVITE_FAILURE,
 } from './constants';
 import {
   IActionCreateMassInvitationRequested,
@@ -22,6 +25,8 @@ import {
   IActionGetMassInvitationListSuccess,
   IActionNetworkConnectionListRequested,
   IActionNetworkConnectionListSuccess,
+  IActionRemoveMassInviteRequested,
+  IActionRemoveMassInviteSuccess,
   IActionRemoveNetworkConnectionRequested,
   IActionRemoveNetworkConnectionSuccess,
 } from './types';
@@ -138,12 +143,50 @@ function* createMassInvitation(payload: IActionCreateMassInvitationRequested) {
   }
 }
 
+function* removemMassInvite(payload: IActionRemoveMassInviteRequested) {
+  try {
+    const response: IActionRemoveMassInviteSuccess['payload'] = yield call(
+      NetworkAPI.removeMassInvite,
+      payload?.payload,
+    );
+    if (response.success) {
+      yield put({type: REMOVE_MASS_INVITE_SUCCESS, payload: response});
+      payload?.callback &&
+        payload?.callback({
+          success: response.success,
+          message: response.message,
+          data: response?.data,
+        });
+    } else {
+      yield put({type: REMOVE_MASS_INVITE_FAILURE, payload: {message: response}});
+      payload?.callback &&
+        payload?.callback({
+          success: response.success,
+          message: response?.message,
+          data: [],
+        });
+    }
+  } catch (error) {
+    yield put({type: REMOVE_MASS_INVITE_FAILURE, payload: {message: error}});
+    payload?.callback &&
+      payload?.callback({
+        success: false,
+        message: error as string,
+        data: [],
+      });
+  }
+}
+
 function* watchGetNetworkConnectionList() {
   yield takeLatest(GET_NETWORK_CONNECTION_LIST_REQUESTED, getNetworkConnectionList);
 }
 
 function* watchRemoveNetworkConnection() {
   yield takeEvery(REMOVE_NETWORK_CONNECTION_REQUESTED, removeNetworkConnection);
+}
+
+function* watchRemoveMassInvite() {
+  yield takeEvery(REMOVE_MASS_INVITE_REQUESTED, removemMassInvite);
 }
 
 function* watchGetMassInvitationList() {
@@ -160,5 +203,6 @@ export default function* networkWatchers() {
     watchRemoveNetworkConnection(),
     watchCreateMassInvitation(),
     watchGetMassInvitationList(),
+    watchRemoveMassInvite(),
   ]);
 }

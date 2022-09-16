@@ -11,6 +11,9 @@ import {
   GET_MASS_INVITATION_LIST_SUCCESS,
   GET_MASS_INVITATION_LIST_FAILURE,
   SET_MASS_INVITATION,
+  REMOVE_MASS_INVITE_SUCCESS,
+  REMOVE_MASS_INVITE_REQUESTED,
+  REMOVE_MASS_INVITE_FAILURE,
 } from './constants';
 import {INetworkConnectionListState, IActionsUser} from './types';
 
@@ -38,6 +41,7 @@ const userReducer = (
     case REMOVE_NETWORK_CONNECTION_REQUESTED:
     case ON_CREATE_MASS_INVITATION_REQUESTED:
     case GET_MASS_INVITATION_LIST_REQUESTED:
+    case REMOVE_MASS_INVITE_REQUESTED:
       return {...state, callback: action?.callback, loading: true};
     case GET_NETWORK_CONNECTION_LIST_SUCCESS:
       return {
@@ -46,6 +50,13 @@ const userReducer = (
         data: action?.payload?.data || [],
         included: action?.payload?.included || [],
         message: action?.payload?.message,
+      };
+    case REMOVE_MASS_INVITE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        message: '',
+        dataMassInvitation: null,
       };
     case ON_CREATE_MASS_INVITATION_SUCCESS:
     case SET_MASS_INVITATION:
@@ -56,6 +67,7 @@ const userReducer = (
     case REMOVE_NETWORK_CONNECTION_FAILURE:
     case ON_CREATE_MASS_INVITATION_FAILURE:
     case GET_MASS_INVITATION_LIST_FAILURE:
+    case REMOVE_MASS_INVITE_FAILURE:
       return {...state, loading: false, message: action.payload.message};
     default:
       return state;

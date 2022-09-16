@@ -1,13 +1,14 @@
 import React from 'react';
-import {Animated, TouchableOpacity, View} from 'react-native';
+import {Animated, Platform, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Paragraph} from '~Root/components';
 import styles from '~Root/components/AuthHeader/styles';
 import {BASE_COLORS, GlobalStyles, IMAGES} from '~Root/config';
+import {adjust} from '~Root/utils';
 
-const HEADER_HEIGHT = 100;
+const HEADER_HEIGHT = adjust(100);
 
 const AnimatedHeader = ({animatedValue, onVisibleInviteModal, onVisibleJoinModal}: any) => {
   const insets = useSafeAreaInsets();
@@ -20,13 +21,13 @@ const AnimatedHeader = ({animatedValue, onVisibleInviteModal, onVisibleJoinModal
 
   const headerTop = animatedValue.interpolate({
     inputRange: [0, HEADER_HEIGHT + insets.top],
-    outputRange: [120, 116],
+    outputRange: Platform.OS === 'ios' ? [adjust(120), adjust(90)] : [adjust(80), adjust(50)],
     extrapolate: 'clamp',
   });
 
   const buttonHeight = animatedValue.interpolate({
     inputRange: [0, HEADER_HEIGHT + insets.top],
-    outputRange: [insets.top + 100, 0],
+    outputRange: [insets.top + adjust(100), 0],
     extrapolateRight: 'clamp',
   });
 
@@ -37,14 +38,14 @@ const AnimatedHeader = ({animatedValue, onVisibleInviteModal, onVisibleJoinModal
   });
 
   const buttonScaleHeight = animatedValue.interpolate({
-    inputRange: [0, 100],
-    outputRange: [44, 88],
+    inputRange: [0, adjust(100)],
+    outputRange: [adjust(44), adjust(88)],
     extrapolateLeft: 'identity',
     extrapolateRight: 'clamp',
   });
 
   const opacity1 = animatedValue.interpolate({
-    inputRange: [0, 88],
+    inputRange: [0, adjust(88)],
     outputRange: [0, 1],
     extrapolateRight: 'clamp',
   });
