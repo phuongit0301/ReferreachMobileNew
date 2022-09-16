@@ -413,11 +413,17 @@ export const GlobalStyles = StyleSheet.create({
   mt10: {
     marginTop: adjust(10),
   },
+  mt12: {
+    marginTop: adjust(12),
+  },
   mt15: {
     marginTop: adjust(15),
   },
   mt20: {
     marginTop: adjust(20),
+  },
+  mt27: {
+    marginTop: adjust(27),
   },
   mt30: {
     marginTop: adjust(30),
