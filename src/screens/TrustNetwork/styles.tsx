@@ -207,20 +207,20 @@ export default StyleSheet.create({
   inputStyle: {
     ...GlobalStyles.inputStyle,
     borderRadius: adjust(8),
-    color: BASE_COLORS.blackColor,
+    color: BASE_COLORS.gray3Color,
     backgroundColor: BASE_COLORS.brightGrayColor,
   },
   inputErrorStyle: {
     borderColor: BASE_COLORS.persianRedColor,
   },
   h3BoldDefault: {
-    fontFamily: BASE_FONTS.semiBold,
+    fontFamily: BASE_FONTS.regular,
     fontWeight: '600',
     color: BASE_COLORS.whiteColor,
     fontSize: adjust(12),
   },
   h3BoldDefault2: {
-    fontFamily: BASE_FONTS.semiBold,
+    fontFamily: BASE_FONTS.notoSansRegular,
     fontWeight: '600',
     color: BASE_COLORS.forestGreenColor,
     fontSize: adjust(12),
@@ -248,6 +248,8 @@ export default StyleSheet.create({
     paddingRight: 0,
     height: adjust(500),
     borderRadius: adjust(8),
+    paddingTop: 14,
+    paddingBottom: 26,
   },
   styleModal5: {
     paddingLeft: 0,

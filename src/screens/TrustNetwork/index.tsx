@@ -384,7 +384,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
       if (!networkState.dataMassInvitation?.attributes?.code) {
         return false;
       }
-
+      
       await Share.share({
         title: `Mass Invite QR`,
         message: `${DEEP_LINK_URL}/i/${networkState.dataMassInvitation?.attributes?.code}`,
@@ -1000,9 +1000,10 @@ const AirFeedScreen = ({route, navigation}: Props) => {
           <View style={[GlobalStyles.mb15, styles.headerContainer1]}>
             <View style={[GlobalStyles.flexColumn, GlobalStyles.ph15]}>
               <View style={[GlobalStyles.flexRow]}>
+                <View style={styles.iconClose} />
                 <Paragraph
                   textSteelBlue2Color
-                  h5
+                  h4
                   bold600
                   textCenter
                   title='Mass Invite QR'
@@ -1024,9 +1025,10 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   linearGradient={[BASE_COLORS.steelBlue2Color, BASE_COLORS.forestGreenColor]}
                 />
               </View>
-              <View style={GlobalStyles.fullWidth}>
+              <View style={[GlobalStyles.fullWidth, GlobalStyles.mt12]}>
                 <TextInput
                   placeholder={networkState?.dataMassInvitation?.attributes?.code ?? ''}
+                  placeholderTextColor={BASE_COLORS.gray3Color}
                   style={[styles.inputStyle, GlobalStyles.ph10]}
                   editable={false}
                 />
