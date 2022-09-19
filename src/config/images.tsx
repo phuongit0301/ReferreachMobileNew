@@ -122,4 +122,5 @@ export const IMAGES = {
   imgQr: require('~Root/assets/images/img_qr.png'),
   iconCopy: require('~Root/assets/images/copy.png'),
   iconShare2: require('~Root/assets/images/icon_share_2.png'),
+  iconUser: require('~Root/assets/images/icon_users.png'),
 };

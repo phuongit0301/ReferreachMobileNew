@@ -279,7 +279,7 @@ export const GlobalStyles = StyleSheet.create({
     fontWeight: '400',
   },
   bold500: {
-    fontFamily: BASE_FONTS.regular,
+    fontFamily: BASE_FONTS.medium,
     fontWeight: '500',
   },
   bold600: {

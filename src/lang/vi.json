@@ -166,5 +166,7 @@
     "network_invited": "<normal>Network invited through this link will be given a <bold>\"{{name}}\"</bold> tag</normal>",
     "confirm": "Confirm",
     "invite_code_invalid": "Oops! Did you enter it wrong? \nThe code is invalid.",
-    "successfully": "Successfully"
+    "successfully": "Successfully",
+    "cancel_this_invite": "Are you sure you want to cancel this invite?",
+    "cancel": "Cancel"
 }

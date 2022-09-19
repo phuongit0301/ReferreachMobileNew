@@ -52,6 +52,11 @@ export default StyleSheet.create({
     ...GlobalStyles.pv8,
     backgroundColor: BASE_COLORS.forestGreenColor,
   },
+  buttonContainerStyle3: {
+    ...GlobalStyles.pv10,
+    ...GlobalStyles.ph15,
+    backgroundColor: BASE_COLORS.forestGreenColor,
+  },
   buttonContainer2Style: {
     ...GlobalStyles.ph15,
     ...GlobalStyles.pv8,
@@ -167,19 +172,14 @@ export default StyleSheet.create({
     borderRadius: adjust(50),
   },
   btnContainer: {
-    width: adjust(80),
-    alignItems: 'flex-end',
     marginLeft: 20,
     marginTop: 10,
   },
   nameContainer: {
-    width: '42%',
     paddingTop: 10,
   },
   tagContainer: {
     marginTop: 5,
-    flex: 1,
-    width: '180%', // parent is 42%
     flexWrap: 'wrap',
   },
   textSmall: {
@@ -274,6 +274,12 @@ export default StyleSheet.create({
     height: Platform.OS === 'ios' ? adjust(390) : adjust(410),
     borderRadius: adjust(8),
   },
+  styleModal8: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    height: adjust(130),
+    borderRadius: adjust(8),
+  },
   styleModalRemove: {
     height: adjust(250),
   },
@@ -332,6 +338,11 @@ export default StyleSheet.create({
     borderBottomLeftRadius: adjust(8),
     borderBottomRightRadius: adjust(8),
     overflow: 'hidden',
+  },
+  iconCloseContainer: {
+    position: 'absolute',
+    top: 0,
+    right: adjust(5),
   },
   iconClose: {
     width: adjust(14),
@@ -411,17 +422,23 @@ export default StyleSheet.create({
   },
   textPrimary: {
     fontFamily: BASE_FONTS.semiBold,
-    lineHeight: adjust(BASE_STYLES.h3),
+    lineHeight: adjust(BASE_STYLES.h4),
     color: BASE_COLORS.whiteColor,
   },
   textSecondary: {
     fontFamily: BASE_FONTS.semiBold,
-    lineHeight: adjust(BASE_STYLES.h3),
+    lineHeight: adjust(BASE_STYLES.h4),
     color: BASE_COLORS.oxleyColor,
   },
   buttonSecondContainerStyle: {
     borderColor: BASE_COLORS.forestGreenColor,
     borderWidth: 1,
+  },
+  buttonSecondContainerStyle2: {
+    borderColor: BASE_COLORS.forestGreenColor,
+    borderWidth: 1,
+    ...GlobalStyles.pv10,
+    ...GlobalStyles.ph15,
   },
   iconCloseError: {
     alignSelf: 'flex-end',
@@ -437,5 +454,9 @@ export default StyleSheet.create({
     left: '38%',
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     borderRadius: adjust(15),
+  },
+  iconUser: {
+    width: adjust(15),
+    height: adjust(15),
   },
 });

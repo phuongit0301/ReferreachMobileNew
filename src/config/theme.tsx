@@ -73,7 +73,7 @@ export const BASE_COLORS = {
 export const BASE_FONTS = {
   bold: 'Montserrat-Bold',
   semiBold: 'Montserrat-SemiBold',
-  medium: 'Montserrat-Meidum',
+  medium: 'Montserrat-Medium',
   regular: 'Montserrat-Regular',
   italic: 'Montserrat-Italic',
   notoSansRegular: 'NotoSans-Regular',
