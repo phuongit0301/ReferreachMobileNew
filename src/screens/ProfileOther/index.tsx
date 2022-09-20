@@ -27,6 +27,7 @@ import {IActionRemoveNetworkConnectionSuccess} from '~Root/services/network/type
 import {removeNetworkConnect} from '~Root/services/network/actions';
 import {AppRoute} from '~Root/navigation/AppRoute';
 import {inviteUserContact} from '~Root/services/contact/actions';
+import {uppercaseFirstLetterOfEachWordInASentance} from '~Root/utils/functions';
 
 // type Props = NativeStackScreenProps<RootNavigatorParamsList, AppRoute.PROFILE>;
 
@@ -124,7 +125,9 @@ const ProfileOtherScreen = ({navigation, route}: any) => {
       <View style={[GlobalStyles.container, styles.container]}>
         <SafeAreaView style={GlobalStyles.container} edges={['top', 'bottom', 'right', 'left']}>
           <HeaderSmallTransparent
-            title={t('set_up_profile')}
+            title={t('user_profile', {
+              name: uppercaseFirstLetterOfEachWordInASentance(dataUser?.data?.attributes?.first_name ?? ''),
+            })}
             isBackButton={true}
             onBack={onBack}
             isRightButton={true}

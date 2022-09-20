@@ -216,3 +216,17 @@ export const calculateExpiredTime = (createdAt: Date = new Date()) => {
 export const uid = () => {
   return ('000000000' + Math.random().toString(36).substr(2, 9)).slice(-9);
 };
+
+export const uppercaseFirstLetterOfEachWordInASentance = (sentence: string) => {
+  const words = sentence.split(' ');
+  if (!words) return '';
+  else if (words.length === 1) {
+    return words[0].charAt(0).toUpperCase() + words[0].slice(1);
+  } else {
+    return words
+      .map(word => {
+        return word[0]?.toUpperCase() + word?.substring(1);
+      })
+      .join(' ');
+  }
+};

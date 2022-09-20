@@ -60,6 +60,7 @@ import {
   AskNavigatorParamsList,
   AirFeedNavigatorParamsList,
   ChatNavigatorParamsList,
+  YourTrustNavigatorParamsList,
 } from './config';
 
 enableScreens();
@@ -67,6 +68,7 @@ enableScreens();
 const RootStack = createNativeStackNavigator<RootNavigatorParamsList>();
 const MainStack = createNativeStackNavigator<MainNavigatorParamsList>();
 const AirFeedStack = createNativeStackNavigator<AirFeedNavigatorParamsList>();
+const YourTrustStack = createNativeStackNavigator<YourTrustNavigatorParamsList>();
 const AskStack = createNativeStackNavigator<AskNavigatorParamsList>();
 const ChatStack = createNativeStackNavigator<ChatNavigatorParamsList>();
 const DrawerStack = createDrawerNavigator();
@@ -128,6 +130,21 @@ const AirFeedNavigator = (props: any) => {
   );
 };
 
+const YourTrustNavigator = (props: any) => {
+  return (
+    <YourTrustStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+      initialRouteName={AppRoute.YOUR_TRUST}
+      {...props}>
+      <YourTrustStack.Screen name={AppRoute.YOUR_TRUST} component={TrustNetworkScreen} />
+      <MainStack.Screen name={AppRoute.PROFILE_OTHER} component={ProfileOther} />
+    </YourTrustStack.Navigator>
+  );
+};
+
+
 const ChatNavigator = (props: any) => {
   return (
     <ChatStack.Navigator
@@ -153,7 +170,7 @@ const AppBottomTab = () => {
       <BottomTab.Screen name={AppRoute.YOUR_ASK} component={YourAskScreen} />
       <BottomTab.Screen name={AppRoute.AIR_FEED_NAVIGATOR} component={AirFeedNavigator} />
       <BottomTab.Screen name={AppRoute.MAIN_NAVIGATOR} component={MainNavigator} />
-      <BottomTab.Screen name={AppRoute.TRUST_NETWORK} component={TrustNetworkScreen} />
+      <BottomTab.Screen name={AppRoute.TRUST_NETWORK} component={YourTrustNavigator} />
       <BottomTab.Screen name={AppRoute.CHAT_NAVIGATOR} component={ChatNavigator} />
     </BottomTab.Navigator>
   );
