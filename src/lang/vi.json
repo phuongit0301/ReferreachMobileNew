@@ -43,6 +43,7 @@
     "proceed": "Proceed",
     "get_started": "Let's Get Started",
     "set_up_profile": "Set Up Profile",
+    "user_profile": "{{name}}'s Profile",
     "update_email": "Update Email",
     "job_title": "Job Title",
     "expertise": "Expertise / Pitch",

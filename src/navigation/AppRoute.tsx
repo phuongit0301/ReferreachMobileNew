@@ -66,6 +66,7 @@ export enum AppRoute {
   SETTING = 'Setting',
   TIPS = 'Tips',
   TIPS_TWO = 'TipsTwo',
+  YOUR_TRUST = 'YourTrust',
 }
 
 export const AppRouteNotTabBar = {

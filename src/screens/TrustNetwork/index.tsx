@@ -531,12 +531,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   const onProfile = useCallback(
     (id?: number) => {
       if (!id) return;
-      navigation.navigate(AppRoute.MAIN_NAVIGATOR, {
-        screen: AppRoute.PROFILE_OTHER,
-        params: {
-          id: id,
-        },
-      });
+      navigation.navigate(AppRoute.PROFILE_OTHER, {id: id});
     },
     [navigation],
   );
@@ -732,6 +727,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                         styles.itemContainer,
                       ]}>
                       <Avatar
+                        onProfile={() => onProfile(item?.relationships?.connected_user?.data?.id)}
                         userInfo={{
                           ...itemIncluded?.attributes?.avatar_metadata,
                           first_name: itemIncluded?.attributes?.first_name,

@@ -118,6 +118,11 @@ export type AirFeedNavigatorParamsList = {
   [AppRoute.JOINT_MESSAGE_MODAL]: undefined;
 };
 
+export type YourTrustNavigatorParamsList = {
+  [AppRoute.YOUR_TRUST]: undefined;
+  [AppRoute.PROFILE_OTHER]: undefined;
+};
+
 export type AskNavigatorParamsList = {
   [AppRoute.ASK]: undefined;
   [AppRoute.ASK_TWO]: undefined;
