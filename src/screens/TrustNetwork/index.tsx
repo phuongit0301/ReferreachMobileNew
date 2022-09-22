@@ -46,6 +46,7 @@ import {
   LoadingSecondary,
   ModalDialogCommon,
   Paragraph,
+  ToastCustom,
 } from '~Root/components';
 import {IActionRemoveNetworkConnectionSuccess, IIncluded, IMassInvitationListTags} from '~Root/services/network/types';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
@@ -98,10 +99,12 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   const loadingState = useSelector((state: IGlobalState) => state.loadingState);
   const networkState = useSelector((state: IGlobalState) => state.networkState);
   const {dataInvite} = useSelector((state: IGlobalState) => state.registerState);
-  const toastRef = useRef();
 
   const [refreshing, setRefreshing] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [showToast1, setShowToast1] = useState(false);
+  const [showToast2, setShowToast2] = useState(false);
   const [visibleModal, setVisibleModal] = useState({
     modal1: false,
     modal2: false,
@@ -299,9 +302,12 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   };
 
   const onHideJoinModal = () => {
+    console.log(12312312);
+    setTextInviteCode('');
     setVisibleModal({
       ...visibleModal,
       modal5: false,
+      modal6: false,
     });
   };
 
@@ -396,7 +402,6 @@ const AirFeedScreen = ({route, navigation}: Props) => {
       if (!networkState.dataMassInvitation?.attributes?.code) {
         return false;
       }
-      
       await Share.share({
         title: `Mass Invite QR`,
         message: `${DEEP_LINK_URL}/i/${networkState.dataMassInvitation?.attributes?.code}`,
@@ -407,6 +412,12 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   };
 
   const copyToClipboard = (code: string) => {
+    setShowToast(true);
+    Clipboard.setString(code);
+  };
+
+  const copyToClipboard1 = (code: string) => {
+    setShowToast1(true);
     Clipboard.setString(code);
   };
 
@@ -431,8 +442,9 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     });
   };
 
-  const onReject = () => {
+  const onReject = useCallback(() => {
     if (textInviteCode) {
+      setTextInviteCode('');
       dispatch(showLoading());
       dispatch(
         invitationRejectRequest(textInviteCode, (response: any) => {
@@ -444,24 +456,22 @@ const AirFeedScreen = ({route, navigation}: Props) => {
             visibilityTime: 1200,
             autoHide: true,
           });
-          setTimeout(() => {
-            setVisibleModal({
-              ...visibleModal,
-              modal6: false,
-              modal7: false,
-            });
-          }, 1250);
+          setVisibleModal({
+            ...visibleModal,
+            modal5: false,
+            modal6: false,
+            modal7: false,
+          });
         }),
       );
     }
-  };
+  }, [textInviteCode]);
 
   const handleInvite = () => {
     if (textInviteCode !== '') {
       setModalLoading(true);
       dispatch(
         invitationRequest(textInviteCode, async (response: any) => {
-          setTextInviteCode('');
           setModalLoading(false);
           if (response.success) {
             if (response?.data?.data?.attributes?.status === 'unused') {
@@ -470,6 +480,8 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                 modal5: false,
                 modal6: true,
               });
+            } else {
+              setShowToast2(true);
             }
           } else {
             setVisibleModal({
@@ -489,6 +501,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
       modal6: false,
       modal8: false,
     });
+    setTextInviteCode('');
   };
 
   const onRemoveInvite = () => {
@@ -1122,46 +1135,46 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                 />
                 <TouchableOpacity
                   style={styles.tagCount}
-                  onPress={() => copyToClipboard(networkState?.listMassInvitation?.data[0].attributes.code)}>
+                  onPress={() => copyToClipboard1(networkState?.listMassInvitation?.data[0].attributes.code)}>
                   <FastImage source={IMAGES.iconCopy} resizeMode='contain' style={styles.iconCopy} />
                 </TouchableOpacity>
               </View>
             </View>
             {networkState?.dataMassInvitation?.attributes?.tags &&
               networkState?.dataMassInvitation?.attributes?.tags?.length > 0 && (
-              <View style={[GlobalStyles.mb15, GlobalStyles.alignCenter, GlobalStyles.justifyCenter]}>
-                <Trans
-                  i18nKey='network_invited'
-                  values={{
-                    name: joinArrayToString(networkState?.dataMassInvitation?.attributes?.tags),
-                  }}
-                  components={{
-                    normal: <Text style={[styles.textNormal, styles.textCenter]} />,
-                    bold: <Text style={[styles.textBold]} />,
-                  }}
-                />
-              </View>
-            )}
+                <View style={[GlobalStyles.mb15, GlobalStyles.alignCenter, GlobalStyles.justifyCenter]}>
+                  <Trans
+                    i18nKey='network_invited'
+                    values={{
+                      name: joinArrayToString(networkState?.dataMassInvitation?.attributes?.tags),
+                    }}
+                    components={{
+                      normal: <Text style={[styles.textNormal, styles.textCenter]} />,
+                      bold: <Text style={[styles.textBold]} />,
+                    }}
+                  />
+                </View>
+              )}
             <View style={[GlobalStyles.flexRow]}>
               <View style={GlobalStyles.container}>
                 <Button
                   title={t('cancel_invite')}
-                  h5
                   textCenter
                   onPress={onRemoveInvite}
                   containerStyle={{
                     ...GlobalStyles.buttonContainerStyle,
+                    ...GlobalStyles.flexRow,
+                    ...GlobalStyles.itemCenter,
                     ...GlobalStyles.mr10,
                     ...styles.buttonContainer2Style,
                   }}
-                  textStyle={styles.h3BoldDefault2}
+                  textStyle={styles.h3BoldDefault3}
                 />
               </View>
               <View style={GlobalStyles.container}>
                 <Button
                   isIconLeft={true}
                   title={t('share_qr')}
-                  h5
                   textCenter
                   onPress={onShare}
                   containerStyle={{
@@ -1180,6 +1193,15 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               </View>
             </View>
           </View>
+          {showToast1 && (
+            <ToastCustom
+              show={showToast1}
+              setShowToast={setShowToast1}
+              message='Link copied!'
+              styleToastContainer={styles.styleToastContainer}
+              isModal={true}
+            />
+          )}
         </ModalDialogCommon>
       )}
       {visibleModal.modal5 && (
@@ -1225,6 +1247,16 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               disabled={modalLoading && textInviteCode !== ''}
             />
           </View>
+          {showToast2 && (
+            <ToastCustom
+              show={showToast2}
+              setShowToast={setShowToast2}
+              message={t('code_invalid')}
+              styleToastContainer={styles.styleToastContainer}
+              isModal={true}
+              toValue={50}
+            />
+          )}
         </ModalDialogCommon>
       )}
       {visibleModal.modal6 && (
@@ -1252,7 +1284,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               <Paragraph h5 textArsenicColor title={`You are now part of`} style={GlobalStyles.mb5} />
               {dataInvite?.included && dataInvite?.included?.length > 0 && (
                 <Paragraph
-                  h4
+                  h5
                   bold
                   textSteelBlueColor
                   title={`${dataInvite?.included[0]?.attributes?.first_name ?? ''} ${
@@ -1261,9 +1293,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   style={GlobalStyles.mb5}
                 />
               )}
-              {dataInvite?.included && dataInvite?.included?.length > 0 && (
-                <Paragraph textCenter textSteelBlueColor bold600 p title={dataInvite?.included[0]?.attributes.pitch} />
-              )}
+              <Paragraph h5 textCenter textSteelBlueColor bold title={'Trust network'} />
             </View>
             <View style={[GlobalStyles.container, GlobalStyles.flexRow, GlobalStyles.mt20]}>
               {visibleModal.modal7 ? (
@@ -1441,16 +1471,16 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               {dataInvite?.included &&
                 dataInvite?.included?.length > 0 &&
                 dataInvite?.included[0]?.attributes?.avatar_metadata && (
-                <Avatar
-                  userInfo={{
-                    ...dataInvite?.included[0]?.attributes?.avatar_metadata,
-                    first_name: dataInvite?.included[0]?.attributes?.first_name,
-                    last_name: dataInvite?.included[0]?.attributes?.last_name,
-                  }}
-                  styleAvatar={{...GlobalStyles.mr5, ...GlobalStyles.avatar}}
-                  styleContainerGradient={{...GlobalStyles.alignCenter, ...GlobalStyles.mb10, ...GlobalStyles.avatar}}
-                />
-              )}
+                  <Avatar
+                    userInfo={{
+                      ...dataInvite?.included[0]?.attributes?.avatar_metadata,
+                      first_name: dataInvite?.included[0]?.attributes?.first_name,
+                      last_name: dataInvite?.included[0]?.attributes?.last_name,
+                    }}
+                    styleAvatar={{...GlobalStyles.mr5, ...GlobalStyles.avatar}}
+                    styleContainerGradient={{...GlobalStyles.alignCenter, ...GlobalStyles.mb10, ...GlobalStyles.avatar}}
+                  />
+                )}
               {dataInvite?.included && dataInvite?.included?.length > 0 && (
                 <Paragraph
                   h4
@@ -1473,6 +1503,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
           </View>
         </ModalDialogCommon>
       )}
+      {showToast && <ToastCustom show={showToast} setShowToast={setShowToast} message='Link copied!' />}
       {loading && <LoadingSecondary />}
     </View>
   );

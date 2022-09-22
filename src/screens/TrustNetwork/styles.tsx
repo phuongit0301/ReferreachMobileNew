@@ -1,6 +1,8 @@
-import {Platform, StyleSheet} from 'react-native';
+import {Dimensions, Platform, StyleSheet} from 'react-native';
 import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
+
+const {width} = Dimensions.get('screen');
 
 export default StyleSheet.create({
   container: {
@@ -51,6 +53,8 @@ export default StyleSheet.create({
     ...GlobalStyles.ph15,
     ...GlobalStyles.pv8,
     backgroundColor: BASE_COLORS.forestGreenColor,
+    borderWidth: 1,
+    borderColor: BASE_COLORS.forestGreenColor,
   },
   buttonContainerStyle3: {
     ...GlobalStyles.pv10,
@@ -230,6 +234,12 @@ export default StyleSheet.create({
     color: BASE_COLORS.forestGreenColor,
     fontSize: adjust(12),
   },
+  h3BoldDefault3: {
+    fontFamily: BASE_FONTS.regular,
+    fontWeight: '600',
+    color: BASE_COLORS.forestGreenColor,
+    fontSize: adjust(12),
+  },
   styleModal: {
     paddingLeft: 0,
     paddingRight: 0,
@@ -352,6 +362,7 @@ export default StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: adjust(15),
+    zIndex: 1000,
   },
   headerContainer: {
     borderBottomColor: BASE_COLORS.lavenderGrayColor,
@@ -459,4 +470,7 @@ export default StyleSheet.create({
     width: adjust(15),
     height: adjust(15),
   },
+  styleToastContainer: {
+    width: width - 100,
+  }
 });
