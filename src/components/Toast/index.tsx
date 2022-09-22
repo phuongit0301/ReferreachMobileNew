@@ -3,7 +3,7 @@ import {Text, View, Animated, TouchableOpacity, ViewStyle, Dimensions, Platform}
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Image from '~Root/components/Image';
 import Paragraph from '~Root/components/Paragraph';
-import { IMAGES } from '~Root/config';
+import { GlobalStyles, IMAGES } from '~Root/config';
 
 import styles from './styles';
 
@@ -65,7 +65,7 @@ const ToastCustom: React.FC<IProps> = ({
         },
       ]}>
       <View style={styles.toastRow}>
-        <Image source={IMAGES.iconLogo} resizeMode='contain' style={styles.iconLogo} />
+        <Image source={IMAGES.iconLogo} resizeMode='contain' style={[GlobalStyles.mr5, styles.iconLogo]} />
         <View style={styles.toastTextContainer}>
           {message !== '' ? (
             <Paragraph textWhite p title={message} style={styles.toastText} />
