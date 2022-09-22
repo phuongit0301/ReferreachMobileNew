@@ -18,7 +18,6 @@ export default StyleSheet.create({
   toastRow: {
     backgroundColor: '#313437',
     borderRadius: adjust(20),
-    width: '80%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
@@ -31,10 +30,10 @@ export default StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     marginHorizontal: adjust(10),
+    paddingHorizontal: adjust(15),
     paddingVertical: adjust(3),
   },
   toastTextContainer: {
-    width: '60%',
     padding: 2,
   },
   toastText: {
