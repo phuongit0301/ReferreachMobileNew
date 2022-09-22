@@ -19,6 +19,7 @@ import FastImage from 'react-native-fast-image';
 import {useForm, SubmitHandler} from 'react-hook-form';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
+// eslint-disable-next-line import/no-named-default
 import Toast from 'react-native-toast-message';
 import QRCode from 'react-native-qrcode-svg';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -45,6 +46,7 @@ import {
   LoadingSecondary,
   ModalDialogCommon,
   Paragraph,
+  ToastCustom,
 } from '~Root/components';
 import {IActionRemoveNetworkConnectionSuccess, IIncluded, IMassInvitationListTags} from '~Root/services/network/types';
 import {hideLoading, showLoading} from '~Root/services/loading/actions';
@@ -100,6 +102,9 @@ const AirFeedScreen = ({route, navigation}: Props) => {
 
   const [refreshing, setRefreshing] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [showToast1, setShowToast1] = useState(false);
+  const [showToast2, setShowToast2] = useState(false);
   const [visibleModal, setVisibleModal] = useState({
     modal1: false,
     modal2: false,
@@ -109,6 +114,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     modal6: false, // modal invite details
     modal7: false, // modal accept or deny
     modal8: false, // modal invite error
+    modal9: false, // modal confirm
   });
   const [loading, setLoading] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
@@ -296,9 +302,12 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   };
 
   const onHideJoinModal = () => {
+    console.log(12312312);
+    setTextInviteCode('');
     setVisibleModal({
       ...visibleModal,
       modal5: false,
+      modal6: false,
     });
   };
 
@@ -335,6 +344,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
             autoHide: true,
           });
         }
+        setTag('');
         onRefresh();
       }),
     );
@@ -392,7 +402,6 @@ const AirFeedScreen = ({route, navigation}: Props) => {
       if (!networkState.dataMassInvitation?.attributes?.code) {
         return false;
       }
-      
       await Share.share({
         title: `Mass Invite QR`,
         message: `${DEEP_LINK_URL}/i/${networkState.dataMassInvitation?.attributes?.code}`,
@@ -403,6 +412,12 @@ const AirFeedScreen = ({route, navigation}: Props) => {
   };
 
   const copyToClipboard = (code: string) => {
+    setShowToast(true);
+    Clipboard.setString(code);
+  };
+
+  const copyToClipboard1 = (code: string) => {
+    setShowToast1(true);
     Clipboard.setString(code);
   };
 
@@ -427,8 +442,9 @@ const AirFeedScreen = ({route, navigation}: Props) => {
     });
   };
 
-  const onReject = () => {
+  const onReject = useCallback(() => {
     if (textInviteCode) {
+      setTextInviteCode('');
       dispatch(showLoading());
       dispatch(
         invitationRejectRequest(textInviteCode, (response: any) => {
@@ -440,17 +456,16 @@ const AirFeedScreen = ({route, navigation}: Props) => {
             visibilityTime: 1200,
             autoHide: true,
           });
-          setTimeout(() => {
-            setVisibleModal({
-              ...visibleModal,
-              modal6: false,
-              modal7: false,
-            });
-          }, 1250);
+          setVisibleModal({
+            ...visibleModal,
+            modal5: false,
+            modal6: false,
+            modal7: false,
+          });
         }),
       );
     }
-  };
+  }, [textInviteCode]);
 
   const handleInvite = () => {
     if (textInviteCode !== '') {
@@ -465,6 +480,8 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                 modal5: false,
                 modal6: true,
               });
+            } else {
+              setShowToast2(true);
             }
           } else {
             setVisibleModal({
@@ -484,16 +501,32 @@ const AirFeedScreen = ({route, navigation}: Props) => {
       modal6: false,
       modal8: false,
     });
+    setTextInviteCode('');
   };
 
   const onRemoveInvite = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal4: false,
+      modal9: true,
+    });
+  };
+
+  const onCancel = () => {
+    setVisibleModal({
+      ...visibleModal,
+      modal9: false,
+    });
+  };
+
+  const onConfirm = () => {
     if (networkState?.dataMassInvitation?.id) {
       dispatch(showLoading());
       dispatch(
         removeMassInvite(networkState?.dataMassInvitation?.id, (response: any) => {
           setVisibleModal({
             ...visibleModal,
-            modal4: false,
+            modal9: false,
           });
           dispatch(hideLoading());
           if (response.success) {
@@ -640,10 +673,9 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                             </View>
                           </View>
                           {networkState?.listMassInvitation?.data[0].attributes?.tags.length > 0 && (
-                            <View style={GlobalStyles.ph15}>
+                            <View style={[GlobalStyles.ph10, GlobalStyles.justifyCenter, GlobalStyles.alignCenter]}>
                               <Trans
                                 i18nKey='network_invited'
-                                parent={Text}
                                 values={{
                                   name: `${joinArrayToString(
                                     networkState?.listMassInvitation?.data[0].attributes?.tags,
@@ -651,7 +683,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                                 }}
                                 components={{
                                   normal: <Text style={[styles.textNormal, styles.textCenter]} />,
-                                  bold: <Text style={[styles.textBold]} />,
+                                  bold: <Text style={[styles.textBold, styles.textCenter]} />,
                                 }}
                               />
                             </View>
@@ -660,7 +692,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                       </View>
                     ) : (
                       <View style={[GlobalStyles.flexColumn, GlobalStyles.mb30]}>
-                        <Paragraph p bold title='Ongoing Mass Invites' style={GlobalStyles.mb10} />
+                        <Paragraph textArsenicColor p bold title='Ongoing Mass Invites' style={GlobalStyles.mb10} />
                         <View style={[GlobalStyles.flexColumn, GlobalStyles.p15, styles.blockArea]}>
                           <Paragraph p title='There is no ongoing Mass Invites' style={GlobalStyles.mb15} />
                           <Button
@@ -669,17 +701,24 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                             textCenter
                             containerStyle={{
                               ...GlobalStyles.buttonContainerStyle,
+                              ...GlobalStyles.flexRow,
                               ...styles.buttonSignUpContainerStyle,
                             }}
+                            isIconLeft={true}
                             textStyle={styles.h3BoldSignUpDefault}
-                            onPress={onVisibleMassModal}
-                          />
+                            onPress={onVisibleMassModal}>
+                            <FastImage
+                              source={IMAGES.iconUser}
+                              resizeMode='contain'
+                              style={[GlobalStyles.mr10, styles.iconUser]}
+                            />
+                          </Button>
                         </View>
                       </View>
                     )}
                   </View>
                   <View style={GlobalStyles.flexColumn}>
-                    <Paragraph p bold title='Your Trust Network' style={GlobalStyles.mb10} />
+                    <Paragraph textArsenicColor p bold title='Your Trust Network' style={GlobalStyles.mb10} />
                     <View style={[GlobalStyles.flexColumn, GlobalStyles.p15, styles.blockArea1]}>
                       <View style={GlobalStyles.flexRow}>
                         <View style={[GlobalStyles.container, GlobalStyles.mr5, styles.inputContainer]}>
@@ -736,32 +775,38 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                         styleAvatar={{...GlobalStyles.mr5, ...styles.avatar}}
                         styleContainerGradient={{...GlobalStyles.alignCenter, ...styles.avatarContainer}}
                       />
-                      <View style={[GlobalStyles.flexColumn, styles.nameContainer]}>
-                        {itemIncluded?.attributes?.first_name && itemIncluded?.attributes?.last_name ? (
-                          <Paragraph
-                            p
-                            numberOfLines={1}
-                            ellipsizeMode='tail'
-                            bold700
-                            textBlack
-                            title={`${itemIncluded?.attributes?.first_name} ${itemIncluded?.attributes?.last_name}`}
-                          />
-                        ) : (
-                          <Paragraph
-                            p
-                            numberOfLines={1}
-                            ellipsizeMode='tail'
-                            textDarkGrayColor
-                            title={`${itemIncluded?.attributes.phone ?? ''}`}
-                          />
-                        )}
-                        <Paragraph
-                          textDarkGrayColor
-                          numberOfLines={1}
-                          ellipsizeMode='tail'
-                          title={`${itemIncluded?.attributes?.title ?? ''}`}
-                          style={[styles.textSmall, styles.marginTop5]}
-                        />
+                      <View style={[GlobalStyles.flexColumn, GlobalStyles.container]}>
+                        <View style={[GlobalStyles.flexColumn, styles.nameContainer]}>
+                          {itemIncluded?.attributes?.first_name && itemIncluded?.attributes?.last_name ? (
+                            <Paragraph
+                              p
+                              numberOfLines={1}
+                              ellipsizeMode='tail'
+                              bold700
+                              textBlack
+                              title={`${itemIncluded?.attributes?.first_name} ${itemIncluded?.attributes?.last_name}`}
+                              style={GlobalStyles.mb5}
+                            />
+                          ) : (
+                            <Paragraph
+                              p
+                              numberOfLines={1}
+                              ellipsizeMode='tail'
+                              textDarkGrayColor
+                              title={`${itemIncluded?.attributes.phone ?? ''}`}
+                              style={GlobalStyles.mb5}
+                            />
+                          )}
+                          {itemIncluded?.attributes?.title && (
+                            <Paragraph
+                              textDarkGrayColor
+                              numberOfLines={1}
+                              ellipsizeMode='tail'
+                              title={`${itemIncluded?.attributes?.title ?? ''}`}
+                              style={[styles.textSmall]}
+                            />
+                          )}
+                        </View>
                         {item?.attributes?.tag_list?.length > 0 && (
                           <View style={[GlobalStyles.flexRow, styles.tagContainer]}>
                             {item?.attributes?.tag_list?.map((tag: string) => (
@@ -814,7 +859,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   title='Individual Invite'
                   style={[GlobalStyles.mb15, GlobalStyles.container]}
                 />
-                <TouchableOpacity onPress={onVisibleInviteModal}>
+                <TouchableOpacity onPress={onVisibleInviteModal} style={styles.iconCloseContainer}>
                   <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
                 </TouchableOpacity>
               </View>
@@ -980,7 +1025,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   title='Mass Invite'
                   style={[GlobalStyles.mb15, GlobalStyles.container]}
                 />
-                <TouchableOpacity onPress={onVisibleMassModal}>
+                <TouchableOpacity onPress={onVisibleMassModal} style={styles.iconCloseContainer}>
                   <FastImage source={IMAGES.iconCloseBlack} resizeMode='cover' style={styles.iconClose} />
                 </TouchableOpacity>
               </View>
@@ -1024,6 +1069,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   style={[styles.inputStyle, GlobalStyles.ph10]}
                   value={tag}
                   onChangeText={text => setTag(text)}
+                  maxLength={12}
                 />
                 <View style={styles.tagCount}>
                   <Paragraph textLavenderGrayColor p title='0 / 12' />
@@ -1043,6 +1089,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               textStyle={styles.h3BoldDefault}
             />
           </View>
+          {/* <Toast1 ref={toastRef} /> */}
         </ModalDialogCommon>
       )}
       {visibleModal.modal4 && (
@@ -1088,17 +1135,16 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                 />
                 <TouchableOpacity
                   style={styles.tagCount}
-                  onPress={() => copyToClipboard(networkState?.listMassInvitation?.data[0].attributes.code)}>
+                  onPress={() => copyToClipboard1(networkState?.listMassInvitation?.data[0].attributes.code)}>
                   <FastImage source={IMAGES.iconCopy} resizeMode='contain' style={styles.iconCopy} />
                 </TouchableOpacity>
               </View>
             </View>
             {networkState?.dataMassInvitation?.attributes?.tags &&
               networkState?.dataMassInvitation?.attributes?.tags?.length > 0 && (
-                <View style={GlobalStyles.mb15}>
+                <View style={[GlobalStyles.mb15, GlobalStyles.alignCenter, GlobalStyles.justifyCenter]}>
                   <Trans
                     i18nKey='network_invited'
-                    parent={Text}
                     values={{
                       name: joinArrayToString(networkState?.dataMassInvitation?.attributes?.tags),
                     }}
@@ -1113,22 +1159,22 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               <View style={GlobalStyles.container}>
                 <Button
                   title={t('cancel_invite')}
-                  h5
                   textCenter
                   onPress={onRemoveInvite}
                   containerStyle={{
                     ...GlobalStyles.buttonContainerStyle,
+                    ...GlobalStyles.flexRow,
+                    ...GlobalStyles.itemCenter,
                     ...GlobalStyles.mr10,
                     ...styles.buttonContainer2Style,
                   }}
-                  textStyle={styles.h3BoldDefault2}
+                  textStyle={styles.h3BoldDefault3}
                 />
               </View>
               <View style={GlobalStyles.container}>
                 <Button
                   isIconLeft={true}
                   title={t('share_qr')}
-                  h5
                   textCenter
                   onPress={onShare}
                   containerStyle={{
@@ -1147,6 +1193,15 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               </View>
             </View>
           </View>
+          {showToast1 && (
+            <ToastCustom
+              show={showToast1}
+              setShowToast={setShowToast1}
+              message='Link copied!'
+              styleToastContainer={styles.styleToastContainer}
+              isModal={true}
+            />
+          )}
         </ModalDialogCommon>
       )}
       {visibleModal.modal5 && (
@@ -1192,6 +1247,16 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               disabled={modalLoading && textInviteCode !== ''}
             />
           </View>
+          {showToast2 && (
+            <ToastCustom
+              show={showToast2}
+              setShowToast={setShowToast2}
+              message={t('code_invalid')}
+              styleToastContainer={styles.styleToastContainer}
+              isModal={true}
+              toValue={50}
+            />
+          )}
         </ModalDialogCommon>
       )}
       {visibleModal.modal6 && (
@@ -1219,7 +1284,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
               <Paragraph h5 textArsenicColor title={`You are now part of`} style={GlobalStyles.mb5} />
               {dataInvite?.included && dataInvite?.included?.length > 0 && (
                 <Paragraph
-                  h4
+                  h5
                   bold
                   textSteelBlueColor
                   title={`${dataInvite?.included[0]?.attributes?.first_name ?? ''} ${
@@ -1228,9 +1293,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                   style={GlobalStyles.mb5}
                 />
               )}
-              {dataInvite?.included && dataInvite?.included?.length > 0 && (
-                <Paragraph textCenter textSteelBlueColor bold600 p title={dataInvite?.included[0]?.attributes.pitch} />
-              )}
+              <Paragraph h5 textCenter textSteelBlueColor bold title={'Trust network'} />
             </View>
             <View style={[GlobalStyles.container, GlobalStyles.flexRow, GlobalStyles.mt20]}>
               {visibleModal.modal7 ? (
@@ -1304,6 +1367,46 @@ const AirFeedScreen = ({route, navigation}: Props) => {
                 }}
                 textStyle={styles.h3BoldDefault}
               />
+            </View>
+          </View>
+        </ModalDialogCommon>
+      )}
+      {visibleModal.modal9 && (
+        <ModalDialogCommon
+          isDefault={false}
+          isVisible={true}
+          onHideModal={onVisibleErrorModal}
+          styleModal={{...styles.styleModal8}}>
+          <View style={[GlobalStyles.flexColumn, GlobalStyles.alignCenter, GlobalStyles.p15]}>
+            <Paragraph bold500 p textCenter textJetColor title={t('cancel_this_invite')} style={GlobalStyles.mb30} />
+            <View style={[GlobalStyles.flexRow, GlobalStyles.justifyBetween]}>
+              <View style={GlobalStyles.container}>
+                <Button
+                  title={t('cancel')}
+                  h5
+                  textCenter
+                  onPress={onCancel}
+                  containerStyle={{
+                    ...GlobalStyles.buttonContainerStyle,
+                    ...GlobalStyles.mr10,
+                    ...styles.buttonSecondContainerStyle2,
+                  }}
+                  textStyle={{...styles.textSecondary, ...GlobalStyles.textCenter}}
+                />
+              </View>
+              <View style={GlobalStyles.container}>
+                <Button
+                  title={t('confirm')}
+                  h5
+                  textCenter
+                  onPress={onConfirm}
+                  containerStyle={{
+                    ...GlobalStyles.buttonContainerStyle,
+                    ...styles.buttonContainerStyle3,
+                  }}
+                  textStyle={styles.textPrimary}
+                />
+              </View>
             </View>
           </View>
         </ModalDialogCommon>
@@ -1400,6 +1503,7 @@ const AirFeedScreen = ({route, navigation}: Props) => {
           </View>
         </ModalDialogCommon>
       )}
+      {showToast && <ToastCustom show={showToast} setShowToast={setShowToast} message='Link copied!' />}
       {loading && <LoadingSecondary />}
     </View>
   );

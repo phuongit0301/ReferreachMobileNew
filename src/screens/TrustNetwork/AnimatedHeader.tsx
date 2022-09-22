@@ -88,9 +88,9 @@ const AnimatedHeader = ({animatedValue, onVisibleInviteModal, onVisibleJoinModal
               onPress={onVisibleInviteModal}
               style={[GlobalStyles.flexColumn, GlobalStyles.container, GlobalStyles.itemCenter]}>
               <FastImage
-                source={IMAGES.iconUserPlus40x40}
+                source={IMAGES.iconUserPlus34x33}
                 resizeMode='cover'
-                style={[GlobalStyles.mb5, styles.iconPlus40x40]}
+                style={[GlobalStyles.mb5, styles.iconUserPlus34x33]}
               />
               <Paragraph h5 bold textWhite title='Invite' style={GlobalStyles.mb5} />
               <Paragraph textWhite title='to Trust Network' style={styles.text} />
@@ -103,9 +103,9 @@ const AnimatedHeader = ({animatedValue, onVisibleInviteModal, onVisibleJoinModal
               onPress={onVisibleJoinModal}
               style={[GlobalStyles.flexColumn, GlobalStyles.container, GlobalStyles.itemCenter]}>
               <FastImage
-                source={IMAGES.iconUsers40x40}
+                source={IMAGES.iconUsers39x35}
                 resizeMode='cover'
-                style={[GlobalStyles.mb5, styles.iconPlus40x40]}
+                style={[GlobalStyles.mb5, styles.iconUsers39x35]}
               />
               <Paragraph h5 bold textWhite title='Join' style={GlobalStyles.mb5} />
               <Paragraph textWhite title='Trust Network' style={styles.text} />

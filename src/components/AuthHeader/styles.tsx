@@ -22,6 +22,14 @@ export default StyleSheet.create({
     width: adjust(138),
     height: adjust(18),
   },
+  iconUserPlus34x33: {
+    width: adjust(34),
+    height: adjust(33),
+  },
+  iconUsers39x35: {
+    width: adjust(39),
+    height: adjust(35),
+  },
   iconPlus40x40: {
     width: adjust(40),
     height: adjust(40),

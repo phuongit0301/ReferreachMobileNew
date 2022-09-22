@@ -1,6 +1,8 @@
-import {Platform, StyleSheet} from 'react-native';
+import {Dimensions, Platform, StyleSheet} from 'react-native';
 import {BASE_COLORS, BASE_FONTS, BASE_STYLES, GlobalStyles} from '~Root/config';
 import {adjust} from '~Root/utils';
+
+const {width} = Dimensions.get('screen');
 
 export default StyleSheet.create({
   container: {
@@ -50,6 +52,13 @@ export default StyleSheet.create({
   buttonContainerStyle2: {
     ...GlobalStyles.ph15,
     ...GlobalStyles.pv8,
+    backgroundColor: BASE_COLORS.forestGreenColor,
+    borderWidth: 1,
+    borderColor: BASE_COLORS.forestGreenColor,
+  },
+  buttonContainerStyle3: {
+    ...GlobalStyles.pv10,
+    ...GlobalStyles.ph15,
     backgroundColor: BASE_COLORS.forestGreenColor,
   },
   buttonContainer2Style: {
@@ -167,19 +176,14 @@ export default StyleSheet.create({
     borderRadius: adjust(50),
   },
   btnContainer: {
-    width: adjust(80),
-    alignItems: 'flex-end',
     marginLeft: 20,
     marginTop: 10,
   },
   nameContainer: {
-    width: '42%',
     paddingTop: 10,
   },
   tagContainer: {
     marginTop: 5,
-    flex: 1,
-    width: '180%', // parent is 42%
     flexWrap: 'wrap',
   },
   textSmall: {
@@ -230,6 +234,12 @@ export default StyleSheet.create({
     color: BASE_COLORS.forestGreenColor,
     fontSize: adjust(12),
   },
+  h3BoldDefault3: {
+    fontFamily: BASE_FONTS.regular,
+    fontWeight: '600',
+    color: BASE_COLORS.forestGreenColor,
+    fontSize: adjust(12),
+  },
   styleModal: {
     paddingLeft: 0,
     paddingRight: 0,
@@ -272,6 +282,12 @@ export default StyleSheet.create({
     paddingLeft: 0,
     paddingRight: 0,
     height: Platform.OS === 'ios' ? adjust(390) : adjust(410),
+    borderRadius: adjust(8),
+  },
+  styleModal8: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    height: adjust(130),
     borderRadius: adjust(8),
   },
   styleModalRemove: {
@@ -333,6 +349,11 @@ export default StyleSheet.create({
     borderBottomRightRadius: adjust(8),
     overflow: 'hidden',
   },
+  iconCloseContainer: {
+    position: 'absolute',
+    top: 0,
+    right: adjust(5),
+  },
   iconClose: {
     width: adjust(14),
     height: adjust(14),
@@ -341,6 +362,7 @@ export default StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: adjust(15),
+    zIndex: 1000,
   },
   headerContainer: {
     borderBottomColor: BASE_COLORS.lavenderGrayColor,
@@ -411,17 +433,23 @@ export default StyleSheet.create({
   },
   textPrimary: {
     fontFamily: BASE_FONTS.semiBold,
-    lineHeight: adjust(BASE_STYLES.h3),
+    lineHeight: adjust(BASE_STYLES.h4),
     color: BASE_COLORS.whiteColor,
   },
   textSecondary: {
     fontFamily: BASE_FONTS.semiBold,
-    lineHeight: adjust(BASE_STYLES.h3),
+    lineHeight: adjust(BASE_STYLES.h4),
     color: BASE_COLORS.oxleyColor,
   },
   buttonSecondContainerStyle: {
     borderColor: BASE_COLORS.forestGreenColor,
     borderWidth: 1,
+  },
+  buttonSecondContainerStyle2: {
+    borderColor: BASE_COLORS.forestGreenColor,
+    borderWidth: 1,
+    ...GlobalStyles.pv10,
+    ...GlobalStyles.ph15,
   },
   iconCloseError: {
     alignSelf: 'flex-end',
@@ -438,4 +466,11 @@ export default StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     borderRadius: adjust(15),
   },
+  iconUser: {
+    width: adjust(15),
+    height: adjust(15),
+  },
+  styleToastContainer: {
+    width: width - 100,
+  }
 });

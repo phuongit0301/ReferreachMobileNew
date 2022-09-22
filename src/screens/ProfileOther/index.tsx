@@ -92,7 +92,7 @@ const ProfileOtherScreen = ({navigation, route}: any) => {
         (response: IActionRemoveNetworkConnectionSuccess['payload']) => {
           setLoading(false);
           if (response.success) {
-            navigation.navigate(AppRoute.AIR_FEED_NAVIGATOR);
+            navigation.navigate(AppRoute.TRUST_NETWORK);
           }
         },
       ),

@@ -117,9 +117,13 @@ export const IMAGES = {
   iconHand: require('~Root/assets/images/icon_hand.png'),
   iconUserPlus: require('~Root/assets/images/user_plus.png'),
   iconUserPlus40x40: require('~Root/assets/images/user_plus40x40.png'),
+  iconUserPlus34x33: require('~Root/assets/images/iconPlus34x33.png'),
   iconUsers: require('~Root/assets/images/users.png'),
   iconUsers40x40: require('~Root/assets/images/users40x40.png'),
+  iconUsers39x35: require('~Root/assets/images/iconUsers39x35.png'),
   imgQr: require('~Root/assets/images/img_qr.png'),
   iconCopy: require('~Root/assets/images/copy.png'),
   iconShare2: require('~Root/assets/images/icon_share_2.png'),
+  iconUser: require('~Root/assets/images/icon_users.png'),
+  iconLogo: require('~Root/assets/images/icon_logo.png'),
 };

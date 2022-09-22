@@ -75,6 +75,7 @@ import InviteContactTemplateScreen from './InviteContactTemplate';
 import ProfileTemplateScreen from './ProfileTemplate';
 import KeyboardShift from './KeyboardShift';
 import AuthHeaderNew from './AuthHeaderNew';
+import ToastCustom from './Toast';
 
 export {
   AuthHeader,
@@ -153,4 +154,5 @@ export {
   DeepLinkContext,
   KeyboardShift,
   AuthHeaderNew,
+  ToastCustom,
 };
